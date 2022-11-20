@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "workspaces": [
+    "project-canvas",
+    "project-extender",
+    "fake-jira-server"
+  ],
+  "scripts": {
+    "canvas": "yarn --cwd project-canvas dev",
+    "extender": "yarn --cwd project-extender start",
+    "jira": "yarn --cwd fake-jira-server start"
+  }
+}
