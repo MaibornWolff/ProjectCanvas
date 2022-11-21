@@ -10,7 +10,7 @@ to add a new package
 `project` can be `project-canvas`, `project-extener`, `jira-fake-server`
 
 ```
-yarn workspace <project> add <package> -D
+yarn workspace <project> add <package>
 ```
 
 # How to use
