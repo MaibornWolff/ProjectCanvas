@@ -7,7 +7,7 @@ yarn install
 ```
 
 to add a new package
-`project` can be `project-canvas`, `project-extener`, `jira-fake-server`
+`project` can be `project-canvas`, `project-extender`, `jira-fake-server`
 
 ```
 yarn workspace <project> add <package>
