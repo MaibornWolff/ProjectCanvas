@@ -1,6 +1,5 @@
 {
   "*.{js,jsx,ts,tsx}": [
-    "eslint --fix --max-warnings=4",
     "prettier --write --list-different"
   ],
   "*.{json,css,scss,md}": [

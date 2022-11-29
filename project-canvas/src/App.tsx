@@ -1,71 +1,52 @@
-import { useState } from "react"
-import styles from "styles/app.module.scss"
+import {
+  Button,
+  ColorInput,
+  Container,
+  Flex,
+  Group,
+  Stack,
+  TextInput,
+  Title,
+} from "@mantine/core"
+import { useForm } from "@mantine/form"
 
-const App: React.FC = () => {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const form = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+    },
 
+    validate: {
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+    },
+  })
   return (
-    <div className={styles.app}>
-      <header className={styles.appHeader}>
-        <div className={styles.logos}>
-          <div className={styles.imgBox}>
-            <img
-              src="./electron.png"
-              style={{ height: "24vw" }}
-              className={styles.appLogo}
-              alt="electron"
+    <Container>
+      <Flex justify="center">
+        <Stack spacing="md">
+          <Title size="2em">Login</Title>
+          <form onSubmit={form.onSubmit((values) => console.log(values))}>
+            <TextInput
+              required
+              label="Email"
+              placeholder="Email"
+              {...form.getInputProps("email")}
             />
-          </div>
-          <div className={styles.imgBox}>
-            <img src="./vite.svg" style={{ height: "19vw" }} alt="vite" />
-          </div>
-          <div className={styles.imgBox}>
-            <img
-              src="./react.svg"
-              style={{ maxWidth: "100%" }}
-              className={styles.appLogo}
-              alt="logo"
+            <TextInput
+              required
+              label="Password"
+              placeholder="Password"
+              {...form.getInputProps("password")}
             />
-          </div>
-        </div>
-        <p>Hello Electron + Vite + React!</p>
-        <p>
-          <button
-            onClick={() => {
-              setCount((count) => count + 1)
-            }}
-          >
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <div>
-          <a
-            className={styles.appLink}
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {" | "}
-          <a
-            className={styles.appLink}
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-          <div className={styles.staticPublic}>
-            Place static files into the <code>/public</code> folder
-            <img style={{ width: 77 }} src="./node.png" />
-          </div>
-        </div>
-      </header>
-    </div>
+
+            <Group position="center" mt="xl">
+              <Button type="submit">Log in</Button>
+            </Group>
+          </form>
+        </Stack>
+      </Flex>
+    </Container>
   )
 }
 
