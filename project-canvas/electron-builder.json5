@@ -19,6 +19,7 @@
       },
     ],
     artifactName: "${productName}-Windows-${version}-Setup.${ext}",
+    publish: ["github"],
   },
   nsis: {
     oneClick: false,
@@ -29,10 +30,12 @@
   mac: {
     target: ["dmg"],
     artifactName: "${productName}-Mac-${version}-Installer.${ext}",
+    publish: ["github"],
   },
   linux: {
     icon: "electron/resources/iconset",
     target: ["AppImage", "deb"],
     artifactName: "${productName}-Linux-${version}.${ext}",
+    publish: ["github"],
   },
 }

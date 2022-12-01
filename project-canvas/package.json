@@ -3,13 +3,14 @@
   "productName": "Project Canvas",
   "private": true,
   "version": "1.0.0",
-  "description": "",
+  "description": "The better project management tool.",
   "author": "TeamCanvas",
   "license": "MIT",
   "main": "dist-electron/electron/main/index.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
+    "release": "electron-builder --publish always",
     "format": "yarn prettier --write .",
     "lint": "eslint"
   },
@@ -29,14 +30,19 @@
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.1.0",
-    "electron": "^21.1.0",
+    "electron": "21.1.0",
     "electron-builder": "^23.3.3",
     "esbuild": "*",
     "prettier": "2.7.1",
     "sass": "^1.55.0",
     "typescript": ">=4.4",
     "vite": "^3.2.2",
-    "vite-electron-plugin": "^0.5.0"
+    "vite-electron-plugin": "^0.5.0",
+    "vite-plugin-electron-renderer": "^0.11.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TU-TeamCanvas/ProjectCanvas"
   },
   "debug": {
     "env": {
