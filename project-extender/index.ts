@@ -1,15 +1,31 @@
-import fastify from 'fastify'
+import cors from "@fastify/cors"
+import fastify from "fastify"
+import JiraApi from "jira-client"
 
 const server = fastify()
 
-server.get('/ping', async (request, reply) => {
-  return 'pong\n'
-})
+let jira: JiraApi
 
-server.listen({ port: 8080 }, (err, address) => {
+server.register(cors)
+server.listen({ port: 9090 }, (err) => {
   if (err) {
-    console.error(err)
     process.exit(1)
   }
-  console.log(`Server listening at ${address}`)
+})
+
+server.post("/login", async () => {
+  jira = new JiraApi({
+    protocol: "http",
+    host: "localhost",
+    port: "8080",
+    username: "admin",
+    password: "admin",
+    apiVersion: "2",
+    strictSSL: true,
+  })
+})
+
+server.get("/board", async (request, reply) => {
+  const boards = await jira.getAllBoards()
+  reply.send(boards)
 })
