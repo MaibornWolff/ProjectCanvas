@@ -9,6 +9,7 @@
   "scripts": {
     "canvas": "yarn --cwd project-canvas dev",
     "extender": "yarn --cwd project-extender start",
+    "extender:build": "yarn --cwd project-extender build",
     "jira": "yarn --cwd fake-jira-server start",
     "prepare": "husky install",
     "pre-commit": "lint-staged"

@@ -8,16 +8,17 @@
 // ├─┬ dist
 // │ └── index.html    > Electron-Renderer
 //
+import { app, BrowserWindow, shell, ipcMain } from "electron"
+import { release } from "os"
+import { join } from "path"
+
+import "project-extender"
+
 process.env.DIST_ELECTRON = join(__dirname, "../..")
 process.env.DIST = join(process.env.DIST_ELECTRON, "../dist")
 process.env.PUBLIC = app.isPackaged
   ? process.env.DIST
   : join(process.env.DIST_ELECTRON, "../public")
-
-import { app, BrowserWindow, shell, ipcMain } from "electron"
-import { release } from "os"
-import { join } from "path"
-
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration()
 
@@ -61,8 +62,8 @@ async function createWindow() {
   })
 
   // Make all links open with the browser, not with the application
-  win.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith("https:")) shell.openExternal(url)
+  win.webContents.setWindowOpenHandler(({ url: _url }) => {
+    if (_url.startsWith("https:")) shell.openExternal(_url)
     return { action: "deny" }
   })
 }
