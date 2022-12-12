@@ -1,4 +1,4 @@
-import { Container, Stack, Title } from "@mantine/core"
+import { Anchor, Container, Stack, Title } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { LoginForm } from "./LoginForm"
 import { LoginFormValues } from "./LoginFormValues"
@@ -68,6 +68,7 @@ export function Login() {
         p="lg"
         mx="auto"
       >
+        <Anchor href="/projectsview">Hello</Anchor>
         <Title size="2em" align="center" mb="2em">
           Project Canvas
         </Title>
