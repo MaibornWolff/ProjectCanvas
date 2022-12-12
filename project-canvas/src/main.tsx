@@ -1,16 +1,18 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { MantineProvider } from "@mantine/core"
-import { App } from "./App"
-import "./samples/node-api"
+import { BrowserRouter } from "react-router-dom"
 import "styles/index.css"
-import { theme } from "../theme"
+import { App } from "./App"
+import { ThemeProvider } from "./ThemeProvider"
+import "./samples/node-api"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <MantineProvider theme={theme}>
-      <App />
-    </MantineProvider>
+    <BrowserRouter>
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
+    </BrowserRouter>
   </React.StrictMode>
 )
 
