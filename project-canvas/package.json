@@ -23,10 +23,12 @@
     "@mantine/core": "^5.8.0",
     "@mantine/form": "^5.8.3",
     "@mantine/hooks": "^5.8.0",
+    "@tabler/icons": "^1.116.1",
     "jira-client": "^8.2.2",
+    "project-extender": "*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "project-extender": "*"
+    "react-router-dom": "^6.4.5"
   },
   "devDependencies": {
     "@types/react": "^18.0.21",
