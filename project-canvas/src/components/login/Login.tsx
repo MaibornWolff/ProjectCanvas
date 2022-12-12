@@ -1,5 +1,6 @@
-import { Anchor, Container, Stack, Title } from "@mantine/core"
+import { Button, Container, Divider, Stack, Title } from "@mantine/core"
 import { useForm } from "@mantine/form"
+import { useNavigate } from "react-router-dom"
 import { LoginForm } from "./LoginForm"
 import { LoginFormValues } from "./LoginFormValues"
 
@@ -36,18 +37,13 @@ async function login({
 }
 
 export function Login() {
+  const navigate = useNavigate()
   const form = useForm<LoginFormValues>({
     initialValues: {
-      email: "",
       username: "",
       password: "",
-      pbiServer: "",
       url: "",
     },
-
-    // validate: {
-    //   email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-    // },
   })
   return (
     <Container
@@ -68,7 +64,6 @@ export function Login() {
         p="lg"
         mx="auto"
       >
-        <Anchor href="/projectsview">Hello</Anchor>
         <Title size="2em" align="center" mb="2em">
           Project Canvas
         </Title>
@@ -76,6 +71,10 @@ export function Login() {
           Login
         </Title>
         <LoginForm form={form} onSubmit={login} />
+        <Divider my="sm" label="Jira Cloud Login" labelPosition="center" />
+        <Button color="secondary" onClick={() => navigate("/projectsview")}>
+          Jira Cloud
+        </Button>
       </Stack>
     </Container>
   )

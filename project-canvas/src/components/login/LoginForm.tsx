@@ -1,4 +1,4 @@
-import { Stack, Select, TextInput, Group, Button } from "@mantine/core"
+import { Button, Group, Stack, TextInput } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
 import { LoginFormValues } from "./LoginFormValues"
 
@@ -12,41 +12,18 @@ export function LoginForm({
   return (
     <form onSubmit={form.onSubmit(onSubmit)}>
       <Stack>
-        <Select
+        <TextInput
           required
-          label="PBI server"
-          placeholder="PBI server"
-          data={[
-            { value: "Jira Server", label: "Jira Server" },
-            { value: "Jira Cloud", label: "Jira Cloud" },
-          ]}
-          {...form.getInputProps("pbiServer")}
+          label="Instance URL"
+          placeholder="URL"
+          {...form.getInputProps("url")}
         />
-        {form.values.pbiServer === "Jira Server" && (
-          <>
-            <TextInput
-              required
-              label="Instance URL"
-              placeholder="URL"
-              {...form.getInputProps("url")}
-            />
-            <TextInput
-              required
-              label="Username"
-              placeholder="Username"
-              {...form.getInputProps("username")}
-            />
-          </>
-        )}
-        {form.values.pbiServer === "Jira Cloud" && (
-          <TextInput
-            required
-            label="Email"
-            placeholder="Email"
-            {...form.getInputProps("email")}
-          />
-        )}
-
+        <TextInput
+          required
+          label="Username"
+          placeholder="Username"
+          {...form.getInputProps("username")}
+        />
         <TextInput
           required
           label="Password"
@@ -57,7 +34,7 @@ export function LoginForm({
 
       <Group position="center" mt="xl">
         <Button type="submit" fullWidth>
-          Log in
+          Log in to Jira Server
         </Button>
       </Group>
     </form>
