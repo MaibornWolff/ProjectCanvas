@@ -43,9 +43,11 @@ const useStyles = createStyles((theme) => ({
 }))
 
 interface RowData {
-  name: string
-  email: string
-  company: string
+  //   Star: TablerIcon
+  Name: string
+  Key: string
+  Type: string
+  Lead: string
 }
 
 interface TableSortProps {
@@ -85,7 +87,9 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
 function filterData(data: RowData[], search: string) {
   const query = search.toLowerCase().trim()
   return data.filter((item) =>
-    keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
+    keys(data[0])
+      //   .filter((key) => typeof item[key] === "string")
+      .some((key) => item[key].toLowerCase().includes(query))
   )
 }
 
@@ -100,13 +104,15 @@ function sortData(
   }
 
   return filterData(
-    [...data].sort((a, b) => {
-      if (payload.reversed) {
-        return b[sortBy].localeCompare(a[sortBy])
-      }
+    [...data]
+      //   .filter((el) => typeof el[sortBy] === "string")
+      .sort((a, b) => {
+        if (payload.reversed) {
+          return b[sortBy].localeCompare(a[sortBy])
+        }
 
-      return a[sortBy].localeCompare(b[sortBy])
-    }),
+        return a[sortBy].localeCompare(b[sortBy])
+      }),
     payload.search
   )
 }
@@ -133,10 +139,11 @@ export function TableSort({ data }: TableSortProps) {
   }
 
   const rows = sortedData.map((row) => (
-    <tr key={row.name}>
-      <td>{row.name}</td>
-      <td>{row.email}</td>
-      <td>{row.company}</td>
+    <tr key={row.Name}>
+      <td>{row.Name}</td>
+      <td>{row.Key}</td>
+      <td>{row.Type}</td>
+      <td>{row.Lead}</td>
     </tr>
   ))
 
@@ -157,25 +164,32 @@ export function TableSort({ data }: TableSortProps) {
         <thead>
           <tr>
             <Th
-              sorted={sortBy === "name"}
+              sorted={sortBy === "Name"}
               reversed={reverseSortDirection}
-              onSort={() => setSorting("name")}
+              onSort={() => setSorting("Name")}
             >
               Name
             </Th>
             <Th
-              sorted={sortBy === "email"}
+              sorted={sortBy === "Key"}
               reversed={reverseSortDirection}
-              onSort={() => setSorting("email")}
+              onSort={() => setSorting("Key")}
             >
-              Email
+              Key
             </Th>
             <Th
-              sorted={sortBy === "company"}
+              sorted={sortBy === "Type"}
               reversed={reverseSortDirection}
-              onSort={() => setSorting("company")}
+              onSort={() => setSorting("Type")}
             >
-              Company
+              Type
+            </Th>
+            <Th
+              sorted={sortBy === "Lead"}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting("Lead")}
+            >
+              Lead
             </Th>
           </tr>
         </thead>
