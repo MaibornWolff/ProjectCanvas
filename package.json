@@ -7,7 +7,7 @@
     "fake-jira-server"
   ],
   "scripts": {
-    "canvas": "yarn --cwd project-canvas dev",
+    "canvas": "yarn extender:build && yarn --cwd project-canvas dev",
     "extender": "yarn --cwd project-extender start",
     "extender:build": "yarn --cwd project-extender build",
     "jira": "yarn --cwd fake-jira-server start",
