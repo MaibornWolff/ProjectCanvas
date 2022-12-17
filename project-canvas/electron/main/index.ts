@@ -12,7 +12,7 @@ import { app, BrowserWindow, shell, ipcMain } from "electron"
 import { release } from "os"
 import { join } from "path"
 
-import "project-extender"
+// import "project-extender"
 
 process.env.DIST_ELECTRON = join(__dirname, "../..")
 process.env.DIST = join(process.env.DIST_ELECTRON, "../dist")
@@ -108,4 +108,38 @@ ipcMain.handle("open-win", (event, arg) => {
     childWindow.loadURL(`${url}#${arg}`)
     // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
   }
+})
+
+app.whenReady().then(() => {
+  const authWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    show: false,
+  })
+  const authUrl =
+    "https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=511A0SDAnrGJxxw4hrwYa2SOsRzpEbNC&scope=read:me%20read:jira-user%20manage:jira-configuration%20read:jira-work%20read:account%20manage:jira-project%20manage:jira-configuration%20write:jira-work%20manage:jira-webhook%20manage:jira-data-provider&redirect_uri=http://localhost:5173&response_type=code&prompt=consent"
+
+  authWindow.loadURL(authUrl)
+  authWindow.show()
+
+  function handleCallback(_url) {
+    const rawCode = /\?code=(.+)/.exec(_url) || null
+    const code = rawCode && rawCode.length > 1 ? rawCode[1] : null
+    const error = /\?error=(.+)\$/.exec(_url)
+
+    if (code || error) {
+      // Close the browser if code found or error
+      authWindow.destroy()
+    }
+
+    // If there is a code, proceed to get token from github
+    if (code) {
+      // self.requestGithubToken(options, code)
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  authWindow.webContents.on("will-redirect", (_, url) => {
+    handleCallback(url)
+  })
 })
