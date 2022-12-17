@@ -1,16 +1,21 @@
 import {
   ActionIcon,
   Box,
+  Button,
   Group,
   Header,
+  Menu,
   useMantineColorScheme,
 } from "@mantine/core"
-import { IconSun, IconMoonStars } from "@tabler/icons"
+import { IconSun, IconMoonStars, IconExternalLink } from "@tabler/icons"
+import { useNavigate } from "react-router-dom"
 
 export function LayoutHeader() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+  const navigate = useNavigate()
+
   return (
-    <Header height={60} p="xs">
+    <Header height="60" p="s" zIndex={101}>
       <Box
         sx={(theme) => ({
           paddingLeft: theme.spacing.xs,
@@ -23,7 +28,7 @@ export function LayoutHeader() {
           }`,
         })}
       >
-        <Group position="apart">
+        <Group position="left" spacing="xl">
           <ActionIcon
             variant="default"
             onClick={() => toggleColorScheme()}
@@ -35,6 +40,29 @@ export function LayoutHeader() {
               <IconMoonStars size={16} />
             )}
           </ActionIcon>
+          <Menu width={200} shadow="md">
+            <Menu.Target>
+              <Button>Projects</Button>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item
+                component="a"
+                onClick={() => navigate("/projectsview")}
+              >
+                Projects View
+              </Menu.Item>
+
+              <Menu.Item
+                icon={<IconExternalLink size={14} />}
+                component="a"
+                href="https://mantine.dev"
+                target="_blank"
+              >
+                External link
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
         </Group>
       </Box>
     </Header>
