@@ -108,8 +108,7 @@ ipcMain.handle("open-win", (event, arg) => {
     // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
   }
 })
-
-app.whenReady().then(() => {
+function handleOauth2() {
   const authWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -120,6 +119,7 @@ app.whenReady().then(() => {
     "read:me%20read:jira-user%20manage:jira-configuration%20read:jira-work%20read:account%20manage:jira-project%20manage:jira-configuration%20write:jira-work%20manage:jira-webhook%20manage:jira-data-provider"
   const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
   const authUrl = `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${CLIENT_ID}&scope=${SCOPE}&redirect_uri=${REDIRECT_URI}&response_type=code&prompt=consent`
+
   authWindow.loadURL(authUrl)
   authWindow.show()
 
@@ -140,4 +140,7 @@ app.whenReady().then(() => {
   authWindow.webContents.on("will-redirect", (_, _url) => {
     handleCallback(_url)
   })
+}
+app.whenReady().then(() => {
+  ipcMain.on("start-Oauth2", handleOauth2)
 })

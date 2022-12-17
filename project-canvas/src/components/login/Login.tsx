@@ -1,12 +1,10 @@
 import { Button, Container, Divider, Stack, Title } from "@mantine/core"
 import { useForm } from "@mantine/form"
-import { useNavigate } from "react-router-dom"
 import { ipcRenderer } from "electron"
 import { LoginForm } from "./LoginForm"
 import { LoginFormValues } from "./LoginFormValues"
 
 ipcRenderer.on("code", (_, code) => {
-  alert(code)
   fetch("http://localhost:9090/logincloud", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -47,7 +45,6 @@ async function login({
 }
 
 export function Login() {
-  const navigate = useNavigate()
   const form = useForm<LoginFormValues>({
     initialValues: {
       username: "",
@@ -82,7 +79,12 @@ export function Login() {
         </Title>
         <LoginForm form={form} onSubmit={login} />
         <Divider my="sm" label="Jira Cloud Login" labelPosition="center" />
-        <Button color="secondary" onClick={() => navigate("/projectsview")}>
+        <Button
+          color="secondary"
+          onClick={() => {
+            ipcRenderer.send("start-Oauth2")
+          }}
+        >
           Jira Cloud
         </Button>
       </Stack>
