@@ -6,14 +6,12 @@ import { ProjectsView } from "./components/projects-view"
 
 export function App() {
   return (
-    <div>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route element={<Layout />}>
-          <Route path="projectsview" element={<ProjectsView />} />
-          <Route path="backlogview" element={<BacklogView />} />
-        </Route>
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/" index element={<Login />} />
+      <Route element={<Layout />}>
+        <Route path="projectsview" element={<ProjectsView />} />
+        <Route path="backlogview" element={<BacklogView />} />
+      </Route>
+    </Routes>
   )
 }

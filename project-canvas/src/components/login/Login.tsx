@@ -1,8 +1,18 @@
 import { Button, Container, Divider, Stack, Title } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { useNavigate } from "react-router-dom"
+import { ipcRenderer } from "electron"
 import { LoginForm } from "./LoginForm"
 import { LoginFormValues } from "./LoginFormValues"
+
+ipcRenderer.on("code", (_, code) => {
+  alert(code)
+  fetch("http://localhost:9090/logincloud", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code }),
+  })
+})
 
 async function login({
   protocol = "http",
