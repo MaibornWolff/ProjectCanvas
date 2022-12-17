@@ -8,10 +8,11 @@
 // ├─┬ dist
 // │ └── index.html    > Electron-Renderer
 //
+// import "project-extender"
 import { app, BrowserWindow, shell, ipcMain } from "electron"
 import { release } from "os"
 import { join } from "path"
-// import "project-extender"
+import { handleOAuth2 } from "./OAuthHelper"
 
 process.env.DIST_ELECTRON = join(__dirname, "../..")
 process.env.DIST = join(process.env.DIST_ELECTRON, "../dist")
@@ -108,39 +109,7 @@ ipcMain.handle("open-win", (event, arg) => {
     // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
   }
 })
-function handleOauth2() {
-  const authWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    show: false,
-  })
-  const CLIENT_ID = import.meta.env.VITE_CLIENT_ID
-  const SCOPE =
-    "read:me%20read:jira-user%20manage:jira-configuration%20read:jira-work%20read:account%20manage:jira-project%20manage:jira-configuration%20write:jira-work%20manage:jira-webhook%20manage:jira-data-provider"
-  const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
-  const authUrl = `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${CLIENT_ID}&scope=${SCOPE}&redirect_uri=${REDIRECT_URI}&response_type=code&prompt=consent`
 
-  authWindow.loadURL(authUrl)
-  authWindow.show()
-
-  function handleCallback(_url) {
-    const rawCode = /\?code=(.+)/.exec(_url) || null
-    const code = rawCode && rawCode.length > 1 ? rawCode[1] : null
-    const error = /\?error=(.+)\$/.exec(_url)
-
-    if (code || error) {
-      authWindow.destroy()
-    }
-
-    if (code) {
-      win.webContents.send("code", code)
-    }
-  }
-
-  authWindow.webContents.on("will-redirect", (_, _url) => {
-    handleCallback(_url)
-  })
-}
 app.whenReady().then(() => {
-  ipcMain.on("start-Oauth2", handleOauth2)
+  ipcMain.on("start-Oauth2", () => handleOAuth2(win))
 })

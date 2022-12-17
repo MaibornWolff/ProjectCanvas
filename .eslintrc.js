@@ -27,6 +27,10 @@ module.exports = {
           "error",
           { functions: false, classes: true, variables: true },
         ],
+        "@typescript-eslint/no-use-before-define": [
+          "error",
+          { functions: false, classes: true, variables: true },
+        ],
         "import/no-extraneous-dependencies": [
           "off",
           { packageDir: ["project-canvas/electron/main"] },
