@@ -1,6 +1,15 @@
 import { Button, Center, Loader } from "@mantine/core"
+import { loginToJiraCloud } from "./loginToJiraCloud"
 
-export function JiraCloudLogin({ goBack }: { goBack: () => void }) {
+export function JiraCloudLogin({
+  goBack,
+  onSuccess,
+}: {
+  goBack: () => void
+  onSuccess: () => void
+}) {
+  loginToJiraCloud({ onSuccess })
+
   return (
     <>
       <Center sx={{ height: "200px" }}>

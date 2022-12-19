@@ -9,10 +9,10 @@
 // │ └── index.html    > Electron-Renderer
 //
 
-// import "project-extender"
-import { app, BrowserWindow, shell, ipcMain } from "electron"
+import { app, BrowserWindow, ipcMain, shell } from "electron"
 import { release } from "os"
 import { join } from "path"
+import "project-extender"
 import { handleOAuth2 } from "./OAuthHelper"
 
 process.env.DIST_ELECTRON = join(__dirname, "../..")

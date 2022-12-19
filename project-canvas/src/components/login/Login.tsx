@@ -9,15 +9,8 @@ import { JiraServerLogin } from "./jira-server/JiraServerLogin"
 export function Login() {
   const [providerLogin, setProviderLogin] = useState("")
   const navigateTo = useNavigate()
-  ipcRenderer.on("code", (_, code) => {
-    fetch(`${import.meta.env.VITE_EXTENDER}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ provider: "JiraCloud", code }),
-    }).then((response) => {
-      if (response.ok) navigateTo("/projectsview")
-    })
-  })
+  const onSuccess = () => navigateTo("/projectsview")
+  const goBack = () => setProviderLogin("")
 
   return (
     <Container
@@ -78,10 +71,10 @@ export function Login() {
           </>
         )}
         {providerLogin === "JiraServer" && (
-          <JiraServerLogin goBack={() => setProviderLogin("")} />
+          <JiraServerLogin onSuccess={onSuccess} goBack={goBack} />
         )}
         {providerLogin === "JiraCloud" && (
-          <JiraCloudLogin goBack={() => setProviderLogin("")} />
+          <JiraCloudLogin onSuccess={onSuccess} goBack={goBack} />
         )}
       </Stack>
     </Container>

@@ -1,18 +1,28 @@
 import { Button, Group, Stack, TextInput } from "@mantine/core"
-import { UseFormReturnType } from "@mantine/form"
-import { LoginFormValues } from "../LoginFormValues"
+import { useForm } from "@mantine/form"
+import { LoginFormValues } from "./LoginFormValues"
+import { loginToJiraServer } from "./loginToJiraServer"
 
 export function LoginForm({
-  form,
-  onSubmit,
   goBack,
+  onSuccess,
 }: {
-  form: UseFormReturnType<LoginFormValues>
-  onSubmit: () => Promise<void>
   goBack: () => void
+  onSuccess: () => void
 }) {
+  const form = useForm<LoginFormValues>({
+    initialValues: {
+      url: "localhost:8080",
+      username: "admin",
+      password: "admin",
+    },
+  })
   return (
-    <form onSubmit={form.onSubmit(onSubmit)}>
+    <form
+      onSubmit={form.onSubmit((loginOptions) =>
+        loginToJiraServer({ onSuccess, loginOptions })
+      )}
+    >
       <Stack>
         <TextInput
           required
