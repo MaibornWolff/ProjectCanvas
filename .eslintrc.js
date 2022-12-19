@@ -35,6 +35,7 @@ module.exports = {
           "off",
           { packageDir: ["project-canvas/electron/main"] },
         ],
+        "@typescript-eslint/no-explicit-any": "error",
       },
     },
   ],

@@ -1,48 +1,11 @@
 import cors from "@fastify/cors"
 import fastifyEnv from "@fastify/env"
 import fastify from "fastify"
-import { ProviderApi } from "./BaseProvider"
-import { JiraCloudProviderCreator } from "./JiraCloudProvider"
-import { JiraServerProviderCreator } from "./JiraServerProvider"
+import { options } from "./FastifyEnvConfig"
+import { ProviderApi } from "./providers/base-provider"
+import { JiraCloudProviderCreator } from "./providers/jira-cloud-provider"
+import { JiraServerProviderCreator } from "./providers/jira-server-provider"
 
-declare module "fastify" {
-  interface FastifyInstance {
-    config: {
-      PORT: string
-      CLIENT_ID: string
-      CLIENT_SECRET: string
-      REDIRECT_URI: string
-    }
-  }
-}
-
-const schema = {
-  type: "object",
-  required: ["PORT"],
-  properties: {
-    PORT: {
-      type: "string",
-      default: 3000,
-    },
-    CLIENT_ID: {
-      type: "string",
-      default: null,
-    },
-    CLIENT_SECRET: {
-      type: "string",
-      default: null,
-    },
-    REDIRECT_URI: {
-      type: "string",
-      default: null,
-    },
-  },
-}
-
-const options = {
-  dotenv: true,
-  schema,
-}
 export const server = fastify()
 
 server.register(cors)

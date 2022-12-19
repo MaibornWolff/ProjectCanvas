@@ -15,7 +15,7 @@ interface LoginOptions {
 
 export interface ProviderApi {
   login(loginOptions: LoginOptions): void
-  getProjects(): any
+  getProjects(): { name: string; key: string }[]
 }
 
 export abstract class ProviderCreator {
