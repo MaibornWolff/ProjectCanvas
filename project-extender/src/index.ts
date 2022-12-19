@@ -2,7 +2,11 @@ import cors from "@fastify/cors"
 import fastifyEnv from "@fastify/env"
 import fastify from "fastify"
 import { options } from "./FastifyEnvConfig"
-import { ProviderApi } from "./providers/base-provider"
+import {
+  ProviderApi,
+  BasicLoginOptions,
+  OauthLoginOptions,
+} from "./providers/base-provider"
 import { JiraCloudProviderCreator } from "./providers/jira-cloud-provider"
 import { JiraServerProviderCreator } from "./providers/jira-server-provider"
 
@@ -21,29 +25,16 @@ enum ProviderType {
   JiraCloud = "JiraCloud",
 }
 
-interface JiraServerOptions {
-  provider: ProviderType
-  port: string
-  host: string
-  username: string
-  password: string
-}
-interface JiraCloudOptions {
-  provider: ProviderType
-  code: string
-}
-
 let pbiProvider: ProviderApi
 
 server.post<{
-  Body: JiraCloudOptions & JiraServerOptions
+  Body: { provider: ProviderType } & BasicLoginOptions & OauthLoginOptions
 }>("/login", async (request) => {
   if (request.body.provider === ProviderType.JiraServer) {
     pbiProvider = new JiraServerProviderCreator().factoryMethod()
     pbiProvider.login({
       basicLoginOptions: {
-        host: request.body.host,
-        port: request.body.port,
+        url: request.body.url!,
         username: request.body.username,
         password: request.body.password,
       },
@@ -61,8 +52,6 @@ server.post<{
   }
 })
 
-server.get("/projects", async (request, reply) => {
-  const projects = pbiProvider.getProjects()
-  console.log(projects)
-  reply.send(projects)
+server.get("/projects", async (_, reply) => {
+  reply.send(await pbiProvider.getProjects())
 })

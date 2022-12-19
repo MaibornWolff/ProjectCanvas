@@ -1,6 +1,5 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
-import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
 import { getAccessToken } from "./getAccessToken"
 
@@ -20,20 +19,21 @@ class JiraCloudProvider implements ProviderApi {
     this.accessToken = await getAccessToken(oauthLoginOptions)
   }
 
-  getProjects() {
-    return [{ name: "name", key: "JIRAUSER10100" }]
+  async getProjects() {
+    return [{ name: "placeholder", key: "PLACEHOLDER" }]
   }
 
-  async getResources() {
-    await fetch("https://api.atlassian.com/oauth/token/accessible-resources", {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${this.accessToken}`,
-      },
-    }).then(async (response) => {
-      console.log(await response.json())
-    })
-  }
+  // EXEMPLE
+  // async getResources() {
+  //   await fetch("https://api.atlassian.com/oauth/token/accessible-resources", {
+  //     headers: {
+  //       Accept: "application/json",
+  //       Authorization: `Bearer ${this.accessToken}`,
+  //     },
+  //   }).then(async (response) => {
+  //     console.log(await response.json())
+  //   })
+  // }
 }
 
 export class JiraCloudProviderCreator extends ProviderCreator {

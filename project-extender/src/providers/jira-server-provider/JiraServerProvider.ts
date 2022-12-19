@@ -10,18 +10,29 @@ class JiraServerProvider implements ProviderApi {
     basicLoginOptions,
   }: {
     basicLoginOptions: {
-      host: string
-      port: string
+      url: string
       username: string
       password: string
     }
   }) {
-    this.provider = new JiraApi(basicLoginOptions)
+    this.provider = new JiraApi({
+      host: basicLoginOptions.url.split(":")[0],
+      port: basicLoginOptions.url.split(":")[1],
+      username: basicLoginOptions.username,
+      password: basicLoginOptions.password,
+    })
   }
 
-  getProjects() {
-    // const projects = this.provider?.getAllBoards().then((result) => result)
-    return [{ name: "TESTSERVER", key: "SVR" }]
+  async getProjects() {
+    const projectsData = await this.provider?.getProjects("1")
+    const projects = projectsData?.values.map(
+      ({ key, name }: { key: string; name: string }) => ({
+        key,
+        name,
+      })
+    )
+
+    return projects
   }
 }
 
