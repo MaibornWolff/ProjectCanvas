@@ -1,8 +1,9 @@
 import cors from "@fastify/cors"
-import fastify from "fastify"
-import JiraApi from "jira-client"
-import fetch from "cross-fetch"
 import fastifyEnv from "@fastify/env"
+import fastify from "fastify"
+import { ProviderApi } from "./BaseProvider"
+import { JiraCloudProviderCreator } from "./JiraCloudProvider"
+import { JiraServerProviderCreator } from "./JiraServerProvider"
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -42,9 +43,7 @@ const options = {
   dotenv: true,
   schema,
 }
-const server = fastify()
-
-let jira: JiraApi
+export const server = fastify()
 
 server.register(cors)
 server.register(fastifyEnv, options)
@@ -54,50 +53,53 @@ server.listen({ port: 9090 }, (err) => {
   }
 })
 
-server.post("/login", async () => {
-  jira = new JiraApi({
-    protocol: "http",
-    host: "localhost",
-    port: "8080",
-    username: "admin",
-    password: "admin",
-    apiVersion: "2",
-    strictSSL: true,
-  })
-})
-
-server.get("/board", async (request, reply) => {
-  const boards = await jira.getAllBoards()
-  reply.send(boards)
-})
-
-async function getAccessToken(code: string) {
-  return fetch("https://auth.atlassian.com/oauth/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      grant_type: "authorization_code",
-      client_id: server.config.CLIENT_ID,
-      client_secret: server.config.CLIENT_SECRET,
-      redirect_uri: server.config.REDIRECT_URI,
-      code,
-    }),
-  }).then(async (response) => {
-    const { access_token: accessToken } = await response.json()
-    return accessToken
-  })
+enum ProviderType {
+  JiraServer = "JiraServer",
+  JiraCloud = "JiraCloud",
 }
 
-server.post<{ Body: { code: string } }>("/logincloud", async (request) => {
-  const accessToken = await getAccessToken(request.body.code)
-  await fetch("https://api.atlassian.com/oauth/token/accessible-resources", {
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-  }).then(async (response) => {
-    console.log(await response.json())
-  })
+interface JiraServerOptions {
+  provider: ProviderType
+  port: string
+  host: string
+  username: string
+  password: string
+}
+interface JiraCloudOptions {
+  provider: ProviderType
+  code: string
+}
+
+let pbiProvider: ProviderApi
+
+server.post<{
+  Body: JiraCloudOptions & JiraServerOptions
+}>("/login", async (request) => {
+  if (request.body.provider === ProviderType.JiraServer) {
+    pbiProvider = new JiraServerProviderCreator().factoryMethod()
+    pbiProvider.login({
+      basicLoginOptions: {
+        host: request.body.host,
+        port: request.body.port,
+        username: request.body.username,
+        password: request.body.password,
+      },
+    })
+  } else if (request.body.provider === ProviderType.JiraCloud) {
+    pbiProvider = new JiraCloudProviderCreator().factoryMethod()
+    pbiProvider.login({
+      oauthLoginOptions: {
+        code: request.body.code,
+        clientId: server.config.CLIENT_ID,
+        clientSecret: server.config.CLIENT_SECRET,
+        redirectUri: server.config.REDIRECT_URI,
+      },
+    })
+  }
+})
+
+server.get("/projects", async (request, reply) => {
+  const projects = pbiProvider.getProjects()
+  console.log(projects)
+  reply.send(projects)
 })

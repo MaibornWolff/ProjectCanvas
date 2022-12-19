@@ -8,6 +8,7 @@
 // ├─┬ dist
 // │ └── index.html    > Electron-Renderer
 //
+
 // import "project-extender"
 import { app, BrowserWindow, shell, ipcMain } from "electron"
 import { release } from "os"
@@ -111,5 +112,5 @@ ipcMain.handle("open-win", (event, arg) => {
 })
 
 app.whenReady().then(() => {
-  ipcMain.on("start-Oauth2", () => handleOAuth2(win))
+  ipcMain.on("start-oauth2", () => handleOAuth2(win))
 })

@@ -29,9 +29,11 @@ export function handleOAuth2(win) {
   authWindow.show()
 
   authWindow.webContents.on("will-redirect", (_, url) => {
-    const code = handleCallback(url, authWindow)
-    // Send OAuth code back to renderer proces
-    win.webContents.send("code", code)
+    if (url.startsWith(REDIRECT_URI)) {
+      const code = handleCallback(url, authWindow)
+      // Send OAuth code back to renderer proces
+      win.webContents.send("code", code)
+    }
   })
 }
 

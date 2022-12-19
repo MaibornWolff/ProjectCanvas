@@ -5,39 +5,32 @@ import { LoginForm } from "./LoginForm"
 import { LoginFormValues } from "./LoginFormValues"
 
 ipcRenderer.on("code", (_, code) => {
-  fetch("http://localhost:9090/logincloud", {
+  fetch("http://localhost:9090/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ code }),
+    body: JSON.stringify({ provider: "JiraCloud", code }),
   })
 })
 
 async function login({
-  protocol = "http",
   host = "localhost",
   port = "8080",
   username = "admin",
   password = "admin",
 }: {
-  protocol: string
   host: string
   port: string
   username: string
   password: string
-  apiVersion: string
-  strictSSL: boolean
 }) {
-  const body = {
-    protocol,
-    host,
-    port,
-    username,
-    password,
-  }
-
   await fetch("http://localhost:9090/login", {
     method: "post",
-    body: JSON.stringify(body),
+    body: JSON.stringify({
+      host,
+      port,
+      username,
+      password,
+    }),
   })
   await fetch("http://localhost:9090/board").then(async (res) =>
     console.log(await res.json())
@@ -82,7 +75,7 @@ export function Login() {
         <Button
           color="secondary"
           onClick={() => {
-            ipcRenderer.send("start-Oauth2")
+            ipcRenderer.send("start-oauth2")
           }}
         >
           Jira Cloud
