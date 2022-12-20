@@ -19,11 +19,7 @@ class JiraCloudProvider implements ProviderApi {
     if (JiraCloudProvider.accessToken === undefined)
       JiraCloudProvider.accessToken = await getAccessToken(oauthLoginOptions)
 
-    return new Promise<void>((resolve, reject) => {
-      this.isLoggedIn()
-        .then(() => resolve())
-        .catch(() => reject())
-    })
+    return this.isLoggedIn()
   }
 
   async isLoggedIn() {
