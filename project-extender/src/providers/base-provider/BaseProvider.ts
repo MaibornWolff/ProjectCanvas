@@ -15,7 +15,8 @@ interface LoginOptions {
 }
 
 export interface ProviderApi {
-  login(loginOptions: LoginOptions): void
+  login(loginOptions: LoginOptions): Promise<void>
+  isLoggedIn(): Promise<void>
   getProjects(): Promise<{ name: string; key: string }[]>
 }
 

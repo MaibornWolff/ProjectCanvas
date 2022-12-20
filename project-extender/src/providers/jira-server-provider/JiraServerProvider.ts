@@ -6,7 +6,7 @@ import { ProviderApi, ProviderCreator } from "../base-provider"
 class JiraServerProvider implements ProviderApi {
   provider: JiraApi | undefined = undefined
 
-  login({
+  async login({
     basicLoginOptions,
   }: {
     basicLoginOptions: {
@@ -20,6 +20,17 @@ class JiraServerProvider implements ProviderApi {
       port: basicLoginOptions.url.split(":")[1],
       username: basicLoginOptions.username,
       password: basicLoginOptions.password,
+    })
+
+    return this.isLoggedIn()
+  }
+
+  async isLoggedIn(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.provider
+        ?.getCurrentUser()
+        .then(() => resolve())
+        .catch(() => reject())
     })
   }
 

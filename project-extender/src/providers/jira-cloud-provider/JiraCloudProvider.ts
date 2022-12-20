@@ -4,7 +4,7 @@ import { ProviderApi, ProviderCreator } from "../base-provider"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
-  accessToken: string | undefined
+  static accessToken: string | undefined
 
   async login({
     oauthLoginOptions,
@@ -16,10 +16,29 @@ class JiraCloudProvider implements ProviderApi {
       code: string
     }
   }) {
-    this.accessToken = await getAccessToken(oauthLoginOptions)
+    if (JiraCloudProvider.accessToken === undefined)
+      JiraCloudProvider.accessToken = await getAccessToken(oauthLoginOptions)
+
+    return new Promise<void>((resolve, reject) => {
+      this.isLoggedIn()
+        .then(() => resolve())
+        .catch(() => reject())
+    })
+  }
+
+  async isLoggedIn() {
+    // TODO: Make sure that it is valid too
+    return new Promise<void>((resolve, reject) => {
+      if (JiraCloudProvider.accessToken !== undefined) {
+        resolve()
+      } else {
+        reject()
+      }
+    })
   }
 
   async getProjects() {
+    // TODO: get projects from API
     return [{ name: "placeholder", key: "PLACEHOLDER" }]
   }
 
