@@ -1,4 +1,4 @@
-import { Button, Group, Stack, TextInput } from "@mantine/core"
+import { Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { LoginFormValues } from "./LoginFormValues"
 import { loginToJiraServer } from "./loginToJiraServer"
@@ -36,7 +36,7 @@ export function LoginForm({
           placeholder="Username"
           {...form.getInputProps("username")}
         />
-        <TextInput
+        <PasswordInput
           required
           label="Password"
           placeholder="Password"
