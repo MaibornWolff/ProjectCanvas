@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "rollup --config",
-    "start": "nodemon --exec babel-node index.ts --extensions \".ts\""
+    "start": "nodemon --exec node --experimental-specifier-resolution=node --loader ts-node/esm src/index.ts"
   },
   "keywords": [],
   "author": "",
