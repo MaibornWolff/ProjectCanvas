@@ -1,28 +1,29 @@
+import { Text } from "@mantine/core"
+import { useEffect, useState } from "react"
+
 // import { useState, useEffect } from "react"
-import { TableSort } from "./TableSort"
-import { data } from "./projectsData"
+// import { TableSort } from "./TableSort"
+// import { data } from "./projectsData"
 
 export function ProjectsView() {
-  // const [data, setData] = useState([])
+  const [projects, setProjects] = useState<{ name: string; key: string }[]>()
+  const getProjects = async () => {
+    const data = await fetch(`${import.meta.env.VITE_EXTENDER}/projects`)
+    setProjects(await data.json())
+  }
+  useEffect(() => {
+    getProjects()
+  }, [])
 
-  // useEffect(() => {
-  //   // fetch("/rest/api/2/project")
-  //   fetch("http://localhost:8080/project")
-  //     .then((response) => response.json())
-  //     .then((responseData) => {
-  //       const formattedData = responseData.map(
-  //         (item: { name: any; key: any; type: any; lead: any }) => ({
-  //           // Star: IconStar,
-  //           Name: item.name,
-  //           Key: item.key,
-  //           Type: item.type,
-  //           Lead: item.lead,
-  //         })
-  //       )
-
-  //       setData(formattedData)
-  //     })
-  // }, [])
-
-  return <TableSort data={data} />
+  return (
+    <div>
+      {projects?.map((project) => (
+        <Text key={project.key}>
+          name: {project.name} <br />
+          key: {project.key} <br />
+        </Text>
+      ))}
+    </div>
+    // return <TableSort data={data} />
+  )
 }
