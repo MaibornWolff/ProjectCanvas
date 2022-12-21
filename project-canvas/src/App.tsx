@@ -1,72 +1,17 @@
-import { useState } from "react"
-import styles from "styles/app.module.scss"
+import { Route, Routes } from "react-router-dom"
+import { BacklogView } from "./components/backlog-view"
+import { Layout } from "./components/layout"
+import { Login } from "./components/login"
+import { ProjectsView } from "./components/projects-view"
 
-const App: React.FC = () => {
-  const [count, setCount] = useState(0)
-
+export function App() {
   return (
-    <div className={styles.app}>
-      <header className={styles.appHeader}>
-        <div className={styles.logos}>
-          <div className={styles.imgBox}>
-            <img
-              src="./electron.png"
-              style={{ height: "24vw" }}
-              className={styles.appLogo}
-              alt="electron"
-            />
-          </div>
-          <div className={styles.imgBox}>
-            <img src="./vite.svg" style={{ height: "19vw" }} alt="vite" />
-          </div>
-          <div className={styles.imgBox}>
-            <img
-              src="./react.svg"
-              style={{ maxWidth: "100%" }}
-              className={styles.appLogo}
-              alt="logo"
-            />
-          </div>
-        </div>
-        <p>Hello Electron + Vite + React!</p>
-        <p>
-          <button
-            onClick={() => {
-              setCount((count) => count + 1)
-            }}
-          >
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <div>
-          <a
-            className={styles.appLink}
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {" | "}
-          <a
-            className={styles.appLink}
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-          <div className={styles.staticPublic}>
-            Place static files into the <code>/public</code> folder
-            <img style={{ width: 77 }} src="./node.png" />
-          </div>
-        </div>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" index element={<Login />} />
+      <Route element={<Layout />}>
+        <Route path="projectsview" element={<ProjectsView />} />
+        <Route path="backlogview" element={<BacklogView />} />
+      </Route>
+    </Routes>
   )
 }
-
-export default App

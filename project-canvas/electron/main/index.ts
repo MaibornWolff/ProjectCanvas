@@ -8,16 +8,18 @@
 // ├─┬ dist
 // │ └── index.html    > Electron-Renderer
 //
+
+import { app, BrowserWindow, ipcMain, shell } from "electron"
+import { release } from "os"
+import { join } from "path"
+import "project-extender"
+import { handleOAuth2 } from "./OAuthHelper"
+
 process.env.DIST_ELECTRON = join(__dirname, "../..")
 process.env.DIST = join(process.env.DIST_ELECTRON, "../dist")
 process.env.PUBLIC = app.isPackaged
   ? process.env.DIST
   : join(process.env.DIST_ELECTRON, "../public")
-
-import { app, BrowserWindow, shell, ipcMain } from "electron"
-import { release } from "os"
-import { join } from "path"
-
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration()
 
@@ -45,7 +47,7 @@ async function createWindow() {
       contextIsolation: false,
     },
   })
-
+  win.setSize(1280, 720)
   if (process.env.VITE_DEV_SERVER_URL) {
     // electron-vite-vue#298
     win.loadURL(url)
@@ -61,8 +63,8 @@ async function createWindow() {
   })
 
   // Make all links open with the browser, not with the application
-  win.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith("https:")) shell.openExternal(url)
+  win.webContents.setWindowOpenHandler(({ url: _url }) => {
+    if (_url.startsWith("https:")) shell.openExternal(_url)
     return { action: "deny" }
   })
 }
@@ -107,4 +109,8 @@ ipcMain.handle("open-win", (event, arg) => {
     childWindow.loadURL(`${url}#${arg}`)
     // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
   }
+})
+
+app.whenReady().then(() => {
+  ipcMain.on("start-oauth2", () => handleOAuth2(win))
 })
