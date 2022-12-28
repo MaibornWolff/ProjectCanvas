@@ -34,16 +34,24 @@ class JiraServerProvider implements ProviderApi {
     })
   }
 
-  async getProjects() {
-    const projectsData = await this.provider?.getProjects("1")
-    const projects = projectsData?.values.map(
-      ({ key, name }: { key: string; name: string }) => ({
-        key,
-        name,
-      })
-    )
-
-    return projects
+  async getProjects(): Promise<{ name: string; key: string }[]> {
+    return new Promise<{ name: string; key: string }[]>((resolve, reject) => {
+      this.provider
+        ?.listProjects()
+        .then((list) => {
+          const result: { name: string; key: string }[] = []
+          list?.forEach((res: JiraApi.JsonResponse) => {
+            result.push({
+              name: res.name,
+              key: res.key,
+            })
+          })
+          resolve(result)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
   }
 }
 
