@@ -1,4 +1,8 @@
 {
+  "Common": {
+    "goBack": "Zurück"
+  },
+
   "Login": {
     "choseProvider": "Bitte wählen Sie einen Anbieter"
   },
@@ -6,11 +10,8 @@
   "Login-Server": {
     "url": "Instance URL",
     "username": "Benutzername",
-    "password": "Password",
-    "back": "Go Back"
+    "password": "Password"
   },
 
-  "Login-Cloud": {
-    "back": "Go Back"
-  }
+  "Login-Cloud": {}
 }
