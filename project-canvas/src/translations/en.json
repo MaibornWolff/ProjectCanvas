@@ -1,0 +1,16 @@
+{
+  "Login": {
+    "choseProvider": "Please choose a Provider"
+  },
+
+  "Login-Server": {
+    "url": "Instance URL",
+    "username": "Benutzername",
+    "password": "Password",
+    "back": "Go Back"
+  },
+
+  "Login-Cloud": {
+    "back": "Go Back"
+  }
+}
