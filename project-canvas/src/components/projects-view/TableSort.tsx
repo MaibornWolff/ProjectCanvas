@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { /* useEffect, */ useState } from "react"
 import {
   createStyles,
   Table,
@@ -17,6 +17,7 @@ import {
   IconSearch,
   TablerIcon,
 } from "@tabler/icons"
+import { Project } from "project-extender/src/providers/base-provider/schema"
 
 const useStyles = createStyles((theme) => ({
   th: {
@@ -42,12 +43,12 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-interface RowData {
-  //   Star: TablerIcon
-  Name: string
-  Key: string
-  Type: string
-  Lead: string
+class RowData implements Project {
+  id!: string
+
+  key!: string
+
+  name!: string
 }
 
 interface TableSortProps {
@@ -87,9 +88,7 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
 function filterData(data: RowData[], search: string) {
   const query = search.toLowerCase().trim()
   return data.filter((item) =>
-    keys(data[0])
-      //   .filter((key) => typeof item[key] === "string")
-      .some((key) => item[key].toLowerCase().includes(query))
+    keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
   )
 }
 
@@ -104,15 +103,13 @@ function sortData(
   }
 
   return filterData(
-    [...data]
-      //   .filter((el) => typeof el[sortBy] === "string")
-      .sort((a, b) => {
-        if (payload.reversed) {
-          return b[sortBy].localeCompare(a[sortBy])
-        }
+    [...data].sort((a, b) => {
+      if (payload.reversed) {
+        return b[sortBy].localeCompare(a[sortBy])
+      }
 
-        return a[sortBy].localeCompare(b[sortBy])
-      }),
+      return a[sortBy].localeCompare(b[sortBy])
+    }),
     payload.search
   )
 }
@@ -139,11 +136,10 @@ export function TableSort({ data }: TableSortProps) {
   }
 
   const rows = sortedData.map((row) => (
-    <tr key={row.Name}>
-      <td>{row.Name}</td>
-      <td>{row.Key}</td>
-      <td>{row.Type}</td>
-      <td>{row.Lead}</td>
+    <tr key={row.key}>
+      <td>{row.id}</td>
+      <td>{row.name}</td>
+      <td>{row.key}</td>
     </tr>
   ))
 
@@ -164,32 +160,25 @@ export function TableSort({ data }: TableSortProps) {
         <thead>
           <tr>
             <Th
-              sorted={sortBy === "Name"}
+              sorted={sortBy === "id"}
               reversed={reverseSortDirection}
-              onSort={() => setSorting("Name")}
+              onSort={() => setSorting("id")}
+            >
+              ID
+            </Th>
+            <Th
+              sorted={sortBy === "name"}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting("name")}
             >
               Name
             </Th>
             <Th
-              sorted={sortBy === "Key"}
+              sorted={sortBy === "key"}
               reversed={reverseSortDirection}
-              onSort={() => setSorting("Key")}
+              onSort={() => setSorting("key")}
             >
               Key
-            </Th>
-            <Th
-              sorted={sortBy === "Type"}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting("Type")}
-            >
-              Type
-            </Th>
-            <Th
-              sorted={sortBy === "Lead"}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting("Lead")}
-            >
-              Lead
             </Th>
           </tr>
         </thead>
@@ -198,7 +187,7 @@ export function TableSort({ data }: TableSortProps) {
             rows
           ) : (
             <tr>
-              <td colSpan={Object.keys(data[0]).length}>
+              <td colSpan={Object.keys(RowData).length}>
                 <Text weight={500} align="center">
                   Nothing found
                 </Text>

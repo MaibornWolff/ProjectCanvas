@@ -2,6 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import JiraApi from "jira-client"
 import { ProviderApi, ProviderCreator } from "../base-provider"
+import { Project } from "../base-provider/schema"
 
 class JiraServerProvider implements ProviderApi {
   provider: JiraApi | undefined = undefined
@@ -34,17 +35,19 @@ class JiraServerProvider implements ProviderApi {
     })
   }
 
-  async getProjects(): Promise<{ name: string; key: string }[]> {
-    return new Promise<{ name: string; key: string }[]>((resolve, reject) => {
+  async getProjects(): Promise<Project[]> {
+    return new Promise<Project[]>((resolve, reject) => {
       this.provider
         ?.listProjects()
         .then((list) => {
-          const result: { name: string; key: string }[] = []
+          const result: Project[] = []
           list?.forEach((res: JiraApi.JsonResponse) => {
-            result.push({
-              name: res.name,
+            const project: Project = {
+              id: res.id,
               key: res.key,
-            })
+              name: res.name,
+            }
+            result.push(project)
           })
           resolve(result)
         })
