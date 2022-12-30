@@ -129,8 +129,12 @@ export function TableSort({ data }: TableSortProps) {
     )
   }
 
+  const rowOnClick = (text: string) => {
+    console.log(text)
+  }
+
   const rows = sortedData.map((row) => (
-    <tr key={row.key}>
+    <tr key={row.key} onClick={() => rowOnClick(row.name)}>
       {Object.keys(row).map((key) => (
         <td key={key}> {row[key as keyof RowData]}</td>
       ))}
@@ -147,6 +151,7 @@ export function TableSort({ data }: TableSortProps) {
         onChange={handleSearchChange}
       />
       <Table
+        highlightOnHover
         horizontalSpacing="md"
         verticalSpacing="xs"
         sx={{ tableLayout: "fixed", minWidth: 700 }}
