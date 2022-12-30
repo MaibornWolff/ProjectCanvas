@@ -43,13 +43,7 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-class RowData implements Project {
-  id!: string
-
-  key!: string
-
-  name!: string
-}
+interface RowData extends Project {}
 
 interface TableSortProps {
   data: RowData[]
@@ -137,9 +131,9 @@ export function TableSort({ data }: TableSortProps) {
 
   const rows = sortedData.map((row) => (
     <tr key={row.key}>
-      <td>{row.id}</td>
-      <td>{row.name}</td>
-      <td>{row.key}</td>
+      {Object.keys(row).map((key) => (
+        <td key={key}> {row[key as keyof RowData]}</td>
+      ))}
     </tr>
   ))
 
@@ -159,27 +153,19 @@ export function TableSort({ data }: TableSortProps) {
       >
         <thead>
           <tr>
-            <Th
-              sorted={sortBy === "id"}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting("id")}
-            >
-              ID
-            </Th>
-            <Th
-              sorted={sortBy === "name"}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting("name")}
-            >
-              Name
-            </Th>
-            <Th
-              sorted={sortBy === "key"}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting("key")}
-            >
-              Key
-            </Th>
+            {data &&
+              data != null &&
+              data.length > 0 &&
+              Object.keys(data[0]).map((key) => (
+                <Th
+                  key={key}
+                  sorted={sortBy === key}
+                  reversed={reverseSortDirection}
+                  onSort={() => setSorting(key as keyof RowData)}
+                >
+                  {key.toLocaleUpperCase()}
+                </Th>
+              ))}
           </tr>
         </thead>
         <tbody>
@@ -187,7 +173,7 @@ export function TableSort({ data }: TableSortProps) {
             rows
           ) : (
             <tr>
-              <td colSpan={Object.keys(RowData).length}>
+              <td colSpan={Object.keys(data).length}>
                 <Text weight={500} align="center">
                   Nothing found
                 </Text>
