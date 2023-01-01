@@ -1,6 +1,8 @@
 {
   "Common": {
-    "goBack": "Go Back"
+    "goBack": "Go Back",
+    "yes": "Yes",
+    "no": "No"
   },
 
   "Login": {
@@ -13,5 +15,9 @@
     "password": "Password"
   },
 
-  "Login-Cloud": {}
+  "Login-Cloud": {},
+
+  "Backlog-View": {},
+
+  "Project-View": {}
 }

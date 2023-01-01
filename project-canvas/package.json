@@ -24,6 +24,7 @@
     "@mantine/form": "^5.8.3",
     "@mantine/hooks": "^5.8.0",
     "@tabler/icons": "^1.116.1",
+    "i18next": "^22.4.6",
     "jira-client": "^8.2.2",
     "project-extender": "*",
     "react": "^18.2.0",
