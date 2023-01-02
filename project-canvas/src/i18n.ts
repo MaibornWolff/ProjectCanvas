@@ -15,6 +15,6 @@ i18n
         translation: de,
       },
     },
-    lng: "en", // set the default language
+    lng: "de", // set the default language
     fallbackLng: "en", // set the fallback language
   })
