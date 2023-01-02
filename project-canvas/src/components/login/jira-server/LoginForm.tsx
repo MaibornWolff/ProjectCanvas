@@ -56,7 +56,7 @@ export function LoginForm({
           Log in
         </Button>
         <Button variant="outline" fullWidth color="dark" onClick={goBack}>
-          {t("Common.goBack")}
+          {t("Common.btn-goBack")}
         </Button>
       </Group>
     </form>
