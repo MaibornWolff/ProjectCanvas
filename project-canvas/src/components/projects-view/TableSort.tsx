@@ -1,4 +1,4 @@
-import { /* useEffect, */ useState } from "react"
+import { useEffect, useState } from "react"
 import {
   createStyles,
   Table,
@@ -113,6 +113,14 @@ export function TableSort({ data }: TableSortProps) {
   const [sortedData, setSortedData] = useState(data)
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null)
   const [reverseSortDirection, setReverseSortDirection] = useState(false)
+
+  useEffect(() => {
+    // Initialize sortedData with the sorted and filtered data
+    //  when the component is first rendered
+    setSortedData(
+      sortData(data, { sortBy, reversed: reverseSortDirection, search })
+    )
+  }, [data, sortBy, reverseSortDirection, search])
 
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false

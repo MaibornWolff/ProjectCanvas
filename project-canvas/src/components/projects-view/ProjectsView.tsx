@@ -14,8 +14,7 @@ export function ProjectsView() {
   }
   useEffect(() => {
     getProjects()
-  })
-
+  }, [])
   return (
     /*     <div>
       {projects?.map((project) => (
