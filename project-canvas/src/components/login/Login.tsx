@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { JiraCloudLogin } from "./jira-cloud/JiraCloudLogin"
 import { JiraServerLogin } from "./jira-server/JiraServerLogin"
+import { LanguageSelector } from "../common/LanguageSelector"
 
 export function Login() {
   const [providerLogin, setProviderLogin] = useState("")
@@ -34,6 +35,7 @@ export function Login() {
         p="lg"
         mx="auto"
       >
+        <LanguageSelector />
         <Title size="2em" align="center" mb="2em">
           Project Canvas
         </Title>
