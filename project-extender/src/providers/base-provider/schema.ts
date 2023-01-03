@@ -11,6 +11,4 @@ export interface Project {
   lead: {
     displayName: string
   }
-  // type: object
-  // lead: User
 }

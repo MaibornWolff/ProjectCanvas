@@ -66,10 +66,10 @@ class JiraServerProvider implements ProviderApi {
     if (response.ok) {
       const data = await response.json()
       const projects = data.map((project: Project) => ({
-        key: project.key,
-        name: project.name,
-        type: project.projectTypeKey,
-        lead: project.lead.displayName,
+        Key: project.key,
+        Name: project.name,
+        Type: project.projectTypeKey,
+        Lead: project.lead.displayName,
       }))
       return projects
     }
