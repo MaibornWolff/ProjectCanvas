@@ -5,8 +5,12 @@ export interface User {
   // TODO: add more fields
 }
 export interface Project {
+  projectTypeKey: string
   name: string
   key: string
+  lead: {
+    displayName: string
+  }
   // type: object
   // lead: User
 }

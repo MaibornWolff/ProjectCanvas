@@ -21,5 +21,9 @@ export interface ProviderApi {
 }
 
 export abstract class ProviderCreator {
-  public abstract factoryMethod(): ProviderApi
+  public abstract factoryMethod(requestBody: {
+    url: string
+    username: string
+    password: string
+  }): ProviderApi
 }

@@ -41,7 +41,7 @@ server.post<{
     .catch(() => {})
 
   if (request.body.provider === ProviderType.JiraServer) {
-    pbiProvider = new JiraServerProviderCreator().factoryMethod()
+    pbiProvider = new JiraServerProviderCreator().factoryMethod(request.body)
     await pbiProvider
       .login({
         basicLoginOptions: {

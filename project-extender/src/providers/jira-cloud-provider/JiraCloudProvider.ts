@@ -1,10 +1,14 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
+import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
+import { Project } from "../base-provider/schema"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
   static accessToken: string | undefined
+
+  private cloudID = ""
 
   async login({
     oauthLoginOptions,
@@ -19,6 +23,16 @@ class JiraCloudProvider implements ProviderApi {
     if (JiraCloudProvider.accessToken === undefined)
       JiraCloudProvider.accessToken = await getAccessToken(oauthLoginOptions)
 
+    await fetch("https://api.atlassian.com/oauth/token/accessible-resources", {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${JiraCloudProvider.accessToken}`,
+      },
+    }).then(async (response) => {
+      await response.json().then(async (data) => {
+        this.cloudID = data[0].id
+      })
+    })
     return this.isLoggedIn()
   }
 
@@ -35,20 +49,26 @@ class JiraCloudProvider implements ProviderApi {
 
   async getProjects() {
     // TODO: get projects from API
-    return [{ name: "placeholder", key: "PLACEHOLDER" }]
-  }
+    const response = await fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/project/search?expand=description,lead,issueTypes,url,projectKeys,permissions,insight`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${JiraCloudProvider.accessToken}`,
+        },
+      }
+    )
+    const data = await response.json()
 
-  // EXEMPLE
-  // async getResources() {
-  //   await fetch("https://api.atlassian.com/oauth/token/accessible-resources", {
-  //     headers: {
-  //       Accept: "application/json",
-  //       Authorization: `Bearer ${this.accessToken}`,
-  //     },
-  //   }).then(async (response) => {
-  //     console.log(await response.json())
-  //   })
-  // }
+    const projects = data.values.map((project: Project) => ({
+      key: project.key,
+      name: project.name,
+      lead: project.lead.displayName,
+      projectTypeKey: project.projectTypeKey,
+    }))
+
+    return projects
+  }
 }
 
 export class JiraCloudProviderCreator extends ProviderCreator {
