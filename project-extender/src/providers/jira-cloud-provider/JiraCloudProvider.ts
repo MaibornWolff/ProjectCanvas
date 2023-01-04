@@ -48,7 +48,6 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async getProjects() {
-    // TODO: get projects from API
     const response = await fetch(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/project/search?expand=description,lead,issueTypes,url,projectKeys,permissions,insight`,
       {
