@@ -5,7 +5,7 @@ export function LayoutNavbar() {
   const navigate = useNavigate()
 
   return (
-    <Navbar width={{ base: 300 }} height="100%" p="xs">
+    <Navbar width={{ base: 300 }} sx={{ zIndex: "auto" }} height="100%" p="xs">
       <Navbar.Section mt="xs">
         <Button onClick={() => navigate("/projectsview")}>Projects View</Button>
       </Navbar.Section>
