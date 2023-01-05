@@ -1,8 +1,19 @@
-export interface User {
-  self: string
-  name: string
-  emailAddress: string
-  // TODO: add more fields
+export interface DndListProps {
+  data: {
+    position: number
+    mass: number
+    symbol: string
+    name: string
+  }[]
+}
+
+export interface IssueData {
+  data: {
+    key: string
+    summary: string
+    creator: string
+    status: string
+  }[]
 }
 export interface Project {
   projectTypeKey: string

@@ -1,6 +1,6 @@
 import cors from "@fastify/cors"
 import fastifyEnv from "@fastify/env"
-import fastify from "fastify"
+import fastify, { FastifyRequest } from "fastify"
 import { options } from "./FastifyEnvConfig"
 import {
   ProviderApi,
@@ -87,3 +87,19 @@ server.post<{
 server.get("/projects", async (_, reply) => {
   reply.send(await pbiProvider.getProjects())
 })
+
+server.get(
+  "/pbis",
+  async (
+    req: FastifyRequest<{
+      Querystring: { project: string }
+    }>,
+    reply
+  ) => {
+    const projectToGet = req.query.project
+    // console.log("logging the querystring")
+    // console.log(projectToGet)
+    // console.log("logging the querystring")
+    reply.send(await pbiProvider.getPbis(projectToGet))
+  }
+)

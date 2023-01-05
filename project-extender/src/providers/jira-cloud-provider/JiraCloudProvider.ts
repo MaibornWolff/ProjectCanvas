@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Project } from "../base-provider/schema"
+import { IssueData, Project } from "../base-provider/schema"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
@@ -48,7 +48,6 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async getProjects() {
-    // TODO: get projects from API
     const response = await fetch(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/project/search?expand=description,lead,issueTypes,url,projectKeys,permissions,insight`,
       {
@@ -71,6 +70,52 @@ class JiraCloudProvider implements ProviderApi {
     })
 
     return projects
+  }
+
+  async getPbis(projectToGet: string): Promise<IssueData> {
+    // const data1 = await response1.json()
+
+    // Write the data1 object to a file named "output.json"
+    // fs.writeFileSync("output.json", JSON.stringify(data1, null, 2))
+    const response1 = await fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/search?jql=project=${projectToGet}&maxResults=1000`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${JiraCloudProvider.accessToken}`,
+        },
+      }
+    )
+    const data1 = await response1.json()
+    const pbis: IssueData["data"] = data1.issues.map(
+      (element: {
+        key: string
+        fields: {
+          summary: string
+          creator: { displayName: string }
+          status: { name: string }
+        }
+      }) => ({
+        key: element.key,
+        summary: element.fields.summary,
+        creator: element.fields.creator.displayName,
+        status: element.fields.status.name,
+      })
+    )
+
+    // console.log(pbis)
+    return { data: pbis }
+
+    // const testData = {
+    //   data: [
+    //     { position: 6, mass: 12.011, symbol: "C", name: "Carbon" },
+    //     { position: 7, mass: 14.007, symbol: "N", name: "Nitrogen" },
+    //     { position: 39, mass: 88.906, symbol: "Y", name: "Yttrium" },
+    //     { position: 56, mass: 137.33, symbol: "Ba", name: "Barium" },
+    //     { position: 58, mass: 140.12, symbol: "Ce", name: "Cerium" },
+    //   ],
+    // }
+    // return { data: testData }
   }
 }
 
