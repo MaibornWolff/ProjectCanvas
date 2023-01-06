@@ -5,12 +5,16 @@ import "styles/index.css"
 import { App } from "./App"
 import { ThemeProvider } from "./ThemeProvider"
 import "./samples/node-api"
+// eslint-disable-next-line import/order
+import { NotificationsProvider } from "@mantine/notifications"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <HashRouter>
       <ThemeProvider>
-        <App />
+        <NotificationsProvider>
+          <App />
+        </NotificationsProvider>
       </ThemeProvider>
     </HashRouter>
   </React.StrictMode>

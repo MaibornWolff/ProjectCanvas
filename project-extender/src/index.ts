@@ -53,9 +53,15 @@ server.post<{
       .then(() => {
         reply.status(200).send()
       })
-      .catch(() => {
+      .catch((err) => {
         // TODO: add error for what went wrong
-        reply.status(500).send()
+        if (err.message === "Wrong Username or Password") {
+          reply.code(401).send()
+        }
+        if (err.message === "Wrong URL") {
+          reply.code(400).send()
+        }
+        reply.status(400).send()
       })
     return
   }
@@ -75,6 +81,7 @@ server.post<{
       })
       .catch(() => {
         // TODO: add error for what went wrong
+
         reply.status(500).send()
       })
     return
