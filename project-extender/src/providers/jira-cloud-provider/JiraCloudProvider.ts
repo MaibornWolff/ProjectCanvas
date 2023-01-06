@@ -48,7 +48,6 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async getProjects() {
-    // TODO: get projects from API
     const response = await fetch(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/project/search?expand=description,lead,issueTypes,url,projectKeys,permissions,insight`,
       {
@@ -59,13 +58,16 @@ class JiraCloudProvider implements ProviderApi {
       }
     )
     const data = await response.json()
+    const projects = data.values.map((project: Project) => {
+      const { displayName } = project.lead
 
-    const projects = data.values.map((project: Project) => ({
-      key: project.key,
-      name: project.name,
-      lead: project.lead.displayName,
-      projectTypeKey: project.projectTypeKey,
-    }))
+      return {
+        Key: project.key,
+        Name: project.name,
+        Lead: displayName,
+        Type: project.projectTypeKey,
+      }
+    })
 
     return projects
   }

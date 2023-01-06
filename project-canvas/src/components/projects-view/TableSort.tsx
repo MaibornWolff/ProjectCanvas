@@ -17,7 +17,6 @@ import {
   IconSearch,
   TablerIcon,
 } from "@tabler/icons"
-import { Project } from "project-extender/src/providers/base-provider/schema"
 
 const useStyles = createStyles((theme) => ({
   th: {
@@ -43,7 +42,12 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-interface RowData extends Project {}
+export interface RowData {
+  Name: string
+  Key: string
+  Type: string
+  Lead: string
+}
 
 interface TableSortProps {
   data: RowData[]
@@ -142,7 +146,7 @@ export function TableSort({ data }: TableSortProps) {
   }
 
   const rows = sortedData.map((row) => (
-    <tr key={row.key} onClick={() => rowOnClick(row.name)}>
+    <tr key={row.Key} onClick={() => rowOnClick(row.Name)}>
       {Object.keys(row).map((key) => (
         <td key={key}> {row[key as keyof RowData]}</td>
       ))}

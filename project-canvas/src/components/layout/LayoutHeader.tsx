@@ -15,7 +15,7 @@ export function LayoutHeader() {
   const navigate = useNavigate()
 
   return (
-    <Header height="60" p="s" zIndex={101}>
+    <Header height="60" p="sm">
       <Box
         sx={(theme) => ({
           paddingLeft: theme.spacing.xs,
