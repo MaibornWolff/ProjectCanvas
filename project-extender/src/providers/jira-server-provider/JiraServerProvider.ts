@@ -42,11 +42,28 @@ class JiraServerProvider implements ProviderApi {
   }
 
   async isLoggedIn(): Promise<void> {
+    const response = fetch(
+      `http://${this.requestBody.url}/rest/auth/1/session`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+        },
+      }
+    )
+    const GoodResponse = await response
     return new Promise((resolve, reject) => {
-      this.provider
-        ?.getCurrentUser()
-        .then(() => resolve())
-        .catch(() => reject())
+      if (GoodResponse.status === 200) resolve()
+      if (GoodResponse.status === 401) {
+        reject(new Error("Wrong Username or Password"))
+      }
+      response.catch((err) => {
+        if (err.message === "Couldn't connect to server")
+          reject(new Error("Wrong URL"))
+      })
     })
   }
 
@@ -74,6 +91,30 @@ class JiraServerProvider implements ProviderApi {
       return projects
     }
     return Promise.reject(new Error(response.statusText))
+  }
+
+  async logout(): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const response = fetch(
+      `http://${this.requestBody.url}/rest/auth/1/session`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+        },
+      }
+    )
+    const GoodResponse = await response
+
+    return new Promise((resolve, reject) => {
+      if (GoodResponse.status === 204) {
+        resolve()
+      }
+      if (GoodResponse.status === 401)
+        reject(new Error("user not authenticated"))
+    })
   }
 }
 

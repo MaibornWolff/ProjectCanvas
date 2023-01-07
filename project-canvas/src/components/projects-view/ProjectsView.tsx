@@ -10,6 +10,7 @@ export function ProjectsView() {
   const [projects, setProjects] = useState<RowData[]>([])
   const getProjects = async () => {
     const data = await fetch(`${import.meta.env.VITE_EXTENDER}/projects`)
+
     setProjects(await data.json())
   }
   useEffect(() => {

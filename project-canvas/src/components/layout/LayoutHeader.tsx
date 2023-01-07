@@ -9,6 +9,7 @@ import {
 } from "@mantine/core"
 import { IconSun, IconMoonStars, IconExternalLink } from "@tabler/icons"
 import { useNavigate } from "react-router-dom"
+import { Logout } from "../login/jira-server/Logout"
 
 export function LayoutHeader() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
@@ -40,6 +41,16 @@ export function LayoutHeader() {
               <IconMoonStars size={16} />
             )}
           </ActionIcon>
+          <Button
+            color="dark"
+            onClick={() => {
+              Logout()
+              navigate("/")
+            }}
+          >
+            Log out
+          </Button>
+
           <Menu width={200} shadow="md">
             <Menu.Target>
               <Button>Projects</Button>

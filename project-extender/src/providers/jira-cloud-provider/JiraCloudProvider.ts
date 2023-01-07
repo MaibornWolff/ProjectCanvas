@@ -6,6 +6,10 @@ import { Project } from "../base-provider/schema"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
+  logout(): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
+
   static accessToken: string | undefined
 
   private cloudID = ""

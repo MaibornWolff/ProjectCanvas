@@ -11,7 +11,6 @@ export function Login() {
   const navigateTo = useNavigate()
   const onSuccess = () => navigateTo("/projectsview")
   const goBack = () => setProviderLogin("")
-
   return (
     <Container
       sx={{

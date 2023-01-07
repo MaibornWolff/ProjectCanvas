@@ -1,8 +1,5 @@
 import { showNotification } from "@mantine/notifications"
 
-// eslint-disable-next-line import/no-mutable-exports
-export let FailedtoLogin: boolean
-
 export function loginToJiraServer({
   onSuccess,
   loginOptions,
@@ -41,7 +38,7 @@ export function loginToJiraServer({
           }),
         })
       }
-      if (response.status === 400) {
+      if (response.status === 403) {
         return showNotification({
           title: "Wrong URL",
           message:
