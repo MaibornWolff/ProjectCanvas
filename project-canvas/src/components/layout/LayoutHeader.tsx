@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Affix,
   Box,
   Button,
   Group,
@@ -41,15 +42,17 @@ export function LayoutHeader() {
               <IconMoonStars size={16} />
             )}
           </ActionIcon>
-          <Button
-            color="dark"
-            onClick={() => {
-              Logout()
-              navigate("/")
-            }}
-          >
-            Log out
-          </Button>
+          <Affix position={{ top: 20, right: 20 }}>
+            <Button
+              color="dark"
+              onClick={() => {
+                Logout()
+                navigate("/")
+              }}
+            >
+              Log out
+            </Button>
+          </Affix>
 
           <Menu width={200} shadow="md">
             <Menu.Target>
