@@ -27,12 +27,9 @@ enum ProviderType {
 
 let pbiProvider: ProviderApi
 
-let currentProvider: ProviderType
-
 server.post<{
   Body: { provider: ProviderType } & BasicLoginOptions & OauthLoginOptions
 }>("/login", async (request, reply) => {
-  currentProvider = request.body.provider
   if (request.body.provider === ProviderType.JiraServer) {
     pbiProvider = new JiraServerProviderCreator().factoryMethod(request.body)
     await pbiProvider
@@ -92,24 +89,15 @@ server.post<{
     url: string
   }
 }>("/logout", async (request, reply) => {
-  if (currentProvider === ProviderType.JiraServer) {
-    await pbiProvider
-      .logout({
-        basicLoginOptions: {
-          url: request.body.url!,
-          username: request.body.username,
-          password: request.body.password,
-        },
-      })
-      .then(() => {
-        reply.status(204).send()
-      })
-      .catch(() => {
-        // TODO: add error for what went wrong
-        reply.status(401).send()
-      })
-  }
-  if (currentProvider === ProviderType.JiraCloud) await reply.status(200).send()
+  await pbiProvider
+    .logout()
+    .then(() => {
+      reply.status(204).send()
+    })
+    .catch(() => {
+      // TODO: add error for what went wrong
+      reply.status(401).send()
+    })
 
   // TODO: add error for unknown provider
   // (maybe through fastify's schema validation, so we don't have to do this manually)

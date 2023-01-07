@@ -7,7 +7,11 @@ import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
   logout(): Promise<void> {
-    throw new Error("Method not implemented.")
+    return new Promise((resolve, reject) => {
+      resolve()
+
+      reject()
+    })
   }
 
   static accessToken: string | undefined
