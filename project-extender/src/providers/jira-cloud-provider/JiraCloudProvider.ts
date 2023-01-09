@@ -7,10 +7,9 @@ import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
   logout(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
+      JiraCloudProvider.accessToken = undefined
       resolve()
-
-      reject()
     })
   }
 
