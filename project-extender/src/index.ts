@@ -44,13 +44,10 @@ server.post<{
         reply.status(200).send()
       })
       .catch((err) => {
-        // TODO: add error for what went wrong
         if (err.message === "Wrong Username or Password") {
           reply.code(401).send()
         }
-        if (err.message === "Wrong URL ") {
-          reply.code(403).send()
-        }
+
         reply.status(403).send()
       })
     return
@@ -70,14 +67,10 @@ server.post<{
         reply.status(200).send()
       })
       .catch(() => {
-        // TODO: add error for what went wrong
-
         reply.status(500).send()
       })
     return
   }
-  // TODO: add error for unknown provider
-  // (maybe through fastify's schema validation, so we don't have to do this manually)
   reply.status(400).send()
 })
 
@@ -95,12 +88,8 @@ server.post<{
       reply.status(204).send()
     })
     .catch(() => {
-      // TODO: add error for what went wrong
       reply.status(401).send()
     })
-
-  // TODO: add error for unknown provider
-  // (maybe through fastify's schema validation, so we don't have to do this manually)
 })
 server.get("/projects", async (_, reply) => {
   reply.send(await pbiProvider.getProjects())

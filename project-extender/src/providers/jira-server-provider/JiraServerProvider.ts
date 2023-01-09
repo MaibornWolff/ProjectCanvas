@@ -94,26 +94,22 @@ class JiraServerProvider implements ProviderApi {
   }
 
   async logout(): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const response = fetch(
-      `http://${this.requestBody.url}/rest/auth/1/session`,
-      {
+    return new Promise((resolve, reject) => {
+      fetch(`http://${this.requestBody.url}/rest/auth/1/session`, {
         method: "DELETE",
         headers: {
           Authorization: `Basic ${Buffer.from(
             `${this.requestBody.username}:${this.requestBody.password}`
           ).toString("base64")}`,
         },
-      }
-    )
-    const GoodResponse = await response
-
-    return new Promise((resolve, reject) => {
-      if (GoodResponse.status === 204) {
-        resolve()
-      }
-      if (GoodResponse.status === 401)
-        reject(new Error("user not authenticated"))
+      }).then((res) => {
+        if (res.status === 204) {
+          resolve()
+        }
+        if (res.status === 401) {
+          reject(new Error("user not authenticated"))
+        }
+      })
     })
   }
 }
