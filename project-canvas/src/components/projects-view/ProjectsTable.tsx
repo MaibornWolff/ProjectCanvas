@@ -42,15 +42,15 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-export interface RowData {
+export interface ProjectData {
   Name: string
   Key: string
   Type: string
   Lead: string
 }
 
-interface TableSortProps {
-  data: RowData[]
+interface ProjectsTableProps {
+  data: ProjectData[]
 }
 
 interface ThProps {
@@ -83,7 +83,7 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
   )
 }
 
-function filterData(data: RowData[], search: string) {
+function filterData(data: ProjectData[], search: string) {
   const query = search.toLowerCase().trim()
   return data.filter((item) =>
     keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
@@ -91,8 +91,12 @@ function filterData(data: RowData[], search: string) {
 }
 
 function sortData(
-  data: RowData[],
-  payload: { sortBy: keyof RowData | null; reversed: boolean; search: string }
+  data: ProjectData[],
+  payload: {
+    sortBy: keyof ProjectData | null
+    reversed: boolean
+    search: string
+  }
 ) {
   const { sortBy } = payload
 
@@ -112,10 +116,10 @@ function sortData(
   )
 }
 
-export function TableSort({ data }: TableSortProps) {
+export function ProjectsTable({ data }: ProjectsTableProps) {
   const [search, setSearch] = useState("")
   const [sortedData, setSortedData] = useState(data)
-  const [sortBy, setSortBy] = useState<keyof RowData | null>(null)
+  const [sortBy, setSortBy] = useState<keyof ProjectData | null>(null)
   const [reverseSortDirection, setReverseSortDirection] = useState(false)
 
   useEffect(() => {
@@ -126,7 +130,7 @@ export function TableSort({ data }: TableSortProps) {
     )
   }, [data, sortBy, reverseSortDirection, search])
 
-  const setSorting = (field: keyof RowData) => {
+  const setSorting = (field: keyof ProjectData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false
     setReverseSortDirection(reversed)
     setSortBy(field)
@@ -148,7 +152,7 @@ export function TableSort({ data }: TableSortProps) {
   const rows = sortedData.map((row) => (
     <tr key={row.Key} onClick={() => rowOnClick(row.Name)}>
       {Object.keys(row).map((key) => (
-        <td key={key}> {row[key as keyof RowData]}</td>
+        <td key={key}> {row[key as keyof ProjectData]}</td>
       ))}
     </tr>
   ))
@@ -178,7 +182,7 @@ export function TableSort({ data }: TableSortProps) {
                   key={key}
                   sorted={sortBy === key}
                   reversed={reverseSortDirection}
-                  onSort={() => setSorting(key as keyof RowData)}
+                  onSort={() => setSorting(key as keyof ProjectData)}
                 >
                   {key.toLocaleUpperCase()}
                 </Th>
