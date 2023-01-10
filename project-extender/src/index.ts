@@ -31,7 +31,7 @@ server.post<{
   Body: { provider: ProviderType } & BasicLoginOptions & OauthLoginOptions
 }>("/login", async (request, reply) => {
   if (request.body.provider === ProviderType.JiraServer) {
-    pbiProvider = new JiraServerProviderCreator().factoryMethod(request.body)
+    pbiProvider = new JiraServerProviderCreator().factoryMethod()
     await pbiProvider
       .login({
         basicLoginOptions: {
