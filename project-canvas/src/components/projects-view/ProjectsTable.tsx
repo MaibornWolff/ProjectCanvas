@@ -43,10 +43,10 @@ const useStyles = createStyles((theme) => ({
 }))
 
 export interface ProjectData {
-  Name: string
-  Key: string
-  Type: string
-  Lead: string
+  name: string
+  key: string
+  type: string
+  lead: string
 }
 
 interface ProjectsTableProps {
@@ -150,7 +150,7 @@ export function ProjectsTable({ data }: ProjectsTableProps) {
   }
 
   const rows = sortedData.map((row) => (
-    <tr key={row.Key} onClick={() => rowOnClick(row.Name)}>
+    <tr key={row.key} onClick={() => rowOnClick(row.name)}>
       {Object.keys(row).map((key) => (
         <td key={key}> {row[key as keyof ProjectData]}</td>
       ))}

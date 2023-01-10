@@ -3,7 +3,7 @@
 import JiraApi from "jira-client"
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Project } from "../base-provider/schema"
+import { ProjectData, FetchedProject } from "../base-provider/schema"
 
 class JiraServerProvider implements ProviderApi {
   provider: JiraApi | undefined = undefined
@@ -64,7 +64,7 @@ class JiraServerProvider implements ProviderApi {
     })
   }
 
-  async getProjects(): Promise<Project[]> {
+  async getProjects(): Promise<ProjectData[]> {
     const response = await fetch(
       `http://${this.requestBody.url}/rest/api/2/project?expand=lead,description`,
       {
@@ -79,11 +79,11 @@ class JiraServerProvider implements ProviderApi {
     )
     if (response.ok) {
       const data = await response.json()
-      const projects = data.map((project: Project) => ({
-        Key: project.key,
-        Name: project.name,
-        Type: project.projectTypeKey,
-        Lead: project.lead.displayName,
+      const projects = data.map((project: FetchedProject) => ({
+        key: project.key,
+        name: project.name,
+        type: project.projectTypeKey,
+        lead: project.lead.displayName,
       }))
       return projects
     }
