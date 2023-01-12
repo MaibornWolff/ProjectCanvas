@@ -42,9 +42,8 @@ class JiraServerProvider implements ProviderApi {
   }
 
   async isLoggedIn(): Promise<void> {
-    const response = fetch(
-      `http://${this.requestBody.url}/rest/auth/1/session`,
-      {
+    return new Promise((resolve, reject) => {
+      fetch(`http://${this.requestBody.url}/rest/auth/1/session`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -52,18 +51,16 @@ class JiraServerProvider implements ProviderApi {
             `${this.requestBody.username}:${this.requestBody.password}`
           ).toString("base64")}`,
         },
-      }
-    )
-    const GoodResponse = await response
-    return new Promise((resolve, reject) => {
-      if (GoodResponse.status === 200) resolve()
-      if (GoodResponse.status === 401) {
-        reject(new Error("Wrong Username or Password"))
-      }
-      response.catch((err) => {
-        if (err.message === "Couldn't connect to server")
-          reject(new Error("Wrong URL"))
       })
+        .then((GoodResponse) => {
+          if (GoodResponse.status === 200) resolve()
+          if (GoodResponse.status === 401) {
+            reject(new Error("Wrong Username or Password"))
+          }
+        })
+        .catch(() => {
+          reject(new Error("Wrong URL"))
+        })
     })
   }
 

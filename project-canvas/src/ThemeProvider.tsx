@@ -3,6 +3,7 @@ import {
   ColorSchemeProvider,
   MantineProvider,
 } from "@mantine/core"
+import { NotificationsProvider } from "@mantine/notifications"
 import { ReactElement, useState } from "react"
 import { theme } from "../theme"
 
@@ -12,17 +13,19 @@ export function ThemeProvider({ children }: { children: ReactElement }) {
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"))
 
   return (
-    <ColorSchemeProvider
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
-    >
-      <MantineProvider
-        theme={{ ...theme, colorScheme }}
-        withGlobalStyles
-        withNormalizeCSS
+    <NotificationsProvider>
+      <ColorSchemeProvider
+        colorScheme={colorScheme}
+        toggleColorScheme={toggleColorScheme}
       >
-        {children}
-      </MantineProvider>
-    </ColorSchemeProvider>
+        <MantineProvider
+          theme={{ ...theme, colorScheme }}
+          withGlobalStyles
+          withNormalizeCSS
+        >
+          {children}
+        </MantineProvider>
+      </ColorSchemeProvider>
+    </NotificationsProvider>
   )
 }
