@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { create } from "zustand"
 import {
   createStyles,
   Table,
@@ -59,6 +60,17 @@ interface ThProps {
   sorted: boolean
   onSort(): void
 }
+export interface ProjectStore {
+  selectedProject: ProjectData | null
+  setSelectedProject: (project: ProjectData) => void
+}
+
+export const useProjectStore = create<ProjectStore>()((set) => ({
+  // initial state is null
+  selectedProject: null,
+  setSelectedProject: (row: ProjectData | null) =>
+    set(() => ({ selectedProject: row })),
+}))
 
 function Th({ children, reversed, sorted, onSort }: ThProps) {
   const { classes } = useStyles()
@@ -121,6 +133,7 @@ export function ProjectsTable({ data }: ProjectsTableProps) {
   const [sortedData, setSortedData] = useState(data)
   const [sortBy, setSortBy] = useState<keyof ProjectData | null>(null)
   const [reverseSortDirection, setReverseSortDirection] = useState(false)
+  const { setSelectedProject } = useProjectStore()
 
   useEffect(() => {
     // Initialize sortedData with the sorted and filtered data
@@ -145,12 +158,13 @@ export function ProjectsTable({ data }: ProjectsTableProps) {
     )
   }
 
-  const rowOnClick = (text: string) => {
-    console.log(text)
+  const rowOnClick = (row: ProjectData) => {
+    // TODO: implement navigate
+    setSelectedProject(row)
   }
 
   const rows = sortedData.map((row) => (
-    <tr key={row.key} onClick={() => rowOnClick(row.name)}>
+    <tr key={row.key} onClick={() => rowOnClick(row)}>
       {Object.keys(row).map((key) => (
         <td key={key}> {row[key as keyof ProjectData]}</td>
       ))}
