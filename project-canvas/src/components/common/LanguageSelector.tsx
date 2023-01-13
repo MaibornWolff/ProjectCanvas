@@ -1,22 +1,22 @@
+import { Select } from "@mantine/core"
 import { useTranslation } from "react-i18next"
 
 export function LanguageSelector() {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
 
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language)
   }
 
   return (
-    <select
-      style={{ width: "50px" }}
-      onChange={(e) => handleLanguageChange(e.target.value)}
-    >
-      {i18n.languages.map((language) => (
-        <option key={language} value={language}>
-          {t(`${language}`)}
-        </option>
-      ))}
-    </select>
+    <Select
+      style={{ width: "70px" }}
+      onChange={handleLanguageChange}
+      data={[
+        { value: "en", label: "en" },
+        { value: "de", label: "de" },
+      ]}
+      defaultValue="en"
+    />
   )
 }
