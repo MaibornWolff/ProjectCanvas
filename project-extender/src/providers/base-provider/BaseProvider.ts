@@ -20,13 +20,10 @@ export interface ProviderApi {
   login(loginOptions: LoginOptions): Promise<void>
   isLoggedIn(): Promise<void>
   getProjects(): Promise<{ name: string; key: string }[]>
+  logout(): Promise<void>
   getPbis(projectToGet: string): Promise<IssueData>
 }
 
 export abstract class ProviderCreator {
-  public abstract factoryMethod(requestBody: {
-    url: string
-    username: string
-    password: string
-  }): ProviderApi
+  public abstract factoryMethod(): ProviderApi
 }

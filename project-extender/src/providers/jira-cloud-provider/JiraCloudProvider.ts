@@ -2,11 +2,11 @@
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { IssueData, Project } from "../base-provider/schema"
+import { IssueData, FetchedProject } from "../base-provider/schema"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
-  static accessToken: string | undefined
+  public accessToken: string | undefined
 
   private cloudID = ""
 
@@ -20,17 +20,20 @@ class JiraCloudProvider implements ProviderApi {
       code: string
     }
   }) {
-    if (JiraCloudProvider.accessToken === undefined)
-      JiraCloudProvider.accessToken = await getAccessToken(oauthLoginOptions)
+    if (this.accessToken === undefined)
+      this.accessToken = await getAccessToken(oauthLoginOptions)
 
     await fetch("https://api.atlassian.com/oauth/token/accessible-resources", {
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${JiraCloudProvider.accessToken}`,
+        Authorization: `Bearer ${this.accessToken}`,
       },
     }).then(async (response) => {
-      await response.json().then(async (data) => {
-        this.cloudID = data[0].id
+      await response.json().then(async (domainData) => {
+        // TODO: there could be more than just a single domain accessible.
+        // Possible solution: add a screen after the login for jira cloud,
+        //                    where the user can choose the domain to work on
+        this.cloudID = domainData[0].id
       })
     })
     return this.isLoggedIn()
@@ -39,11 +42,18 @@ class JiraCloudProvider implements ProviderApi {
   async isLoggedIn() {
     // TODO: Make sure that it is valid too
     return new Promise<void>((resolve, reject) => {
-      if (JiraCloudProvider.accessToken !== undefined) {
+      if (this.accessToken !== undefined) {
         resolve()
       } else {
         reject()
       }
+    })
+  }
+
+  logout(): Promise<void> {
+    return new Promise((resolve) => {
+      this.accessToken = undefined
+      resolve()
     })
   }
 
@@ -53,21 +63,17 @@ class JiraCloudProvider implements ProviderApi {
       {
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${JiraCloudProvider.accessToken}`,
+          Authorization: `Bearer ${this.accessToken}`,
         },
       }
     )
     const data = await response.json()
-    const projects = data.values.map((project: Project) => {
-      const { displayName } = project.lead
-
-      return {
-        Key: project.key,
-        Name: project.name,
-        Lead: displayName,
-        Type: project.projectTypeKey,
-      }
-    })
+    const projects = data.values.map((project: FetchedProject) => ({
+      key: project.key,
+      name: project.name,
+      lead: project.lead.displayName,
+      type: project.projectTypeKey,
+    }))
 
     return projects
   }

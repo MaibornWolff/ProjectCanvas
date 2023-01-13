@@ -30,18 +30,8 @@ let pbiProvider: ProviderApi
 server.post<{
   Body: { provider: ProviderType } & BasicLoginOptions & OauthLoginOptions
 }>("/login", async (request, reply) => {
-  // Already logged in
-  await pbiProvider
-    ?.isLoggedIn()
-    .then(() => {
-      reply.status(200).send()
-    })
-    // Left empty as this is a pre check
-    // Errors will be treated later
-    .catch(() => {})
-
   if (request.body.provider === ProviderType.JiraServer) {
-    pbiProvider = new JiraServerProviderCreator().factoryMethod(request.body)
+    pbiProvider = new JiraServerProviderCreator().factoryMethod()
     await pbiProvider
       .login({
         basicLoginOptions: {
@@ -53,9 +43,12 @@ server.post<{
       .then(() => {
         reply.status(200).send()
       })
-      .catch(() => {
-        // TODO: add error for what went wrong
-        reply.status(500).send()
+      .catch((err) => {
+        if (err.message === "Wrong Username or Password") {
+          reply.code(401).send()
+        }
+        if (err.message === "Wrong URL") reply.status(403).send()
+        reply.status(400).send()
       })
     return
   }
@@ -74,16 +67,30 @@ server.post<{
         reply.status(200).send()
       })
       .catch(() => {
-        // TODO: add error for what went wrong
         reply.status(500).send()
       })
     return
   }
-  // TODO: add error for unknown provider
-  // (maybe through fastify's schema validation, so we don't have to do this manually)
   reply.status(400).send()
 })
 
+server.post<{
+  Body: {
+    provider: ProviderType
+    username: string
+    password: string
+    url: string
+  }
+}>("/logout", async (request, reply) => {
+  await pbiProvider
+    .logout()
+    .then(() => {
+      reply.status(204).send()
+    })
+    .catch(() => {
+      reply.status(401).send()
+    })
+})
 server.get("/projects", async (_, reply) => {
   reply.send(await pbiProvider.getProjects())
 })

@@ -1,3 +1,5 @@
+import { showNotification } from "@mantine/notifications"
+
 export function loginToJiraServer({
   onSuccess,
   loginOptions,
@@ -13,11 +15,19 @@ export function loginToJiraServer({
       ...loginOptions,
     }),
   }).then((response) => {
+    if (response.status === 401) {
+      return showNotification({
+        title: "Wrong Password or username",
+        message: "Please check your username or password 🤥",
+      })
+    }
+    if (response.status === 403) {
+      return showNotification({
+        title: "Wrong URL",
+        message: "Please check your URL",
+      })
+    }
     if (response.ok) onSuccess()
+    return () => {}
   })
-
-  // EXEMPLE
-  // await fetch(`${import.meta.env.VITE_EXTENDER}/projects`).then(
-  //   async (response) => console.log(await response.json())
-  // )
 }

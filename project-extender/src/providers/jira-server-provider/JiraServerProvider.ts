@@ -3,23 +3,15 @@
 import JiraApi from "jira-client"
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { IssueData, Project } from "../base-provider/schema"
+import { IssueData, ProjectData, FetchedProject } from "../base-provider/schema"
 
 class JiraServerProvider implements ProviderApi {
   provider: JiraApi | undefined = undefined
 
-  private requestBody: {
-    url: string
-    username: string
-    password: string
-  }
-
-  constructor(requestBody: {
-    url: string
-    username: string
-    password: string
-  }) {
-    this.requestBody = requestBody
+  private requestBody = {
+    url: "",
+    username: "",
+    password: "",
   }
 
   async login({
@@ -31,6 +23,11 @@ class JiraServerProvider implements ProviderApi {
       password: string
     }
   }) {
+    // initialize requestBody parameters
+    this.requestBody.url = basicLoginOptions.url
+    this.requestBody.username = basicLoginOptions.username
+    this.requestBody.password = basicLoginOptions.password
+
     this.provider = new JiraApi({
       host: basicLoginOptions.url.split(":")[0],
       port: basicLoginOptions.url.split(":")[1],
@@ -43,14 +40,31 @@ class JiraServerProvider implements ProviderApi {
 
   async isLoggedIn(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.provider
-        ?.getCurrentUser()
-        .then(() => resolve())
-        .catch(() => reject())
+      fetch(`http://${this.requestBody.url}/rest/auth/1/session`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+        },
+      })
+        .then((GoodResponse) => {
+          if (GoodResponse.status === 200) resolve()
+          if (GoodResponse.status === 401) {
+            reject(new Error("Wrong Username or Password"))
+          }
+          if (GoodResponse.status === 404) {
+            reject(new Error("Wrong URL"))
+          }
+        })
+        .catch((err) => {
+          if (err.name === "FetchError") reject(new Error("Wrong URL"))
+        })
     })
   }
 
-  async getProjects(): Promise<Project[]> {
+  async getProjects(): Promise<ProjectData[]> {
     const response = await fetch(
       `http://${this.requestBody.url}/rest/api/2/project?expand=lead,description`,
       {
@@ -65,15 +79,35 @@ class JiraServerProvider implements ProviderApi {
     )
     if (response.ok) {
       const data = await response.json()
-      const projects = data.map((project: Project) => ({
-        Key: project.key,
-        Name: project.name,
-        Type: project.projectTypeKey,
-        Lead: project.lead.displayName,
+      const projects = data.map((project: FetchedProject) => ({
+        key: project.key,
+        name: project.name,
+        type: project.projectTypeKey,
+        lead: project.lead.displayName,
       }))
       return projects
     }
     return Promise.reject(new Error(response.statusText))
+  }
+
+  async logout(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(`http://${this.requestBody.url}/rest/auth/1/session`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+        },
+      }).then((res) => {
+        if (res.status === 204) {
+          resolve()
+        }
+        if (res.status === 401) {
+          reject(new Error("user not authenticated"))
+        }
+      })
+    })
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -112,11 +146,7 @@ class JiraServerProvider implements ProviderApi {
 }
 
 export class JiraServerProviderCreator extends ProviderCreator {
-  public factoryMethod(requestBody: {
-    url: string
-    username: string
-    password: string
-  }): ProviderApi {
-    return new JiraServerProvider(requestBody)
+  public factoryMethod(): ProviderApi {
+    return new JiraServerProvider()
   }
 }

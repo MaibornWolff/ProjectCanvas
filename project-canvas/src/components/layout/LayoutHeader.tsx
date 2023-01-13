@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Affix,
   Box,
   Button,
   Group,
@@ -7,15 +8,38 @@ import {
   Menu,
   useMantineColorScheme,
 } from "@mantine/core"
+import { showNotification } from "@mantine/notifications"
 import { IconSun, IconMoonStars, IconExternalLink } from "@tabler/icons"
 import { useNavigate } from "react-router-dom"
+import { Logout } from "../login/jira-server/Logout"
 
 export function LayoutHeader() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const navigate = useNavigate()
+  const LogoutSuccess = () => navigate("/")
+  const LogoutFailed = () => {
+    showNotification({
+      title: "Failed to Logout",
+      message: "the caller is not authenticated.",
+      styles: (theme) => ({
+        root: {
+          backgroundColor: theme.colors.red[6],
+          borderColor: theme.colors.red[6],
 
+          "&::before": { backgroundColor: theme.white },
+        },
+
+        title: { color: theme.white },
+        description: { color: theme.white },
+        closeButton: {
+          color: theme.white,
+          "&:hover": { backgroundColor: theme.colors.blue[7] },
+        },
+      }),
+    })
+  }
   return (
-    <Header height="60" p="s" zIndex={101}>
+    <Header height="60" p="sm">
       <Box
         sx={(theme) => ({
           paddingLeft: theme.spacing.xs,
@@ -40,6 +64,17 @@ export function LayoutHeader() {
               <IconMoonStars size={16} />
             )}
           </ActionIcon>
+          <Affix position={{ top: 20, right: 20 }}>
+            <Button
+              color="dark"
+              onClick={() => {
+                Logout({ LogoutSuccess, LogoutFailed })
+              }}
+            >
+              Log out
+            </Button>
+          </Affix>
+
           <Menu width={200} shadow="md">
             <Menu.Target>
               <Button>Projects</Button>

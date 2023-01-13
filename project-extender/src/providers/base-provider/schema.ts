@@ -15,6 +15,15 @@ export interface IssueData {
     status: string
   }[]
 }
+
+export interface FetchedProject {
+  projectTypeKey: string
+  name: string
+  key: string
+  lead: {
+    displayName: string
+  }
+}
 export interface Project {
   projectTypeKey: string
   name: string
@@ -22,4 +31,11 @@ export interface Project {
   lead: {
     displayName: string
   }
+}
+
+export interface ProjectData {
+  name: string
+  key: string
+  type: string
+  lead: string
 }
