@@ -47,8 +47,8 @@ server.post<{
         if (err.message === "Wrong Username or Password") {
           reply.code(401).send()
         }
-
-        reply.status(403).send()
+        if (err.message === "Wrong URL") reply.status(403).send()
+        reply.status(400).send()
       })
     return
   }

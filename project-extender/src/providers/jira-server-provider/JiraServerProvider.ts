@@ -57,9 +57,12 @@ class JiraServerProvider implements ProviderApi {
           if (GoodResponse.status === 401) {
             reject(new Error("Wrong Username or Password"))
           }
+          if (GoodResponse.status === 404) {
+            reject(new Error("Wrong URL"))
+          }
         })
-        .catch(() => {
-          reject(new Error("Wrong URL"))
+        .catch((err) => {
+          if (err.name === "FetchError") reject(new Error("Wrong URL"))
         })
     })
   }
