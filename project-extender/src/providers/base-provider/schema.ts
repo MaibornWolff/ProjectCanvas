@@ -7,13 +7,11 @@ export interface DndListProps {
   }[]
 }
 
-export interface IssueData {
-  data: {
-    key: string
-    summary: string
-    creator: string
-    status: string
-  }[]
+export interface Issue {
+  key: string
+  summary: string
+  creator: string
+  status: string
 }
 
 export interface FetchedProject {

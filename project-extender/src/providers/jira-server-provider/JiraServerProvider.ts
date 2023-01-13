@@ -3,7 +3,7 @@
 import JiraApi from "jira-client"
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { IssueData, ProjectData, FetchedProject } from "../base-provider/schema"
+import { Issue, ProjectData, FetchedProject } from "../base-provider/schema"
 
 class JiraServerProvider implements ProviderApi {
   provider: JiraApi | undefined = undefined
@@ -111,36 +111,34 @@ class JiraServerProvider implements ProviderApi {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async getPbis(projectToGet: string): Promise<IssueData> {
+  async getPbis(projectToGet: string): Promise<Issue[]> {
     // console.log(projectToGet)
-    const testData = {
-      data: [
-        {
-          key: "CANVAS-2",
-          summary: "Setup Project",
-          creator: "Enrico Chies",
-          status: "Done",
-        },
-        {
-          key: "CANVAS-8",
-          summary: "Split Ansicht (Project Canvas)",
-          creator: "Christian Huetter",
-          status: "To Do",
-        },
-        {
-          key: "CANVAS-19",
-          summary: "Project Specifications",
-          creator: "Christian Huetter",
-          status: "Done",
-        },
-        {
-          key: "CANVAS-18",
-          summary: "Dokumentation",
-          creator: "Christian Huetter",
-          status: "To Do",
-        },
-      ],
-    }
+    const testData = [
+      {
+        key: "CANVAS-2",
+        summary: "Setup Project",
+        creator: "Enrico Chies",
+        status: "Done",
+      },
+      {
+        key: "CANVAS-8",
+        summary: "Split Ansicht (Project Canvas)",
+        creator: "Christian Huetter",
+        status: "To Do",
+      },
+      {
+        key: "CANVAS-19",
+        summary: "Project Specifications",
+        creator: "Christian Huetter",
+        status: "Done",
+      },
+      {
+        key: "CANVAS-18",
+        summary: "Dokumentation",
+        creator: "Christian Huetter",
+        status: "To Do",
+      },
+    ]
     return testData
   }
 }

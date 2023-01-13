@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { IssueData, FetchedProject } from "../base-provider/schema"
+import { Issue, FetchedProject } from "../base-provider/schema"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
@@ -78,39 +78,43 @@ class JiraCloudProvider implements ProviderApi {
     return projects
   }
 
-  async getPbis(projectToGet: string): Promise<IssueData> {
+  async getPbis(projectToGet: string): Promise<Issue[]> {
     // const data1 = await response1.json()
 
     // Write the data1 object to a file named "output.json"
     // fs.writeFileSync("output.json", JSON.stringify(data1, null, 2))
-    const response1 = await fetch(
+    const response = await fetch(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/search?jql=project=${projectToGet}&maxResults=1000`,
       {
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${JiraCloudProvider.accessToken}`,
+          Authorization: `Bearer ${this.accessToken}`,
         },
       }
     )
-    const data1 = await response1.json()
-    const pbis: IssueData["data"] = data1.issues.map(
-      (element: {
-        key: string
-        fields: {
-          summary: string
-          creator: { displayName: string }
-          status: { name: string }
-        }
-      }) => ({
-        key: element.key,
+    const data = await response.json()
+    const pbis: Issue[] = data.issues.map(
+      (
+        element: {
+          key: string
+          fields: {
+            summary: string
+            creator: { displayName: string }
+            status: { name: string }
+          }
+        },
+        index: number
+      ) => ({
+        pbiKey: element.key,
         summary: element.fields.summary,
         creator: element.fields.creator.displayName,
         status: element.fields.status.name,
+        index,
       })
     )
 
     // console.log(pbis)
-    return { data: pbis }
+    return pbis
 
     // const testData = {
     //   data: [
