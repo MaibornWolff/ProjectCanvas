@@ -3,23 +3,15 @@
 import JiraApi from "jira-client"
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Project } from "../base-provider/schema"
+import { ProjectData, FetchedProject } from "../base-provider/schema"
 
 class JiraServerProvider implements ProviderApi {
   provider: JiraApi | undefined = undefined
 
-  private requestBody: {
-    url: string
-    username: string
-    password: string
-  }
-
-  constructor(requestBody: {
-    url: string
-    username: string
-    password: string
-  }) {
-    this.requestBody = requestBody
+  private requestBody = {
+    url: "",
+    username: "",
+    password: "",
   }
 
   async login({
@@ -31,6 +23,11 @@ class JiraServerProvider implements ProviderApi {
       password: string
     }
   }) {
+    // initialize requestBody parameters
+    this.requestBody.url = basicLoginOptions.url
+    this.requestBody.username = basicLoginOptions.username
+    this.requestBody.password = basicLoginOptions.password
+
     this.provider = new JiraApi({
       host: basicLoginOptions.url.split(":")[0],
       port: basicLoginOptions.url.split(":")[1],
@@ -67,7 +64,7 @@ class JiraServerProvider implements ProviderApi {
     })
   }
 
-  async getProjects(): Promise<Project[]> {
+  async getProjects(): Promise<ProjectData[]> {
     const response = await fetch(
       `http://${this.requestBody.url}/rest/api/2/project?expand=lead,description`,
       {
@@ -82,11 +79,11 @@ class JiraServerProvider implements ProviderApi {
     )
     if (response.ok) {
       const data = await response.json()
-      const projects = data.map((project: Project) => ({
-        Key: project.key,
-        Name: project.name,
-        Type: project.projectTypeKey,
-        Lead: project.lead.displayName,
+      const projects = data.map((project: FetchedProject) => ({
+        key: project.key,
+        name: project.name,
+        type: project.projectTypeKey,
+        lead: project.lead.displayName,
       }))
       return projects
     }
@@ -115,11 +112,7 @@ class JiraServerProvider implements ProviderApi {
 }
 
 export class JiraServerProviderCreator extends ProviderCreator {
-  public factoryMethod(requestBody: {
-    url: string
-    username: string
-    password: string
-  }): ProviderApi {
-    return new JiraServerProvider(requestBody)
+  public factoryMethod(): ProviderApi {
+    return new JiraServerProvider()
   }
 }
