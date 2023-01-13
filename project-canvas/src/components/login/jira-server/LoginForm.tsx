@@ -15,8 +15,8 @@ export function LoginForm({
   const form = useForm<LoginFormValues>({
     initialValues: {
       url: "localhost:8080",
-      username: "admin",
-      password: "admin",
+      username: "oussema",
+      password: "Oussema",
     },
   })
   return (

@@ -18,6 +18,7 @@ export interface ProviderApi {
   login(loginOptions: LoginOptions): Promise<void>
   isLoggedIn(): Promise<void>
   getProjects(): Promise<{ name: string; key: string }[]>
+  logout(): Promise<void>
 }
 
 export abstract class ProviderCreator {
