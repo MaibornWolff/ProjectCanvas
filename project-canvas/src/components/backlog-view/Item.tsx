@@ -11,7 +11,7 @@ export interface Pbi {
 
 export function Item({ pbiKey, summary, index }: Pbi) {
   return (
-    <Draggable draggableId={pbiKey} index={index}>
+    <Draggable key={pbiKey} draggableId={pbiKey} index={index}>
       {(provided) => (
         <Box
           sx={{

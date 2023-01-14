@@ -54,36 +54,53 @@ export function BacklogView() {
     // console.log("setting pbis, here is pbiData.json")
     // console.log(await pbiData.json())
   }
+
+  const [columns, setColumns] = useState(new Map())
+  const [isLoading, setIsLoading] = useState(true)
+  const updateColumns = (key: string, value: { id: string; list: Pbi[] }) => {
+    setColumns((map) => new Map(map.set(key, value)))
+  }
+
   useEffect(() => {
     getPbis()
+      .then(() => {
+        const initialColumns = new Map([
+          [
+            "todo",
+            {
+              id: "todo",
+              list: pbis,
+            },
+          ],
+          [
+            "doing",
+            {
+              id: "doing",
+              list: [],
+            },
+          ],
+          [
+            "done",
+            {
+              id: "done",
+              list: [],
+            },
+          ],
+        ])
+
+        setColumns(initialColumns)
+        // console.log("logging inside1")
+        // console.log(columns)
+        // console.log("logged inside1")
+      })
+      .then(() => {
+        setIsLoading(false)
+        // console.log("logging inside2")
+        // console.log(columns)
+        // console.log("logged inside2")
+      })
     // console.log("getPbis")
   }, [])
-
-  const initialColumns = new Map([
-    [
-      "todo",
-      {
-        id: "todo",
-        list: pbis,
-      },
-    ],
-    [
-      "doing",
-      {
-        id: "doing",
-        list: [],
-      },
-    ],
-    [
-      "done",
-      {
-        id: "done",
-        list: [],
-      },
-    ],
-  ])
-
-  const [columns, setColumns] = useState(initialColumns)
 
   const onDragEnd = ({ source, destination }: DropResult) => {
     // Make sure we have a valid destination
@@ -97,6 +114,7 @@ export function BacklogView() {
       return null
 
     // Set start and end variables
+
     const start = columns.get(source.droppableId)
     const end = columns.get(destination.droppableId)
 
@@ -118,7 +136,8 @@ export function BacklogView() {
       }
 
       // Update the state
-      setColumns((state) => ({ ...state, [newCol.id]: newCol }))
+      // setColumns((state) => ({ ...state, [newCol.id]: newCol }))
+      updateColumns(start!.id, newCol)
       return null
     }
     // If start is different from end, we need to update multiple columns
@@ -146,11 +165,13 @@ export function BacklogView() {
     }
 
     // Update the state
-    setColumns((state) => ({
-      ...state,
-      [newStartCol.id]: newStartCol,
-      [newEndCol.id]: newEndCol,
-    }))
+    // setColumns((state) => ({
+    //   ...state,
+    //   [newStartCol.id]: newStartCol,
+    //   [newEndCol.id]: newEndCol,
+    // }))
+    updateColumns(start!.id, newStartCol)
+    updateColumns(end!.id, newEndCol)
     return null
   }
 
@@ -159,16 +180,18 @@ export function BacklogView() {
   // console.log("logged ja")
   // https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-issue-picker-get
 
-  return (
+  return isLoading ? (
+    <div>Loading...</div>
+  ) : (
     <div className="container">
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="left-panel">
-          <Column col={initialColumns.get("todo")!} />
+          <Column col={columns.get("todo")!} />
         </div>
         <div className="resize-handle" />
         <div className="right-panel">
-          <Column col={initialColumns.get("doing")!} />
-          <Column col={initialColumns.get("done")!} />
+          <Column col={columns.get("doing")!} />
+          <Column col={columns.get("done")!} />
         </div>
       </DragDropContext>
     </div>
