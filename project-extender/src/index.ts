@@ -106,6 +106,28 @@ server.get(
     // const projectToGet = req.query.project
     // console.log("logging the querystring")
     // console.log("logging the querystring")
-    reply.send(await pbiProvider.getPbis("oussema"))
+    reply.send(await pbiProvider.getPbis("Oussema"))
+  }
+)
+server.get(
+  "/allSprints",
+  async (
+    req: FastifyRequest<{
+      Querystring: { BoardId: number }
+    }>,
+    reply
+  ) => {
+    reply.send(await pbiProvider.getSpints(1))
+  }
+)
+server.get(
+  "/getIssueForSprint",
+  async (
+    req: FastifyRequest<{
+      Querystring: { sprintId: number }
+    }>,
+    reply
+  ) => {
+    reply.send(await pbiProvider.getPbisForSprint(req.query.sprintId))
   }
 )
