@@ -13,6 +13,11 @@ export interface Issue {
   creator: string
   status: string
 }
+export interface Sprint {
+  id: number
+  name: string
+  type: string
+}
 
 export interface FetchedProject {
   projectTypeKey: string

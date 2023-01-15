@@ -1,4 +1,4 @@
-import { IssueData } from "./schema"
+import { Issue, Sprint } from "./schema"
 
 export interface BasicLoginOptions {
   url: string
@@ -17,11 +17,13 @@ interface LoginOptions {
 }
 
 export interface ProviderApi {
+  getPbisForSprint(sprintId: number): Promise<Issue[]>
   login(loginOptions: LoginOptions): Promise<void>
   isLoggedIn(): Promise<void>
   getProjects(): Promise<{ name: string; key: string }[]>
   logout(): Promise<void>
-  getPbis(projectToGet: string): Promise<IssueData>
+  getPbis(projectToGet: string): Promise<Issue[]>
+  getSpints(BoardId: number): Promise<Sprint[]>
 }
 
 export abstract class ProviderCreator {

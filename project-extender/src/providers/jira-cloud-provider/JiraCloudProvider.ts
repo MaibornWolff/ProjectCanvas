@@ -2,10 +2,22 @@
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Issue, FetchedProject } from "../base-provider/schema"
+import { Issue, FetchedProject, Sprint } from "../base-provider/schema"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
+  getPbisForSprint(sprintId: number): Promise<Issue[]> {
+    console.log(sprintId)
+
+    throw new Error("Method not implemented.")
+  }
+
+  getSpints(BoardId: number): Promise<Sprint[]> {
+    console.log(BoardId)
+
+    throw new Error("Method not implemented.")
+  }
+
   public accessToken: string | undefined
 
   private cloudID = ""

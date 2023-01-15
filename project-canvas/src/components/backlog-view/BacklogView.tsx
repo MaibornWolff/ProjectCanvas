@@ -12,6 +12,7 @@ import { useProjectStore } from "../projects-view/ProjectsTable"
 export function BacklogView() {
   const zustandProject = useProjectStore((state) => state.selectedProject?.name)
   const navigate = useNavigate()
+  const BoardId = 1
   const [columns, setColumns] = useState(new Map())
   const [isLoading, setIsLoading] = useState(true)
   const updateColumn = (key: string, value: { id: string; list: Pbi[] }) => {
@@ -20,17 +21,37 @@ export function BacklogView() {
 
   const getPbis = async () => {
     await fetch(
-      `${import.meta.env.VITE_EXTENDER}/pbis?project=${zustandProject}`
-    ).then(async (result) => {
-      const pbis = await result.json()
-      setColumns(
-        new Map([
+      `${import.meta.env.VITE_EXTENDER}/allSprints?BoardId=${BoardId}`
+    ).then(async (response) => {
+      const sprints = await response.json()
+      const sprintsArray = sprints.map(
+        (element: { sprintId: number; sprintName: string }) => [
+          element.sprintName,
+          { id: element.sprintName, list: [] },
+        ]
+      )
+
+      await fetch(
+        `${import.meta.env.VITE_EXTENDER}/pbis?project=${zustandProject}`
+      ).then(async (result) => {
+        const pbis = await result.json()
+
+        // console.log(sprintsArray)
+
+        const map = new Map(sprintsArray)
+        // console.log(map)
+
+        const map2 = new Map([
           ["todo", { id: "todo", list: pbis }],
-          ["doing", { id: "doing", list: [] }],
           ["done", { id: "done", list: [] }],
         ])
-      )
-      setIsLoading(false)
+
+        setColumns(
+          new Map([...Array.from(map2.entries()), ...Array.from(map.entries())])
+        )
+
+        setIsLoading(false)
+      })
     })
   }
 
@@ -74,7 +95,9 @@ export function BacklogView() {
             }}
           />
           <Box className="right-panel" sx={{ padding: "5px", width: "50%" }}>
-            <Column col={columns.get("doing")!} />
+            <Column col={columns.get("OUS Sprint 1")!} />
+            <Column col={columns.get("OUS Sprint 2")!} />
+            <Column col={columns.get("OUS Sprint 3")!} />
             <Column col={columns.get("done")!} />
           </Box>
         </DragDropContext>

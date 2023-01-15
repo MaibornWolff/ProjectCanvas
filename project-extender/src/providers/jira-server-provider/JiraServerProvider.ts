@@ -3,7 +3,12 @@
 import JiraApi from "jira-client"
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Issue, ProjectData, FetchedProject } from "../base-provider/schema"
+import {
+  Issue,
+  ProjectData,
+  FetchedProject,
+  Sprint,
+} from "../base-provider/schema"
 
 class JiraServerProvider implements ProviderApi {
   provider: JiraApi | undefined = undefined
@@ -112,34 +117,115 @@ class JiraServerProvider implements ProviderApi {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getPbis(projectToGet: string): Promise<Issue[]> {
-    // console.log(projectToGet)
-    const testData = [
+    const response = await fetch(
+      `http://${this.requestBody.url}/rest/api/2/search?jql=project=${projectToGet}`,
       {
-        key: "CANVAS-2",
-        summary: "Setup Project",
-        creator: "Enrico Chies",
-        status: "Done",
-      },
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+        },
+      }
+    )
+
+    const data = await response.json()
+
+    const pbis: Issue[] = data.issues.map(
+      (
+        element: {
+          key: string
+          fields: {
+            summary: string
+            creator: { displayName: string }
+            status: { name: string }
+          }
+        },
+        index: number
+      ) => ({
+        pbiKey: element.key,
+        summary: element.fields.summary,
+        creator: element.fields.creator.displayName,
+        status: element.fields.status.name,
+        index,
+      })
+    )
+
+    return pbis
+  }
+
+  async getPbisForSprint(sprintId: number): Promise<Issue[]> {
+    const response = await fetch(
+      `http://${this.requestBody.url}/rest/agile/1.0/sprint/${sprintId}/issue`,
       {
-        key: "CANVAS-8",
-        summary: "Split Ansicht (Project Canvas)",
-        creator: "Christian Huetter",
-        status: "To Do",
-      },
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+        },
+      }
+    )
+
+    const data = await response.json()
+
+    const pbis: Issue[] = data.issues.map(
+      (
+        element: {
+          key: string
+          fields: {
+            summary: string
+            creator: { displayName: string }
+            status: { name: string }
+          }
+        },
+        index: number
+      ) => ({
+        pbiKey: element.key,
+        summary: element.fields.summary,
+        creator: element.fields.creator.displayName,
+        status: element.fields.status.name,
+        index,
+      })
+    )
+    return pbis
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async getSpints(BoardId: number): Promise<Sprint[]> {
+    const response = await fetch(
+      `http://${this.requestBody.url}/rest/agile/1.0/board/1/sprint`,
       {
-        key: "CANVAS-19",
-        summary: "Project Specifications",
-        creator: "Christian Huetter",
-        status: "Done",
-      },
-      {
-        key: "CANVAS-18",
-        summary: "Dokumentation",
-        creator: "Christian Huetter",
-        status: "To Do",
-      },
-    ]
-    return testData
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+        },
+      }
+    )
+
+    const data = await response.json()
+
+    const sprints: Sprint[] = data.values.map(
+      (
+        element: {
+          id: number
+          state: string
+          name: string
+        },
+        index: number
+      ) => ({
+        sprintId: element.id,
+        sprintName: element.name,
+        sprintType: element.state,
+        index,
+      })
+    )
+    return sprints
   }
 }
 
