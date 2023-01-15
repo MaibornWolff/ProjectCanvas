@@ -20,37 +20,25 @@ export function BacklogView() {
       `${import.meta.env.VITE_EXTENDER}/allSprints?BoardId=${BoardId}`
     ).then(async (response) => {
       const sprints = await response.json()
-      const sprintsArray = await Promise.all(
-        sprints.map(
-          // eslint-disable-next-line prefer-arrow-callback,
-          async function filter(element: {
-            sprintId: number
-            sprintName: string
-          }) {
-            const request = await fetch(
-              `${import.meta.env.VITE_EXTENDER}/getIssueForSprint?sprintId=${
-                element.sprintId
-              }`
-            )
-            const jsonPromise = await request.json()
-
-            return [
-              element.sprintName,
-              { id: element.sprintName, list: jsonPromise },
-            ]
-          }
-        )
+      const sprintsArray = sprints.map(
+        (element: { sprintId: number; sprintName: string }) => [
+          element.sprintName,
+          { id: element.sprintName, list: [] },
+        ]
       )
 
       await fetch(
         `${import.meta.env.VITE_EXTENDER}/pbis?project=${projectName}`
       ).then(async (result) => {
         const pbis = await result.json()
-        pbis.map() // DELETE
+
+        // console.log(sprintsArray)
+
         const map = new Map(sprintsArray)
+        // console.log(map)
 
         const map2 = new Map([
-          ["todo", { id: "todo", list: [] }],
+          ["todo", { id: "todo", list: pbis }],
           ["done", { id: "done", list: [] }],
         ])
 
