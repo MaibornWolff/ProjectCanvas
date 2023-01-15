@@ -156,10 +156,8 @@ class JiraServerProvider implements ProviderApi {
   }
 
   async getPbisForSprint(sprintId: number): Promise<Issue[]> {
-    console.log(sprintId)
-
     const response = await fetch(
-      `http://${this.requestBody.url}/rest/agile/1.0/board/${sprintId}/sprint`,
+      `http://${this.requestBody.url}/rest/agile/1.0/sprint/${sprintId}/issue`,
       {
         method: "GET",
         headers: {
@@ -172,7 +170,6 @@ class JiraServerProvider implements ProviderApi {
     )
 
     const data = await response.json()
-    console.log(data)
 
     const pbis: Issue[] = data.issues.map(
       (
@@ -193,7 +190,6 @@ class JiraServerProvider implements ProviderApi {
         index,
       })
     )
-
     return pbis
   }
 
