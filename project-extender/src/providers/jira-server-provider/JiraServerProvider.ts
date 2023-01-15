@@ -112,34 +112,43 @@ class JiraServerProvider implements ProviderApi {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getPbis(projectToGet: string): Promise<Issue[]> {
-    // console.log(projectToGet)
-    const testData = [
+    const response = await fetch(
+      `http://${this.requestBody.url}/rest/api/2/search?jql=project=${projectToGet}`,
       {
-        key: "CANVAS-2",
-        summary: "Setup Project",
-        creator: "Enrico Chies",
-        status: "Done",
-      },
-      {
-        key: "CANVAS-8",
-        summary: "Split Ansicht (Project Canvas)",
-        creator: "Christian Huetter",
-        status: "To Do",
-      },
-      {
-        key: "CANVAS-19",
-        summary: "Project Specifications",
-        creator: "Christian Huetter",
-        status: "Done",
-      },
-      {
-        key: "CANVAS-18",
-        summary: "Dokumentation",
-        creator: "Christian Huetter",
-        status: "To Do",
-      },
-    ]
-    return testData
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+        },
+      }
+    )
+
+    const data = await response.json()
+
+    const pbis: Issue[] = data.issues.map(
+      (
+        element: {
+          key: string
+          fields: {
+            summary: string
+            creator: { displayName: string }
+            status: { name: string }
+          }
+        },
+        index: number
+      ) => ({
+        pbiKey: element.key,
+        summary: element.fields.summary,
+        creator: element.fields.creator.displayName,
+        status: element.fields.status.name,
+        index,
+      })
+    )
+
+    console.log(pbis)
+    return pbis
   }
 }
 

@@ -1,4 +1,4 @@
-import { IssueData } from "./schema"
+import { Issue } from "./schema"
 
 export interface BasicLoginOptions {
   url: string
@@ -21,7 +21,7 @@ export interface ProviderApi {
   isLoggedIn(): Promise<void>
   getProjects(): Promise<{ name: string; key: string }[]>
   logout(): Promise<void>
-  getPbis(projectToGet: string): Promise<IssueData>
+  getPbis(projectToGet: string): Promise<Issue[]>
 }
 
 export abstract class ProviderCreator {

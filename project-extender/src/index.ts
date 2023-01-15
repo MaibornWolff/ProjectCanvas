@@ -103,10 +103,9 @@ server.get(
     }>,
     reply
   ) => {
-    const projectToGet = req.query.project
+    // const projectToGet = req.query.project
     // console.log("logging the querystring")
-    // console.log(projectToGet)
     // console.log("logging the querystring")
-    reply.send(await pbiProvider.getPbis(projectToGet))
+    reply.send(await pbiProvider.getPbis("oussema"))
   }
 )
