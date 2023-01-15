@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { create } from "zustand"
 import {
   createStyles,
@@ -134,6 +135,7 @@ export function ProjectsTable({ data }: ProjectsTableProps) {
   const [sortBy, setSortBy] = useState<keyof ProjectData | null>(null)
   const [reverseSortDirection, setReverseSortDirection] = useState(false)
   const { setSelectedProject } = useProjectStore()
+  const navigate = useNavigate()
 
   useEffect(() => {
     // Initialize sortedData with the sorted and filtered data
@@ -159,8 +161,8 @@ export function ProjectsTable({ data }: ProjectsTableProps) {
   }
 
   const rowOnClick = (row: ProjectData) => {
-    // TODO: implement navigate
     setSelectedProject(row)
+    navigate("/backlogview")
   }
 
   const rows = sortedData.map((row) => (
