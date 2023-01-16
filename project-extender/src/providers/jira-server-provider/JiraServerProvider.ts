@@ -127,9 +127,12 @@ class JiraServerProvider implements ProviderApi {
     )
   }
 
-  async getPbisForSprint(sprintId: number): Promise<Issue[]> {
+  async getPbisForSprint(
+    sprintId: number,
+    projectToGet: string
+  ): Promise<Issue[]> {
     return this.fetchIssues(
-      `http://${this.requestBody.url}/rest/agile/1.0/sprint/${sprintId}/issue`
+      `http://${this.requestBody.url}/rest/api/2/search?jql=sprint=${sprintId} AND project=${projectToGet}`
     )
   }
 

@@ -17,8 +17,8 @@ interface LoginOptions {
 }
 
 export interface ProviderApi {
-  getPbisWithoutSprints(projectId: string): Promise<Issue[]>
-  getPbisForSprint(sprintId: number): Promise<Issue[]>
+  getPbisWithoutSprints(projectToGet: string): Promise<Issue[]>
+  getPbisForSprint(sprintId: number, projectToGet: string): Promise<Issue[]>
   login(loginOptions: LoginOptions): Promise<void>
   isLoggedIn(): Promise<void>
   getProjects(): Promise<{ name: string; key: string }[]>

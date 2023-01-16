@@ -6,12 +6,6 @@ import { Issue, FetchedProject, Sprint } from "../base-provider/schema"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
-  getSpints(BoardId: number): Promise<Sprint[]> {
-    console.log(BoardId)
-
-    throw new Error("Method not implemented.")
-  }
-
   public accessToken: string | undefined
 
   private cloudID = ""
@@ -121,19 +115,82 @@ class JiraCloudProvider implements ProviderApi {
     return pbis
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getPbisWithoutSprints(projectId: string): Promise<Issue[]> {
-    throw new Error("Method not implemented.")
+  async getSprints(boardId: number): Promise<Sprint[]> {
+    const response = await fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/board/${boardId}/sprint`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      }
+    )
+
+    const data = await response.json()
+
+    const sprints: Sprint[] = data.values.map(
+      (
+        element: {
+          id: number
+          state: string
+          name: string
+        },
+        index: number
+      ) => ({
+        sprintId: element.id,
+        sprintName: element.name,
+        sprintType: element.state,
+        index,
+      })
+    )
+    return sprints
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getSprints(BoardId: number): Promise<Sprint[]> {
-    throw new Error("Method not implemented.")
+  async getPbisWithoutSprints(projectToGet: string): Promise<Issue[]> {
+    return this.fetchIssues(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/search?jql=sprint+is+empty AND project=${projectToGet}`
+    )
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getPbisForSprint(sprintId: number): Promise<Issue[]> {
-    throw new Error("Method not implemented.")
+  async getPbisForSprint(
+    sprintId: number,
+    projectToGet: string
+  ): Promise<Issue[]> {
+    return this.fetchIssues(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/search?jql=sprint=${sprintId} AND project=${projectToGet}`
+    )
+  }
+
+  async fetchIssues(url: string): Promise<Issue[]> {
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+    })
+
+    const data = await response.json()
+
+    const pbis: Issue[] = data.issues.map(
+      (
+        element: {
+          key: string
+          fields: {
+            summary: string
+            creator: { displayName: string }
+            status: { name: string }
+          }
+        },
+        index: number
+      ) => ({
+        pbiKey: element.key,
+        summary: element.fields.summary,
+        creator: element.fields.creator.displayName,
+        status: element.fields.status.name,
+        index,
+      })
+    )
+    return pbis
   }
 }
 
