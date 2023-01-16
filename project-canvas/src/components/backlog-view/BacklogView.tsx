@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { DragDropContext } from "react-beautiful-dnd"
-import { Box, Divider } from "@mantine/core"
+import { Box, Button, Text, Container, Divider, Flex } from "@mantine/core"
+import { IconChevronLeft } from "@tabler/icons"
 import { Column } from "./Column"
 import { Pbi } from "./Item"
 import { resizeDivider } from "./resizeDivider"
 import { onDragEnd } from "./dndHelpers"
+import { useProjectStore } from "../projects-view/ProjectsTable"
 
 export function BacklogView() {
-  const projectName = "oussema"
+  const projectName = useProjectStore((state) => state.selectedProject?.name)
+  const navigate = useNavigate()
   const boardId = 1
   const [columns, setColumns] = useState(new Map())
   const [isLoading, setIsLoading] = useState(true)
@@ -89,27 +93,39 @@ export function BacklogView() {
   return isLoading ? (
     <div>Loading...</div>
   ) : (
-    <Box sx={{ height: "100%", width: "100%", display: "flex" }}>
-      <DragDropContext
-        onDragEnd={(dropResult) =>
-          onDragEnd({ ...dropResult, columns, updateColumn })
-        }
-      >
-        <Box className="left-panel" sx={{ padding: "5px", width: "50%" }}>
-          <Column col={columns.get("todo")!} />
-        </Box>
-        <Divider
-          className="resize-handle"
-          size="xl"
-          orientation="vertical"
-          sx={{
-            cursor: "col-resize",
-          }}
-        />
-        <Box className="right-panel" sx={{ padding: "5px", width: "50%" }}>
-          {sprints}
-        </Box>
-      </DragDropContext>
-    </Box>
+    <Container>
+      <Flex align="center" gap="xl">
+        <Button
+          leftIcon={<IconChevronLeft />}
+          onClick={() => navigate("/projectsview")}
+          sx={{ flex: 1 }}
+        >
+          Back
+        </Button>
+        <Text sx={{ flex: 2 }}>project: {projectName}</Text>
+      </Flex>
+      <Box sx={{ height: "100%", width: "100%", display: "flex" }}>
+        <DragDropContext
+          onDragEnd={(dropResult) =>
+            onDragEnd({ ...dropResult, columns, updateColumn })
+          }
+        >
+          <Box className="left-panel" sx={{ padding: "5px", width: "50%" }}>
+            <Column col={columns.get("todo")!} />
+          </Box>
+          <Divider
+            className="resize-handle"
+            size="xl"
+            orientation="vertical"
+            sx={{
+              cursor: "col-resize",
+            }}
+          />
+          <Box className="right-panel" sx={{ padding: "5px", width: "50%" }}>
+            {sprints}
+          </Box>
+        </DragDropContext>
+      </Box>
+    </Container>
   )
 }

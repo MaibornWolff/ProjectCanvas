@@ -103,9 +103,6 @@ server.get(
     }>,
     reply
   ) => {
-    // const projectToGet = req.query.project
-    // console.log("logging the querystring")
-    // console.log("logging the querystring")
     reply.send(await pbiProvider.getPbis(req.query.project))
   }
 )

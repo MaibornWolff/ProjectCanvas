@@ -6,12 +6,6 @@ import { Issue, FetchedProject, Sprint } from "../base-provider/schema"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
-  getPbisForSprint(sprintId: number): Promise<Issue[]> {
-    console.log(sprintId)
-
-    throw new Error("Method not implemented.")
-  }
-
   getSpints(BoardId: number): Promise<Sprint[]> {
     console.log(BoardId)
 
@@ -52,7 +46,6 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async isLoggedIn() {
-    // TODO: Make sure that it is valid too
     return new Promise<void>((resolve, reject) => {
       if (this.accessToken !== undefined) {
         resolve()
@@ -125,19 +118,22 @@ class JiraCloudProvider implements ProviderApi {
       })
     )
 
-    // console.log(pbis)
     return pbis
+  }
 
-    // const testData = {
-    //   data: [
-    //     { position: 6, mass: 12.011, symbol: "C", name: "Carbon" },
-    //     { position: 7, mass: 14.007, symbol: "N", name: "Nitrogen" },
-    //     { position: 39, mass: 88.906, symbol: "Y", name: "Yttrium" },
-    //     { position: 56, mass: 137.33, symbol: "Ba", name: "Barium" },
-    //     { position: 58, mass: 140.12, symbol: "Ce", name: "Cerium" },
-    //   ],
-    // }
-    // return { data: testData }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getPbisWithoutSprints(projectId: string): Promise<Issue[]> {
+    throw new Error("Method not implemented.")
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getSprints(BoardId: number): Promise<Sprint[]> {
+    throw new Error("Method not implemented.")
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getPbisForSprint(sprintId: number): Promise<Issue[]> {
+    throw new Error("Method not implemented.")
   }
 }
 
