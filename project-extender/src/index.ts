@@ -121,11 +121,16 @@ server.get(
   "/getIssueForSprint",
   async (
     req: FastifyRequest<{
-      Querystring: { sprintId: number }
+      Querystring: { sprintId: number; projectName: string }
     }>,
     reply
   ) => {
-    reply.send(await pbiProvider.getPbisForSprint(req.query.sprintId))
+    reply.send(
+      await pbiProvider.getPbisForSprint(
+        req.query.sprintId,
+        req.query.projectName
+      )
+    )
   }
 )
 server.get(
@@ -137,5 +142,16 @@ server.get(
     reply
   ) => {
     reply.send(await pbiProvider.getPbisWithoutSprints(req.query.projectId))
+  }
+)
+server.get(
+  "/getBoardIds",
+  async (
+    req: FastifyRequest<{
+      Querystring: { projectKey: string }
+    }>,
+    reply
+  ) => {
+    reply.send(await pbiProvider.getBoardIds(req.query.projectKey))
   }
 )

@@ -69,6 +69,28 @@ class JiraServerProvider implements ProviderApi {
     })
   }
 
+  async getBoardIds(projectKey: string): Promise<number[]> {
+    const response = await fetch(
+      `http://${this.requestBody.url}/rest/agile/1.0/board?projectKeyOrId=${projectKey}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+        },
+      }
+    )
+
+    const data = await response.json()
+
+    const boardIds: number[] = data.values.map(
+      (element: { id: number; name: string }) => element.id
+    )
+    return boardIds
+  }
+
   async getProjects(): Promise<ProjectData[]> {
     const response = await fetch(
       `http://${this.requestBody.url}/rest/api/2/project?expand=lead,description`,

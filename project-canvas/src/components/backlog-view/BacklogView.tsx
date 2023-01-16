@@ -12,7 +12,7 @@ import { useProjectStore } from "../projects-view/ProjectsTable"
 export function BacklogView() {
   const projectName = useProjectStore((state) => state.selectedProject?.name)
   const navigate = useNavigate()
-  const boardId = 1
+  const boardIds = useProjectStore((state) => state.selectedProjectBoards)
   const [columns, setColumns] = useState(new Map())
   const [isLoading, setIsLoading] = useState(true)
   const updateColumn = (key: string, value: { id: string; list: Pbi[] }) => {
@@ -22,7 +22,7 @@ export function BacklogView() {
   const getPbis = async () => {
     // Fetch All Sprints to Display them
     await fetch(
-      `${import.meta.env.VITE_EXTENDER}/allSprints?boardId=${boardId}`
+      `${import.meta.env.VITE_EXTENDER}/allSprints?boardId=${boardIds[0]}`
     ).then(async (response) => {
       // sprintsAsArray = sprint[]
       const sprintsAsArray = await response.json()
@@ -33,7 +33,7 @@ export function BacklogView() {
             const pbisForSprintsResponse = await fetch(
               `${import.meta.env.VITE_EXTENDER}/getIssueForSprint?sprintId=${
                 sprint.sprintId
-              }`
+              }&projectName=${projectName}`
             )
             const pbisForSprints = await pbisForSprintsResponse.json()
             return [
@@ -79,6 +79,7 @@ export function BacklogView() {
       })
     })
   }
+
   useEffect(() => {
     getPbis()
   }, [])
