@@ -17,13 +17,14 @@ interface LoginOptions {
 }
 
 export interface ProviderApi {
+  getPbisWithoutSprints(projectId: string): Promise<Issue[]>
   getPbisForSprint(sprintId: number): Promise<Issue[]>
   login(loginOptions: LoginOptions): Promise<void>
   isLoggedIn(): Promise<void>
   getProjects(): Promise<{ name: string; key: string }[]>
   logout(): Promise<void>
   getPbis(projectToGet: string): Promise<Issue[]>
-  getSpints(BoardId: number): Promise<Sprint[]>
+  getSprints(BoardId: number): Promise<Sprint[]>
 }
 
 export abstract class ProviderCreator {

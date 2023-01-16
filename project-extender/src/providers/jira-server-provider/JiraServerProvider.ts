@@ -115,59 +115,34 @@ class JiraServerProvider implements ProviderApi {
     })
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async getPbisWithoutSprints(projectToGet: string): Promise<Issue[]> {
+    return this.fetchIssues(
+      `http://${this.requestBody.url}/rest/api/2/search?jql=sprint+is+empty AND project=${projectToGet}`
+    )
+  }
+
   async getPbis(projectToGet: string): Promise<Issue[]> {
-    const response = await fetch(
-      `http://${this.requestBody.url}/rest/api/2/search?jql=project=${projectToGet}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Basic ${Buffer.from(
-            `${this.requestBody.username}:${this.requestBody.password}`
-          ).toString("base64")}`,
-        },
-      }
+    return this.fetchIssues(
+      `http://${this.requestBody.url}/rest/api/2/search?jql=project=${projectToGet}`
     )
-
-    const data = await response.json()
-
-    const pbis: Issue[] = data.issues.map(
-      (
-        element: {
-          key: string
-          fields: {
-            summary: string
-            creator: { displayName: string }
-            status: { name: string }
-          }
-        },
-        index: number
-      ) => ({
-        pbiKey: element.key,
-        summary: element.fields.summary,
-        creator: element.fields.creator.displayName,
-        status: element.fields.status.name,
-        index,
-      })
-    )
-
-    return pbis
   }
 
   async getPbisForSprint(sprintId: number): Promise<Issue[]> {
-    const response = await fetch(
-      `http://${this.requestBody.url}/rest/agile/1.0/sprint/${sprintId}/issue`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Basic ${Buffer.from(
-            `${this.requestBody.username}:${this.requestBody.password}`
-          ).toString("base64")}`,
-        },
-      }
+    return this.fetchIssues(
+      `http://${this.requestBody.url}/rest/agile/1.0/sprint/${sprintId}/issue`
     )
+  }
+
+  async fetchIssues(url: string): Promise<Issue[]> {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Basic ${Buffer.from(
+          `${this.requestBody.username}:${this.requestBody.password}`
+        ).toString("base64")}`,
+      },
+    })
 
     const data = await response.json()
 
@@ -193,10 +168,9 @@ class JiraServerProvider implements ProviderApi {
     return pbis
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async getSpints(BoardId: number): Promise<Sprint[]> {
+  async getSprints(boardId: number): Promise<Sprint[]> {
     const response = await fetch(
-      `http://${this.requestBody.url}/rest/agile/1.0/board/1/sprint`,
+      `http://${this.requestBody.url}/rest/agile/1.0/board/${boardId}/sprint`,
       {
         method: "GET",
         headers: {

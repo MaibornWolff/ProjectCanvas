@@ -7,8 +7,8 @@ import { resizeDivider } from "./resizeDivider"
 import { onDragEnd } from "./dndHelpers"
 
 export function BacklogView() {
-  const projectName = "Canvas"
-  const BoardId = 1
+  const projectName = "oussema"
+  const boardId = 1
   const [columns, setColumns] = useState(new Map())
   const [isLoading, setIsLoading] = useState(true)
   const updateColumn = (key: string, value: { id: string; list: Pbi[] }) => {
@@ -16,27 +16,30 @@ export function BacklogView() {
   }
 
   const getPbis = async () => {
+    // Fetch All Sprints to Display them
     await fetch(
-      `${import.meta.env.VITE_EXTENDER}/allSprints?BoardId=${BoardId}`
+      `${import.meta.env.VITE_EXTENDER}/allSprints?boardId=${boardId}`
     ).then(async (response) => {
-      const sprints = await response.json()
-      const sprintsArray = await Promise.all(
-        sprints.map(
-          // eslint-disable-next-line prefer-arrow-callback,
-          async function filter(element: {
-            sprintId: number
-            sprintName: string
-          }) {
-            const request = await fetch(
+      // sprintsAsArray = sprint[]
+      const sprintsAsArray = await response.json()
+      // sprintsArrayToMap = transform the sprintsAsArray in this Form [SprintName , {sprintName, list : Pbis of that Sprint that not Done}]
+      const sprintsArrayToMap = await Promise.all(
+        sprintsAsArray.map(
+          async (sprint: { sprintId: number; sprintName: string }) => {
+            const pbisForSprintsResponse = await fetch(
               `${import.meta.env.VITE_EXTENDER}/getIssueForSprint?sprintId=${
-                element.sprintId
+                sprint.sprintId
               }`
             )
-            const jsonPromise = await request.json()
-
+            const pbisForSprints = await pbisForSprintsResponse.json()
             return [
-              element.sprintName,
-              { id: element.sprintName, list: jsonPromise },
+              sprint.sprintName,
+              {
+                id: sprint.sprintName,
+                list: pbisForSprints.filter(
+                  (pbi: { status: string }) => pbi.status !== "Done"
+                ),
+              },
             ]
           }
         )
@@ -45,16 +48,27 @@ export function BacklogView() {
       await fetch(
         `${import.meta.env.VITE_EXTENDER}/pbis?project=${projectName}`
       ).then(async (result) => {
-        const pbis = await result.json()
-        const map = new Map(sprintsArray)
-
-        const map2 = new Map([
-          ["todo", { id: "todo", list: pbis }],
-          ["done", { id: "done", list: [] }],
+        const allPbisForProject = await result.json()
+        const Sprintsmap = new Map(sprintsArrayToMap)
+        const todoPbisResponse = await fetch(
+          `${
+            import.meta.env.VITE_EXTENDER
+          }/getIssueWithoutSprint?projectId=${projectName}`
+        )
+        const todoPbis = await todoPbisResponse.json()
+        const donePbis = allPbisForProject.filter(
+          (pbi: { status: string }) => pbi.status === "Done"
+        )
+        const todoDoneMap = new Map([
+          ["todo", { id: "todo", list: todoPbis }],
+          ["done", { id: "done", list: donePbis }],
         ])
 
         setColumns(
-          new Map([...Array.from(map2.entries()), ...Array.from(map.entries())])
+          new Map([
+            ...Array.from(Sprintsmap.entries()),
+            ...Array.from(todoDoneMap.entries()),
+          ])
         )
 
         setIsLoading(false)
@@ -69,6 +83,9 @@ export function BacklogView() {
     resizeDivider()
   }, [isLoading])
 
+  const sprints = Array.from(columns.keys())
+    .filter((key) => key !== "todo")
+    .map((sprint) => <Column col={columns.get(sprint)!} />)
   return isLoading ? (
     <div>Loading...</div>
   ) : (
@@ -90,10 +107,7 @@ export function BacklogView() {
           }}
         />
         <Box className="right-panel" sx={{ padding: "5px", width: "50%" }}>
-          <Column col={columns.get("OUS Sprint 1")!} />
-          <Column col={columns.get("OUS Sprint 2")!} />
-          <Column col={columns.get("OUS Sprint 3")!} />
-          <Column col={columns.get("done")!} />
+          {sprints}
         </Box>
       </DragDropContext>
     </Box>
