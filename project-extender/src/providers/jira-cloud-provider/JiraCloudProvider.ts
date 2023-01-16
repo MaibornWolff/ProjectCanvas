@@ -192,6 +192,25 @@ class JiraCloudProvider implements ProviderApi {
     )
     return pbis
   }
+
+  async getBoardIds(projectKey: string): Promise<number[]> {
+    const response = await fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/board?projectKeyOrId=${projectKey}`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      }
+    )
+
+    const data = await response.json()
+
+    const boardIds: number[] = data.values.map(
+      (element: { id: number; name: string }) => element.id
+    )
+    return boardIds
+  }
 }
 
 export class JiraCloudProviderCreator extends ProviderCreator {
