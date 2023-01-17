@@ -1,0 +1,9 @@
+{
+  "choseProvider": "Please choose a Provider",
+  "url": "Instance URL",
+  "username": "Username",
+  "password": "Password",
+  "button": {
+    "goBack": "Go Back"
+  }
+}
