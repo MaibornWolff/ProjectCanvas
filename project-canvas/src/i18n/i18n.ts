@@ -28,6 +28,7 @@ i18next.use(initReactI18next).init({
   fallbackLng: "en",
   defaultNS,
   resources,
-  compatibilityJSON: "v3",
+  compatibilityJSON: "v4",
+  returnNull: false,
   ns: ["login", "backlogView", "projectsView"],
 })
