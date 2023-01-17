@@ -103,10 +103,55 @@ server.get(
     }>,
     reply
   ) => {
-    const projectToGet = req.query.project
-    // console.log("logging the querystring")
-    // console.log(projectToGet)
-    // console.log("logging the querystring")
-    reply.send(await pbiProvider.getPbis(projectToGet))
+    reply.send(await pbiProvider.getPbis(req.query.project))
+  }
+)
+server.get(
+  "/allSprints",
+  async (
+    req: FastifyRequest<{
+      Querystring: { boardId: number }
+    }>,
+    reply
+  ) => {
+    reply.send(await pbiProvider.getSprints(req.query.boardId))
+  }
+)
+server.get(
+  "/getIssueForSprint",
+  async (
+    req: FastifyRequest<{
+      Querystring: { sprintId: number; projectName: string }
+    }>,
+    reply
+  ) => {
+    reply.send(
+      await pbiProvider.getPbisForSprint(
+        req.query.sprintId,
+        req.query.projectName
+      )
+    )
+  }
+)
+server.get(
+  "/getIssueWithoutSprint",
+  async (
+    req: FastifyRequest<{
+      Querystring: { projectId: string }
+    }>,
+    reply
+  ) => {
+    reply.send(await pbiProvider.getPbisWithoutSprints(req.query.projectId))
+  }
+)
+server.get(
+  "/getBoardIds",
+  async (
+    req: FastifyRequest<{
+      Querystring: { projectKey: string }
+    }>,
+    reply
+  ) => {
+    reply.send(await pbiProvider.getBoardIds(req.query.projectKey))
   }
 )

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { create } from "zustand"
 import {
   createStyles,
@@ -62,12 +63,17 @@ interface ThProps {
 }
 export interface ProjectStore {
   selectedProject: ProjectData | null
+  selectedProjectBoards: number[]
   setSelectedProject: (project: ProjectData) => void
+  setSelectedProjectBoards: (boards: number[]) => void
 }
 
 export const useProjectStore = create<ProjectStore>()((set) => ({
   // initial state is null
   selectedProject: null,
+  selectedProjectBoards: [],
+  setSelectedProjectBoards: (boards: number[]) =>
+    set(() => ({ selectedProjectBoards: boards })),
   setSelectedProject: (row: ProjectData | null) =>
     set(() => ({ selectedProject: row })),
 }))
@@ -133,7 +139,8 @@ export function ProjectsTable({ data }: ProjectsTableProps) {
   const [sortedData, setSortedData] = useState(data)
   const [sortBy, setSortBy] = useState<keyof ProjectData | null>(null)
   const [reverseSortDirection, setReverseSortDirection] = useState(false)
-  const { setSelectedProject } = useProjectStore()
+  const { setSelectedProject, setSelectedProjectBoards } = useProjectStore()
+  const navigate = useNavigate()
 
   useEffect(() => {
     // Initialize sortedData with the sorted and filtered data
@@ -157,10 +164,17 @@ export function ProjectsTable({ data }: ProjectsTableProps) {
       sortData(data, { sortBy, reversed: reverseSortDirection, search: value })
     )
   }
-
-  const rowOnClick = (row: ProjectData) => {
-    // TODO: implement navigate
+  const getBoardIds = async (projectKey: string) => {
+    const BoardIdsResponse = await fetch(
+      `${import.meta.env.VITE_EXTENDER}/getBoardIds?projectKey=${projectKey}`
+    )
+    const BoardIds = await BoardIdsResponse.json()
+    return BoardIds
+  }
+  const rowOnClick = async (row: ProjectData) => {
     setSelectedProject(row)
+    setSelectedProjectBoards(await getBoardIds(row.key))
+    navigate("/backlogview")
   }
 
   const rows = sortedData.map((row) => (
