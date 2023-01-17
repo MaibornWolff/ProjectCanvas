@@ -1,20 +1,33 @@
-import i18n from "i18next"
+import i18next from "i18next"
 import { initReactI18next } from "react-i18next"
 
-import en from "./translations/en.json"
-import de from "./translations/de.json"
+import backlogViewEn from "./translations/en/backlogView.json"
+import backlogViewDe from "./translations/de/backlogView.json"
+import loginEn from "./translations/en/login.json"
+import loginDe from "./translations/de/login.json"
+import projectViewEn from "./translations/en/projectsView.json"
+import projectViewDe from "./translations/de/projectsView.json"
 
-i18n
-  .use(initReactI18next) // passes i18n down to react-i18next
-  .init({
-    resources: {
-      en: {
-        translation: en,
-      },
-      de: {
-        translation: de,
-      },
-    },
-    lng: "de", // set the default language
-    fallbackLng: "en", // set the fallback language
-  })
+export const defaultNS = "login"
+
+export const resources = {
+  en: {
+    backlogView: backlogViewEn,
+    login: loginEn,
+    projectsView: projectViewEn,
+  },
+  de: {
+    backlogView: backlogViewDe,
+    login: loginDe,
+    projectsView: projectViewDe,
+  },
+} as const
+
+i18next.use(initReactI18next).init({
+  lng: "en",
+  fallbackLng: "en",
+  defaultNS,
+  resources,
+  compatibilityJSON: "v3",
+  ns: ["login", "backlogView", "projectsView"],
+})
