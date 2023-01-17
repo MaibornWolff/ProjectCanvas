@@ -11,7 +11,7 @@ export function LoginForm({
   goBack: () => void
   onSuccess: () => void
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation("login")
   const form = useForm<LoginFormValues>({
     initialValues: {
       url: "localhost:8080",
@@ -28,20 +28,20 @@ export function LoginForm({
       <Stack>
         <TextInput
           required
-          label={t("Login-Server.url")}
-          placeholder={t("Login-Server.url")}
+          label={t("url")}
+          placeholder={t("url")}
           {...form.getInputProps("url")}
         />
         <TextInput
           required
-          label={t("Login-Server.username")}
-          placeholder={t("Login-Server.username")}
+          label={t("username")}
+          placeholder={t("username")}
           {...form.getInputProps("username")}
         />
         <PasswordInput
           required
-          label={t("Login-Server.password")}
-          placeholder={t("Login-Server.password")}
+          label={t("password")}
+          placeholder={t("password")}
           {...form.getInputProps("password")}
         />
       </Stack>
@@ -56,7 +56,7 @@ export function LoginForm({
           Log in
         </Button>
         <Button variant="outline" fullWidth color="dark" onClick={goBack}>
-          {t("Common.btn-goBack")}
+          {t("button.goBack")}
         </Button>
       </Group>
     </form>

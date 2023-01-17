@@ -13,7 +13,7 @@ export function Login() {
   const navigateTo = useNavigate()
   const onSuccess = () => navigateTo("/projectsview")
   const goBack = () => setProviderLogin("")
-  const { t } = useTranslation()
+  const { t } = useTranslation("login")
 
   return (
     <Container
@@ -46,7 +46,7 @@ export function Login() {
           <>
             <Divider
               my="lg"
-              label={t("Login.choseProvider")}
+              label={t("choseProvider")}
               labelPosition="center"
             />
             <Button
