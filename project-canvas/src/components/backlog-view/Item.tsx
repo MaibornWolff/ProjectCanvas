@@ -1,4 +1,4 @@
-import { Box } from "@mantine/core"
+import { Box, Text } from "@mantine/core"
 import { Draggable } from "react-beautiful-dnd"
 
 export interface Pbi {
@@ -9,7 +9,7 @@ export interface Pbi {
   index: number
 }
 
-export function Item({ pbiKey, summary, index }: Pbi) {
+export function Item({ pbiKey, summary, index, status }: Pbi) {
   return (
     <Draggable key={pbiKey} draggableId={pbiKey} index={index}>
       {(provided) => (
@@ -30,7 +30,9 @@ export function Item({ pbiKey, summary, index }: Pbi) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          {summary}
+          <Text>{summary}</Text>
+          <Text>{status}</Text>
+          <Text>{pbiKey}</Text>
         </Box>
       )}
     </Draggable>

@@ -166,7 +166,7 @@ export function ProjectsTable({ data }: ProjectsTableProps) {
   }
   const getBoardIds = async (projectKey: string) => {
     const BoardIdsResponse = await fetch(
-      `${import.meta.env.VITE_EXTENDER}/getBoardIds?projectKey=${projectKey}`
+      `${import.meta.env.VITE_EXTENDER}/getBoardIds?project=${projectKey}`
     )
     const BoardIds = await BoardIdsResponse.json()
     return BoardIds

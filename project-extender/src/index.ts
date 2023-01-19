@@ -96,16 +96,17 @@ server.get("/projects", async (_, reply) => {
 })
 
 server.get(
-  "/pbis",
+  "/getBoardIds",
   async (
     req: FastifyRequest<{
       Querystring: { project: string }
     }>,
     reply
   ) => {
-    reply.send(await pbiProvider.getPbis(req.query.project))
+    reply.send(await pbiProvider.getBoardIds(req.query.project))
   }
 )
+
 server.get(
   "/allSprints",
   async (
@@ -117,41 +118,70 @@ server.get(
     reply.send(await pbiProvider.getSprints(req.query.boardId))
   }
 )
+
+server.get(
+  "/pbis",
+  async (
+    req: FastifyRequest<{
+      Querystring: { project: string }
+    }>,
+    reply
+  ) => {
+    reply.send(await pbiProvider.getPbis(req.query.project))
+  }
+)
+
 server.get(
   "/getIssueForSprint",
   async (
     req: FastifyRequest<{
-      Querystring: { sprintId: number; projectName: string }
+      Querystring: { sprintId: number; project: string }
     }>,
     reply
   ) => {
     reply.send(
-      await pbiProvider.getPbisForSprint(
-        req.query.sprintId,
-        req.query.projectName
-      )
+      await pbiProvider.getPbisForSprint(req.query.sprintId, req.query.project)
     )
   }
 )
+
 server.get(
   "/getIssueWithoutSprint",
   async (
     req: FastifyRequest<{
-      Querystring: { projectId: string }
+      Querystring: { project: string }
     }>,
     reply
   ) => {
-    reply.send(await pbiProvider.getPbisWithoutSprints(req.query.projectId))
+    reply.send(await pbiProvider.getPbisWithoutSprints(req.query.project))
   }
 )
+
 server.get(
-  "/getBoardIds",
+  "/getDonePBIsForProject",
   async (
     req: FastifyRequest<{
-      Querystring: { projectKey: string }
+      Querystring: { project: string }
     }>,
     reply
   ) => {
-    reply.send(await pbiProvider.getBoardIds(req.query.projectKey))
+    reply.send(await pbiProvider.getDonePBIsForProject(req.query.project))
+  }
+)
+
+server.get(
+  "/getBacklogPbisForProject",
+  async (
+    req: FastifyRequest<{
+      Querystring: { project: string; boardId: number }
+    }>,
+    reply
+  ) => {
+    reply.send(
+      await pbiProvider.getBacklogPbisForProject(
+        req.query.project,
+        req.query.boardId
+      )
+    )
   }
 )

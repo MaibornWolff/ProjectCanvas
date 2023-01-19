@@ -20,6 +20,8 @@ export function handleOAuth2(win) {
     "manage:jira-webhook",
     "manage:jira-data-provider",
     "read:sprint:jira-software",
+    "read:issue-details:jira",
+    "read:board-scope:jira-software",
   ].join("%20")
   const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
   const AUDIENCE = "api.atlassian.com"

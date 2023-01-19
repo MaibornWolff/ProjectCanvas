@@ -69,26 +69,24 @@ class JiraServerProvider implements ProviderApi {
     })
   }
 
-  async getBoardIds(projectKey: string): Promise<number[]> {
-    const response = await fetch(
-      `http://${this.requestBody.url}/rest/agile/1.0/board?projectKeyOrId=${projectKey}`,
-      {
-        method: "GET",
+  async logout(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(`http://${this.requestBody.url}/rest/auth/1/session`, {
+        method: "DELETE",
         headers: {
-          Accept: "application/json",
           Authorization: `Basic ${Buffer.from(
             `${this.requestBody.username}:${this.requestBody.password}`
           ).toString("base64")}`,
         },
-      }
-    )
-
-    const data = await response.json()
-
-    const boardIds: number[] = data.values.map(
-      (element: { id: number; name: string }) => element.id
-    )
-    return boardIds
+      }).then((res) => {
+        if (res.status === 204) {
+          resolve()
+        }
+        if (res.status === 401) {
+          reject(new Error("user not authenticated"))
+        }
+      })
+    })
   }
 
   async getProjects(): Promise<ProjectData[]> {
@@ -117,45 +115,95 @@ class JiraServerProvider implements ProviderApi {
     return Promise.reject(new Error(response.statusText))
   }
 
-  async logout(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      fetch(`http://${this.requestBody.url}/rest/auth/1/session`, {
-        method: "DELETE",
+  async getBoardIds(project: string): Promise<number[]> {
+    const response = await fetch(
+      `http://${this.requestBody.url}/rest/agile/1.0/board?projectKeyOrId=${project}`,
+      {
+        method: "GET",
         headers: {
+          Accept: "application/json",
           Authorization: `Basic ${Buffer.from(
             `${this.requestBody.username}:${this.requestBody.password}`
           ).toString("base64")}`,
         },
-      }).then((res) => {
-        if (res.status === 204) {
-          resolve()
-        }
-        if (res.status === 401) {
-          reject(new Error("user not authenticated"))
-        }
+      }
+    )
+
+    const data = await response.json()
+
+    const boardIds: number[] = data.values.map(
+      (element: { id: number; name: string }) => element.id
+    )
+    return boardIds
+  }
+
+  async getSprints(boardId: number): Promise<Sprint[]> {
+    const response = await fetch(
+      `http://${this.requestBody.url}/rest/agile/1.0/board/${boardId}/sprint`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+        },
+      }
+    )
+
+    const data = await response.json()
+
+    const sprints: Sprint[] = data.values.map(
+      (
+        element: {
+          id: number
+          state: string
+          name: string
+        },
+        index: number
+      ) => ({
+        sprintId: element.id,
+        sprintName: element.name,
+        sprintType: element.state,
+        index,
       })
-    })
+    )
+    return sprints
   }
 
-  async getPbisWithoutSprints(projectToGet: string): Promise<Issue[]> {
+  async getPbis(project: string): Promise<Issue[]> {
     return this.fetchIssues(
-      `http://${this.requestBody.url}/rest/api/2/search?jql=sprint+is+empty AND project=${projectToGet}`
+      `http://${this.requestBody.url}/rest/api/2/search?jql=project=${project}&maxResults=10000`
     )
   }
 
-  async getPbis(projectToGet: string): Promise<Issue[]> {
+  async getPbisWithoutSprints(project: string): Promise<Issue[]> {
     return this.fetchIssues(
-      `http://${this.requestBody.url}/rest/api/2/search?jql=project=${projectToGet}`
+      `http://${this.requestBody.url}/rest/api/2/search?jql=sprint+is+empty AND project=${project}`
     )
   }
 
-  async getPbisForSprint(
-    sprintId: number,
-    projectToGet: string
+  async getPbisForSprint(sprintId: number, project: string): Promise<Issue[]> {
+    return this.fetchIssues(
+      `http://${this.requestBody.url}/rest/api/2/search?jql=sprint=${sprintId} AND project=${project}`
+    )
+  }
+
+  async getDonePBIsForProject(project: string): Promise<Issue[]> {
+    const response = await this.fetchIssues(
+      `http://${this.requestBody.url}/rest/api/2/search?jql=project=${project} AND status = Done`
+    )
+    return response
+  }
+
+  async getBacklogPbisForProject(
+    project: string,
+    boardId: number
   ): Promise<Issue[]> {
-    return this.fetchIssues(
-      `http://${this.requestBody.url}/rest/api/2/search?jql=sprint=${sprintId} AND project=${projectToGet}`
+    const response = await this.fetchIssues(
+      `http://${this.requestBody.url}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project} AND status != Done`
     )
+    return response
   }
 
   async fetchIssues(url: string): Promise<Issue[]> {
@@ -191,40 +239,6 @@ class JiraServerProvider implements ProviderApi {
       })
     )
     return pbis
-  }
-
-  async getSprints(boardId: number): Promise<Sprint[]> {
-    const response = await fetch(
-      `http://${this.requestBody.url}/rest/agile/1.0/board/${boardId}/sprint`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Basic ${Buffer.from(
-            `${this.requestBody.username}:${this.requestBody.password}`
-          ).toString("base64")}`,
-        },
-      }
-    )
-
-    const data = await response.json()
-
-    const sprints: Sprint[] = data.values.map(
-      (
-        element: {
-          id: number
-          state: string
-          name: string
-        },
-        index: number
-      ) => ({
-        sprintId: element.id,
-        sprintName: element.name,
-        sprintType: element.state,
-        index,
-      })
-    )
-    return sprints
   }
 }
 

@@ -11,9 +11,12 @@ import { useProjectStore } from "../projects-view/ProjectsTable"
 
 export function BacklogView() {
   const projectName = useProjectStore((state) => state.selectedProject?.name)
+  const projectKey = useProjectStore((state) => state.selectedProject?.key)
   const navigate = useNavigate()
   const boardIds = useProjectStore((state) => state.selectedProjectBoards)
-  const [columns, setColumns] = useState(new Map())
+  const [columns, setColumns] = useState(
+    new Map<string, { id: string; list: Pbi[] }>()
+  )
   const [isLoading, setIsLoading] = useState(true)
   const updateColumn = (key: string, value: { id: string; list: Pbi[] }) => {
     setColumns((map) => new Map(map.set(key, value)))
@@ -21,63 +24,55 @@ export function BacklogView() {
 
   const getPbis = async () => {
     // Fetch All Sprints to Display them
-    await fetch(
-      `${import.meta.env.VITE_EXTENDER}/allSprints?boardId=${boardIds[0]}`
-    ).then(async (response) => {
-      // sprintsAsArray = sprint[]
-      const sprintsAsArray = await response.json()
-      // sprintsArrayToMap = transform the sprintsAsArray in this Form [SprintName , {sprintName, list : Pbis of that Sprint that not Done}]
-      const sprintsArrayToMap = await Promise.all(
-        sprintsAsArray.map(
-          async (sprint: { sprintId: number; sprintName: string }) => {
-            const pbisForSprintsResponse = await fetch(
-              `${import.meta.env.VITE_EXTENDER}/getIssueForSprint?sprintId=${
-                sprint.sprintId
-              }&projectName=${projectName}`
-            )
-            const pbisForSprints = await pbisForSprintsResponse.json()
-            return [
-              sprint.sprintName,
-              {
+    await Promise.all(
+      boardIds.map(async (boardId) => {
+        const sprintsResponse = await fetch(
+          `${import.meta.env.VITE_EXTENDER}/allSprints?boardId=${boardId}`
+        )
+        // sprintsAsArray : Sprint[]
+        const sprintsAsArray = await sprintsResponse.json()
+        // sprintsArrayToMap() = transform the sprintsAsArray in this Form [SprintName , {sprintName, list : Pbis of that Sprint that not Done}]
+        await Promise.all(
+          sprintsAsArray.map(
+            async (sprint: { sprintId: number; sprintName: string }) => {
+              const issuesForSprintResponse = await fetch(
+                `${import.meta.env.VITE_EXTENDER}/getIssueForSprint?sprintId=${
+                  sprint.sprintId
+                }&project=${projectKey}`
+              )
+              const issuesForSprints = await issuesForSprintResponse.json()
+              updateColumn(sprint.sprintName, {
                 id: sprint.sprintName,
-                list: pbisForSprints.filter(
+                list: issuesForSprints.filter(
                   (pbi: { status: string }) => pbi.status !== "Done"
                 ),
-              },
-            ]
-          }
+              })
+            }
+          )
         )
-      )
 
-      await fetch(
-        `${import.meta.env.VITE_EXTENDER}/pbis?project=${projectName}`
-      ).then(async (result) => {
-        const allPbisForProject = await result.json()
-        const Sprintsmap = new Map(sprintsArrayToMap)
-        const todoPbisResponse = await fetch(
+        // get backlog for this boardId (unassigned pbis) and Done Pbis
+        const unassignedPbisResponse = await fetch(
           `${
             import.meta.env.VITE_EXTENDER
-          }/getIssueWithoutSprint?projectId=${projectName}`
+          }/getBacklogPbisForProject?project=${projectKey}&boardId=${boardId}`
         )
-        const todoPbis = await todoPbisResponse.json()
-        const donePbis = allPbisForProject.filter(
-          (pbi: { status: string }) => pbi.status === "Done"
-        )
-        const todoDoneMap = new Map([
-          ["todo", { id: "todo", list: todoPbis }],
-          ["done", { id: "done", list: donePbis }],
-        ])
-
-        setColumns(
-          new Map([
-            ...Array.from(Sprintsmap.entries()),
-            ...Array.from(todoDoneMap.entries()),
-          ])
-        )
-
-        setIsLoading(false)
+        // these are all Pbis unassigned to any sprint for the current boardId and project
+        const unassignedPbis = await unassignedPbisResponse.json()
+        updateColumn("Unassigned", { id: "Unassigned", list: unassignedPbis })
       })
-    })
+    )
+
+    const donePbisResponse = await fetch(
+      `${
+        import.meta.env.VITE_EXTENDER
+      }/getDonePBIsForProject?project=${projectKey}`
+    )
+    const donePbis = await donePbisResponse.json()
+
+    updateColumn("Done", { id: "Done", list: donePbis })
+
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -88,9 +83,10 @@ export function BacklogView() {
     resizeDivider()
   }, [isLoading])
 
-  const sprints = Array.from(columns.keys())
-    .filter((key) => key !== "todo")
+  const sprintsAndDone = Array.from(columns.keys())
+    .filter((key) => key !== "Unassigned")
     .map((sprint) => <Column col={columns.get(sprint)!} />)
+
   return isLoading ? (
     <div>Loading...</div>
   ) : (
@@ -112,7 +108,7 @@ export function BacklogView() {
           }
         >
           <Box className="left-panel" sx={{ padding: "5px", width: "50%" }}>
-            <Column col={columns.get("todo")!} />
+            <Column col={columns.get("Unassigned")!} />
           </Box>
           <Divider
             className="resize-handle"
@@ -123,7 +119,7 @@ export function BacklogView() {
             }}
           />
           <Box className="right-panel" sx={{ padding: "5px", width: "50%" }}>
-            {sprints}
+            {sprintsAndDone}
           </Box>
         </DragDropContext>
       </Box>
