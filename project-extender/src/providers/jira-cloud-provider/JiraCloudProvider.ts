@@ -109,21 +109,23 @@ class JiraCloudProvider implements ProviderApi {
 
     const data = await response.json()
 
-    const sprints: Sprint[] = data.values.map(
-      (
-        element: {
-          id: number
-          state: string
-          name: string
-        },
-        index: number
-      ) => ({
-        sprintId: element.id,
-        sprintName: element.name,
-        sprintType: element.state,
-        index,
-      })
-    )
+    const sprints: Sprint[] = data.values
+      .filter((element: { state: string }) => element.state !== "closed")
+      .map(
+        (
+          element: {
+            id: number
+            state: string
+            name: string
+          },
+          index: number
+        ) => ({
+          sprintId: element.id,
+          sprintName: element.name,
+          sprintType: element.state,
+          index,
+        })
+      )
     return sprints
   }
 
@@ -196,6 +198,53 @@ class JiraCloudProvider implements ProviderApi {
       })
     )
     return pbis
+  }
+
+  async moveIssueToSprint(sprint: number, issue: string): Promise<string> {
+    // "rankBeforeIssue": "PR-4",
+    // "rankCustomFieldId": 10521,
+    const bodyData = `{
+      "issues": [
+        ${issue}
+      ]
+    }`
+
+    const response = await fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint/${sprint}/issue`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+        body: bodyData,
+      }
+    )
+
+    const data = await response.json()
+    return data
+  }
+
+  async moveIssueToBacklog(issue: string): Promise<string> {
+    const bodyData = `{
+      "issues": [
+        ${issue}
+      ]
+    }`
+
+    const response = await fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/backlog/issue`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+        body: bodyData,
+      }
+    )
+
+    const data = await response.json()
+    return data
   }
 }
 

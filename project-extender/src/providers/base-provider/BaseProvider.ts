@@ -28,6 +28,8 @@ export interface ProviderApi {
   getBacklogPbisForProject(project: string, boardId: number): Promise<Issue[]>
   getPbisWithoutSprints(project: string): Promise<Issue[]>
   getPbisForSprint(sprintId: number, project: string): Promise<Issue[]>
+  moveIssueToSprint(sprint: number, issue: string): Promise<String>
+  moveIssueToBacklog(issue: string): Promise<String>
 }
 
 export abstract class ProviderCreator {

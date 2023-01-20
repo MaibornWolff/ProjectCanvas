@@ -17,7 +17,7 @@ export function Column({ col }: ColumnProps) {
           <h2>{col.id}</h2>
           <List {...provided.droppableProps} ref={provided.innerRef}>
             {col.list.map((pbi: Pbi, index: number) => (
-              <Item {...pbi} index={index} />
+              <Item {...pbi} index={index} columnId={col.id} />
             ))}
             {provided.placeholder}
           </List>

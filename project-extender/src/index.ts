@@ -91,6 +91,7 @@ server.post<{
       reply.status(401).send()
     })
 })
+
 server.get("/projects", async (_, reply) => {
   reply.send(await pbiProvider.getProjects())
 })
@@ -185,3 +186,53 @@ server.get(
     )
   }
 )
+server.get(
+  "/moveIssueToSprint",
+  async (
+    req: FastifyRequest<{
+      Querystring: { sprint: number; issue: string }
+    }>,
+    reply
+  ) => {
+    reply.send(
+      await pbiProvider.moveIssueToSprint(req.query.sprint, req.query.issue)
+    )
+  }
+)
+
+server.get(
+  "/moveIssueToBacklog",
+  async (
+    req: FastifyRequest<{
+      Querystring: { issue: string }
+    }>,
+    reply
+  ) => {
+    reply.send(await pbiProvider.moveIssueToBacklog(req.query.issue))
+  }
+)
+
+// server.post<{
+//   Body: {
+//     pbiKey: string
+//   }
+// }>("/moveIssueToSprint", async (request, reply) => {
+//   await pbiProvider.moveIssueToSprint().then(() => {
+//     reply.send()
+//   })
+// })
+
+// server.post<{
+//   Body: {
+//     pbiKey: string
+//   }
+// }>("/moveIssueToBacklog", async (request, reply) => {
+//   await pbiProvider
+//     .moveIssueToBacklog()
+//     .then(() => {
+//       reply.status(204).send()
+//     })
+//     .catch(() => {
+//       reply.status(401).send()
+//     })
+// })

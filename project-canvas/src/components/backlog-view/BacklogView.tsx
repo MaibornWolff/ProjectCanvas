@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { DragDropContext } from "react-beautiful-dnd"
-import { Box, Button, Text, Container, Divider, Flex } from "@mantine/core"
+import { Box, Button, Container, Divider, Flex, Title } from "@mantine/core"
 import { IconChevronLeft } from "@tabler/icons"
 import { Column } from "./Column"
 import { Pbi } from "./Item"
@@ -14,13 +14,37 @@ export function BacklogView() {
   const projectKey = useProjectStore((state) => state.selectedProject?.key)
   const navigate = useNavigate()
   const boardIds = useProjectStore((state) => state.selectedProjectBoards)
+  const [isLoading, setIsLoading] = useState(true)
+  // const [initialColumn, setInitialColumn] = useState(
+  //   new Map<string, { id: string; list: Pbi[] }>()
+  // )
+  // const updateInitialColumn = (
+  //   key: string,
+  //   value: { id: string; list: Pbi[] }
+  // ) => {
+  //   setInitialColumn((map) => new Map(map.set(key, value)))
+  // }
+  const [sprints, setSprints] = useState(new Map<string, number>())
+  const updateSprints = (key: string, value: number) => {
+    setSprints((map) => new Map(map.set(key, value)))
+  }
+
   const [columns, setColumns] = useState(
     new Map<string, { id: string; list: Pbi[] }>()
   )
-  const [isLoading, setIsLoading] = useState(true)
   const updateColumn = (key: string, value: { id: string; list: Pbi[] }) => {
     setColumns((map) => new Map(map.set(key, value)))
   }
+  // const movedPbis = new Map<string, { id: string; list: Pbi[] }>()
+  // const [changedColumns, setChangedColumns] = useState(
+  //   new Map<string, { id: string; list: Pbi[] }>()
+  // )
+  // const updateChangedColumn = (
+  //   key: string,
+  //   value: { id: string; list: Pbi[] }
+  // ) => {
+  //   setColumns((map) => new Map(map.set(key, value)))
+  // }
 
   const getPbis = async () => {
     // Fetch All Sprints to Display them
@@ -31,10 +55,11 @@ export function BacklogView() {
         )
         // sprintsAsArray : Sprint[]
         const sprintsAsArray = await sprintsResponse.json()
-        // sprintsArrayToMap() = transform the sprintsAsArray in this Form [SprintName , {sprintName, list : Pbis of that Sprint that not Done}]
+        // sprintsArrayToMap() = transform the sprintsAsArray in this Form [SprintName , {sprintName, list : Pbis of that Sprint that are not Done}]
         await Promise.all(
           sprintsAsArray.map(
             async (sprint: { sprintId: number; sprintName: string }) => {
+              updateSprints(sprint.sprintName, sprint.sprintId)
               const issuesForSprintResponse = await fetch(
                 `${import.meta.env.VITE_EXTENDER}/getIssueForSprint?sprintId=${
                   sprint.sprintId
@@ -43,10 +68,12 @@ export function BacklogView() {
               const issuesForSprints = await issuesForSprintResponse.json()
               updateColumn(sprint.sprintName, {
                 id: sprint.sprintName,
-                list: issuesForSprints.filter(
-                  (pbi: { status: string }) => pbi.status !== "Done"
-                ),
+                list: issuesForSprints,
               })
+              // updateInitialColumn(sprint.sprintName, {
+              //   id: sprint.sprintName,
+              //   list: issuesForSprints,
+              // })
             }
           )
         )
@@ -60,17 +87,12 @@ export function BacklogView() {
         // these are all Pbis unassigned to any sprint for the current boardId and project
         const unassignedPbis = await unassignedPbisResponse.json()
         updateColumn("Unassigned", { id: "Unassigned", list: unassignedPbis })
+        // updateInitialColumn("Unassigned", {
+        //   id: "Unassigned",
+        //   list: unassignedPbis,
+        // })
       })
     )
-
-    const donePbisResponse = await fetch(
-      `${
-        import.meta.env.VITE_EXTENDER
-      }/getDonePBIsForProject?project=${projectKey}`
-    )
-    const donePbis = await donePbisResponse.json()
-
-    updateColumn("Done", { id: "Done", list: donePbis })
 
     setIsLoading(false)
   }
@@ -83,6 +105,28 @@ export function BacklogView() {
     resizeDivider()
   }, [isLoading])
 
+  // useEffect(() => {
+  //   // eslint-disable-next-line no-restricted-syntax
+  //   for (const [key, value] of columns) {
+  //     if (initialColumn.has(key)) {
+  //       const initialValue = initialColumn.get(key)
+  //       if (value.list !== initialValue?.list) {
+  //         // eslint-disable-next-line no-restricted-syntax
+  //         for (const pbi of value.list) {
+  //           if (!initialValue?.list.includes(pbi)) {
+  //             if (movedPbis.has(key)) {
+  //               movedPbis.get(key)?.list.push(pbi)
+  //             } else {
+  //               movedPbis.set(key, { id: key, list: [pbi] })
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  //   console.log(movedPbis)
+  // }, [columns])
+
   const sprintsAndDone = Array.from(columns.keys())
     .filter((key) => key !== "Unassigned")
     .map((sprint) => <Column col={columns.get(sprint)!} />)
@@ -91,7 +135,11 @@ export function BacklogView() {
     <div>Loading...</div>
   ) : (
     <Container>
-      <Flex align="center" gap="xl">
+      <Flex
+        align="center"
+        gap="xl"
+        sx={{ paddingBottom: "10px", paddingTop: "30px" }}
+      >
         <Button
           leftIcon={<IconChevronLeft />}
           onClick={() => navigate("/projectsview")}
@@ -99,12 +147,15 @@ export function BacklogView() {
         >
           Back
         </Button>
-        <Text sx={{ flex: 2 }}>project: {projectName}</Text>
+        <Title sx={{ flex: 2 }} order={2} color="blue.7">
+          project: {projectName}
+        </Title>
       </Flex>
+      <Divider size="xl" />
       <Box sx={{ height: "100%", width: "100%", display: "flex" }}>
         <DragDropContext
           onDragEnd={(dropResult) =>
-            onDragEnd({ ...dropResult, columns, updateColumn })
+            onDragEnd({ ...dropResult, columns, updateColumn, sprints })
           }
         >
           <Box className="left-panel" sx={{ padding: "5px", width: "50%" }}>

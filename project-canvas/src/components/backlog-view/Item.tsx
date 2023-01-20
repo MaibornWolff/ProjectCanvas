@@ -7,9 +7,10 @@ export interface Pbi {
   creator: string
   status: string
   index: number
+  columnId: string
 }
 
-export function Item({ pbiKey, summary, index, status }: Pbi) {
+export function Item({ pbiKey, summary, index, status, columnId }: Pbi) {
   return (
     <Draggable key={pbiKey} draggableId={pbiKey} index={index}>
       {(provided) => (
@@ -33,6 +34,7 @@ export function Item({ pbiKey, summary, index, status }: Pbi) {
           <Text>{summary}</Text>
           <Text>{status}</Text>
           <Text>{pbiKey}</Text>
+          <Text>{columnId}</Text>
         </Box>
       )}
     </Draggable>

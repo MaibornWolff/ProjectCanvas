@@ -153,21 +153,23 @@ class JiraServerProvider implements ProviderApi {
 
     const data = await response.json()
 
-    const sprints: Sprint[] = data.values.map(
-      (
-        element: {
-          id: number
-          state: string
-          name: string
-        },
-        index: number
-      ) => ({
-        sprintId: element.id,
-        sprintName: element.name,
-        sprintType: element.state,
-        index,
-      })
-    )
+    const sprints: Sprint[] = data.values
+      .filter((element: { state: string }) => element.state !== "closed")
+      .map(
+        (
+          element: {
+            id: number
+            state: string
+            name: string
+          },
+          index: number
+        ) => ({
+          sprintId: element.id,
+          sprintName: element.name,
+          sprintType: element.state,
+          index,
+        })
+      )
     return sprints
   }
 
@@ -239,6 +241,57 @@ class JiraServerProvider implements ProviderApi {
       })
     )
     return pbis
+  }
+
+  async moveIssueToSprint(sprint: number, issue: string): Promise<string> {
+    // "rankBeforeIssue": "PR-4",
+    // "rankCustomFieldId": 10521,
+    const bodyData = `{
+      "issues": [
+        ${issue}
+      ]
+    }`
+
+    const response = await fetch(
+      `http://${this.requestBody.url}/rest/agile/1.0/sprint/${sprint}/issue`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+        },
+        body: bodyData,
+      }
+    )
+
+    const data = await response.json()
+    return data
+  }
+
+  async moveIssueToBacklog(issue: string): Promise<string> {
+    const bodyData = `{
+      "issues": [
+        ${issue}
+      ]
+    }`
+
+    const response = await fetch(
+      `http://${this.requestBody.url}/rest/agile/1.0/backlog/issue`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+        },
+        body: bodyData,
+      }
+    )
+
+    const data = await response.json()
+    return data
   }
 }
 

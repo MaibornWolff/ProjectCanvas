@@ -1,15 +1,16 @@
 import { DropResult } from "react-beautiful-dnd"
 import { Pbi } from "./Item"
 
-export const onDragEnd = ({
+export const onDragEnd = async ({
   source,
   destination,
   columns,
   updateColumn,
+  sprints,
 }: DropResult & {
   columns: Map<string, { id: string; list: Pbi[] }>
-
   updateColumn: (t1: string, t2: { id: string; list: Pbi[] }) => void
+  sprints: Map<string, number>
 }) => {
   if (destination === undefined || destination === null) return null
 
@@ -38,6 +39,13 @@ export const onDragEnd = ({
     return null
   }
 
+  const movedPbi = start!.list[source.index]
+  const destinationSprintId = sprints.get(end!.id)
+  // console.log(destinationSprintId)
+  // console.log(end?.id)
+  // console.log(movedPbi)
+  // console.log(sprints)
+
   const newStartList = start!.list.filter(
     (_: Pbi, idx: number) => idx !== source.index
   )
@@ -58,5 +66,22 @@ export const onDragEnd = ({
 
   updateColumn(start!.id, newStartCol)
   updateColumn(end!.id, newEndCol)
+
+  if (destinationSprintId !== undefined) {
+    await fetch(
+      `${
+        import.meta.env.VITE_EXTENDER
+      }/moveIssueToSprint?sprint=${destinationSprintId}&issue=${
+        movedPbi.pbiKey
+      }`
+    )
+  } else if (destination.droppableId === "Unassigned") {
+    await fetch(
+      `${import.meta.env.VITE_EXTENDER}/moveIssueToBacklog?issue=${
+        movedPbi.pbiKey
+      }`
+    )
+  }
+
   return null
 }
