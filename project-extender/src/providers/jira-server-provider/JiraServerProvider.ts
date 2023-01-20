@@ -244,6 +244,8 @@ class JiraServerProvider implements ProviderApi {
   }
 
   async moveIssueToSprint(sprint: number, issue: string): Promise<string> {
+    // console.log("1")
+
     // "rankBeforeIssue": "PR-4",
     // "rankCustomFieldId": 10521,
     const bodyData = `{
@@ -255,6 +257,7 @@ class JiraServerProvider implements ProviderApi {
     const response = await fetch(
       `http://${this.requestBody.url}/rest/agile/1.0/sprint/${sprint}/issue`,
       {
+        method: "POST",
         headers: {
           Accept: "application/json",
           Authorization: `Basic ${Buffer.from(
@@ -266,6 +269,7 @@ class JiraServerProvider implements ProviderApi {
     )
 
     const data = await response.json()
+    // console.log(data)
     return data
   }
 
@@ -291,6 +295,8 @@ class JiraServerProvider implements ProviderApi {
     )
 
     const data = await response.json()
+    // console.log(data)
+
     return data
   }
 }

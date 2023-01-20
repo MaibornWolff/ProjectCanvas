@@ -212,6 +212,7 @@ class JiraCloudProvider implements ProviderApi {
     const response = await fetch(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint/${sprint}/issue`,
       {
+        method: "POST",
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${this.accessToken}`,
