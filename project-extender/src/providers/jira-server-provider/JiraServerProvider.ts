@@ -250,11 +250,11 @@ class JiraServerProvider implements ProviderApi {
     // "rankCustomFieldId": 10521,
     const bodyData = `{
       "issues": [
-        ${issue}
+        "${issue}",
       ]
     }`
 
-    const response = await fetch(
+    await fetch(
       `http://${this.requestBody.url}/rest/agile/1.0/sprint/${sprint}/issue`,
       {
         method: "POST",
@@ -267,37 +267,33 @@ class JiraServerProvider implements ProviderApi {
         body: bodyData,
       }
     )
-
-    const data = await response.json()
-    // console.log(data)
-    return data
+      .then((response) => response.text())
+      .then((text) => text)
+      .catch((err) => err)
+    return "yo"
   }
 
   async moveIssueToBacklog(issue: string): Promise<string> {
     const bodyData = `{
       "issues": [
-        ${issue}
+        "${issue}",
       ]
     }`
 
-    const response = await fetch(
-      `http://${this.requestBody.url}/rest/agile/1.0/backlog/issue`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Basic ${Buffer.from(
-            `${this.requestBody.username}:${this.requestBody.password}`
-          ).toString("base64")}`,
-        },
-        body: bodyData,
-      }
-    )
-
-    const data = await response.json()
-    // console.log(data)
-
-    return data
+    await fetch(`http://${this.requestBody.url}/rest/agile/1.0/backlog/issue`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Basic ${Buffer.from(
+          `${this.requestBody.username}:${this.requestBody.password}`
+        ).toString("base64")}`,
+      },
+      body: bodyData,
+    })
+      .then((response) => response.text())
+      .then((text) => text)
+      .catch((err) => err)
+    return "yo"
   }
 }
 
