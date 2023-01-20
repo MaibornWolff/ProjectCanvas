@@ -1,4 +1,4 @@
-import { Issue, Sprint } from "./schema"
+import { Issue, Sprint } from "../../types"
 
 export interface BasicLoginOptions {
   url: string

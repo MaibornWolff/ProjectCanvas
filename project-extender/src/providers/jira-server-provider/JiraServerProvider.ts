@@ -3,12 +3,7 @@
 import JiraApi from "jira-client"
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import {
-  Issue,
-  ProjectData,
-  FetchedProject,
-  Sprint,
-} from "../base-provider/schema"
+import { Issue, ProjectData, FetchedProject, Sprint } from "../../types"
 
 class JiraServerProvider implements ProviderApi {
   provider: JiraApi | undefined = undefined

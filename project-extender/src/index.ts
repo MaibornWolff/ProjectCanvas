@@ -10,6 +10,8 @@ import {
 import { JiraCloudProviderCreator } from "./providers/jira-cloud-provider"
 import { JiraServerProviderCreator } from "./providers/jira-server-provider"
 
+export * from "./types"
+
 export const server = fastify()
 
 server.register(cors)

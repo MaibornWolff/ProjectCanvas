@@ -1,5 +1,6 @@
+import { ProjectData } from "project-extender"
 import { useEffect, useState } from "react"
-import { ProjectData, ProjectsTable } from "./ProjectsTable"
+import { ProjectsTable } from "./ProjectsTable"
 
 export function ProjectsView() {
   const [projects, setProjects] = useState<ProjectData[]>([])

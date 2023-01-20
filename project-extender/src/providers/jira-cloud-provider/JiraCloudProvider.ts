@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Issue, FetchedProject, Sprint } from "../base-provider/schema"
+import { Issue, FetchedProject, Sprint } from "../../types"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
