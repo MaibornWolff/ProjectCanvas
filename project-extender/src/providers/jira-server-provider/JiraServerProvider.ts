@@ -1,13 +1,10 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
-import JiraApi from "jira-client"
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
 import { Issue, ProjectData, FetchedProject, Sprint } from "../../types"
 
 class JiraServerProvider implements ProviderApi {
-  provider: JiraApi | undefined = undefined
-
   private requestBody = {
     url: "",
     username: "",
@@ -28,13 +25,6 @@ class JiraServerProvider implements ProviderApi {
     this.requestBody.username = basicLoginOptions.username
     this.requestBody.password = basicLoginOptions.password
 
-    this.provider = new JiraApi({
-      host: basicLoginOptions.url.split(":")[0],
-      port: basicLoginOptions.url.split(":")[1],
-      username: basicLoginOptions.username,
-      password: basicLoginOptions.password,
-    })
-
     return this.isLoggedIn()
   }
 
@@ -49,12 +39,12 @@ class JiraServerProvider implements ProviderApi {
           ).toString("base64")}`,
         },
       })
-        .then((GoodResponse) => {
-          if (GoodResponse.status === 200) resolve()
-          if (GoodResponse.status === 401) {
+        .then((response) => {
+          if (response.status === 200) resolve()
+          if (response.status === 401) {
             reject(new Error("Wrong Username or Password"))
           }
-          if (GoodResponse.status === 404) {
+          if (response.status === 404) {
             reject(new Error("Wrong URL"))
           }
         })
@@ -238,43 +228,36 @@ class JiraServerProvider implements ProviderApi {
     return pbis
   }
 
-  async moveIssueToSprint(sprint: number, issue: string): Promise<string> {
-    // "rankBeforeIssue": "PR-4",
-    // "rankCustomFieldId": 10521,
-    const bodyData = `{
-      "issues": [
-        "${issue}"
-      ]
-    }`
-
-    const response = await fetch(
-      `http://${this.requestBody.url}/rest/agile/1.0/sprint/${sprint}/issue`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Basic ${Buffer.from(
-            `${this.requestBody.username}:${this.requestBody.password}`
-          ).toString("base64")}`,
-          "Content-Type": "application/json",
-        },
-        body: bodyData,
-      }
-    )
-
-    return response.json()
+  async moveIssueToSprint(sprint: number, issue: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `http://${this.requestBody.url}/rest/agile/1.0/sprint/${sprint}/issue`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Basic ${Buffer.from(
+              `${this.requestBody.username}:${this.requestBody.password}`
+            ).toString("base64")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ issues: [issue] }),
+        }
+      )
+        .then(() => resolve())
+        .catch((error) => {
+          reject(
+            new Error(
+              `Error in moving this issue to the Sprint with id ${sprint}: ${error}`
+            )
+          )
+        })
+    })
   }
 
-  async moveIssueToBacklog(issue: string): Promise<string> {
-    const bodyData = `{
-      "issues": [
-        "${issue}"
-      ]
-    }`
-
-    const response = await fetch(
-      `http://${this.requestBody.url}/rest/agile/1.0/backlog/issue`,
-      {
+  async moveIssueToBacklog(issue: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(`http://${this.requestBody.url}/rest/agile/1.0/backlog/issue`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -283,11 +266,15 @@ class JiraServerProvider implements ProviderApi {
           ).toString("base64")}`,
           "Content-Type": "application/json",
         },
-        body: bodyData,
-      }
-    )
-
-    return response.json()
+        body: JSON.stringify({ issues: [issue] }),
+      })
+        .then(() => resolve())
+        .catch((error) =>
+          reject(
+            new Error(`Error in moving this issue to the Backlog: ${error}`)
+          )
+        )
+    })
   }
 }
 

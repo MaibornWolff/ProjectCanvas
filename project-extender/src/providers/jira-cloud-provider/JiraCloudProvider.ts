@@ -200,55 +200,56 @@ class JiraCloudProvider implements ProviderApi {
     return pbis
   }
 
-  async moveIssueToSprint(sprint: number, issue: string): Promise<string> {
-    // "rankBeforeIssue": "PR-4",
-    // "rankCustomFieldId": 10521,
-    const bodyData = `{
-      "issues": [
-        "${issue}"
-      ]
-    }`
-
-    const response = await fetch(
-      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint/${sprint}/issue`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${this.accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: bodyData,
-      }
-    )
-
-    return response.json()
+  async moveIssueToSprint(sprint: number, issue: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint/${sprint}/issue`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ issues: [issue] }),
+        }
+      )
+        .then(() => {
+          resolve()
+        })
+        .catch((error) => {
+          reject(
+            new Error(
+              `Error in moving this issue to the Sprint with id ${sprint}: ${error}`
+            )
+          )
+        })
+    })
   }
 
-  async moveIssueToBacklog(issue: string): Promise<string> {
-    const bodyData = `{
-      "issues": [
-        "${issue}"
-      ]
-    }`
-
-    const response = await fetch(
-      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/backlog/issue`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${this.accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: bodyData,
-      }
-    )
-
-    return response.json()
+  async moveIssueToBacklog(issue: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/backlog/issue`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ issues: [issue] }),
+        }
+      )
+        .then(() => resolve())
+        .catch((error) =>
+          reject(
+            new Error(`Error in moving this issue to the Backlog: ${error}`)
+          )
+        )
+    })
   }
 }
-
 export class JiraCloudProviderCreator extends ProviderCreator {
   public factoryMethod(): ProviderApi {
     return new JiraCloudProvider()
