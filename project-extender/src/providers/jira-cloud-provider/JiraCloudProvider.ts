@@ -205,49 +205,47 @@ class JiraCloudProvider implements ProviderApi {
     // "rankCustomFieldId": 10521,
     const bodyData = `{
       "issues": [
-        "${issue}",
+        "${issue}"
       ]
     }`
 
-    await fetch(
+    const response = await fetch(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint/${sprint}/issue`,
       {
         method: "POST",
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
         },
         body: bodyData,
       }
     )
-      .then((response) => response.text())
-      .then((text) => text)
-      .catch((err) => err)
-    return "yo"
+
+    return response.json()
   }
 
   async moveIssueToBacklog(issue: string): Promise<string> {
     const bodyData = `{
       "issues": [
-        "${issue}",
+        "${issue}"
       ]
     }`
 
-    await fetch(
+    const response = await fetch(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/backlog/issue`,
       {
         method: "POST",
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
         },
         body: bodyData,
       }
     )
-      .then((response) => response.text())
-      .then((text) => text)
-      .catch((err) => err)
-    return "yo"
+
+    return response.json()
   }
 }
 

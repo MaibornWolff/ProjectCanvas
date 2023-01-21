@@ -239,17 +239,15 @@ class JiraServerProvider implements ProviderApi {
   }
 
   async moveIssueToSprint(sprint: number, issue: string): Promise<string> {
-    // console.log("1")
-
     // "rankBeforeIssue": "PR-4",
     // "rankCustomFieldId": 10521,
     const bodyData = `{
       "issues": [
-        "${issue}",
+        "${issue}"
       ]
     }`
 
-    await fetch(
+    const response = await fetch(
       `http://${this.requestBody.url}/rest/agile/1.0/sprint/${sprint}/issue`,
       {
         method: "POST",
@@ -258,37 +256,38 @@ class JiraServerProvider implements ProviderApi {
           Authorization: `Basic ${Buffer.from(
             `${this.requestBody.username}:${this.requestBody.password}`
           ).toString("base64")}`,
+          "Content-Type": "application/json",
         },
         body: bodyData,
       }
     )
-      .then((response) => response.text())
-      .then((text) => text)
-      .catch((err) => err)
-    return "yo"
+
+    return response.json()
   }
 
   async moveIssueToBacklog(issue: string): Promise<string> {
     const bodyData = `{
       "issues": [
-        "${issue}",
+        "${issue}"
       ]
     }`
 
-    await fetch(`http://${this.requestBody.url}/rest/agile/1.0/backlog/issue`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Basic ${Buffer.from(
-          `${this.requestBody.username}:${this.requestBody.password}`
-        ).toString("base64")}`,
-      },
-      body: bodyData,
-    })
-      .then((response) => response.text())
-      .then((text) => text)
-      .catch((err) => err)
-    return "yo"
+    const response = await fetch(
+      `http://${this.requestBody.url}/rest/agile/1.0/backlog/issue`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Basic ${Buffer.from(
+            `${this.requestBody.username}:${this.requestBody.password}`
+          ).toString("base64")}`,
+          "Content-Type": "application/json",
+        },
+        body: bodyData,
+      }
+    )
+
+    return response.json()
   }
 }
 
