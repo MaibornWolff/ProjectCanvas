@@ -12,9 +12,11 @@ class JiraServerProvider implements ProviderApi {
     password: "",
   }
 
-  private authHeader = `Basic ${Buffer.from(
-    `${this.loginOptions.username}:${this.loginOptions.password}`
-  ).toString("base64")}`
+  getAuthHeader() {
+    return `Basic ${Buffer.from(
+      `${this.loginOptions.username}:${this.loginOptions.password}`
+    ).toString("base64")}`
+  }
 
   async login({
     basicLoginOptions,
@@ -38,7 +40,7 @@ class JiraServerProvider implements ProviderApi {
         method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: this.authHeader,
+          Authorization: this.getAuthHeader(),
         },
       })
         .then((response) => {
@@ -61,7 +63,7 @@ class JiraServerProvider implements ProviderApi {
       fetch(`http://${this.loginOptions.url}/rest/auth/1/session`, {
         method: "DELETE",
         headers: {
-          Authorization: this.authHeader,
+          Authorization: this.getAuthHeader(),
         },
       }).then((res) => {
         if (res.status === 204) {
@@ -81,7 +83,7 @@ class JiraServerProvider implements ProviderApi {
         method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: this.authHeader,
+          Authorization: this.getAuthHeader(),
         },
       }
     )
@@ -105,7 +107,7 @@ class JiraServerProvider implements ProviderApi {
         method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: this.authHeader,
+          Authorization: this.getAuthHeader(),
         },
       }
     )
@@ -125,7 +127,7 @@ class JiraServerProvider implements ProviderApi {
         method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: this.authHeader,
+          Authorization: this.getAuthHeader(),
         },
       }
     )
@@ -173,7 +175,7 @@ class JiraServerProvider implements ProviderApi {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: this.authHeader,
+        Authorization: this.getAuthHeader(),
       },
     })
 
@@ -199,10 +201,14 @@ class JiraServerProvider implements ProviderApi {
           method: "POST",
           headers: {
             Accept: "application/json",
-            Authorization: this.authHeader,
-            ContentType: "application/json",
+            Authorization: this.getAuthHeader(),
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ issues: [issue] }),
+          body: `{
+            "issues": [
+              "${issue}"
+            ]
+          }`,
         }
       )
         .then(() => resolve())
@@ -222,10 +228,14 @@ class JiraServerProvider implements ProviderApi {
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: this.authHeader,
-          ContentType: "application/json",
+          Authorization: this.getAuthHeader(),
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ issues: [issue] }),
+        body: `{
+          "issues": [
+            "${issue}"
+          ]
+        }`,
       })
         .then(() => resolve())
         .catch((error) =>

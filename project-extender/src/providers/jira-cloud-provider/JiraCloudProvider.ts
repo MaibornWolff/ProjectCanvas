@@ -180,9 +180,13 @@ class JiraCloudProvider implements ProviderApi {
           headers: {
             Accept: "application/json",
             Authorization: `Bearer ${this.accessToken}`,
-            ContentType: "application/json",
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ issues: [issue] }),
+          body: `{
+            "issues": [
+              "${issue}"
+            ]
+          }`,
         }
       )
         .then(() => {
@@ -207,9 +211,13 @@ class JiraCloudProvider implements ProviderApi {
           headers: {
             Accept: "application/json",
             Authorization: `Bearer ${this.accessToken}`,
-            ContentType: "application/json",
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ issues: [issue] }),
+          body: `{
+            "issues": [
+              "${issue}"
+            ]
+          }`,
         }
       )
         .then(() => resolve())
