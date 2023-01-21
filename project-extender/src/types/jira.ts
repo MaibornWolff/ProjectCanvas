@@ -19,5 +19,7 @@ export interface JiraIssue {
     summary: string
     creator: { displayName: string }
     status: { name: string }
+    issuetype: { name: string }
+    customfield_10107: number
   }
 }

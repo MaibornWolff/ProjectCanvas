@@ -13,7 +13,7 @@ export function Column({
   return (
     <StrictModeDroppable droppableId={col.id}>
       {(provided) => (
-        <div>
+        <div style={{ minWidth: "100px" }}>
           <h2>{col.id}</h2>
           <div {...provided.droppableProps} ref={provided.innerRef}>
             {col.list.map((issue: Issue, index: number) => (

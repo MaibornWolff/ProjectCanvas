@@ -167,6 +167,7 @@ class JiraServerProvider implements ProviderApi {
     const response = await this.fetchIssues(
       `http://${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
     )
+
     return response
   }
 
@@ -187,6 +188,8 @@ class JiraServerProvider implements ProviderApi {
         summary: element.fields.summary,
         creator: element.fields.creator.displayName,
         status: element.fields.status.name,
+        type: element.fields.issuetype.name,
+        storyPoints: element.fields.customfield_10107,
         index,
       })
     )

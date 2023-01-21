@@ -83,7 +83,7 @@ export function BacklogView() {
   return isLoading ? (
     <Text>Loading...</Text>
   ) : (
-    <Container>
+    <Container sx={{ maxWidth: "100%" }}>
       <Flex
         align="center"
         gap="xl"
@@ -92,7 +92,7 @@ export function BacklogView() {
         <Button
           leftIcon={<IconChevronLeft />}
           onClick={() => navigate("/projectsview")}
-          sx={{ flex: 1 }}
+          sx={{ flex: 1, backgroundImage: "url()" }}
         >
           Back
         </Button>
@@ -107,7 +107,10 @@ export function BacklogView() {
             onDragEnd({ ...dropResult, columns, updateColumn, sprints })
           }
         >
-          <Box className="left-panel" sx={{ padding: "5px", width: "50%" }}>
+          <Box
+            className="left-panel"
+            sx={{ padding: "5px", width: "50%", minWidth: "300px" }}
+          >
             <Column col={columns.get("Backlog")!} />
           </Box>
           <Divider
