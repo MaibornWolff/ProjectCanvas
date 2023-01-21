@@ -1,5 +1,6 @@
 import { Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core"
 import { useForm } from "@mantine/form"
+import { useTranslation } from "react-i18next"
 import { LoginFormValues } from "./LoginFormValues"
 import { loginToJiraServer } from "./loginToJiraServer"
 
@@ -10,6 +11,7 @@ export function LoginForm({
   goBack: () => void
   onSuccess: () => void
 }) {
+  const { t } = useTranslation("login")
   const form = useForm<LoginFormValues>({
     initialValues: {
       url: "localhost:8080",
@@ -26,20 +28,20 @@ export function LoginForm({
       <Stack>
         <TextInput
           required
-          label="Instance URL"
-          placeholder="URL"
+          label={t("url")}
+          placeholder={t("url")}
           {...form.getInputProps("url")}
         />
         <TextInput
           required
-          label="Username"
-          placeholder="Username"
+          label={t("username")}
+          placeholder={t("username")}
           {...form.getInputProps("username")}
         />
         <PasswordInput
           required
-          label="Password"
-          placeholder="Password"
+          label={t("password")}
+          placeholder={t("password")}
           {...form.getInputProps("password")}
         />
       </Stack>
@@ -54,7 +56,7 @@ export function LoginForm({
           Log in
         </Button>
         <Button variant="outline" fullWidth color="dark" onClick={goBack}>
-          Go Back
+          {t("button.goBack")}
         </Button>
       </Group>
     </form>

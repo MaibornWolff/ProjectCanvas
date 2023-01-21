@@ -2,15 +2,19 @@ import { Button, Container, Divider, Stack, Title } from "@mantine/core"
 import { IconCloud, IconServer } from "@tabler/icons"
 import { ipcRenderer } from "electron"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { JiraCloudLogin } from "./jira-cloud/JiraCloudLogin"
 import { JiraServerLogin } from "./jira-server/JiraServerLogin"
+import { LanguageSelector } from "../common/LanguageSelector"
 
 export function Login() {
   const [providerLogin, setProviderLogin] = useState("")
   const navigateTo = useNavigate()
   const onSuccess = () => navigateTo("/projectsview")
   const goBack = () => setProviderLogin("")
+  const { t } = useTranslation("login")
+
   return (
     <Container
       sx={{
@@ -31,6 +35,7 @@ export function Login() {
         p="lg"
         mx="auto"
       >
+        <LanguageSelector />
         <Title size="2em" align="center" mb="2em">
           Project Canvas
         </Title>
@@ -41,7 +46,7 @@ export function Login() {
           <>
             <Divider
               my="lg"
-              label="Please Choose a Provider"
+              label={t("choseProvider")}
               labelPosition="center"
             />
             <Button
