@@ -6,13 +6,6 @@ export interface DndListProps {
     name: string
   }[]
 }
-
-export interface Issue {
-  key: string
-  summary: string
-  creator: string
-  status: string
-}
 export interface Sprint {
   id: number
   name: string
@@ -24,4 +17,13 @@ export interface Project {
   key: string
   lead: string
   type: string
+}
+
+export interface Issue {
+  issueKey: string
+  summary: string
+  creator: string
+  status: string
+  index: number
+  columnId: string
 }

@@ -1,41 +1,46 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { DragDropContext } from "react-beautiful-dnd"
-import { Box, Button, Container, Divider, Flex, Title } from "@mantine/core"
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Flex,
+  Text,
+  Title,
+} from "@mantine/core"
 import { IconChevronLeft } from "@tabler/icons"
+import { Issue } from "project-extender"
 import { Column } from "./Column"
-import { Pbi } from "./Item"
 import { resizeDivider } from "./resizeDivider"
 import { onDragEnd } from "./dndHelpers"
-import { useProjectStore } from "../projects-view/ProjectsTable"
+import { useCanvasStore } from "../../lib/Store"
 
 export function BacklogView() {
-  const projectName = useProjectStore((state) => state.selectedProject?.name)
-  const projectKey = useProjectStore((state) => state.selectedProject?.key)
   const navigate = useNavigate()
-  const boardIds = useProjectStore((state) => state.selectedProjectBoards)
+  const projectName = useCanvasStore((state) => state.selectedProject?.name)
+  const projectKey = useCanvasStore((state) => state.selectedProject?.key)
+  const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
   const [isLoading, setIsLoading] = useState(true)
   const [sprints, setSprints] = useState(new Map<string, number>())
   const updateSprints = (key: string, value: number) => {
     setSprints((map) => new Map(map.set(key, value)))
   }
   const [columns, setColumns] = useState(
-    new Map<string, { id: string; list: Pbi[] }>()
+    new Map<string, { id: string; list: Issue[] }>()
   )
-  const updateColumn = (key: string, value: { id: string; list: Pbi[] }) => {
+  const updateColumn = (key: string, value: { id: string; list: Issue[] }) => {
     setColumns((map) => new Map(map.set(key, value)))
   }
 
-  const getPbis = async () => {
-    // Fetch All Sprints to Display them
+  const getIssues = async () => {
     await Promise.all(
       boardIds.map(async (boardId) => {
         const sprintsResponse = await fetch(
           `${import.meta.env.VITE_EXTENDER}/sprintsByBoardId?boardId=${boardId}`
         )
-        // sprintsAsArray : Sprint[]
         const sprintsAsArray = await sprintsResponse.json()
-        // sprintsArrayToMap() = transform the sprintsAsArray in this Form [SprintName , {sprintName, list : Pbis of that Sprint that are not Done}]
         await Promise.all(
           sprintsAsArray.map(
             async (sprint: { sprintId: number; sprintName: string }) => {
@@ -55,36 +60,28 @@ export function BacklogView() {
             }
           )
         )
-
-        // get backlog for this boardId (unassigned pbis) and Done Pbis
-        const unassignedPbisResponse = await fetch(
+        const backlogIssues = await fetch(
           `${
             import.meta.env.VITE_EXTENDER
           }/backlogIssuesByProjectAndBoard?project=${projectKey}&boardId=${boardId}`
         )
-        // these are all Pbis unassigned to any sprint for the current boardId and project
-        const unassignedPbis = await unassignedPbisResponse.json()
-        updateColumn("Unassigned", { id: "Unassigned", list: unassignedPbis })
+        const unassignedPbis = await backlogIssues.json()
+        updateColumn("Backlog", { id: "Backlog", list: unassignedPbis })
       })
     )
-
     setIsLoading(false)
   }
 
   useEffect(() => {
-    getPbis()
+    getIssues()
   }, [])
 
   useEffect(() => {
     resizeDivider()
   }, [isLoading])
 
-  const sprintsAndDone = Array.from(columns.keys())
-    .filter((key) => key !== "Unassigned")
-    .map((sprint) => <Column col={columns.get(sprint)!} />)
-
   return isLoading ? (
-    <div>Loading...</div>
+    <Text>Loading...</Text>
   ) : (
     <Container>
       <Flex
@@ -111,7 +108,7 @@ export function BacklogView() {
           }
         >
           <Box className="left-panel" sx={{ padding: "5px", width: "50%" }}>
-            <Column col={columns.get("Unassigned")!} />
+            <Column col={columns.get("Backlog")!} />
           </Box>
           <Divider
             className="resize-handle"
@@ -122,7 +119,11 @@ export function BacklogView() {
             }}
           />
           <Box className="right-panel" sx={{ padding: "5px", width: "50%" }}>
-            {sprintsAndDone}
+            {Array.from(columns.keys())
+              .filter((columnName) => columnName !== "Backlog")
+              .map((sprint) => (
+                <Column key={sprint} col={columns.get(sprint)!} />
+              ))}
           </Box>
         </DragDropContext>
       </Box>

@@ -1,18 +1,10 @@
 import { Box, Text } from "@mantine/core"
+import { Issue } from "project-extender"
 import { Draggable } from "react-beautiful-dnd"
 
-export interface Pbi {
-  pbiKey: string
-  summary: string
-  creator: string
-  status: string
-  index: number
-  columnId: string
-}
-
-export function Item({ pbiKey, summary, index, status, columnId }: Pbi) {
+export function Item({ issueKey, summary, index, status, columnId }: Issue) {
   return (
-    <Draggable key={pbiKey} draggableId={pbiKey} index={index}>
+    <Draggable draggableId={issueKey} index={index}>
       {(provided) => (
         <Box
           sx={{
@@ -33,7 +25,7 @@ export function Item({ pbiKey, summary, index, status, columnId }: Pbi) {
         >
           <Text>{summary}</Text>
           <Text>{status}</Text>
-          <Text>{pbiKey}</Text>
+          <Text>{issueKey}</Text>
           <Text>{columnId}</Text>
         </Box>
       )}

@@ -1,145 +1,18 @@
+import { ScrollArea, Table, Text, TextInput } from "@mantine/core"
+import { IconSearch } from "@tabler/icons"
+import { Project } from "project-extender"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { create } from "zustand"
-import {
-  createStyles,
-  Table,
-  ScrollArea,
-  UnstyledButton,
-  Group,
-  Text,
-  Center,
-  TextInput,
-} from "@mantine/core"
-import { keys } from "@mantine/utils"
-import {
-  IconSelector,
-  IconChevronDown,
-  IconChevronUp,
-  IconSearch,
-  TablerIcon,
-} from "@tabler/icons"
+import { useCanvasStore } from "../../lib/Store"
+import { TableHeader } from "./TableHeader"
+import { sortData } from "./TableHelper"
 
-const useStyles = createStyles((theme) => ({
-  th: {
-    padding: "0 !important",
-  },
-
-  control: {
-    width: "100%",
-    padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
-
-    "&:hover": {
-      backgroundColor:
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[6]
-          : theme.colors.gray[0],
-    },
-  },
-
-  icon: {
-    width: 21,
-    height: 21,
-    borderRadius: 21,
-  },
-}))
-
-export interface ProjectData {
-  name: string
-  key: string
-  type: string
-  lead: string
-}
-
-interface ProjectsTableProps {
-  data: ProjectData[]
-}
-
-interface ThProps {
-  children: React.ReactNode
-  reversed: boolean
-  sorted: boolean
-  onSort(): void
-}
-export interface ProjectStore {
-  selectedProject: ProjectData | null
-  selectedProjectBoards: number[]
-  setSelectedProject: (project: ProjectData) => void
-  setSelectedProjectBoards: (boards: number[]) => void
-}
-
-export const useProjectStore = create<ProjectStore>()((set) => ({
-  // initial state is null
-  selectedProject: null,
-  selectedProjectBoards: [],
-  setSelectedProjectBoards: (boards: number[]) =>
-    set(() => ({ selectedProjectBoards: boards })),
-  setSelectedProject: (row: ProjectData | null) =>
-    set(() => ({ selectedProject: row })),
-}))
-
-function Th({ children, reversed, sorted, onSort }: ThProps) {
-  const { classes } = useStyles()
-  let Icon: TablerIcon
-  if (sorted) {
-    if (reversed) Icon = IconChevronUp
-    else Icon = IconChevronDown
-  } else Icon = IconSelector
-  return (
-    <th className={classes.th}>
-      <UnstyledButton onClick={onSort} className={classes.control}>
-        <Group position="apart">
-          <Text weight={500} size="sm">
-            {children}
-          </Text>
-          <Center className={classes.icon}>
-            <Icon size={14} stroke={1.5} />
-          </Center>
-        </Group>
-      </UnstyledButton>
-    </th>
-  )
-}
-
-function filterData(data: ProjectData[], search: string) {
-  const query = search.toLowerCase().trim()
-  return data.filter((item) =>
-    keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
-  )
-}
-
-function sortData(
-  data: ProjectData[],
-  payload: {
-    sortBy: keyof ProjectData | null
-    reversed: boolean
-    search: string
-  }
-) {
-  const { sortBy } = payload
-
-  if (!sortBy) {
-    return filterData(data, payload.search)
-  }
-
-  return filterData(
-    [...data].sort((a, b) => {
-      if (payload.reversed) {
-        return b[sortBy].localeCompare(a[sortBy])
-      }
-
-      return a[sortBy].localeCompare(b[sortBy])
-    }),
-    payload.search
-  )
-}
-
-export function ProjectsTable({ data }: ProjectsTableProps) {
+export function ProjectsTable({ data }: { data: Project[] }) {
   const [search, setSearch] = useState("")
   const [sortedData, setSortedData] = useState(data)
-  const [sortBy, setSortBy] = useState<keyof ProjectData | null>(null)
+  const [sortBy, setSortBy] = useState<keyof Project | null>(null)
   const [reverseSortDirection, setReverseSortDirection] = useState(false)
-  const { setSelectedProject, setSelectedProjectBoards } = useProjectStore()
+  const { setSelectedProject, setselectedProjectBoardIds } = useCanvasStore()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -150,7 +23,7 @@ export function ProjectsTable({ data }: ProjectsTableProps) {
     )
   }, [data, sortBy, reverseSortDirection, search])
 
-  const setSorting = (field: keyof ProjectData) => {
+  const setSorting = (field: keyof Project) => {
     const reversed = field === sortBy ? !reverseSortDirection : false
     setReverseSortDirection(reversed)
     setSortBy(field)
@@ -164,23 +37,25 @@ export function ProjectsTable({ data }: ProjectsTableProps) {
       sortData(data, { sortBy, reversed: reverseSortDirection, search: value })
     )
   }
+
   const getBoardIds = async (projectKey: string) => {
-    const BoardIdsResponse = await fetch(
+    const boardIdsResponse = await fetch(
       `${import.meta.env.VITE_EXTENDER}/boardIdsByProject?project=${projectKey}`
     )
-    const BoardIds = await BoardIdsResponse.json()
-    return BoardIds
+    const boardIds = await boardIdsResponse.json()
+    return boardIds
   }
-  const rowOnClick = async (row: ProjectData) => {
+
+  const onClickRow = async (row: Project) => {
     setSelectedProject(row)
-    setSelectedProjectBoards(await getBoardIds(row.key))
+    setselectedProjectBoardIds(await getBoardIds(row.key))
     navigate("/backlogview")
   }
 
   const rows = sortedData.map((row) => (
-    <tr key={row.key} onClick={() => rowOnClick(row)}>
+    <tr key={row.key} onClick={() => onClickRow(row)}>
       {Object.keys(row).map((key) => (
-        <td key={key}> {row[key as keyof ProjectData]}</td>
+        <td key={key}> {row[key as keyof Project]}</td>
       ))}
     </tr>
   ))
@@ -206,14 +81,14 @@ export function ProjectsTable({ data }: ProjectsTableProps) {
               data != null &&
               data.length > 0 &&
               Object.keys(data[0]).map((key) => (
-                <Th
+                <TableHeader
                   key={key}
                   sorted={sortBy === key}
                   reversed={reverseSortDirection}
-                  onSort={() => setSorting(key as keyof ProjectData)}
+                  onSort={() => setSorting(key as keyof Project)}
                 >
                   {key.toLocaleUpperCase()}
-                </Th>
+                </TableHeader>
               ))}
           </tr>
         </thead>

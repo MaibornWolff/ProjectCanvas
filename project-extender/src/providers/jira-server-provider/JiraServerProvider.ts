@@ -183,7 +183,7 @@ class JiraServerProvider implements ProviderApi {
 
     const pbis: Issue[] = data.issues.map(
       (element: JiraIssue, index: number) => ({
-        pbiKey: element.key,
+        issueKey: element.key,
         summary: element.fields.summary,
         creator: element.fields.creator.displayName,
         status: element.fields.status.name,

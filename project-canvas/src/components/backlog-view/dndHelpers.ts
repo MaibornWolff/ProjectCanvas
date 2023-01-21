@@ -1,5 +1,5 @@
 import { DropResult } from "react-beautiful-dnd"
-import { Pbi } from "./Item"
+import { Issue } from "project-extender"
 
 export const onDragEnd = async ({
   source,
@@ -8,8 +8,8 @@ export const onDragEnd = async ({
   updateColumn,
   sprints,
 }: DropResult & {
-  columns: Map<string, { id: string; list: Pbi[] }>
-  updateColumn: (t1: string, t2: { id: string; list: Pbi[] }) => void
+  columns: Map<string, { id: string; list: Issue[] }>
+  updateColumn: (t1: string, t2: { id: string; list: Issue[] }) => void
   sprints: Map<string, number>
 }) => {
   if (destination === undefined || destination === null) return null
@@ -25,7 +25,7 @@ export const onDragEnd = async ({
 
   if (start === end) {
     const newList = start!.list.filter(
-      (_: Pbi, idx: number) => idx !== source.index
+      (_: Issue, idx: number) => idx !== source.index
     )
 
     newList.splice(destination.index, 0, start!.list[source.index])
@@ -39,7 +39,7 @@ export const onDragEnd = async ({
     return null
   }
 
-  const movedPbi = start!.list[source.index]
+  const movedIssue = start!.list[source.index]
   const destinationSprintId = sprints.get(end!.id)
   // console.log(destinationSprintId)
   // console.log(end?.id)
@@ -47,7 +47,7 @@ export const onDragEnd = async ({
   // console.log(sprints)
 
   const newStartList = start!.list.filter(
-    (_: Pbi, idx: number) => idx !== source.index
+    (_: Issue, idx: number) => idx !== source.index
   )
 
   const newStartCol = {
@@ -73,7 +73,7 @@ export const onDragEnd = async ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         sprint: destinationSprintId,
-        issue: movedPbi.pbiKey,
+        issue: movedIssue.issueKey,
       }),
     })
   } else if (destination.droppableId === "Unassigned") {
@@ -81,7 +81,7 @@ export const onDragEnd = async ({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        issue: movedPbi.pbiKey,
+        issue: movedIssue.issueKey,
       }),
     })
   }
