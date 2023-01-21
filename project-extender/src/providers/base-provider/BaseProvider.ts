@@ -1,4 +1,5 @@
-import { Issue, Sprint } from "../../types"
+/* eslint-disable max-classes-per-file */
+import { Issue, Project, Sprint } from "../../types"
 
 export interface BasicLoginOptions {
   url: string
@@ -20,14 +21,18 @@ export interface ProviderApi {
   login(loginOptions: LoginOptions): Promise<void>
   isLoggedIn(): Promise<void>
   logout(): Promise<void>
-  getProjects(): Promise<{ name: string; key: string }[]>
+  getProjects(): Promise<Project[]>
   getBoardIds(project: string): Promise<number[]>
   getSprints(BoardId: number): Promise<Sprint[]>
-  getPbis(project: string): Promise<Issue[]>
-  getDonePBIsForProject(project: string): Promise<Issue[]>
-  getBacklogPbisForProject(project: string, boardId: number): Promise<Issue[]>
-  getPbisWithoutSprints(project: string): Promise<Issue[]>
-  getPbisForSprint(sprintId: number, project: string): Promise<Issue[]>
+  getIssuesByProject(project: string): Promise<Issue[]>
+  getBacklogIssuesByProjectAndBoard(
+    project: string,
+    boardId: number
+  ): Promise<Issue[]>
+  getIssuesBySprintAndProject(
+    sprintId: number,
+    project: string
+  ): Promise<Issue[]>
   moveIssueToSprint(sprint: number, issue: string): Promise<void>
   moveIssueToBacklog(issue: string): Promise<void>
 }

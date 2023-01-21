@@ -15,43 +15,23 @@ export function BacklogView() {
   const navigate = useNavigate()
   const boardIds = useProjectStore((state) => state.selectedProjectBoards)
   const [isLoading, setIsLoading] = useState(true)
-  // const [initialColumn, setInitialColumn] = useState(
-  //   new Map<string, { id: string; list: Pbi[] }>()
-  // )
-  // const updateInitialColumn = (
-  //   key: string,
-  //   value: { id: string; list: Pbi[] }
-  // ) => {
-  //   setInitialColumn((map) => new Map(map.set(key, value)))
-  // }
   const [sprints, setSprints] = useState(new Map<string, number>())
   const updateSprints = (key: string, value: number) => {
     setSprints((map) => new Map(map.set(key, value)))
   }
-
   const [columns, setColumns] = useState(
     new Map<string, { id: string; list: Pbi[] }>()
   )
   const updateColumn = (key: string, value: { id: string; list: Pbi[] }) => {
     setColumns((map) => new Map(map.set(key, value)))
   }
-  // const movedPbis = new Map<string, { id: string; list: Pbi[] }>()
-  // const [changedColumns, setChangedColumns] = useState(
-  //   new Map<string, { id: string; list: Pbi[] }>()
-  // )
-  // const updateChangedColumn = (
-  //   key: string,
-  //   value: { id: string; list: Pbi[] }
-  // ) => {
-  //   setColumns((map) => new Map(map.set(key, value)))
-  // }
 
   const getPbis = async () => {
     // Fetch All Sprints to Display them
     await Promise.all(
       boardIds.map(async (boardId) => {
         const sprintsResponse = await fetch(
-          `${import.meta.env.VITE_EXTENDER}/allSprints?boardId=${boardId}`
+          `${import.meta.env.VITE_EXTENDER}/sprintsByBoardId?boardId=${boardId}`
         )
         // sprintsAsArray : Sprint[]
         const sprintsAsArray = await sprintsResponse.json()
@@ -61,7 +41,9 @@ export function BacklogView() {
             async (sprint: { sprintId: number; sprintName: string }) => {
               updateSprints(sprint.sprintName, sprint.sprintId)
               const issuesForSprintResponse = await fetch(
-                `${import.meta.env.VITE_EXTENDER}/getIssueForSprint?sprintId=${
+                `${
+                  import.meta.env.VITE_EXTENDER
+                }/issuesBySprintAndProject?sprint=${
                   sprint.sprintId
                 }&project=${projectKey}`
               )
@@ -70,10 +52,6 @@ export function BacklogView() {
                 id: sprint.sprintName,
                 list: issuesForSprints,
               })
-              // updateInitialColumn(sprint.sprintName, {
-              //   id: sprint.sprintName,
-              //   list: issuesForSprints,
-              // })
             }
           )
         )
@@ -82,15 +60,11 @@ export function BacklogView() {
         const unassignedPbisResponse = await fetch(
           `${
             import.meta.env.VITE_EXTENDER
-          }/getBacklogPbisForProject?project=${projectKey}&boardId=${boardId}`
+          }/backlogIssuesByProjectAndBoard?project=${projectKey}&boardId=${boardId}`
         )
         // these are all Pbis unassigned to any sprint for the current boardId and project
         const unassignedPbis = await unassignedPbisResponse.json()
         updateColumn("Unassigned", { id: "Unassigned", list: unassignedPbis })
-        // updateInitialColumn("Unassigned", {
-        //   id: "Unassigned",
-        //   list: unassignedPbis,
-        // })
       })
     )
 
@@ -104,28 +78,6 @@ export function BacklogView() {
   useEffect(() => {
     resizeDivider()
   }, [isLoading])
-
-  // useEffect(() => {
-  //   // eslint-disable-next-line no-restricted-syntax
-  //   for (const [key, value] of columns) {
-  //     if (initialColumn.has(key)) {
-  //       const initialValue = initialColumn.get(key)
-  //       if (value.list !== initialValue?.list) {
-  //         // eslint-disable-next-line no-restricted-syntax
-  //         for (const pbi of value.list) {
-  //           if (!initialValue?.list.includes(pbi)) {
-  //             if (movedPbis.has(key)) {
-  //               movedPbis.get(key)?.list.push(pbi)
-  //             } else {
-  //               movedPbis.set(key, { id: key, list: [pbi] })
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  //   console.log(movedPbis)
-  // }, [columns])
 
   const sprintsAndDone = Array.from(columns.keys())
     .filter((key) => key !== "Unassigned")

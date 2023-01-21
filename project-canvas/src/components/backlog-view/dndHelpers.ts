@@ -68,19 +68,22 @@ export const onDragEnd = async ({
   updateColumn(end!.id, newEndCol)
 
   if (destinationSprintId !== undefined) {
-    await fetch(
-      `${
-        import.meta.env.VITE_EXTENDER
-      }/moveIssueToSprint?sprint=${destinationSprintId}&issue=${
-        movedPbi.pbiKey
-      }`
-    )
+    await fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToSprint`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sprint: destinationSprintId,
+        issue: movedPbi.pbiKey,
+      }),
+    })
   } else if (destination.droppableId === "Unassigned") {
-    await fetch(
-      `${import.meta.env.VITE_EXTENDER}/moveIssueToBacklog?issue=${
-        movedPbi.pbiKey
-      }`
-    )
+    await fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToBacklog`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        issue: movedPbi.pbiKey,
+      }),
+    })
   }
 
   return null

@@ -1,6 +1,6 @@
 import cors from "@fastify/cors"
 import fastifyEnv from "@fastify/env"
-import fastify, { FastifyRequest } from "fastify"
+import fastify from "fastify"
 import { options } from "./FastifyEnvConfig"
 import {
   ProviderApi,
@@ -27,14 +27,14 @@ enum ProviderType {
   JiraCloud = "JiraCloud",
 }
 
-let pbiProvider: ProviderApi
+let issueProvider: ProviderApi
 
 server.post<{
   Body: { provider: ProviderType } & BasicLoginOptions & OauthLoginOptions
 }>("/login", async (request, reply) => {
   if (request.body.provider === ProviderType.JiraServer) {
-    pbiProvider = new JiraServerProviderCreator().factoryMethod()
-    await pbiProvider
+    issueProvider = new JiraServerProviderCreator().factoryMethod()
+    await issueProvider
       .login({
         basicLoginOptions: {
           url: request.body.url!,
@@ -55,8 +55,8 @@ server.post<{
     return
   }
   if (request.body.provider === ProviderType.JiraCloud) {
-    pbiProvider = new JiraCloudProviderCreator().factoryMethod()
-    await pbiProvider
+    issueProvider = new JiraCloudProviderCreator().factoryMethod()
+    await issueProvider
       .login({
         oauthLoginOptions: {
           code: request.body.code,
@@ -84,7 +84,7 @@ server.post<{
     url: string
   }
 }>("/logout", async (request, reply) => {
-  await pbiProvider
+  await issueProvider
     .logout()
     .then(() => {
       reply.status(204).send()
@@ -95,146 +95,91 @@ server.post<{
 })
 
 server.get("/projects", async (_, reply) => {
-  reply.send(await pbiProvider.getProjects())
+  await issueProvider
+    .getProjects()
+    .then((projects) => {
+      reply.status(200).send(projects)
+    })
+    .catch((error) => reply.status(400).send(error))
 })
 
-server.get(
-  "/getBoardIds",
-  async (
-    req: FastifyRequest<{
-      Querystring: { project: string }
-    }>,
-    reply
-  ) => {
-    reply.send(await pbiProvider.getBoardIds(req.query.project))
+server.get<{ Querystring: { project: string } }>(
+  "/boardIdsByProject",
+  async (request, reply) => {
+    await issueProvider
+      .getBoardIds(request.query.project)
+      .then((boardIds) => {
+        reply.status(200).send(boardIds)
+      })
+      .catch((error) => reply.status(400).send(error))
   }
 )
 
-server.get(
-  "/allSprints",
-  async (
-    req: FastifyRequest<{
-      Querystring: { boardId: number }
-    }>,
-    reply
-  ) => {
-    reply.send(await pbiProvider.getSprints(req.query.boardId))
-  }
-)
+server.get<{
+  Querystring: { boardId: number }
+}>("/sprintsByBoardId", async (request, reply) => {
+  await issueProvider
+    .getSprints(request.query.boardId)
+    .then((sprints) => {
+      reply.status(200).send(sprints)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
 
-server.get(
-  "/pbis",
-  async (
-    req: FastifyRequest<{
-      Querystring: { project: string }
-    }>,
-    reply
-  ) => {
-    reply.send(await pbiProvider.getPbis(req.query.project))
-  }
-)
+server.get<{
+  Querystring: { project: string }
+}>("/issuesByProject", (request, reply) => {
+  issueProvider
+    .getIssuesByProject(request.query.project)
+    .then((issues) => {
+      reply.status(200).send(issues)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
 
-server.get(
-  "/getIssueForSprint",
-  async (
-    req: FastifyRequest<{
-      Querystring: { sprintId: number; project: string }
-    }>,
-    reply
-  ) => {
-    reply.send(
-      await pbiProvider.getPbisForSprint(req.query.sprintId, req.query.project)
+server.get<{
+  Querystring: { sprint: number; project: string }
+}>("/issuesBySprintAndProject", (request, reply) => {
+  issueProvider
+    .getIssuesBySprintAndProject(request.query.sprint, request.query.project)
+    .then((issues) => {
+      reply.status(200).send(issues)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.get<{
+  Querystring: { project: string; boardId: number }
+}>("/backlogIssuesByProjectAndBoard", (request, reply) => {
+  issueProvider
+    .getBacklogIssuesByProjectAndBoard(
+      request.query.project,
+      request.query.boardId
     )
-  }
-)
+    .then((issues) => {
+      reply.status(200).send(issues)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
 
-server.get(
-  "/getIssueWithoutSprint",
-  async (
-    req: FastifyRequest<{
-      Querystring: { project: string }
-    }>,
-    reply
-  ) => {
-    reply.send(await pbiProvider.getPbisWithoutSprints(req.query.project))
-  }
-)
+server.post<{
+  Body: { sprint: number; issue: string }
+}>("/moveIssueToSprint", (request, reply) => {
+  issueProvider
+    .moveIssueToSprint(request.body.sprint, request.body.issue)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
+})
 
-server.get(
-  "/getDonePBIsForProject",
-  async (
-    req: FastifyRequest<{
-      Querystring: { project: string }
-    }>,
-    reply
-  ) => {
-    reply.send(await pbiProvider.getDonePBIsForProject(req.query.project))
-  }
-)
-
-server.get(
-  "/getBacklogPbisForProject",
-  async (
-    req: FastifyRequest<{
-      Querystring: { project: string; boardId: number }
-    }>,
-    reply
-  ) => {
-    reply.send(
-      await pbiProvider.getBacklogPbisForProject(
-        req.query.project,
-        req.query.boardId
-      )
-    )
-  }
-)
-server.get(
-  "/moveIssueToSprint",
-  async (
-    req: FastifyRequest<{
-      Querystring: { sprint: number; issue: string }
-    }>,
-    reply
-  ) => {
-    reply.send(
-      await pbiProvider.moveIssueToSprint(req.query.sprint, req.query.issue)
-    )
-  }
-)
-
-server.get(
-  "/moveIssueToBacklog",
-  async (
-    req: FastifyRequest<{
-      Querystring: { issue: string }
-    }>,
-    reply
-  ) => {
-    reply.send(await pbiProvider.moveIssueToBacklog(req.query.issue))
-  }
-)
-
-// server.post<{
-//   Body: {
-//     pbiKey: string
-//   }
-// }>("/moveIssueToSprint", async (request, reply) => {
-//   await pbiProvider.moveIssueToSprint().then(() => {
-//     reply.send()
-//   })
-// })
-
-// server.post<{
-//   Body: {
-//     pbiKey: string
-//   }
-// }>("/moveIssueToBacklog", async (request, reply) => {
-//   await pbiProvider
-//     .moveIssueToBacklog()
-//     .then(() => {
-//       reply.status(204).send()
-//     })
-//     .catch(() => {
-//       reply.status(401).send()
-//     })
-// })
+server.post<{
+  Body: { issue: string }
+}>("/moveIssueToBacklog", (request, reply) => {
+  issueProvider
+    .moveIssueToBacklog(request.body.issue)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
+})
