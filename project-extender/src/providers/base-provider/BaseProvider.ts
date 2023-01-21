@@ -1,3 +1,6 @@
+/* eslint-disable max-classes-per-file */
+import { Issue, Project, Sprint } from "../../types"
+
 export interface BasicLoginOptions {
   url: string
   username: string
@@ -17,8 +20,21 @@ interface LoginOptions {
 export interface ProviderApi {
   login(loginOptions: LoginOptions): Promise<void>
   isLoggedIn(): Promise<void>
-  getProjects(): Promise<{ name: string; key: string }[]>
   logout(): Promise<void>
+  getProjects(): Promise<Project[]>
+  getBoardIds(project: string): Promise<number[]>
+  getSprints(BoardId: number): Promise<Sprint[]>
+  getIssuesByProject(project: string): Promise<Issue[]>
+  getBacklogIssuesByProjectAndBoard(
+    project: string,
+    boardId: number
+  ): Promise<Issue[]>
+  getIssuesBySprintAndProject(
+    sprintId: number,
+    project: string
+  ): Promise<Issue[]>
+  moveIssueToSprint(sprint: number, issue: string): Promise<void>
+  moveIssueToBacklog(issue: string): Promise<void>
 }
 
 export abstract class ProviderCreator {

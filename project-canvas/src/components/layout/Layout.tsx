@@ -1,13 +1,11 @@
 import { AppShell } from "@mantine/core"
 import { Outlet } from "react-router-dom"
 import { LayoutHeader } from "./LayoutHeader"
-import { LayoutNavbar } from "./LayoutNavbar"
 
 export function Layout() {
   return (
     <AppShell
       padding="md"
-      navbar={<LayoutNavbar />}
       header={<LayoutHeader />}
       styles={(theme) => ({
         main: {

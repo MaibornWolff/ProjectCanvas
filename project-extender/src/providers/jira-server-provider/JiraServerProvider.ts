@@ -1,17 +1,21 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
-import JiraApi from "jira-client"
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { ProjectData, FetchedProject } from "../base-provider/schema"
+import { Issue, Project, Sprint } from "../../types"
+import { JiraIssue, JiraProject, JiraSprint } from "../../types/jira"
 
 class JiraServerProvider implements ProviderApi {
-  provider: JiraApi | undefined = undefined
-
-  private requestBody = {
+  private loginOptions = {
     url: "",
     username: "",
     password: "",
+  }
+
+  getAuthHeader() {
+    return `Basic ${Buffer.from(
+      `${this.loginOptions.username}:${this.loginOptions.password}`
+    ).toString("base64")}`
   }
 
   async login({
@@ -23,38 +27,28 @@ class JiraServerProvider implements ProviderApi {
       password: string
     }
   }) {
-    // initialize requestBody parameters
-    this.requestBody.url = basicLoginOptions.url
-    this.requestBody.username = basicLoginOptions.username
-    this.requestBody.password = basicLoginOptions.password
-
-    this.provider = new JiraApi({
-      host: basicLoginOptions.url.split(":")[0],
-      port: basicLoginOptions.url.split(":")[1],
-      username: basicLoginOptions.username,
-      password: basicLoginOptions.password,
-    })
+    this.loginOptions.url = basicLoginOptions.url
+    this.loginOptions.username = basicLoginOptions.username
+    this.loginOptions.password = basicLoginOptions.password
 
     return this.isLoggedIn()
   }
 
   async isLoggedIn(): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch(`http://${this.requestBody.url}/rest/auth/1/session`, {
+      fetch(`http://${this.loginOptions.url}/rest/auth/1/session`, {
         method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: `Basic ${Buffer.from(
-            `${this.requestBody.username}:${this.requestBody.password}`
-          ).toString("base64")}`,
+          Authorization: this.getAuthHeader(),
         },
       })
-        .then((GoodResponse) => {
-          if (GoodResponse.status === 200) resolve()
-          if (GoodResponse.status === 401) {
+        .then((response) => {
+          if (response.status === 200) resolve()
+          if (response.status === 401) {
             reject(new Error("Wrong Username or Password"))
           }
-          if (GoodResponse.status === 404) {
+          if (response.status === 404) {
             reject(new Error("Wrong URL"))
           }
         })
@@ -64,22 +58,38 @@ class JiraServerProvider implements ProviderApi {
     })
   }
 
-  async getProjects(): Promise<ProjectData[]> {
+  async logout(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(`http://${this.loginOptions.url}/rest/auth/1/session`, {
+        method: "DELETE",
+        headers: {
+          Authorization: this.getAuthHeader(),
+        },
+      }).then((res) => {
+        if (res.status === 204) {
+          resolve()
+        }
+        if (res.status === 401) {
+          reject(new Error("user not authenticated"))
+        }
+      })
+    })
+  }
+
+  async getProjects(): Promise<Project[]> {
     const response = await fetch(
-      `http://${this.requestBody.url}/rest/api/2/project?expand=lead,description`,
+      `http://${this.loginOptions.url}/rest/api/2/project?expand=lead,description`,
       {
         method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: `Basic ${Buffer.from(
-            `${this.requestBody.username}:${this.requestBody.password}`
-          ).toString("base64")}`,
+          Authorization: this.getAuthHeader(),
         },
       }
     )
     if (response.ok) {
       const data = await response.json()
-      const projects = data.map((project: FetchedProject) => ({
+      const projects = data.map((project: JiraProject) => ({
         key: project.key,
         name: project.name,
         type: project.projectTypeKey,
@@ -90,23 +100,149 @@ class JiraServerProvider implements ProviderApi {
     return Promise.reject(new Error(response.statusText))
   }
 
-  async logout(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      fetch(`http://${this.requestBody.url}/rest/auth/1/session`, {
-        method: "DELETE",
+  async getBoardIds(project: string): Promise<number[]> {
+    const response = await fetch(
+      `http://${this.loginOptions.url}/rest/agile/1.0/board?projectKeyOrId=${project}`,
+      {
+        method: "GET",
         headers: {
-          Authorization: `Basic ${Buffer.from(
-            `${this.requestBody.username}:${this.requestBody.password}`
-          ).toString("base64")}`,
+          Accept: "application/json",
+          Authorization: this.getAuthHeader(),
         },
-      }).then((res) => {
-        if (res.status === 204) {
-          resolve()
-        }
-        if (res.status === 401) {
-          reject(new Error("user not authenticated"))
-        }
+      }
+    )
+
+    const data = await response.json()
+
+    const boardIds: number[] = data.values.map(
+      (element: { id: number; name: string }) => element.id
+    )
+    return boardIds
+  }
+
+  async getSprints(boardId: number): Promise<Sprint[]> {
+    const response = await fetch(
+      `http://${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/sprint`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: this.getAuthHeader(),
+        },
+      }
+    )
+
+    const data = await response.json()
+
+    const sprints: Sprint[] = data.values
+      .filter((element: { state: string }) => element.state !== "closed")
+      .map((element: JiraSprint, index: number) => ({
+        sprintId: element.id,
+        sprintName: element.name,
+        sprintType: element.state,
+        index,
+      }))
+    return sprints
+  }
+
+  async getIssuesByProject(project: string): Promise<Issue[]> {
+    return this.fetchIssues(
+      `http://${this.loginOptions.url}/rest/api/2/search?jql=project=${project}&maxResults=10000`
+    )
+  }
+
+  async getIssuesBySprintAndProject(
+    sprintId: number,
+    project: string
+  ): Promise<Issue[]> {
+    return this.fetchIssues(
+      `http://${this.loginOptions.url}/rest/api/2/search?jql=sprint=${sprintId} AND project=${project}`
+    )
+  }
+
+  async getBacklogIssuesByProjectAndBoard(
+    project: string,
+    boardId: number
+  ): Promise<Issue[]> {
+    const response = await this.fetchIssues(
+      `http://${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
+    )
+    return response
+  }
+
+  async fetchIssues(url: string): Promise<Issue[]> {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: this.getAuthHeader(),
+      },
+    })
+
+    const data = await response.json()
+
+    const pbis: Issue[] = data.issues.map(
+      (element: JiraIssue, index: number) => ({
+        issueKey: element.key,
+        summary: element.fields.summary,
+        creator: element.fields.creator.displayName,
+        status: element.fields.status.name,
+        index,
       })
+    )
+    return pbis
+  }
+
+  async moveIssueToSprint(sprint: number, issue: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `http://${this.loginOptions.url}/rest/agile/1.0/sprint/${sprint}/issue`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: this.getAuthHeader(),
+            "Content-Type": "application/json",
+          },
+          body: `{
+            "issues": [
+              "${issue}"
+            ]
+          }`,
+        }
+      )
+        .then(() => resolve())
+        .catch((error) => {
+          reject(
+            new Error(
+              `Error in moving this issue to the Sprint with id ${sprint}: ${error}`
+            )
+          )
+        })
+    })
+  }
+
+  async moveIssueToBacklog(issue: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(`http://${this.loginOptions.url}/rest/agile/1.0/backlog/issue`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: this.getAuthHeader(),
+          "Content-Type": "application/json",
+        },
+        body: `{
+          "issues": [
+            "${issue}"
+          ]
+        }`,
+      })
+        .then(() => resolve())
+        .catch((error) =>
+          reject(
+            new Error(`Error in moving this issue to the Backlog: ${error}`)
+          )
+        )
     })
   }
 }
