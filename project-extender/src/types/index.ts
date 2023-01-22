@@ -10,6 +10,8 @@ export interface Sprint {
   id: number
   name: string
   type: string
+  startDate: Date
+  endDate: Date
 }
 
 export interface Project {
@@ -26,4 +28,5 @@ export interface Issue {
   status: string
   index: number
   columnId: string
+  storyPointsEstimate: number
 }

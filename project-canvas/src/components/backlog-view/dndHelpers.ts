@@ -10,7 +10,7 @@ export const onDragEnd = async ({
 }: DropResult & {
   columns: Map<string, { id: string; list: Issue[] }>
   updateColumn: (t1: string, t2: { id: string; list: Issue[] }) => void
-  sprints: Map<string, number>
+  sprints: Map<string, { id: number; startDate: Date; endDate: Date }>
 }) => {
   if (destination === undefined || destination === null) return null
 
