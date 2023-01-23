@@ -53,7 +53,11 @@ export function ProjectsTable({ data }: { data: Project[] }) {
   }
 
   const rows = sortedData.map((row) => (
-    <tr key={row.key} onClick={() => onClickRow(row)}>
+    <tr
+      style={{ cursor: "pointer" }}
+      key={row.key}
+      onClick={() => onClickRow(row)}
+    >
       {Object.keys(row).map((key) => (
         <td key={key}> {row[key as keyof Project]}</td>
       ))}

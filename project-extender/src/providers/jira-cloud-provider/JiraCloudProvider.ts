@@ -159,17 +159,31 @@ class JiraCloudProvider implements ProviderApi {
 
     const data = await response.json()
 
-    const pbis: Issue[] = data.issues.map(
-      (element: JiraIssue, index: number) => ({
-        issueKey: element.key,
-        summary: element.fields.summary,
-        creator: element.fields.creator.displayName,
-        status: element.fields.status.name,
-        type: element.fields.issuetype.name,
-        storyPoints: element.fields.customfield_10107,
-        index,
+    const pbis = Promise.all(
+      data.issues.map(async (element: JiraIssue, index: number) => {
+        const storyPointsResponse = await fetch(
+          `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${element.key}`,
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${this.accessToken}`,
+            },
+          }
+        )
+        const storyPoints = await storyPointsResponse.json()
+        const storyPointsValue = storyPoints.fields.customfield_10016
+        return {
+          issueKey: element.key,
+          summary: element.fields.summary,
+          creator: element.fields.creator.displayName,
+          status: element.fields.status.name,
+          type: element.fields.issuetype.name,
+          storyPoints: storyPointsValue,
+          index,
+        }
       })
     )
+
     return pbis
   }
 
@@ -205,6 +219,8 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async moveIssueToBacklog(issue: string): Promise<void> {
+    console.log("moveIssue toBacklog")
+
     return new Promise((resolve, reject) => {
       fetch(
         `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/backlog/issue`,

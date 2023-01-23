@@ -3,14 +3,13 @@ import { useNavigate } from "react-router-dom"
 import { DragDropContext } from "react-beautiful-dnd"
 import {
   Box,
-  Button,
   Container,
   Divider,
-  Flex,
+  Group,
+  Stack,
   Text,
   Title,
 } from "@mantine/core"
-import { IconChevronLeft } from "@tabler/icons"
 import { Issue } from "project-extender"
 import { Column } from "./Column"
 import { resizeDivider } from "./resizeDivider"
@@ -53,9 +52,13 @@ export function BacklogView() {
                 }&project=${projectKey}`
               )
               const issuesForSprints = await issuesForSprintResponse.json()
+
               updateColumn(sprint.sprintName, {
                 id: sprint.sprintName,
-                list: issuesForSprints,
+                list: issuesForSprints.filter(
+                  (issue: Issue) =>
+                    issue.type !== "Epic" && issue.type !== "Subtask"
+                ),
               })
             }
           )
@@ -66,7 +69,12 @@ export function BacklogView() {
           }/backlogIssuesByProjectAndBoard?project=${projectKey}&boardId=${boardId}`
         )
         const unassignedPbis = await backlogIssues.json()
-        updateColumn("Backlog", { id: "Backlog", list: unassignedPbis })
+        updateColumn("Backlog", {
+          id: "Backlog",
+          list: unassignedPbis.filter(
+            (issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask"
+          ),
+        })
       })
     )
     setIsLoading(false)
@@ -84,23 +92,32 @@ export function BacklogView() {
     <Text>Loading...</Text>
   ) : (
     <Container sx={{ maxWidth: "100%" }}>
-      <Flex
-        align="center"
-        gap="xl"
-        sx={{ paddingBottom: "10px", paddingTop: "30px" }}
+      <Stack
+        align="left"
+        sx={{
+          paddingBottom: "10px",
+          paddingTop: "10px",
+          gap: "10px",
+        }}
       >
-        <Button
-          leftIcon={<IconChevronLeft />}
-          onClick={() => navigate("/projectsview")}
-          sx={{ flex: 1, backgroundImage: "url()" }}
-        >
-          Back
-        </Button>
-        <Title sx={{ flex: 2 }} order={2} color="blue.7">
-          project: {projectName}
-        </Title>
-      </Flex>
-      <Divider size="xl" />
+        <Group sx={{ gap: "5px", color: "#6B778C" }}>
+          <Text
+            onClick={() => navigate("/projectsview")}
+            sx={{
+              ":hover": {
+                textDecoration: "underline",
+                cursor: "pointer",
+              },
+            }}
+          >
+            Projects
+          </Text>
+          <Text>/</Text>
+          <Text>{projectName}</Text>
+        </Group>
+        <Title>Backlog</Title>
+      </Stack>
+
       <Box sx={{ height: "100%", width: "100%", display: "flex" }}>
         <DragDropContext
           onDragEnd={(dropResult) =>
@@ -109,7 +126,13 @@ export function BacklogView() {
         >
           <Box
             className="left-panel"
-            sx={{ padding: "5px", width: "50%", minWidth: "300px" }}
+            sx={{
+              height: "600px",
+              padding: "5px",
+              width: "50%",
+              minWidth: "300px",
+              overflow: "auto",
+            }}
           >
             <Column col={columns.get("Backlog")!} />
           </Box>
@@ -121,7 +144,16 @@ export function BacklogView() {
               cursor: "col-resize",
             }}
           />
-          <Box className="right-panel" sx={{ padding: "5px", width: "50%" }}>
+          <Box
+            className="right-panel"
+            sx={{
+              height: "600px",
+              padding: "5px",
+              width: "50%",
+              minWidth: "300px",
+              overflow: "auto",
+            }}
+          >
             {Array.from(columns.keys())
               .filter((columnName) => columnName !== "Backlog")
               .map((sprint) => (

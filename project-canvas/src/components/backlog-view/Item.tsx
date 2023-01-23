@@ -12,7 +12,6 @@ export function Item({
   storyPoints,
 }: Issue) {
   let icon: JSX.Element
-  let storyPointsElement: JSX.Element
   let iconGradient1: string
   let iconGradient2: string
   switch (type) {
@@ -20,22 +19,6 @@ export function Item({
       icon = <IconBookmark />
       iconGradient1 = "teal"
       iconGradient2 = "lime"
-      storyPointsElement = (
-        <Text
-          sx={{
-            height: "1.2em",
-            width: "2.5em",
-            backgroundColor: "rgba(9,30,66,0.13)",
-            margin: "0px",
-            alignItems: "center",
-            display: "flex",
-            justifyContent: "center",
-            borderRadius: "10px",
-          }}
-        >
-          {storyPoints}
-        </Text>
-      )
       break
     case "Task":
       icon = <IconCheck />
@@ -50,6 +33,7 @@ export function Item({
 
     default:
   }
+
   return (
     <Draggable draggableId={issueKey} index={index}>
       {(provided) => (
@@ -94,13 +78,37 @@ export function Item({
               >
                 {icon}
               </ThemeIcon>
-              <Text color="blue" ml={5}>
+              <Text
+                color="blue"
+                ml={5}
+                sx={{
+                  ":hover": {
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                  },
+                }}
+              >
                 {issueKey}
               </Text>
               <Text ml={10} sx={{ flex: "1" }}>
                 {summary}
               </Text>
-              {storyPointsElement}
+              {storyPoints && (
+                <Text
+                  sx={{
+                    height: "1.2em",
+                    width: "2.5em",
+                    backgroundColor: "rgba(9,30,66,0.13)",
+                    margin: "0px",
+                    alignItems: "center",
+                    display: "flex",
+                    justifyContent: "center",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {storyPoints}
+                </Text>
+              )}
             </Box>
             <Box
               sx={{

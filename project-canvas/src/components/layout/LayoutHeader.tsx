@@ -64,7 +64,7 @@ export function LayoutHeader() {
               <IconMoonStars size={16} />
             )}
           </ActionIcon>
-          <Affix position={{ top: 20, right: 20 }}>
+          <Affix position={{ top: 12, right: 20 }}>
             <Button
               color="dark"
               onClick={() => {

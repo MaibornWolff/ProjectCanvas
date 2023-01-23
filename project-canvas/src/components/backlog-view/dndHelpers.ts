@@ -76,7 +76,7 @@ export const onDragEnd = async ({
         issue: movedIssue.issueKey,
       }),
     })
-  } else if (destination.droppableId === "Unassigned") {
+  } else if (destination.droppableId === "Backlog") {
     await fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToBacklog`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
