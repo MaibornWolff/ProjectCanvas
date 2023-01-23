@@ -1,12 +1,13 @@
-import { Button, Container, Divider, Stack, Title } from "@mantine/core"
+import { Button, Container, Divider, Group, Image, Paper } from "@mantine/core"
 import { IconCloud, IconServer } from "@tabler/icons"
 import { ipcRenderer } from "electron"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
+import { LanguageSelector } from "../common/LanguageSelector"
+import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { JiraCloudLogin } from "./jira-cloud/JiraCloudLogin"
 import { JiraServerLogin } from "./jira-server/JiraServerLogin"
-import { LanguageSelector } from "../common/LanguageSelector"
 
 export function Login() {
   const [providerLogin, setProviderLogin] = useState("")
@@ -19,29 +20,41 @@ export function Login() {
     <Container
       sx={{
         display: "flex",
+        justifyContent: "center",
         alignItems: "center",
         height: "100vh",
       }}
     >
-      <Stack
-        justify="center"
-        align="stretch"
-        spacing="lg"
+      <Paper
+        p="lg"
+        withBorder
         sx={(theme) => ({
-          width: "25vw",
-          boxShadow: theme.shadows.lg,
+          width: "30vw",
+          display: "flex",
+          flexDirection: "column",
+          gap: theme.spacing.sm,
+          boxShadow: theme.shadows.xl,
           borderRadius: theme.radius.lg,
         })}
-        p="lg"
-        mx="auto"
       >
-        <LanguageSelector />
-        <Title size="2em" align="center" mb="2em">
-          Project Canvas
-        </Title>
-        <Title size="2em" align="center">
-          Login
-        </Title>
+        <Group spacing="xs">
+          <ColorSchemeToggle ml="auto" />
+          <LanguageSelector />
+        </Group>
+        <Image
+          mx="auto"
+          src="/project_canvas_logo.svg"
+          sx={(theme) => ({
+            maxWidth: "220px",
+            backgroundColor:
+              theme.colorScheme === "dark"
+                ? theme.fn.rgba("#fff", 0.3)
+                : "transparent",
+            borderRadius: "20px",
+            padding: "20px",
+          })}
+        />
+
         {providerLogin === "" && (
           <>
             <Divider
@@ -52,8 +65,12 @@ export function Login() {
             <Button
               size="xl"
               variant="gradient"
-              gradient={{ from: "teal", to: "blue", deg: 60 }}
-              leftIcon={<IconServer size={20} />}
+              gradient={{
+                from: "primaryGreen.5",
+                to: "primaryGreen.8",
+                deg: 60,
+              }}
+              leftIcon={<IconServer size={32} strokeWidth={1.8} />}
               onClick={() => {
                 setProviderLogin("JiraServer")
               }}
@@ -63,8 +80,12 @@ export function Login() {
             <Button
               size="xl"
               variant="gradient"
-              gradient={{ from: "#ed6ea0", to: "#ec8c69", deg: 35 }}
-              leftIcon={<IconCloud size={20} />}
+              gradient={{
+                from: "primaryBlue.3",
+                to: "primaryBlue.6",
+                deg: 60,
+              }}
+              leftIcon={<IconCloud size={32} strokeWidth={1.8} />}
               onClick={() => {
                 setProviderLogin("JiraCloud")
                 ipcRenderer.send("start-oauth2")
@@ -80,7 +101,7 @@ export function Login() {
         {providerLogin === "JiraCloud" && (
           <JiraCloudLogin onSuccess={onSuccess} goBack={goBack} />
         )}
-      </Stack>
+      </Paper>
     </Container>
   )
 }
