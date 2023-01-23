@@ -1,19 +1,10 @@
-import { Box, Button, Group, Header, Menu, Image } from "@mantine/core"
-import { showNotification } from "@mantine/notifications"
+import { Anchor, Box, Group, Header, Image } from "@mantine/core"
 import { useNavigate } from "react-router-dom"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
-import { Logout } from "../login/jira-server/Logout"
+import { LogoutButton } from "./LogoutButton"
 
 export function LayoutHeader() {
   const navigate = useNavigate()
-  const LogoutSuccess = () => navigate("/")
-  const LogoutFailed = () => {
-    showNotification({
-      title: "Failed to Logout",
-      message: "The use is not authenticated. Please restart the application.",
-      color: "red",
-    })
-  }
   return (
     <Header
       height="60"
@@ -39,32 +30,22 @@ export function LayoutHeader() {
             width={36}
             fit="contain"
           />
-          <Menu width={200} shadow="md">
-            <Menu.Target>
-              <Button>Projects</Button>
-            </Menu.Target>
-
-            <Menu.Dropdown>
-              <Menu.Item
-                component="a"
-                onClick={() => navigate("/projectsview")}
-              >
-                Projects View
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-
-          <ColorSchemeToggle size="34px" ml="auto" />
-
-          <Button
-            color="secondary"
-            variant="outline"
-            onClick={() => {
-              Logout({ LogoutSuccess, LogoutFailed })
-            }}
+          <Anchor
+            component="button"
+            type="button"
+            onClick={() => navigate("/projectsview")}
           >
-            Log out
-          </Button>
+            Projects
+          </Anchor>
+          <Anchor
+            component="button"
+            type="button"
+            onClick={() => navigate("/backlogview")}
+          >
+            Backlog
+          </Anchor>
+          <ColorSchemeToggle size="34px" ml="auto" />
+          <LogoutButton />
         </Group>
       </Box>
     </Header>
