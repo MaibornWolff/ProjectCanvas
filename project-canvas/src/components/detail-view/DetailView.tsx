@@ -83,7 +83,7 @@ export function DetailView() {
       wrap="wrap"
     >
       {issue?.fields?.labels?.map((label: string) => (
-        <Badge color="indigo" variant="light">
+        <Badge key={label} color="indigo" variant="light">
           {label}
         </Badge>
       ))}
