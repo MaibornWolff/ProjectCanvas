@@ -26,7 +26,7 @@ export function DetailView() {
 
   const { keyOrId } = useParams<string>()
   const [opened, setOpened] = useState(true)
-  const [openedSubtasks, setopenedSubtasks] = useState(false)
+  const [openedSubtasks, setopenedSubtasks] = useState(true)
   const [issue, setIssue] = useState<IssueBean>({})
 
   useEffect(() => {
@@ -212,6 +212,7 @@ export function DetailView() {
  */
   return (
     <>
+      issue &&{" "}
       <Modal
         size="auto"
         opened={opened}
@@ -287,7 +288,6 @@ export function DetailView() {
           </div>
         </Group>
       </Modal>
-
       <Group position="center">
         <Button onClick={() => setOpened(true)}>Open Modal</Button>
       </Group>
