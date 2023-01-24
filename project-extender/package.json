@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "build": "rollup --config",
-    "start": "nodemon --exec node --experimental-specifier-resolution=node --loader ts-node/esm src/index.ts"
+    "start": "nodemon --exec node --experimental-specifier-resolution=node --loader ts-node/esm src/index.ts",
+    "openapi-models-only": "openapi --input ./jira.json --output ./src/providers/jira-cloud-provider/types --exportModels true --exportSchemas false --exportCore false --exportServices false --useUnionTypes",
+    "openapi-typescript-fetch": "openapi-generator-cli generate -i jira.json -g typescript-fetch -o ./src/providers/jira-cloud-provider/openapi --additional-properties=supportsES6=true,modelPropertyNaming=original"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +16,7 @@
   "dependencies": {
     "@fastify/cors": "^8.2.0",
     "@fastify/env": "^4.2.0",
+    "@openapitools/openapi-generator-cli": "^2.5.2",
     "cross-fetch": "^3.1.5",
     "fastify": "^4.9.2",
     "jira-client": "^8.2.2"
@@ -29,6 +32,7 @@
     "@types/jira-client": "^7.1.5",
     "@types/node": "^18.11.9",
     "nodemon": "^2.0.20",
+    "openapi-typescript-codegen": "^0.23.0",
     "rollup": "^3.7.5",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.4"

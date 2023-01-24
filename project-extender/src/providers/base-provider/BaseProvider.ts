@@ -1,4 +1,5 @@
 import { Issue, Sprint } from "./schema"
+import { IssueBean, PageOfComments } from "../jira-cloud-provider/types"
 
 export interface BasicLoginOptions {
   url: string
@@ -25,6 +26,8 @@ export interface ProviderApi {
   getProjects(): Promise<{ name: string; key: string }[]>
   logout(): Promise<void>
   getPbis(projectToGet: string): Promise<Issue[]>
+  getIssue(issueIdOrKey: string): Promise<IssueBean>
+  getIssueComments(issueIdOrKey: string): Promise<PageOfComments>
   getSprints(BoardId: number): Promise<Sprint[]>
 }
 

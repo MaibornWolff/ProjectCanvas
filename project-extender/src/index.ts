@@ -94,7 +94,6 @@ server.post<{
 server.get("/projects", async (_, reply) => {
   reply.send(await pbiProvider.getProjects())
 })
-
 server.get(
   "/pbis",
   async (
@@ -104,6 +103,28 @@ server.get(
     reply
   ) => {
     reply.send(await pbiProvider.getPbis(req.query.project))
+  }
+)
+server.get(
+  "/issue/:keyOrId",
+  async (
+    req: FastifyRequest<{
+      Params: { keyOrId: string }
+    }>,
+    reply
+  ) => {
+    reply.send(await pbiProvider.getIssue(req.params.keyOrId))
+  }
+)
+server.get(
+  "/issue/:keyOrId/comments",
+  async (
+    req: FastifyRequest<{
+      Params: { keyOrId: string }
+    }>,
+    reply
+  ) => {
+    reply.send(await pbiProvider.getIssueComments(req.params.keyOrId))
   }
 )
 server.get(

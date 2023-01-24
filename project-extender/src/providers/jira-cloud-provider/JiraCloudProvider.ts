@@ -1,6 +1,7 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
+import { IssueBean, PageOfComments } from "./types"
 import { ProviderApi, ProviderCreator } from "../base-provider"
 import { Issue, FetchedProject, Sprint } from "../base-provider/schema"
 import { getAccessToken } from "./getAccessToken"
@@ -210,6 +211,34 @@ class JiraCloudProvider implements ProviderApi {
       (element: { id: number; name: string }) => element.id
     )
     return boardIds
+  }
+
+  async getIssue(issueIdOrKey: string): Promise<IssueBean> {
+    return fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}?fields=*all&expand=names,renderedFields,transitions,changelog,schema`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      }
+    )
+      .then((res) => res.json())
+      .catch((error) => error)
+  }
+
+  async getIssueComments(issueIdOrKey: string): Promise<PageOfComments> {
+    return fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comments?`, // expand=renderedBody
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      }
+    )
+      .then((res) => res.json())
+      .catch((error) => error)
   }
 }
 

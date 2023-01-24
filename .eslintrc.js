@@ -23,14 +23,6 @@ module.exports = {
         "react/destructuring-assignment": "off",
         "react/jsx-props-no-spreading": "off",
         "react/jsx-filename-extension": [1, { extensions: [".tsx", ".ts"] }],
-        "no-use-before-define": [
-          "error",
-          { functions: false, classes: true, variables: true },
-        ],
-        "@typescript-eslint/no-use-before-define": [
-          "error",
-          { functions: false, classes: true, variables: true },
-        ],
         "import/no-extraneous-dependencies": [
           "off",
           { packageDir: ["project-canvas/electron/main"] },

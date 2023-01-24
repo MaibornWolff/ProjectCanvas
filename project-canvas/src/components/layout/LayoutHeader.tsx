@@ -1,6 +1,5 @@
 import {
   ActionIcon,
-  Affix,
   Box,
   Button,
   Group,
@@ -44,7 +43,7 @@ export function LayoutHeader() {
         sx={(theme) => ({
           paddingLeft: theme.spacing.xs,
           paddingRight: theme.spacing.xs,
-          paddingBottom: theme.spacing.lg,
+          paddingBottom: theme.spacing.xs,
           borderBottom: `1px solid ${
             theme.colorScheme === "dark"
               ? theme.colors.dark[4]
@@ -52,19 +51,46 @@ export function LayoutHeader() {
           }`,
         })}
       >
-        <Group position="left" spacing="xl">
-          <ActionIcon
-            variant="default"
-            onClick={() => toggleColorScheme()}
-            size={30}
-          >
-            {colorScheme === "dark" ? (
-              <IconSun size={16} />
-            ) : (
-              <IconMoonStars size={16} />
-            )}
-          </ActionIcon>
-          <Affix position={{ top: 20, right: 20 }}>
+        <Group grow>
+          <Group position="left" spacing="xl">
+            <ActionIcon
+              variant="default"
+              onClick={() => toggleColorScheme()}
+              size={30}
+            >
+              {colorScheme === "dark" ? (
+                <IconSun size={16} />
+              ) : (
+                <IconMoonStars size={16} />
+              )}
+            </ActionIcon>
+
+            <Menu width={200} shadow="md">
+              <Menu.Target>
+                <Button>Projects</Button>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Item
+                  component="a"
+                  onClick={() => navigate("/projectsview")}
+                >
+                  Projects View
+                </Menu.Item>
+
+                <Menu.Item
+                  icon={<IconExternalLink size={14} />}
+                  component="a"
+                  href="https://mantine.dev"
+                  target="_blank"
+                >
+                  External link
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          </Group>
+
+          <Group position="right" spacing="xl">
             <Button
               color="dark"
               onClick={() => {
@@ -73,31 +99,7 @@ export function LayoutHeader() {
             >
               Log out
             </Button>
-          </Affix>
-
-          <Menu width={200} shadow="md">
-            <Menu.Target>
-              <Button>Projects</Button>
-            </Menu.Target>
-
-            <Menu.Dropdown>
-              <Menu.Item
-                component="a"
-                onClick={() => navigate("/projectsview")}
-              >
-                Projects View
-              </Menu.Item>
-
-              <Menu.Item
-                icon={<IconExternalLink size={14} />}
-                component="a"
-                href="https://mantine.dev"
-                target="_blank"
-              >
-                External link
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
+          </Group>
         </Group>
       </Box>
     </Header>

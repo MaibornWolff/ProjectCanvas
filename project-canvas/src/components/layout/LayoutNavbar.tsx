@@ -7,10 +7,19 @@ export function LayoutNavbar() {
   return (
     <Navbar width={{ base: 300 }} sx={{ zIndex: "auto" }} height="100%" p="xs">
       <Navbar.Section mt="xs">
-        <Button onClick={() => navigate("/projectsview")}>Projects View</Button>
+        <Button fullWidth onClick={() => navigate("/projectsview")}>
+          Projects View
+        </Button>
       </Navbar.Section>
-      <Navbar.Section grow mt="md">
-        <Button onClick={() => navigate("/backlogview")}>Backlog View</Button>
+      <Navbar.Section mt="xs">
+        <Button fullWidth onClick={() => navigate("/backlogview")}>
+          Backlog View
+        </Button>
+      </Navbar.Section>
+      <Navbar.Section mt="xs">
+        <Button fullWidth onClick={() => navigate("/detailview/CANVAS-6")}>
+          Detail View
+        </Button>
       </Navbar.Section>
     </Navbar>
   )

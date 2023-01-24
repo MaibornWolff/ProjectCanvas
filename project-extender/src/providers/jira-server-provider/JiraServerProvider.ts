@@ -9,6 +9,7 @@ import {
   FetchedProject,
   Sprint,
 } from "../base-provider/schema"
+import { IssueBean, PageOfComments } from "../jira-cloud-provider/types"
 
 class JiraServerProvider implements ProviderApi {
   provider: JiraApi | undefined = undefined
@@ -225,6 +226,16 @@ class JiraServerProvider implements ProviderApi {
       })
     )
     return sprints
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getIssue(issueIdOrKey: string): Promise<IssueBean> {
+    throw new Error("Method not implemented.")
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getIssueComments(issueIdOrKey: string): Promise<PageOfComments> {
+    throw new Error("Method not implemented.")
   }
 }
 
