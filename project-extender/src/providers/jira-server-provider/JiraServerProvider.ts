@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Issue, Project, Sprint } from "../../types"
+import { dateTimeFormat, Issue, Project, Sprint } from "../../types"
 import { JiraIssue, JiraProject, JiraSprint } from "../../types/jira"
 
 class JiraServerProvider implements ProviderApi {
@@ -156,14 +156,24 @@ class JiraServerProvider implements ProviderApi {
 
     const sprints: Sprint[] = data.values
       .filter((element: { state: string }) => element.state !== "closed")
-      .map((element: JiraSprint, index: number) => ({
-        id: element.id,
-        name: element.name,
-        type: element.state,
-        startDate: new Date(element.startDate),
-        endDate: new Date(element.endDate),
-        index,
-      }))
+      .map((element: JiraSprint, index: number) => {
+        const sDate = new Date(element.startDate)
+        const startDate = Number.isNaN(sDate.getTime())
+          ? "Invalid Date"
+          : dateTimeFormat.format(sDate)
+        const eDate = new Date(element.endDate)
+        const endDate = Number.isNaN(eDate.getTime())
+          ? "Invalid Date"
+          : dateTimeFormat.format(eDate)
+        return {
+          id: element.id,
+          name: element.name,
+          state: element.state,
+          startDate,
+          endDate,
+          index,
+        }
+      })
     return sprints
   }
 

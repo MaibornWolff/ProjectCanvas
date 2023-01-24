@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Issue, Sprint, Project } from "../../types"
+import { Issue, Sprint, Project, dateTimeFormat } from "../../types"
 import { JiraIssue, JiraProject, JiraSprint } from "../../types/jira"
 import { getAccessToken } from "./getAccessToken"
 
@@ -77,8 +77,6 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async getProjects(): Promise<Project[]> {
-    // console.log(this.accessToken)
-
     const response = await fetch(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/project/search?expand=description,lead,issueTypes,url,projectKeys,permissions,insight`,
       {
@@ -133,14 +131,24 @@ class JiraCloudProvider implements ProviderApi {
 
     const sprints: Sprint[] = data.values
       .filter((element: { state: string }) => element.state !== "closed")
-      .map((element: JiraSprint, index: number) => ({
-        id: element.id,
-        name: element.name,
-        type: element.state,
-        startDate: element.startDate,
-        endDate: element.endDate,
-        index,
-      }))
+      .map((element: JiraSprint, index: number) => {
+        const sDate = new Date(element.startDate)
+        const startDate = Number.isNaN(sDate.getTime())
+          ? "Invalid Date"
+          : dateTimeFormat.format(sDate)
+        const eDate = new Date(element.endDate)
+        const endDate = Number.isNaN(eDate.getTime())
+          ? "Invalid Date"
+          : dateTimeFormat.format(eDate)
+        return {
+          id: element.id,
+          name: element.name,
+          state: element.state,
+          startDate,
+          endDate,
+          index,
+        }
+      })
     return sprints
   }
 

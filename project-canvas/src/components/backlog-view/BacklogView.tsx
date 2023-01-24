@@ -12,6 +12,8 @@ import {
   Badge,
   Loader,
   Center,
+  Group,
+  Text,
 } from "@mantine/core"
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons"
 import { Issue, Sprint } from "project-extender"
@@ -25,13 +27,28 @@ export function BacklogView() {
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
+  const pluralize = (count: number, noun: string, suffix = "s") =>
+    `${count} ${noun}${count !== 1 ? suffix : ""}`
   const [isLoading, setIsLoading] = useState(true)
   const [sprints, setSprints] = useState(
-    new Map<string, { id: number; startDate: Date; endDate: Date }>()
+    new Map<
+      string,
+      {
+        id: number
+        state: string
+        startDate: Intl.DateTimeFormat
+        endDate: Intl.DateTimeFormat
+      }
+    >()
   )
   const updateSprints = (
     key: string,
-    value: { id: number; startDate: Date; endDate: Date }
+    value: {
+      id: number
+      state: string
+      startDate: Intl.DateTimeFormat
+      endDate: Intl.DateTimeFormat
+    }
   ) => {
     setSprints((map) => new Map(map.set(key, value)))
   }
@@ -44,11 +61,7 @@ export function BacklogView() {
 
   const storyPointsAccumulator = (issues: Issue[], status: string) =>
     issues.reduce((accumulator, currentValue) => {
-      if (
-        currentValue.storyPointsEstimate !== null &&
-        currentValue.storyPointsEstimate !== undefined &&
-        currentValue.status === status
-      ) {
+      if (currentValue.storyPointsEstimate && currentValue.status === status) {
         return accumulator + currentValue.storyPointsEstimate
       }
       return accumulator
@@ -65,6 +78,7 @@ export function BacklogView() {
           sprintsAsArray.map(async (sprint: Sprint) => {
             updateSprints(sprint.name, {
               id: sprint.id,
+              state: sprint.state,
               startDate: sprint.startDate,
               endDate: sprint.endDate,
             })
@@ -133,8 +147,16 @@ export function BacklogView() {
         >
           <Box
             className="left-panel"
-            sx={{ padding: "5px", width: "50%", minWidth: "260px" }}
+            sx={{
+              padding: "5px",
+              width: "50%",
+              minWidth: "260px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
+            <Title size="h4">Backlog</Title>
             <Column col={columns.get("Backlog")!} />
           </Box>
           <Divider
@@ -155,101 +177,111 @@ export function BacklogView() {
               chevron={<IconChevronRight />}
               chevronPosition="left"
               multiple
-              styles={{
+              styles={(theme) => ({
                 chevron: {
                   "&[data-rotate]": {
                     transform: "rotate(90deg)",
                   },
                 },
-              }}
+                control: {
+                  padding: theme.spacing.xs,
+                },
+                item: {
+                  border: "solid 1px lightgray",
+                  "&:hover": {
+                    backgroundColor: theme.colors.gray[1],
+                  },
+                },
+              })}
             >
               {Array.from(columns.keys())
                 .filter((columnName) => columnName !== "Backlog")
+                .sort((a, b) => {
+                  if (
+                    sprints.get(a)!.state === "active" &&
+                    sprints.get(b)!.state !== "active"
+                  ) {
+                    return -1
+                  }
+                  if (
+                    sprints.get(a)!.state !== "active" &&
+                    sprints.get(b)!.state === "active"
+                  ) {
+                    return 1
+                  }
+                  return a.localeCompare(b)
+                })
                 .map((sprint) => (
                   <Accordion.Item
-                    key={`Accordion-item-key ${sprint}`}
+                    key={`accordion-item-key-${sprint}`}
                     value={sprint}
-                    sx={[
-                      {
-                        border: "1px solid",
-                        borderColor: "lightgray",
-                        boxShadow: "2px 2px 7px rgba(0, 0, 0, 0.3)",
-                      },
-                      (theme) => ({
-                        backgroundColor: theme.colors.gray[0],
-                        "&:hover": {
-                          backgroundColor: theme.colors.gray[1],
-                        },
-                      }),
-                    ]}
                   >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        paddingRight: "10px",
-                      }}
-                    >
-                      <Accordion.Control
-                        key={`Accordion-Control-key ${sprint}`}
-                      >
-                        {columns.get(sprint)!.id}
-                      </Accordion.Control>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gridGap: "2px",
-                          alignItems: "center",
-                          padding: "2px",
-                        }}
-                      >
-                        <Badge
-                          px="6px"
-                          color="gray.6"
-                          variant="filled"
-                          size="sm"
-                        >
-                          {storyPointsAccumulator(
-                            columns.get(sprint)!.list,
-                            "To Do"
-                          )}
-                        </Badge>
-                        <Badge
-                          px="6px"
-                          color="blue.8"
-                          variant="filled"
-                          size="sm"
-                          sx={{ align: "left" }}
-                        >
-                          {storyPointsAccumulator(
-                            columns.get(sprint)!.list,
-                            "In Progress"
-                          )}
-                        </Badge>
-                        <Badge
-                          px="6px"
-                          color="green.9"
-                          variant="filled"
-                          size="sm"
-                        >
-                          {storyPointsAccumulator(
-                            columns.get(sprint)!.list,
-                            "Done"
-                          )}
-                        </Badge>
-                      </Box>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: "20px",
-                        paddingBottom: "5px",
-                      }}
-                    >
-                      startDate - endDate
-                    </Box>
-                    <Accordion.Panel key={`Accordion-Panel-key ${sprint}`}>
+                    <Accordion.Control>
+                      <Group>
+                        <Title size="h5">{columns.get(sprint)!.id}</Title>
+                        <Text color="dimmed">
+                          {pluralize(columns.get(sprint)!.list.length, "issue")}
+                        </Text>
+                        {sprints.get(sprint)?.state === "active" && (
+                          <Badge
+                            px="6px"
+                            color="green"
+                            variant="filled"
+                            size="sm"
+                          >
+                            active
+                          </Badge>
+                        )}
+                        <Flex gap={4} p="xs" ml="auto">
+                          <Badge
+                            px="6px"
+                            color="gray.6"
+                            variant="filled"
+                            size="sm"
+                          >
+                            {storyPointsAccumulator(
+                              columns.get(sprint)!.list,
+                              "To Do"
+                            )}
+                          </Badge>
+                          <Badge
+                            px="6px"
+                            color="blue.8"
+                            variant="filled"
+                            size="sm"
+                            sx={{ align: "left" }}
+                          >
+                            {storyPointsAccumulator(
+                              columns.get(sprint)!.list,
+                              "In Progress"
+                            )}
+                          </Badge>
+                          <Badge
+                            px="6px"
+                            color="green.9"
+                            variant="filled"
+                            size="sm"
+                          >
+                            {storyPointsAccumulator(
+                              columns.get(sprint)!.list,
+                              "Done"
+                            )}
+                          </Badge>
+                        </Flex>
+                      </Group>
+                      <Text size="sm" color="gray.7">
+                        {sprints.get(sprint)!.startDate.toString() ===
+                        "Invalid Date"
+                          ? "Dates not defined"
+                          : sprints.get(sprint)!.startDate.toString()}
+                        {sprints.get(sprint)!.endDate.toString() ===
+                        "Invalid Date"
+                          ? ""
+                          : ` · ${sprints.get(sprint)!.endDate.toString()}`}
+                      </Text>
+                    </Accordion.Control>
+
+                    <Accordion.Panel>
                       <Column col={columns.get(sprint)!} />
                     </Accordion.Panel>
                   </Accordion.Item>
