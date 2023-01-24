@@ -212,9 +212,8 @@ export function DetailView() {
  */
   return (
     <>
-      issue &&{" "}
       <Modal
-        size="auto"
+        size="80%"
         opened={opened}
         onClose={() => setOpened(false)}
         title={title}
@@ -288,6 +287,7 @@ export function DetailView() {
           </div>
         </Group>
       </Modal>
+
       <Group position="center">
         <Button onClick={() => setOpened(true)}>Open Modal</Button>
       </Group>
