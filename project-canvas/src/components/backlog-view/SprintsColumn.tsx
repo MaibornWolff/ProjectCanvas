@@ -1,7 +1,11 @@
 import { Accordion, Badge, Flex, Group, Title, Text } from "@mantine/core"
 import { IconChevronRight } from "@tabler/icons"
 import { Issue, Sprint } from "project-extender"
-import { pluralize, storyPointsAccumulator } from "./backlogHelper"
+import {
+  pluralize,
+  sortSprintsByActive,
+  storyPointsAccumulator,
+} from "./backlogHelper"
 import { Column } from "./Column"
 
 export function SprintsColumn({
@@ -37,21 +41,7 @@ export function SprintsColumn({
     >
       {Array.from(columns.keys())
         .filter((columnName) => columnName !== "Backlog")
-        .sort((a, b) => {
-          if (
-            sprints.get(a)!.state === "active" &&
-            sprints.get(b)!.state !== "active"
-          ) {
-            return -1
-          }
-          if (
-            sprints.get(a)!.state !== "active" &&
-            sprints.get(b)!.state === "active"
-          ) {
-            return 1
-          }
-          return a.localeCompare(b)
-        })
+        .sort((a, b) => sortSprintsByActive(a, b, sprints))
         .map((sprint) => (
           <Accordion.Item key={`accordion-item-key-${sprint}`} value={sprint}>
             <Accordion.Control>
