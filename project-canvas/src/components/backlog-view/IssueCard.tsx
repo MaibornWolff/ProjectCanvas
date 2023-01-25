@@ -41,7 +41,39 @@ export function IssueCard({
       iconGradient1 = "white"
       iconGradient2 = "white"
   }
-
+  let issueKeyElement: JSX.Element
+  if (status === "Done") {
+    issueKeyElement = (
+      <Text
+        color="blue"
+        ml={5}
+        sx={{
+          textDecoration: "line-through",
+          ":hover": {
+            textDecoration: "underline",
+            cursor: "pointer",
+          },
+        }}
+      >
+        {issueKey}
+      </Text>
+    )
+  } else {
+    issueKeyElement = (
+      <Text
+        color="blue"
+        ml={5}
+        sx={{
+          ":hover": {
+            textDecoration: "underline",
+            cursor: "pointer",
+          },
+        }}
+      >
+        {issueKey}
+      </Text>
+    )
+  }
   return (
     <Draggable draggableId={issueKey} index={index}>
       {(provided) => (
@@ -85,28 +117,17 @@ export function IssueCard({
               >
                 {icon}
               </ThemeIcon>
-              <Text
-                color="blue"
-                ml={5}
-                sx={{
-                  ":hover": {
-                    textDecoration: "underline",
-                    cursor: "pointer",
-                  },
-                }}
-              >
-                {issueKey}
-              </Text>
+              {issueKeyElement}
               <Text ml={10} sx={{ flex: "1" }}>
                 {summary}
               </Text>
               {storyPoints && (
                 <Text
+                  h="1.2em"
+                  w="2.5em"
+                  bg="rgba(9,30,66,0.13)"
+                  m={0}
                   sx={{
-                    height: "1.2em",
-                    width: "2.5em",
-                    backgroundColor: "rgba(9,30,66,0.13)",
-                    margin: "0px",
                     alignItems: "center",
                     display: "flex",
                     justifyContent: "center",
