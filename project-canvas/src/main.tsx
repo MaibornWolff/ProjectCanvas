@@ -16,5 +16,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     </HashRouter>
   </React.StrictMode>
 )
-document.body.style.overflow = "hidden"
+
 postMessage({ payload: "removeLoading" }, "*")
