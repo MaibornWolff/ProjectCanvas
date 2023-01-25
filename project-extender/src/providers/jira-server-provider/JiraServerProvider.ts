@@ -199,6 +199,7 @@ class JiraServerProvider implements ProviderApi {
     const response = await this.fetchIssues(
       `http://${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
     )
+
     return response
   }
 
@@ -213,19 +214,20 @@ class JiraServerProvider implements ProviderApi {
 
     const data = await response.json()
 
-    const pbis: Promise<Issue[]> = Promise.all(
+    const issues: Promise<Issue[]> = Promise.all(
       data.issues.map(async (element: JiraIssue, index: number) => ({
         issueKey: element.key,
         summary: element.fields.summary,
         creator: element.fields.creator.displayName,
         status: element.fields.status.name,
+        type: element.fields.issuetype.name,
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(
           element.key
         ),
         index,
       }))
     )
-    return pbis
+    return issues
   }
 
   async moveIssueToSprint(sprint: number, issue: string): Promise<void> {

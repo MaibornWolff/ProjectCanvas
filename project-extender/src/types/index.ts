@@ -6,6 +6,7 @@ export interface DndListProps {
     name: string
   }[]
 }
+
 export interface Sprint {
   id: number
   name: string
@@ -28,6 +29,7 @@ export interface Issue {
   status: string
   index: number
   columnId: string
+  type: string
   storyPointsEstimate: number
 }
 

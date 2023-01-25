@@ -30,7 +30,10 @@ export const getIssues = async (
           const issuesForSprints = await issuesForSprintResponse.json()
           updateColumn(sprint.name, {
             id: sprint.name,
-            list: issuesForSprints,
+            list: issuesForSprints.filter(
+              (issue: Issue) =>
+                issue.type !== "Epic" && issue.type !== "Subtask"
+            ),
           })
         })
       )
@@ -39,8 +42,13 @@ export const getIssues = async (
           import.meta.env.VITE_EXTENDER
         }/backlogIssuesByProjectAndBoard?project=${projectKey}&boardId=${boardId}`
       )
-      const unassignedPbis = await backlogIssues.json()
-      updateColumn("Backlog", { id: "Backlog", list: unassignedPbis })
+      const unassignedIssues = await backlogIssues.json()
+      updateColumn("Backlog", {
+        id: "Backlog",
+        list: unassignedIssues.filter(
+          (issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask"
+        ),
+      })
     })
   )
   setIsLoading(false)

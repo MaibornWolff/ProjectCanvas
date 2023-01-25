@@ -1,23 +1,23 @@
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { DragDropContext } from "react-beautiful-dnd"
 import {
   Box,
-  Button,
-  Container,
+  Center,
   Divider,
   Flex,
-  Title,
+  Group,
   Loader,
-  Center,
+  Stack,
+  Text,
+  Title,
 } from "@mantine/core"
-import { IconChevronLeft } from "@tabler/icons"
 import { Issue, Sprint } from "project-extender"
-import { Column } from "./Column"
-import { resizeDivider } from "./resizeDivider"
-import { onDragEnd } from "./dndHelpers"
+import { useEffect, useState } from "react"
+import { DragDropContext } from "react-beautiful-dnd"
+import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../lib/Store"
+import { Column } from "./Column"
+import { onDragEnd } from "./dndHelpers"
 import { getIssues } from "./issueFetcher"
+import { resizeDivider } from "./resizeDivider"
 import { SprintsColumn } from "./SprintsColumn"
 
 export function BacklogView() {
@@ -50,25 +50,34 @@ export function BacklogView() {
       <Loader />
     </Center>
   ) : (
-    <Container>
-      <Flex
-        align="center"
-        gap="xl"
-        sx={{ paddingBottom: "10px", paddingTop: "30px" }}
+    <Stack sx={{ minHeight: "100%" }}>
+      <Stack
+        align="left"
+        sx={{
+          paddingBottom: "10px",
+          paddingTop: "10px",
+          gap: "10px",
+        }}
       >
-        <Button
-          leftIcon={<IconChevronLeft />}
-          onClick={() => navigate("/projectsview")}
-          sx={{ flex: 1 }}
-        >
-          Back
-        </Button>
-        <Title sx={{ flex: 2 }} order={2} color="blue.7">
-          project: {projectName}
-        </Title>
-      </Flex>
-      <Divider size="xl" />
-      <Box sx={{ height: "100%", width: "100%", display: "flex" }}>
+        <Group sx={{ gap: "5px", color: "#6B778C" }}>
+          <Text
+            onClick={() => navigate("/projectsview")}
+            sx={{
+              ":hover": {
+                textDecoration: "underline",
+                cursor: "pointer",
+              },
+            }}
+          >
+            Projects
+          </Text>
+          <Text>/</Text>
+          <Text>{projectName}</Text>
+        </Group>
+        <Title>Backlog</Title>
+      </Stack>
+
+      <Flex sx={{ flexGrow: 1 }}>
         <DragDropContext
           onDragEnd={(dropResult) =>
             onDragEnd({ ...dropResult, columns, updateColumn, sprints })
@@ -76,21 +85,17 @@ export function BacklogView() {
         >
           <Box
             className="left-panel"
+            w="50%"
+            p="sm"
             sx={{
-              padding: "5px",
-              width: "50%",
               minWidth: "260px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
             }}
           >
-            <Title size="h4">Backlog</Title>
             <Column col={columns.get("Backlog")!} />
           </Box>
           <Divider
-            className="resize-handle"
             size="xl"
+            className="resize-handle"
             orientation="vertical"
             sx={{
               cursor: "col-resize",
@@ -98,12 +103,14 @@ export function BacklogView() {
           />
           <Box
             className="right-panel"
-            sx={{ padding: "5px", width: "50%", minWidth: "260px" }}
+            w="50%"
+            p="sm"
+            sx={{ minWidth: "260px" }}
           >
             <SprintsColumn columns={columns} sprints={sprints} />
           </Box>
         </DragDropContext>
-      </Box>
-    </Container>
+      </Flex>
+    </Stack>
   )
 }
