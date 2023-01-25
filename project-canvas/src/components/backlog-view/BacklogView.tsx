@@ -7,15 +7,18 @@ import {
   Container,
   Divider,
   Flex,
-  Text,
   Title,
+  Loader,
+  Center,
 } from "@mantine/core"
 import { IconChevronLeft } from "@tabler/icons"
-import { Issue } from "project-extender"
+import { Issue, Sprint } from "project-extender"
 import { Column } from "./Column"
 import { resizeDivider } from "./resizeDivider"
 import { onDragEnd } from "./dndHelpers"
 import { useCanvasStore } from "../../lib/Store"
+import { getIssues } from "./issueFetcher"
+import { SprintsColumn } from "./SprintsColumn"
 
 export function BacklogView() {
   const navigate = useNavigate()
@@ -23,57 +26,19 @@ export function BacklogView() {
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
   const [isLoading, setIsLoading] = useState(true)
-  const [sprints, setSprints] = useState(new Map<string, number>())
-  const updateSprints = (key: string, value: number) => {
-    setSprints((map) => new Map(map.set(key, value)))
-  }
+  const [sprints, setSprints] = useState(new Map<string, Sprint>())
   const [columns, setColumns] = useState(
     new Map<string, { id: string; list: Issue[] }>()
   )
+  const updateSprints = (key: string, value: Sprint) => {
+    setSprints((map) => new Map(map.set(key, value)))
+  }
   const updateColumn = (key: string, value: { id: string; list: Issue[] }) => {
     setColumns((map) => new Map(map.set(key, value)))
   }
 
-  const getIssues = async () => {
-    await Promise.all(
-      boardIds.map(async (boardId) => {
-        const sprintsResponse = await fetch(
-          `${import.meta.env.VITE_EXTENDER}/sprintsByBoardId?boardId=${boardId}`
-        )
-        const sprintsAsArray = await sprintsResponse.json()
-        await Promise.all(
-          sprintsAsArray.map(
-            async (sprint: { sprintId: number; sprintName: string }) => {
-              updateSprints(sprint.sprintName, sprint.sprintId)
-              const issuesForSprintResponse = await fetch(
-                `${
-                  import.meta.env.VITE_EXTENDER
-                }/issuesBySprintAndProject?sprint=${
-                  sprint.sprintId
-                }&project=${projectKey}`
-              )
-              const issuesForSprints = await issuesForSprintResponse.json()
-              updateColumn(sprint.sprintName, {
-                id: sprint.sprintName,
-                list: issuesForSprints,
-              })
-            }
-          )
-        )
-        const backlogIssues = await fetch(
-          `${
-            import.meta.env.VITE_EXTENDER
-          }/backlogIssuesByProjectAndBoard?project=${projectKey}&boardId=${boardId}`
-        )
-        const unassignedPbis = await backlogIssues.json()
-        updateColumn("Backlog", { id: "Backlog", list: unassignedPbis })
-      })
-    )
-    setIsLoading(false)
-  }
-
   useEffect(() => {
-    getIssues()
+    getIssues(projectKey, boardIds, updateColumn, updateSprints, setIsLoading)
   }, [])
 
   useEffect(() => {
@@ -81,7 +46,9 @@ export function BacklogView() {
   }, [isLoading])
 
   return isLoading ? (
-    <Text>Loading...</Text>
+    <Center style={{ width: "100%", height: "100%" }}>
+      <Loader />
+    </Center>
   ) : (
     <Container>
       <Flex
@@ -107,7 +74,18 @@ export function BacklogView() {
             onDragEnd({ ...dropResult, columns, updateColumn, sprints })
           }
         >
-          <Box className="left-panel" sx={{ padding: "5px", width: "50%" }}>
+          <Box
+            className="left-panel"
+            sx={{
+              padding: "5px",
+              width: "50%",
+              minWidth: "260px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Title size="h4">Backlog</Title>
             <Column col={columns.get("Backlog")!} />
           </Box>
           <Divider
@@ -118,12 +96,11 @@ export function BacklogView() {
               cursor: "col-resize",
             }}
           />
-          <Box className="right-panel" sx={{ padding: "5px", width: "50%" }}>
-            {Array.from(columns.keys())
-              .filter((columnName) => columnName !== "Backlog")
-              .map((sprint) => (
-                <Column key={sprint} col={columns.get(sprint)!} />
-              ))}
+          <Box
+            className="right-panel"
+            sx={{ padding: "5px", width: "50%", minWidth: "260px" }}
+          >
+            <SprintsColumn columns={columns} sprints={sprints} />
           </Box>
         </DragDropContext>
       </Box>

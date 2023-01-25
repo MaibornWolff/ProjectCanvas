@@ -24,6 +24,7 @@ export function handleOAuth2(win) {
     "read:board-scope:jira-software",
     "write:sprint:jira-software",
     "write:board-scope:jira-software",
+    "read:issue:jira-software",
   ].join("%20")
   const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
   const AUDIENCE = "api.atlassian.com"

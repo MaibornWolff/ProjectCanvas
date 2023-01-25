@@ -14,7 +14,6 @@ export function Column({
     <StrictModeDroppable droppableId={col.id}>
       {(provided) => (
         <div>
-          <h2>{col.id}</h2>
           <div {...provided.droppableProps} ref={provided.innerRef}>
             {col.list.map((issue: Issue, index: number) => (
               <Item

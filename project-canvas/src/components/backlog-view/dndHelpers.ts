@@ -1,5 +1,5 @@
 import { DropResult } from "react-beautiful-dnd"
-import { Issue } from "project-extender"
+import { Issue, Sprint } from "project-extender"
 
 export const onDragEnd = async ({
   source,
@@ -10,7 +10,7 @@ export const onDragEnd = async ({
 }: DropResult & {
   columns: Map<string, { id: string; list: Issue[] }>
   updateColumn: (t1: string, t2: { id: string; list: Issue[] }) => void
-  sprints: Map<string, number>
+  sprints: Map<string, Sprint>
 }) => {
   if (destination === undefined || destination === null) return null
 
@@ -40,11 +40,7 @@ export const onDragEnd = async ({
   }
 
   const movedIssue = start!.list[source.index]
-  const destinationSprintId = sprints.get(end!.id)
-  // console.log(destinationSprintId)
-  // console.log(end?.id)
-  // console.log(movedPbi)
-  // console.log(sprints)
+  const destinationSprintId = sprints.get(end!.id)?.id
 
   const newStartList = start!.list.filter(
     (_: Issue, idx: number) => idx !== source.index
@@ -76,7 +72,7 @@ export const onDragEnd = async ({
         issue: movedIssue.issueKey,
       }),
     })
-  } else if (destination.droppableId === "Unassigned") {
+  } else if (destination.droppableId === "Backlog") {
     await fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToBacklog`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Issue, Sprint, Project } from "../../types"
+import { Issue, Sprint, Project, dateTimeFormat } from "../../types"
 import { JiraIssue, JiraProject, JiraSprint } from "../../types/jira"
 import { getAccessToken } from "./getAccessToken"
 
@@ -10,6 +10,8 @@ class JiraCloudProvider implements ProviderApi {
   public accessToken: string | undefined
 
   private cloudID = ""
+
+  private customFields = new Map<string, string>()
 
   async login({
     oauthLoginOptions,
@@ -37,6 +39,7 @@ class JiraCloudProvider implements ProviderApi {
         this.cloudID = domainData[0].id
       })
     })
+    await this.mapCustomFields()
     return this.isLoggedIn()
   }
 
@@ -54,6 +57,22 @@ class JiraCloudProvider implements ProviderApi {
     return new Promise((resolve) => {
       this.accessToken = undefined
       resolve()
+    })
+  }
+
+  async mapCustomFields(): Promise<void> {
+    const response = await fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/field`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      }
+    )
+    const data = await response.json()
+    data.forEach((field: { name: string; id: string }) => {
+      this.customFields.set(field.name, field.id)
     })
   }
 
@@ -112,12 +131,24 @@ class JiraCloudProvider implements ProviderApi {
 
     const sprints: Sprint[] = data.values
       .filter((element: { state: string }) => element.state !== "closed")
-      .map((element: JiraSprint, index: number) => ({
-        sprintId: element.id,
-        sprintName: element.name,
-        sprintType: element.state,
-        index,
-      }))
+      .map((element: JiraSprint, index: number) => {
+        const sDate = new Date(element.startDate)
+        const startDate = Number.isNaN(sDate.getTime())
+          ? "Invalid Date"
+          : dateTimeFormat.format(sDate)
+        const eDate = new Date(element.endDate)
+        const endDate = Number.isNaN(eDate.getTime())
+          ? "Invalid Date"
+          : dateTimeFormat.format(eDate)
+        return {
+          id: element.id,
+          name: element.name,
+          state: element.state,
+          startDate,
+          endDate,
+          index,
+        }
+      })
     return sprints
   }
 
@@ -159,14 +190,17 @@ class JiraCloudProvider implements ProviderApi {
 
     const data = await response.json()
 
-    const pbis: Issue[] = data.issues.map(
-      (element: JiraIssue, index: number) => ({
+    const pbis: Promise<Issue[]> = Promise.all(
+      data.issues.map(async (element: JiraIssue, index: number) => ({
         issueKey: element.key,
         summary: element.fields.summary,
         creator: element.fields.creator.displayName,
         status: element.fields.status.name,
+        storyPointsEstimate: await this.getIssueStoryPointsEstimate(
+          element.key
+        ),
         index,
-      })
+      }))
     )
     return pbis
   }
@@ -224,6 +258,35 @@ class JiraCloudProvider implements ProviderApi {
         .catch((error) =>
           reject(
             new Error(`Error in moving this issue to the Backlog: ${error}`)
+          )
+        )
+    })
+  }
+
+  async getIssueStoryPointsEstimate(issue: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issue}`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const data = await response.json()
+          const customField = this.customFields.get("Story point estimate")
+          const points: number = data.fields[customField!]
+
+          resolve(points)
+          return points
+        })
+        .catch((error) =>
+          reject(
+            new Error(
+              `Error in getting the story points for issue: ${issue}: ${error}`
+            )
           )
         )
     })

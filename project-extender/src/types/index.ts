@@ -9,7 +9,9 @@ export interface DndListProps {
 export interface Sprint {
   id: number
   name: string
-  type: string
+  state: string
+  startDate: Intl.DateTimeFormat
+  endDate: Intl.DateTimeFormat
 }
 
 export interface Project {
@@ -26,4 +28,14 @@ export interface Issue {
   status: string
   index: number
   columnId: string
+  storyPointsEstimate: number
 }
+
+export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+})
