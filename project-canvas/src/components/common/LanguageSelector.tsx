@@ -10,13 +10,18 @@ export function LanguageSelector() {
 
   return (
     <Select
-      style={{ width: "70px" }}
+      size="xs"
+      sx={{ width: "48px" }}
       onChange={handleLanguageChange}
       data={[
-        { value: "en", label: "en" },
-        { value: "de", label: "de" },
+        { value: "en", label: "EN" },
+        { value: "de", label: "DE" },
       ]}
       defaultValue="en"
+      styles={{
+        input: { padding: "10px" },
+        rightSection: { padding: "0px" },
+      }}
     />
   )
 }

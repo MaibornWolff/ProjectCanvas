@@ -50,7 +50,11 @@ export function LoginForm({
         <Button
           type="submit"
           variant="gradient"
-          gradient={{ from: "teal", to: "blue", deg: 60 }}
+          gradient={{
+            from: "primaryGreen.5",
+            to: "primaryGreen.8",
+            deg: 60,
+          }}
           fullWidth
         >
           Log in
