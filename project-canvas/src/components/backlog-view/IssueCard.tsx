@@ -14,7 +14,7 @@ export function IssueCard({
   index,
   status,
   type,
-  storyPoints,
+  storyPointsEstimate,
 }: Issue) {
   let icon: JSX.Element
   let iconGradient1: string
@@ -96,7 +96,7 @@ export function IssueCard({
             </Group>
           </Stack>
 
-          {storyPoints && (
+          {storyPointsEstimate && (
             <Badge
               size="sm"
               px="6px"
@@ -104,7 +104,7 @@ export function IssueCard({
               variant="filled"
               sx={{ alignSelf: "flex-start" }}
             >
-              {storyPoints}
+              {storyPointsEstimate}
             </Badge>
           )}
         </Group>

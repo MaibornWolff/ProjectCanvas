@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Issue, Project, Sprint } from "../../types"
+import { dateTimeFormat, Issue, Project, Sprint } from "../../types"
 import { JiraIssue, JiraProject, JiraSprint } from "../../types/jira"
 
 class JiraServerProvider implements ProviderApi {
@@ -11,6 +11,8 @@ class JiraServerProvider implements ProviderApi {
     username: "",
     password: "",
   }
+
+  private customFields = new Map<string, string>()
 
   getAuthHeader() {
     return `Basic ${Buffer.from(
@@ -31,6 +33,7 @@ class JiraServerProvider implements ProviderApi {
     this.loginOptions.username = basicLoginOptions.username
     this.loginOptions.password = basicLoginOptions.password
 
+    await this.mapCustomFields()
     return this.isLoggedIn()
   }
 
@@ -73,6 +76,23 @@ class JiraServerProvider implements ProviderApi {
           reject(new Error("user not authenticated"))
         }
       })
+    })
+  }
+
+  async mapCustomFields(): Promise<void> {
+    const response = await fetch(
+      `http://${this.loginOptions.url}/rest/api/2/field`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: this.getAuthHeader(),
+        },
+      }
+    )
+    const data = await response.json()
+    data.forEach((field: { name: string; id: string }) => {
+      this.customFields.set(field.name, field.id)
     })
   }
 
@@ -136,12 +156,24 @@ class JiraServerProvider implements ProviderApi {
 
     const sprints: Sprint[] = data.values
       .filter((element: { state: string }) => element.state !== "closed")
-      .map((element: JiraSprint, index: number) => ({
-        sprintId: element.id,
-        sprintName: element.name,
-        sprintType: element.state,
-        index,
-      }))
+      .map((element: JiraSprint, index: number) => {
+        const sDate = new Date(element.startDate)
+        const startDate = Number.isNaN(sDate.getTime())
+          ? "Invalid Date"
+          : dateTimeFormat.format(sDate)
+        const eDate = new Date(element.endDate)
+        const endDate = Number.isNaN(eDate.getTime())
+          ? "Invalid Date"
+          : dateTimeFormat.format(eDate)
+        return {
+          id: element.id,
+          name: element.name,
+          state: element.state,
+          startDate,
+          endDate,
+          index,
+        }
+      })
     return sprints
   }
 
@@ -182,18 +214,20 @@ class JiraServerProvider implements ProviderApi {
 
     const data = await response.json()
 
-    const pbis: Issue[] = data.issues.map(
-      (element: JiraIssue, index: number) => ({
+    const issues: Promise<Issue[]> = Promise.all(
+      data.issues.map(async (element: JiraIssue, index: number) => ({
         issueKey: element.key,
         summary: element.fields.summary,
         creator: element.fields.creator.displayName,
         status: element.fields.status.name,
         type: element.fields.issuetype.name,
-        storyPoints: element.fields.customfield_10107,
+        storyPointsEstimate: await this.getIssueStoryPointsEstimate(
+          element.key
+        ),
         index,
-      })
+      }))
     )
-    return pbis
+    return issues
   }
 
   async moveIssueToSprint(sprint: number, issue: string): Promise<void> {
@@ -244,6 +278,33 @@ class JiraServerProvider implements ProviderApi {
         .catch((error) =>
           reject(
             new Error(`Error in moving this issue to the Backlog: ${error}`)
+          )
+        )
+    })
+  }
+
+  async getIssueStoryPointsEstimate(issue: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      fetch(`http://${this.loginOptions.url}/rest/api/2/issue/${issue}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: this.getAuthHeader(),
+        },
+      })
+        .then(async (response) => {
+          const data = await response.json()
+          const customField = this.customFields.get("Story Points")
+          const points: number = data.fields[customField!]
+
+          resolve(points)
+          return points
+        })
+        .catch((error) =>
+          reject(
+            new Error(
+              `Error in getting the story points for issue: ${issue}: ${error}`
+            )
           )
         )
     })

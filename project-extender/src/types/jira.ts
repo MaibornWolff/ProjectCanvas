@@ -8,6 +8,8 @@ export interface JiraProject {
 }
 
 export interface JiraSprint {
+  endDate: string
+  startDate: string
   id: number
   state: string
   name: string
