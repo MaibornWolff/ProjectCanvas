@@ -159,10 +159,10 @@ class JiraCloudProvider implements ProviderApi {
 
     const data = await response.json()
 
-    const pbis = Promise.all(
-      data.issues.map(async (element: JiraIssue, index: number) => {
+    const issues = Promise.all(
+      data.issues.map(async (jiraIssue: JiraIssue, index: number) => {
         const storyPointsResponse = await fetch(
-          `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${element.key}`,
+          `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${jiraIssue.key}`,
           {
             headers: {
               Accept: "application/json",
@@ -170,21 +170,21 @@ class JiraCloudProvider implements ProviderApi {
             },
           }
         )
-        const storyPoints = await storyPointsResponse.json()
-        const storyPointsValue = storyPoints.fields.customfield_10016
+        const storyPointsData = await storyPointsResponse.json()
+        const storyPoints = storyPointsData.fields.customfield_10016
         return {
-          issueKey: element.key,
-          summary: element.fields.summary,
-          creator: element.fields.creator.displayName,
-          status: element.fields.status.name,
-          type: element.fields.issuetype.name,
-          storyPoints: storyPointsValue,
+          issueKey: jiraIssue.key,
+          summary: jiraIssue.fields.summary,
+          creator: jiraIssue.fields.creator.displayName,
+          status: jiraIssue.fields.status.name,
+          type: jiraIssue.fields.issuetype.name,
+          storyPoints,
           index,
         }
       })
     )
 
-    return pbis
+    return issues
   }
 
   async moveIssueToSprint(sprint: number, issue: string): Promise<void> {
@@ -219,8 +219,6 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async moveIssueToBacklog(issue: string): Promise<void> {
-    console.log("moveIssue toBacklog")
-
     return new Promise((resolve, reject) => {
       fetch(
         `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/backlog/issue`,

@@ -1,5 +1,6 @@
+import { Box } from "@mantine/core"
 import { Issue } from "project-extender"
-import { Item } from "./Item"
+import { IssueCard } from "./IssueCard"
 import { StrictModeDroppable } from "./StrictModeDroppable"
 
 export function Column({
@@ -13,11 +14,11 @@ export function Column({
   return (
     <StrictModeDroppable droppableId={col.id}>
       {(provided) => (
-        <div style={{ minWidth: "100px" }}>
+        <Box style={{ minWidth: "100px" }}>
           <h2>{col.id}</h2>
-          <div {...provided.droppableProps} ref={provided.innerRef}>
+          <Box {...provided.droppableProps} ref={provided.innerRef}>
             {col.list.map((issue: Issue, index: number) => (
-              <Item
+              <IssueCard
                 {...issue}
                 key={issue.issueKey}
                 index={index}
@@ -25,8 +26,8 @@ export function Column({
               />
             ))}
             {provided.placeholder}
-          </div>
-        </div>
+          </Box>
+        </Box>
       )}
     </StrictModeDroppable>
   )

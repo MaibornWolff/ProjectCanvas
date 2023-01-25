@@ -1,9 +1,14 @@
 import { Issue } from "project-extender"
-import { Box, Stack, Text, ThemeIcon } from "@mantine/core"
-import { IconBookmark, IconCheck, IconBug } from "@tabler/icons"
+import { Box, Flex, Stack, Text, ThemeIcon } from "@mantine/core"
+import {
+  IconBookmark,
+  IconCheck,
+  IconBug,
+  IconQuestionMark,
+} from "@tabler/icons"
 import { Draggable } from "react-beautiful-dnd"
 
-export function Item({
+export function IssueCard({
   issueKey,
   summary,
   index,
@@ -32,6 +37,9 @@ export function Item({
       break
 
     default:
+      icon = <IconQuestionMark />
+      iconGradient1 = "white"
+      iconGradient2 = "white"
   }
 
   return (
@@ -56,13 +64,12 @@ export function Item({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <Stack sx={{ gap: "0px" }}>
-            <Box
+          <Stack spacing={0}>
+            <Flex
+              h={22}
+              m={5}
               sx={{
-                display: "flex",
                 alignItems: "center",
-                height: "22px",
-                margin: "5px",
               }}
             >
               <ThemeIcon
@@ -109,19 +116,18 @@ export function Item({
                   {storyPoints}
                 </Text>
               )}
-            </Box>
-            <Box
+            </Flex>
+            <Flex
+              h={22}
+              ml={27}
               sx={{
-                display: "flex",
                 alignItems: "center",
-                height: "22px",
-                marginLeft: "27px",
               }}
             >
               <Text>{type}</Text>
               <Text m={10}>•</Text>
               <Text ml={5}>{status}</Text>
-            </Box>
+            </Flex>
           </Stack>
         </Box>
       )}
