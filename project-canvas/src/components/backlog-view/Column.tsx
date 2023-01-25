@@ -1,4 +1,4 @@
-import { Box } from "@mantine/core"
+import { Stack } from "@mantine/core"
 import { Issue } from "project-extender"
 import { IssueCard } from "./IssueCard"
 import { StrictModeDroppable } from "./StrictModeDroppable"
@@ -14,7 +14,11 @@ export function Column({
   return (
     <StrictModeDroppable droppableId={col.id}>
       {(provided) => (
-        <Box {...provided.droppableProps} ref={provided.innerRef}>
+        <Stack
+          {...provided.droppableProps}
+          ref={provided.innerRef}
+          spacing="sm"
+        >
           {col.list.map((issue: Issue, index: number) => (
             <IssueCard
               {...issue}
@@ -24,7 +28,7 @@ export function Column({
             />
           ))}
           {provided.placeholder}
-        </Box>
+        </Stack>
       )}
     </StrictModeDroppable>
   )

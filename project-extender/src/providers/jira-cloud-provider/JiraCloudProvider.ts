@@ -196,6 +196,7 @@ class JiraCloudProvider implements ProviderApi {
         summary: element.fields.summary,
         creator: element.fields.creator.displayName,
         status: element.fields.status.name,
+        type: element.fields.issuetype.name,
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(
           element.key
         ),

@@ -1,4 +1,12 @@
-import { Badge, Center, Group, Stack, Text, ThemeIcon } from "@mantine/core"
+import {
+  Badge,
+  Center,
+  Group,
+  Paper,
+  Stack,
+  Text,
+  ThemeIcon,
+} from "@mantine/core"
 import {
   IconBookmark,
   IconBug,
@@ -44,70 +52,72 @@ export function IssueCard({
   return (
     <Draggable draggableId={issueKey} index={index}>
       {(provided) => (
-        <Group
-          sx={(theme) => ({
-            backgroundColor: "white",
-            borderRadius: theme.radius.sm,
-            gap: 0,
-            padding: theme.spacing.xs,
-            transition: "background-color .8s ease-out",
-            boxShadow:
-              "0 0 1px 0 rgb(9 30 66 / 31%), 0 2px 4px -1px rgb(9 30 66 / 25%)",
-            ":hover": {
-              backgroundColor: "#ebecf0",
-              transition: "background-color .1s ease-in",
-            },
-          })}
+        <Paper
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <Center sx={{ flex: 1, minWidth: "48px" }}>
-            <ThemeIcon
-              size="sm"
-              variant="gradient"
-              gradient={{ from: iconGradient1, to: iconGradient2, deg: 105 }}
-            >
-              {icon}
-            </ThemeIcon>
-          </Center>
+          <Group
+            sx={(theme) => ({
+              borderRadius: theme.radius.sm,
+              gap: 0,
+              padding: theme.spacing.xs,
+              transition: "background-color .8s ease-out",
+              boxShadow:
+                "0 0 1px 0 rgb(9 30 66 / 31%), 0 2px 4px -1px rgb(9 30 66 / 25%)",
+              ":hover": {
+                backgroundColor: "#ebecf0",
+                transition: "background-color .1s ease-in",
+              },
+            })}
+          >
+            <Center sx={{ flex: 1, minWidth: "48px" }}>
+              <ThemeIcon
+                size="sm"
+                variant="gradient"
+                gradient={{ from: iconGradient1, to: iconGradient2, deg: 105 }}
+              >
+                {icon}
+              </ThemeIcon>
+            </Center>
 
-          <Stack spacing={0} sx={{ flex: 12 }}>
-            <Text
-              size="sm"
-              color="blue"
-              td={status === "Done" ? "line-through" : "none"}
-              sx={{
-                ":hover": {
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                },
-              }}
-            >
-              {issueKey}
-            </Text>
+            <Stack spacing={0} sx={{ flex: 12 }}>
+              <Text
+                size="sm"
+                color="blue"
+                td={status === "Done" ? "line-through" : "none"}
+                sx={{
+                  ":hover": {
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                  },
+                }}
+              >
+                {issueKey}
+              </Text>
 
-            <Text size="lg">{summary}</Text>
+              <Text size="lg">{summary}</Text>
 
-            <Group align="center" spacing="sm">
-              <Text size="sm">{type}</Text>
-              <Text size="sm">•</Text>
-              <Text size="sm">{status}</Text>
-            </Group>
-          </Stack>
+              <Group align="center" spacing="sm">
+                <Text size="sm">{type}</Text>
+                <Text size="sm">•</Text>
+                <Text size="sm">{status}</Text>
+              </Group>
+            </Stack>
 
-          {storyPointsEstimate && (
-            <Badge
-              size="sm"
-              px="6px"
-              color="gray.6"
-              variant="filled"
-              sx={{ alignSelf: "flex-start" }}
-            >
-              {storyPointsEstimate}
-            </Badge>
-          )}
-        </Group>
+            {storyPointsEstimate && (
+              <Badge
+                size="sm"
+                px="6px"
+                color="gray.6"
+                variant="filled"
+                sx={{ alignSelf: "flex-start" }}
+              >
+                {storyPointsEstimate}
+              </Badge>
+            )}
+          </Group>
+        </Paper>
       )}
     </Draggable>
   )

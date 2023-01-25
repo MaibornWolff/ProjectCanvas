@@ -1,8 +1,8 @@
 import {
   Box,
   Center,
-  Container,
   Divider,
+  Flex,
   Group,
   Loader,
   Stack,
@@ -50,7 +50,7 @@ export function BacklogView() {
       <Loader />
     </Center>
   ) : (
-    <Container sx={{ maxWidth: "100%" }}>
+    <Stack sx={{ minHeight: "100%" }}>
       <Stack
         align="left"
         sx={{
@@ -77,7 +77,7 @@ export function BacklogView() {
         <Title>Backlog</Title>
       </Stack>
 
-      <Box sx={{ height: "100%", width: "100%", display: "flex" }}>
+      <Flex sx={{ flexGrow: 1 }}>
         <DragDropContext
           onDragEnd={(dropResult) =>
             onDragEnd({ ...dropResult, columns, updateColumn, sprints })
@@ -85,16 +85,12 @@ export function BacklogView() {
         >
           <Box
             className="left-panel"
+            w="50%"
+            p="sm"
             sx={{
-              padding: "5px",
-              width: "50%",
               minWidth: "260px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
             }}
           >
-            <Title size="h4">Backlog</Title>
             <Column col={columns.get("Backlog")!} />
           </Box>
           <Divider
@@ -107,12 +103,14 @@ export function BacklogView() {
           />
           <Box
             className="right-panel"
-            sx={{ padding: "5px", width: "50%", minWidth: "260px" }}
+            w="50%"
+            p="sm"
+            sx={{ minWidth: "260px" }}
           >
             <SprintsColumn columns={columns} sprints={sprints} />
           </Box>
         </DragDropContext>
-      </Box>
-    </Container>
+      </Flex>
+    </Stack>
   )
 }
