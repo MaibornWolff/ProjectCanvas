@@ -2,8 +2,17 @@
 /* eslint-disable class-methods-use-this */
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { dateTimeFormat, Issue, Project, Sprint } from "../../types"
-import { JiraIssue, JiraProject, JiraSprint } from "../../types/jira"
+import {
+  dateTimeFormat,
+  Issue,
+  Project,
+  Sprint,
+  JiraIssue,
+  JiraProject,
+  JiraSprint,
+  IssueBean,
+  PageOfComments,
+} from "../../types"
 
 class JiraServerProvider implements ProviderApi {
   private loginOptions = {
@@ -308,6 +317,16 @@ class JiraServerProvider implements ProviderApi {
           )
         )
     })
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getIssue(issueIdOrKey: string): Promise<IssueBean> {
+    throw new Error("Method not implemented.")
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getIssueComments(issueIdOrKey: string): Promise<PageOfComments> {
+    throw new Error("Method not implemented.")
   }
 }
 

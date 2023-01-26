@@ -2,8 +2,17 @@
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Issue, Sprint, Project, dateTimeFormat } from "../../types"
-import { JiraIssue, JiraProject, JiraSprint } from "../../types/jira"
+import {
+  Issue,
+  Sprint,
+  Project,
+  dateTimeFormat,
+  JiraIssue,
+  JiraProject,
+  JiraSprint,
+  IssueBean,
+  PageOfComments,
+} from "../../types"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
@@ -292,6 +301,34 @@ class JiraCloudProvider implements ProviderApi {
           )
         )
     })
+  }
+
+  async getIssue(issueIdOrKey: string): Promise<IssueBean> {
+    return fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}?fields=*all&expand=names,renderedFields,transitions,changelog,schema`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      }
+    )
+      .then((res) => res.json())
+      .catch((error) => error)
+  }
+
+  async getIssueComments(issueIdOrKey: string): Promise<PageOfComments> {
+    return fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment?expand=renderedBody`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      }
+    )
+      .then((res) => res.json())
+      .catch((error) => error)
   }
 }
 

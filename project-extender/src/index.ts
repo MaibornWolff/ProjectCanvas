@@ -8,6 +8,7 @@ import {
   OauthLoginOptions,
 } from "./providers/base-provider"
 import { JiraCloudProviderCreator } from "./providers/jira-cloud-provider"
+import { IssueBean, PageOfComments } from "./types"
 import { JiraServerProviderCreator } from "./providers/jira-server-provider"
 
 export * from "./types"
@@ -180,6 +181,28 @@ server.post<{
     .moveIssueToBacklog(request.body.issue)
     .then(() => {
       reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.get<{
+  Params: { keyOrId: string }
+}>("/issue/:keyOrId", (request, reply) => {
+  issueProvider
+    .getIssue(request.params.keyOrId)
+    .then((issue: IssueBean) => {
+      reply.status(200).send(issue)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.get<{
+  Params: { keyOrId: string }
+}>("/issue/:keyOrId/comments", (request, reply) => {
+  issueProvider
+    .getIssueComments(request.params.keyOrId)
+    .then((comments: PageOfComments) => {
+      reply.status(200).send(comments)
     })
     .catch((error) => reply.status(400).send(error))
 })
