@@ -229,7 +229,7 @@ class JiraCloudProvider implements ProviderApi {
 
   async getIssueComments(issueIdOrKey: string): Promise<PageOfComments> {
     return fetch(
-      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comments?`, // expand=renderedBody
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment?expand=renderedBody`,
       {
         headers: {
           Accept: "application/json",

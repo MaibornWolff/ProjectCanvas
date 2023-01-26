@@ -86,7 +86,9 @@ export function DetailView() {
   // TODO: Mantine RichTextEditor isn't able to handle embedded images
   const description: ReactJSXElement = (
     <>
-      <p>{`${issue?.renderedFields?.description}`}</p>
+      {/* TODO: Only for test purpose 
+              <p>{`${issue?.renderedFields?.description}`}</p> */}
+
       <RichTextEditor
         readOnly
         value={`${issue?.renderedFields?.description}`}
@@ -214,7 +216,8 @@ export function DetailView() {
         <List spacing="xs" size="sm" center>
           {pageOfComments?.comments?.map((comment: Comment) => (
             <>
-              <p>{comment?.renderedBody}</p>
+              {/* TODO: Only for test purpose 
+              <p>{comment?.renderedBody}</p> */}
               <List.Item key={comment?.id}>
                 <RichTextEditor readOnly value={comment?.renderedBody} />
               </List.Item>
@@ -293,8 +296,6 @@ export function DetailView() {
             <h5>Attachments</h5>
 
             <div>{subtasks}</div>
-
-            {/* fields && <ul>{fields}</ul> */}
           </div>
 
           <div>
