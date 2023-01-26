@@ -12,6 +12,8 @@ import {
 import {
   IssueBean,
   IssueTypeDetails,
+  PageOfComments,
+  Comment,
 } from "project-extender/src/providers/jira-cloud-provider/types"
 import { useParams } from "react-router-dom"
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
@@ -28,22 +30,30 @@ export function DetailView() {
   const [opened, setOpened] = useState(true)
   const [openedSubtasks, setopenedSubtasks] = useState(true)
   const [issue, setIssue] = useState<IssueBean>({})
+  const [pageOfComments, setPageOfComments] = useState<PageOfComments>({})
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_EXTENDER}/issue/${keyOrId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setIssue(data)
-        // console.log(data)
-      })
-
-    /* TODO: Load Comments
-
-    fetch(`${import.meta.env.VITE_EXTENDER}/issue/${keyOrId}/comments`)
-      .then((response) => response.json())
-      .then((comments) => {
-        console.log(comments)
-      }) */
+    Promise.all(
+      [
+        `${import.meta.env.VITE_EXTENDER}/issue/${keyOrId}`,
+        `${import.meta.env.VITE_EXTENDER}/issue/${keyOrId}/comments`,
+      ].map((request) =>
+        fetch(request)
+          .then((res) => res.json())
+          .catch((err) => err)
+      )
+    )
+      .then((res) =>
+        res.forEach((data, idx) => {
+          if (idx === 0) setIssue(data)
+          else {
+            setPageOfComments(data)
+          }
+          // console.log(data)
+        })
+      )
+      .then((res) => res)
+      .catch((err) => err)
   }, [])
 
   const title: ReactJSXElement = (
@@ -54,12 +64,16 @@ export function DetailView() {
       direction="row"
       wrap="wrap"
     >
-      <Avatar
-        src={issue?.fields?.parent?.fields?.issuetype?.iconUrl}
-        size={avatarImageSize.size}
-        alt="ParentIssueTypeIcon"
-      />
-      <h4>{issue?.fields ? `${issue?.fields?.parent?.key} /` : ""}</h4>
+      {issue?.fields?.parent && (
+        <>
+          <Avatar
+            src={issue?.fields?.parent?.fields?.issuetype?.iconUrl}
+            size={avatarImageSize.size}
+            alt="ParentIssueTypeIcon"
+          />
+          <h4>{issue?.fields ? `${issue?.fields?.parent?.key} /` : ""}</h4>
+        </>
+      )}
       <Avatar
         src={issue?.fields?.issuetype?.iconUrl}
         size={avatarImageSize.size}
@@ -71,7 +85,13 @@ export function DetailView() {
 
   // TODO: Mantine RichTextEditor isn't able to handle embedded images
   const description: ReactJSXElement = (
-    <RichTextEditor readOnly value={`${issue?.renderedFields?.description}`} />
+    <>
+      <p>{`${issue?.renderedFields?.description}`}</p>
+      <RichTextEditor
+        readOnly
+        value={`${issue?.renderedFields?.description}`}
+      />
+    </>
   )
 
   const labels: ReactJSXElement = (
@@ -179,7 +199,7 @@ export function DetailView() {
     </Flex>
   )
 
-  /*   const comments: ReactJSXElement = (
+  const comments: ReactJSXElement = (
     <Flex
       gap="xs"
       justify="flex-start"
@@ -191,25 +211,20 @@ export function DetailView() {
         Comments
       </Button>
       <Collapse in={openedSubtasks}>
-        {         <List spacing="xs" size="sm" center>
-          {issue?.fields?.comment?.comments.map((task: IssueBean) => (
-            <List.Item
-              icon={
-                <Avatar
-                  src={(task?.fields?.issuetype as IssueTypeDetails).iconUrl}
-                  size={avatarImageSize.size}
-                  alt="IssueSubstaskIcon"
-                />
-              }
-            >
-              <p>{task?.fields?.summary}</p>
-            </List.Item>
+        <List spacing="xs" size="sm" center>
+          {pageOfComments?.comments?.map((comment: Comment) => (
+            <>
+              <p>{comment?.renderedBody}</p>
+              <List.Item key={comment?.id}>
+                <RichTextEditor readOnly value={comment?.renderedBody} />
+              </List.Item>
+            </>
           ))}
-        </List> }
+        </List>
       </Collapse>
     </Flex>
   )
- */
+
   return (
     <>
       <Modal
@@ -273,7 +288,7 @@ export function DetailView() {
 
             <h5>Issue links</h5>
 
-            <h5>Comments</h5>
+            <div>{comments}</div>
 
             <h5>Attachments</h5>
 
