@@ -86,9 +86,11 @@ export function BacklogView() {
           <Box
             className="left-panel"
             w="50%"
+            h={600}
             p="sm"
             sx={{
               minWidth: "260px",
+              overflow: "auto",
             }}
           >
             <Column col={columns.get("Backlog")!} />
@@ -103,9 +105,10 @@ export function BacklogView() {
           />
           <Box
             className="right-panel"
+            h={600}
             w="50%"
             p="sm"
-            sx={{ minWidth: "260px" }}
+            sx={{ minWidth: "260px", overflow: "auto" }}
           >
             <SprintsColumn columns={columns} sprints={sprints} />
           </Box>
