@@ -77,6 +77,7 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async getProjects(): Promise<Project[]> {
+    // console.log(this.accessToken)
     const response = await fetch(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/project/search?expand=description,lead,issueTypes,url,projectKeys,permissions,insight`,
       {
@@ -207,8 +208,20 @@ class JiraCloudProvider implements ProviderApi {
     return issues
   }
 
-  async moveIssueToSprint(sprint: number, issue: string): Promise<void> {
+  async moveIssueToSprintAndRank(
+    sprint: number,
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
+      const body = {
+        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+        issues: [issue],
+        ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
+        ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
+      }
       fetch(
         `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint/${sprint}/issue`,
         {
@@ -218,13 +231,15 @@ class JiraCloudProvider implements ProviderApi {
             Authorization: `Bearer ${this.accessToken}`,
             "Content-Type": "application/json",
           },
-          body: `{
-            "issues": [
-              "${issue}"
-            ]
-          }`,
+          body: JSON.stringify(body),
         }
       )
+        // .then(async (response) => {
+        // console.log(
+        //   `moved between issue ${rankBefore} and issue ${rankAfter}`
+        // )
+        // console.log("move to sprint and rank ->")
+        // console.log(await response.json())
         .then(() => {
           resolve()
         })
@@ -256,7 +271,58 @@ class JiraCloudProvider implements ProviderApi {
           }`,
         }
       )
-        .then(() => resolve())
+        // .then(async (response) => {
+        //   console.log(`move to backog -> ${await response.json()}`)
+        //   resolve()
+        // })
+        .then(() => {
+          resolve()
+        })
+        .catch((error) =>
+          reject(
+            new Error(`Error in moving this issue to the Backlog: ${error}`)
+          )
+        )
+    })
+  }
+
+  async rankIssueInBacklog(
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
+      const body = {
+        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+        issues: [issue],
+        ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
+        ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
+      }
+
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/issue/rank`,
+        {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      )
+        // .then(async (response) => {
+        //   console.log(
+        //     `moved between issue ${rankBefore} and issue ${rankAfter}`
+        //   )
+        //   console.log("rank in backog -> ")
+        //   console.log(await response.json())
+        //   resolve()
+        // })
+        .then(() => {
+          resolve()
+        })
         .catch((error) =>
           reject(
             new Error(`Error in moving this issue to the Backlog: ${error}`)

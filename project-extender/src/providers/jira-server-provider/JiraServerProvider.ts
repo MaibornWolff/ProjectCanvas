@@ -230,8 +230,20 @@ class JiraServerProvider implements ProviderApi {
     return issues
   }
 
-  async moveIssueToSprint(sprint: number, issue: string): Promise<void> {
+  async moveIssueToSprintAndRank(
+    sprint: number,
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
+      const body = {
+        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+        issues: [issue],
+        ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
+        ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
+      }
       fetch(
         `http://${this.loginOptions.url}/rest/agile/1.0/sprint/${sprint}/issue`,
         {
@@ -241,11 +253,7 @@ class JiraServerProvider implements ProviderApi {
             Authorization: this.getAuthHeader(),
             "Content-Type": "application/json",
           },
-          body: `{
-            "issues": [
-              "${issue}"
-            ]
-          }`,
+          body: JSON.stringify(body),
         }
       )
         .then(() => resolve())
@@ -273,6 +281,37 @@ class JiraServerProvider implements ProviderApi {
             "${issue}"
           ]
         }`,
+      })
+        .then(() => resolve())
+        .catch((error) =>
+          reject(
+            new Error(`Error in moving this issue to the Backlog: ${error}`)
+          )
+        )
+    })
+  }
+
+  async rankIssueInBacklog(
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
+      const body = {
+        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+        issues: [issue],
+        ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
+        ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
+      }
+      fetch(`http://${this.loginOptions.url}/rest/agile/1.0/issue/rank`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          Authorization: this.getAuthHeader(),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
       })
         .then(() => resolve())
         .catch((error) =>
