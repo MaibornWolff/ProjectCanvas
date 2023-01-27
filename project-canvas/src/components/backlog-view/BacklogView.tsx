@@ -11,12 +11,13 @@ import {
 } from "@mantine/core"
 import { Issue, Sprint } from "project-extender"
 import { useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../lib/Store"
 import { Column } from "./Column"
 import { onDragEnd } from "./dndHelpers"
-import { getIssues } from "./issueFetcher"
+import { getBacklogIssues, getIssuesBySprint, getSprints } from "./issueFetcher"
 import { resizeDivider } from "./resizeDivider"
 import { SprintsColumn } from "./SprintsColumn"
 
@@ -25,7 +26,7 @@ export function BacklogView() {
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
-  const [isLoading, setIsLoading] = useState(true)
+  const currentBoardId = boardIds[0]
   const [sprints, setSprints] = useState(new Map<string, Sprint>())
   const [columns, setColumns] = useState(
     new Map<string, { id: string; list: Issue[] }>()
@@ -37,9 +38,49 @@ export function BacklogView() {
     setColumns((map) => new Map(map.set(key, value)))
   }
 
+  const { isLoading, data: sprintsLog } = useQuery({
+    queryKey: ["sprints", currentBoardId],
+    queryFn: () => getSprints(currentBoardId),
+    enabled: !!currentBoardId,
+  })
+
+  const { data: issuesLog } = useQuery({
+    queryKey: ["issues", "sprints", projectKey, sprintsLog],
+    queryFn: () => getIssuesBySprint(projectKey, sprintsLog![0].id),
+    enabled: !!sprintsLog && !!projectKey,
+  })
+
+  const { data: backlogIssues } = useQuery({
+    queryKey: ["issues", projectKey, currentBoardId],
+    queryFn: () => getBacklogIssues(projectKey, currentBoardId),
+    enabled: !!projectKey,
+  })
+
   useEffect(() => {
-    getIssues(projectKey, boardIds, updateColumn, updateSprints, setIsLoading)
-  }, [])
+    console.log(sprintsLog)
+    console.log(backlogIssues)
+    console.log(issuesLog)
+
+    if (sprintsLog && issuesLog) {
+      updateSprints(sprintsLog[0].name, {
+        id: sprintsLog[0].id,
+        name: sprintsLog[0].name,
+        state: sprintsLog[0].state,
+        startDate: sprintsLog[0].startDate,
+        endDate: sprintsLog[0].endDate,
+      })
+      updateColumn(sprintsLog[0].name, {
+        id: sprintsLog[0].name,
+        list: issuesLog.filter(
+          (issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask"
+        ),
+      })
+    }
+  }, [sprintsLog, issuesLog])
+
+  // useEffect(() => {
+  //   getIssues(projectKey, boardIds, updateColumn, updateSprints, setIsLoading)
+  // }, [])
 
   useEffect(() => {
     resizeDivider()

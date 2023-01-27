@@ -53,3 +53,46 @@ export const getIssues = async (
   )
   setIsLoading(false)
 }
+
+// export const getSprints = (boardIds: number[]) => {
+//   const sprintsData = boardIds.map(async (boardId) =>
+//     fetch(
+//       `${import.meta.env.VITE_EXTENDER}/sprintsByBoardId?boardId=${boardId}`
+//     ).then((sprint) => sprint.json())
+//   )
+//   return Promise.all(sprintsData).then((sprints) => sprints)
+// }
+
+export const getSprints = (boardId: number): Promise<Sprint[]> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/sprintsByBoardId?boardId=${boardId}`)
+    .then((sprints) => sprints.json())
+    .catch((err) => err)
+
+export const getIssuesBySprint = (
+  projectKey: string | undefined,
+  sprintId: number | undefined
+): Promise<Issue[]> => {
+  if (typeof projectKey === "undefined")
+    return Promise.reject(new Error("Invalid Project Key"))
+  if (typeof sprintId === "undefined")
+    return Promise.reject(new Error("Invalid Sprint id"))
+  return fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/issuesBySprintAndProject?sprint=${sprintId}&project=${projectKey}`
+  )
+    .then((issues) => issues.json())
+    .catch((err) => err)
+}
+
+export const getBacklogIssues = (
+  projectKey: string | undefined,
+  boardId: number
+): Promise<Issue[]> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/backlogIssuesByProjectAndBoard?project=${projectKey}&boardId=${boardId}`
+  )
+    .then((issues) => issues.json())
+    .catch((err) => err)
