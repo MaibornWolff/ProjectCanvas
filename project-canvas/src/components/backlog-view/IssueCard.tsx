@@ -24,6 +24,7 @@ export function IssueCard({
   type,
   storyPointsEstimate,
   epic,
+  labels,
 }: Issue) {
   let icon: JSX.Element
   let iconGradient1: string
@@ -112,6 +113,8 @@ export function IssueCard({
                   {issueKey}
                 </Text>
                 {epic && <Badge color="violet">{epic}</Badge>}
+                {labels?.length !== 0 &&
+                  labels.map((label) => <Badge color="gray">{label}</Badge>)}
               </Group>
               <Text size="lg">{summary}</Text>
 

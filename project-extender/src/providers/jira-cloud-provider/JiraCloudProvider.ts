@@ -201,6 +201,7 @@ class JiraCloudProvider implements ProviderApi {
           element.key
         ),
         epic: element.fields.parent?.fields.summary,
+        labels: element.fields.labels,
         index,
       }))
     )

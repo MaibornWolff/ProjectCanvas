@@ -24,5 +24,6 @@ export interface JiraIssue {
     issuetype: { name: string }
     customfield_10107: number
     parent: { id: string; fields: { summary: string } }
+    labels: string[]
   }
 }

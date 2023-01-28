@@ -32,6 +32,7 @@ export interface Issue {
   type: string
   storyPointsEstimate: number
   epic: string
+  labels: string[]
 }
 
 export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
