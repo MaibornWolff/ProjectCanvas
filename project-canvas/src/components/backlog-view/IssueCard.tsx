@@ -23,10 +23,26 @@ export function IssueCard({
   status,
   type,
   storyPointsEstimate,
+  epic,
 }: Issue) {
   let icon: JSX.Element
   let iconGradient1: string
   let iconGradient2: string
+  let storyPointsColor: string
+  switch (status) {
+    case "To Do":
+      storyPointsColor = "gray.6"
+      break
+    case "In Progress":
+      storyPointsColor = "blue.8"
+      break
+    case "Done":
+      storyPointsColor = "green.9"
+      break
+    default:
+      storyPointsColor = "gray.6"
+  }
+
   switch (type) {
     case "Story":
       icon = <IconBookmark />
@@ -63,8 +79,7 @@ export function IssueCard({
               gap: 0,
               padding: theme.spacing.xs,
               transition: "background-color .8s ease-out",
-              boxShadow:
-                "0 0 1px 0 rgb(9 30 66 / 31%), 0 2px 4px -1px rgb(9 30 66 / 25%)",
+              boxShadow: theme.shadows.xs,
               ":hover": {
                 backgroundColor: "#ebecf0",
                 transition: "background-color .1s ease-in",
@@ -82,20 +97,22 @@ export function IssueCard({
             </Center>
 
             <Stack spacing={0} sx={{ flex: 12 }}>
-              <Text
-                size="sm"
-                color="blue"
-                td={status === "Done" ? "line-through" : "none"}
-                sx={{
-                  ":hover": {
-                    textDecoration: "underline",
-                    cursor: "pointer",
-                  },
-                }}
-              >
-                {issueKey}
-              </Text>
-
+              <Group>
+                <Text
+                  size="sm"
+                  color="blue"
+                  td={status === "Done" ? "line-through" : "none"}
+                  sx={{
+                    ":hover": {
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                    },
+                  }}
+                >
+                  {issueKey}
+                </Text>
+                {epic && <Badge color="violet">{epic}</Badge>}
+              </Group>
               <Text size="lg">{summary}</Text>
 
               <Group align="center" spacing="sm">
@@ -109,7 +126,7 @@ export function IssueCard({
               <Badge
                 size="sm"
                 px="6px"
-                color="gray.6"
+                color={storyPointsColor}
                 variant="filled"
                 sx={{ alignSelf: "flex-start" }}
               >

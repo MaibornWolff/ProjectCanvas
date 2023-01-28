@@ -23,5 +23,6 @@ export interface JiraIssue {
     status: { name: string }
     issuetype: { name: string }
     customfield_10107: number
+    parent: { id: string; fields: { summary: string } }
   }
 }

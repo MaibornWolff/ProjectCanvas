@@ -200,6 +200,7 @@ class JiraCloudProvider implements ProviderApi {
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(
           element.key
         ),
+        epic: element.fields.parent?.fields.summary,
         index,
       }))
     )

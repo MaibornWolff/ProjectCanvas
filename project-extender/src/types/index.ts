@@ -31,6 +31,7 @@ export interface Issue {
   columnId: string
   type: string
   storyPointsEstimate: number
+  epic: string
 }
 
 export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
