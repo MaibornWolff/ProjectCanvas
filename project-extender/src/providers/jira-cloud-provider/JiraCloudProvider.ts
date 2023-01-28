@@ -182,13 +182,13 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async fetchIssues(url: string): Promise<Issue[]> {
+    const rankCustomField = this.customFields.get("Rank")
     const response = await fetch(url, {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${this.accessToken}`,
       },
     })
-
     const data = await response.json()
 
     const issues: Promise<Issue[]> = Promise.all(
@@ -201,6 +201,7 @@ class JiraCloudProvider implements ProviderApi {
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(
           element.key
         ),
+        rank: element.fields[rankCustomField!],
         index,
       }))
     )
@@ -234,15 +235,17 @@ class JiraCloudProvider implements ProviderApi {
           body: JSON.stringify(body),
         }
       )
-        // .then(async (response) => {
-        // console.log(
-        //   `moved between issue ${rankBefore} and issue ${rankAfter}`
-        // )
-        // console.log("move to sprint and rank ->")
-        // console.log(await response.json())
         .then(() => {
           resolve()
         })
+        // .then(async (response) => {
+        //   console.log(
+        //     `moved between issue ${rankBefore} and issue ${rankAfter}`
+        //   )
+        //   console.log("move to sprint and rank ->")
+        //   console.log(await response.json())
+        //   resolve()
+        // })
         .catch((error) => {
           reject(
             new Error(
@@ -271,10 +274,6 @@ class JiraCloudProvider implements ProviderApi {
           }`,
         }
       )
-        // .then(async (response) => {
-        //   console.log(`move to backog -> ${await response.json()}`)
-        //   resolve()
-        // })
         .then(() => {
           resolve()
         })
@@ -296,8 +295,12 @@ class JiraCloudProvider implements ProviderApi {
       const body = {
         rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
         issues: [issue],
-        ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
-        ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
+        // eslint-disable-next-line no-nested-ternary
+        ...(rankBefore
+          ? { rankBeforeIssue: rankBefore }
+          : rankAfter
+          ? { rankAfterIssue: rankAfter }
+          : {}),
       }
 
       fetch(
@@ -312,6 +315,9 @@ class JiraCloudProvider implements ProviderApi {
           body: JSON.stringify(body),
         }
       )
+        .then(() => {
+          resolve()
+        })
         // .then(async (response) => {
         //   console.log(
         //     `moved between issue ${rankBefore} and issue ${rankAfter}`
@@ -320,9 +326,6 @@ class JiraCloudProvider implements ProviderApi {
         //   console.log(await response.json())
         //   resolve()
         // })
-        .then(() => {
-          resolve()
-        })
         .catch((error) =>
           reject(
             new Error(`Error in moving this issue to the Backlog: ${error}`)

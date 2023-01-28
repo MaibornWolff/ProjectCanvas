@@ -112,8 +112,8 @@ class JiraServerProvider implements ProviderApi {
       const projects = data.map((project: JiraProject) => ({
         key: project.key,
         name: project.name,
-        type: project.projectTypeKey,
         lead: project.lead.displayName,
+        type: project.projectTypeKey,
       }))
       return projects
     }
@@ -204,6 +204,7 @@ class JiraServerProvider implements ProviderApi {
   }
 
   async fetchIssues(url: string): Promise<Issue[]> {
+    const rankCustomField = this.customFields.get("Rank")
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -224,6 +225,7 @@ class JiraServerProvider implements ProviderApi {
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(
           element.key
         ),
+        rank: element.fields[rankCustomField!],
         index,
       }))
     )
@@ -256,7 +258,17 @@ class JiraServerProvider implements ProviderApi {
           body: JSON.stringify(body),
         }
       )
-        .then(() => resolve())
+        .then(() => {
+          resolve()
+        })
+        // .then(async (response) => {
+        //   console.log(
+        //     `moved between issue ${rankBefore} and issue ${rankAfter}`
+        //   )
+        //   console.log("move to sprint and rank ->")
+        //   console.log(await response.json())
+        //   resolve()
+        // })
         .catch((error) => {
           reject(
             new Error(
@@ -301,8 +313,12 @@ class JiraServerProvider implements ProviderApi {
       const body = {
         rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
         issues: [issue],
-        ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
-        ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
+        // eslint-disable-next-line no-nested-ternary
+        ...(rankBefore
+          ? { rankBeforeIssue: rankBefore }
+          : rankAfter
+          ? { rankAfterIssue: rankAfter }
+          : {}),
       }
       fetch(`http://${this.loginOptions.url}/rest/agile/1.0/issue/rank`, {
         method: "PUT",
@@ -313,7 +329,17 @@ class JiraServerProvider implements ProviderApi {
         },
         body: JSON.stringify(body),
       })
-        .then(() => resolve())
+        .then(() => {
+          resolve()
+        })
+        // .then(async (response) => {
+        //   console.log(
+        //     `moved between issue ${rankBefore} and issue ${rankAfter}`
+        //   )
+        //   console.log("rank in backog -> ")
+        //   console.log(await response.json())
+        //   resolve()
+        // })
         .catch((error) =>
           reject(
             new Error(`Error in moving this issue to the Backlog: ${error}`)

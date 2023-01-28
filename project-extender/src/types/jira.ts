@@ -23,5 +23,6 @@ export interface JiraIssue {
     status: { name: string }
     issuetype: { name: string }
     customfield_10107: number
+    [rankCustomField: string]: string | unknown
   }
 }
