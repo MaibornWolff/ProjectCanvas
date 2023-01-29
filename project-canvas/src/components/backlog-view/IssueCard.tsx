@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
   ThemeIcon,
+  Tooltip,
 } from "@mantine/core"
 import {
   IconBookmark,
@@ -116,7 +117,7 @@ export function IssueCard({
                 </Text>
                 {epic && <Badge color="violet">{epic}</Badge>}
                 {labels?.length !== 0 &&
-                  labels.map((label) => <Badge color="gray">{label}</Badge>)}
+                  labels.map((label) => <Badge color="yellow">{label}</Badge>)}
               </Group>
               <Text size="lg">{summary}</Text>
               <Group align="center" spacing="sm">
@@ -125,23 +126,25 @@ export function IssueCard({
                 <Text size="sm">{status}</Text>
               </Group>
             </Stack>
-            <Group>
+            <Tooltip
+              label={
+                assignee.displayName !== undefined
+                  ? assignee.displayName
+                  : "unassigned"
+              }
+            >
               {assignee.avatarUrls !== undefined ? (
                 <Avatar
-                  src={assignee?.avatarUrls["16x16"]}
-                  sx={{ alignSelf: "flex-end" }}
+                  src={assignee?.avatarUrls["24x24"]}
                   size="sm"
                   radius="xl"
+                  ml={5}
+                  mr={5}
                 />
               ) : (
-                <Avatar />
+                <Avatar sx={{ backgroundColor: "transparent" }} />
               )}
-              {assignee && (
-                <Text sx={{ alignSelf: "flex-end" }}>
-                  {assignee.displayName}
-                </Text>
-              )}
-            </Group>
+            </Tooltip>
             {storyPointsEstimate && (
               <Badge
                 size="sm"
