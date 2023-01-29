@@ -1,7 +1,7 @@
-import { Box, Stack, Text } from "@mantine/core"
+import { Center, Stack, Text } from "@mantine/core"
 import { Issue } from "project-extender"
-import { IssueCard } from "./IssueCard"
-import { StrictModeDroppable } from "./StrictModeDroppable"
+import { StrictModeDroppable } from "../../common/StrictModeDroppable"
+import { IssueCard } from "../Issue/IssueCard"
 
 export function DraggableIssuesWrapper({
   id,
@@ -30,14 +30,20 @@ export function DraggableIssuesWrapper({
             {provided.placeholder}
           </Stack>
         ) : (
-          <Box
-            sx={{ borderStyle: "dotted" }}
+          <Center
+            sx={(theme) => ({
+              borderStyle: "dotted",
+              borderColor: "lightgray",
+              height: "6em",
+              borderRadius: theme.radius.md,
+            })}
             {...provided.droppableProps}
             ref={provided.innerRef}
           >
-            <Text align="center">Drop Here</Text>
-            {provided.placeholder}
-          </Box>
+            <Text align="center" sx={{ zIndex: 0 }}>
+              Drop Here
+            </Text>
+          </Center>
         )
       }
     </StrictModeDroppable>

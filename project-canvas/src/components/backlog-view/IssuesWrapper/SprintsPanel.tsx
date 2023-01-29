@@ -1,13 +1,13 @@
 import { Accordion, Badge, Flex, Group, Text, Title } from "@mantine/core"
 import { IconChevronRight } from "@tabler/icons"
 import { Issue, Sprint } from "project-extender"
-import { pluralize, storyPointsAccumulator } from "./backlogHelper"
+import { pluralize, storyPointsAccumulator } from "../helpers/backlogHelpers"
 import { DraggableIssuesWrapper } from "./DraggableIssuesWrapper"
 
 export function SprintsPanel({
   sprintsWithIssues,
 }: {
-  sprintsWithIssues: { id: string; issues: Issue[]; sprint: Sprint }[]
+  sprintsWithIssues: { issues: Issue[]; sprint: Sprint }[]
 }) {
   return (
     <Accordion
@@ -59,7 +59,7 @@ function SprintAccordionControl({
   return (
     <Accordion.Control>
       <Group>
-        <Title size="h5">{sprint.id}</Title>
+        <Title size="h5">{sprint.name}</Title>
         <Text color="dimmed">{pluralize(issues.length, "issue")}</Text>
         {sprint.state === "active" && (
           <Badge px="6px" color="green" variant="filled" size="sm">
