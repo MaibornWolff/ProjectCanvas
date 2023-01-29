@@ -126,12 +126,15 @@ export function IssueCard({
               </Group>
             </Stack>
             <Group>
-              {assignee.avatarUrls !== undefined && (
+              {assignee.avatarUrls !== undefined ? (
                 <Avatar
                   src={assignee?.avatarUrls["16x16"]}
                   sx={{ alignSelf: "flex-end" }}
                   size="sm"
+                  radius="xl"
                 />
+              ) : (
+                <Avatar />
               )}
               {assignee && (
                 <Text sx={{ alignSelf: "flex-end" }}>
