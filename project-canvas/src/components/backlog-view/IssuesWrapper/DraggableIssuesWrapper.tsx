@@ -36,6 +36,8 @@ export function DraggableIssuesWrapper({
             ref={provided.innerRef}
           >
             <Text align="center">Drop Here</Text>
+            {/* TODO: {provided.placeholder} has been removed so not to make the text move on hover
+            but react beautiful dnd doesn't like that, we should find a better solution */}
           </Center>
         )
       }
