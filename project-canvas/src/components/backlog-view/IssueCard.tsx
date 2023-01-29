@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Badge,
   Center,
   Group,
@@ -25,6 +26,7 @@ export function IssueCard({
   storyPointsEstimate,
   epic,
   labels,
+  assignee,
 }: Issue) {
   let icon: JSX.Element
   let iconGradient1: string
@@ -117,14 +119,26 @@ export function IssueCard({
                   labels.map((label) => <Badge color="gray">{label}</Badge>)}
               </Group>
               <Text size="lg">{summary}</Text>
-
               <Group align="center" spacing="sm">
                 <Text size="sm">{type}</Text>
                 <Text size="sm">•</Text>
                 <Text size="sm">{status}</Text>
               </Group>
             </Stack>
-
+            <Group>
+              {assignee.avatarUrls !== undefined && (
+                <Avatar
+                  src={assignee?.avatarUrls["16x16"]}
+                  sx={{ alignSelf: "flex-end" }}
+                  size="sm"
+                />
+              )}
+              {assignee && (
+                <Text sx={{ alignSelf: "flex-end" }}>
+                  {assignee.displayName}
+                </Text>
+              )}
+            </Group>
             {storyPointsEstimate && (
               <Badge
                 size="sm"

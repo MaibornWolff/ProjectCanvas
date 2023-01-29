@@ -33,6 +33,15 @@ export interface Issue {
   storyPointsEstimate: number
   epic: string
   labels: string[]
+  assignee: {
+    displayName: string
+    avatarUrls: {
+      "16x16": string
+      "24x24": string
+      "36x36": string
+      "48x48": string
+    }
+  }
 }
 
 export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {

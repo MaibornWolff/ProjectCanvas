@@ -25,6 +25,7 @@ class JiraCloudProvider implements ProviderApi {
   }) {
     if (this.accessToken === undefined)
       this.accessToken = await getAccessToken(oauthLoginOptions)
+    console.log(this.accessToken)
 
     await fetch("https://api.atlassian.com/oauth/token/accessible-resources", {
       headers: {
@@ -202,6 +203,10 @@ class JiraCloudProvider implements ProviderApi {
         ),
         epic: element.fields.parent?.fields.summary,
         labels: element.fields.labels,
+        assignee: {
+          displayName: element.fields.assignee?.displayName,
+          avatarUrls: element.fields.assignee?.avatarUrls,
+        },
         index,
       }))
     )
