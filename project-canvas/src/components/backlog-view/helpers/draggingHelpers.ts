@@ -7,10 +7,10 @@ export const onDragEnd = async ({
   issuesWrappers,
   updateIssuesWrapper,
 }: DropResult & {
-  issuesWrappers: Map<string, { id: string; issues: Issue[]; sprint?: Sprint }>
+  issuesWrappers: Map<string, { issues: Issue[]; sprint?: Sprint }>
   updateIssuesWrapper: (
     key: string,
-    value: { id: string; issues: Issue[]; sprint?: Sprint }
+    value: { issues: Issue[]; sprint?: Sprint }
   ) => void
 }) => {
   if (destination === undefined || destination === null) return null
@@ -22,14 +22,16 @@ export const onDragEnd = async ({
     return null
 
   const start = issuesWrappers.get(source.droppableId)!
+  const startId = source.droppableId
   const end = issuesWrappers.get(destination.droppableId)!
+  const endId = destination.droppableId
 
   if (start === end) {
     const newList = start.issues.filter(
       (_: Issue, idx: number) => idx !== source.index
     )
     newList.splice(destination.index, 0, start.issues[source.index])
-    updateIssuesWrapper(start.id, {
+    updateIssuesWrapper(startId, {
       ...start,
       issues: newList,
     })
@@ -42,11 +44,11 @@ export const onDragEnd = async ({
   const newEndIssues = end.issues.slice()
   newEndIssues.splice(destination.index, 0, start.issues[source.index])
 
-  updateIssuesWrapper(start.id, {
+  updateIssuesWrapper(startId, {
     ...start,
     issues: newStartIssues,
   })
-  updateIssuesWrapper(end.id, { ...end, issues: newEndIssues })
+  updateIssuesWrapper(endId, { ...end, issues: newEndIssues })
 
   const movedIssueKey = start.issues[source.index].issueKey
   const destinationSprintId = end.sprint?.id

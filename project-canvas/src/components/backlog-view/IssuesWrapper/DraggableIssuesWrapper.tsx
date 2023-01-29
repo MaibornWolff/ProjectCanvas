@@ -20,12 +20,7 @@ export function DraggableIssuesWrapper({
             spacing="sm"
           >
             {issues.map((issue: Issue, index) => (
-              <IssueCard
-                {...issue}
-                key={issue.issueKey}
-                index={index}
-                columnId={id}
-              />
+              <IssueCard {...issue} key={issue.issueKey} index={index} />
             ))}
             {provided.placeholder}
           </Stack>
@@ -40,9 +35,7 @@ export function DraggableIssuesWrapper({
             {...provided.droppableProps}
             ref={provided.innerRef}
           >
-            <Text align="center" sx={{ zIndex: 0 }}>
-              Drop Here
-            </Text>
+            <Text align="center">Drop Here</Text>
           </Center>
         )
       }

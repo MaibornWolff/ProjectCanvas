@@ -34,11 +34,11 @@ export function BacklogView() {
   const currentBoardId = boardIds[0]
 
   const [issuesWrappers, setIssuesWrappers] = useState(
-    new Map<string, { id: string; issues: Issue[]; sprint?: Sprint }>()
+    new Map<string, { issues: Issue[]; sprint?: Sprint }>()
   )
   const updateIssuesWrapper = (
     key: string,
-    value: { id: string; issues: Issue[]; sprint?: Sprint }
+    value: { issues: Issue[]; sprint?: Sprint }
   ) => {
     setIssuesWrappers((map) => new Map(map.set(key, value)))
   }
@@ -57,7 +57,6 @@ export function BacklogView() {
         enabled: !!projectKey && !!sprints,
         onSuccess: (issues: Issue[]) => {
           updateIssuesWrapper(sprint.name, {
-            id: sprint.name,
             sprint,
             issues: issues.filter(
               (issue: Issue) =>
@@ -74,7 +73,6 @@ export function BacklogView() {
     enabled: !!projectKey,
     onSuccess: (backlogIssues) => {
       updateIssuesWrapper("Backlog", {
-        id: "Backlog",
         sprint: undefined,
         issues: backlogIssues.filter(
           (issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask"
@@ -139,7 +137,7 @@ export function BacklogView() {
           >
             {issuesWrappers.get("Backlog") && (
               <DraggableIssuesWrapper
-                id={issuesWrappers.get("Backlog")!.id}
+                id="Backlog"
                 issues={issuesWrappers.get("Backlog")!.issues}
               />
             )}
