@@ -1,29 +1,29 @@
 import {
-  Box,
   Center,
   Divider,
   Flex,
   Group,
   Loader,
+  ScrollArea,
   Stack,
   Text,
   Title,
 } from "@mantine/core"
+import { useQueries, useQuery } from "@tanstack/react-query"
 import { Issue, Sprint } from "project-extender"
 import { useEffect, useState } from "react"
-import { useQueries, useQuery } from "@tanstack/react-query"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../lib/Store"
+import { onDragEnd } from "./helpers/draggingHelpers"
 import {
   getBacklogIssues,
   getIssuesBySprint,
   getSprints,
 } from "./helpers/queryFetchers"
+import { resizeDivider } from "./helpers/resizeDivider"
 import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper"
 import { SprintsPanel } from "./IssuesWrapper/SprintsPanel"
-import { onDragEnd } from "./helpers/draggingHelpers"
-import { resizeDivider } from "./helpers/resizeDivider"
 import { ReloadButton } from "./ReloadButton"
 
 export function BacklogView() {
@@ -128,14 +128,13 @@ export function BacklogView() {
             })
           }
         >
-          <Box
+          <ScrollArea.Autosize
             className="left-panel"
+            maxHeight="80vh"
             w="50%"
-            h={600}
             p="sm"
             sx={{
               minWidth: "260px",
-              overflow: "auto",
             }}
           >
             {issuesWrappers.get("Backlog") && (
@@ -144,7 +143,7 @@ export function BacklogView() {
                 issues={issuesWrappers.get("Backlog")!.issues}
               />
             )}
-          </Box>
+          </ScrollArea.Autosize>
           <Divider
             size="xl"
             className="resize-handle"
@@ -153,12 +152,12 @@ export function BacklogView() {
               cursor: "col-resize",
             }}
           />
-          <Box
+          <ScrollArea.Autosize
             className="right-panel"
-            h={1000}
+            maxHeight="80vh"
             w="50%"
             p="sm"
-            sx={{ minWidth: "260px", overflow: "auto" }}
+            sx={{ minWidth: "260px" }}
           >
             <SprintsPanel
               sprintsWithIssues={
@@ -170,7 +169,7 @@ export function BacklogView() {
                 }[]
               }
             />
-          </Box>
+          </ScrollArea.Autosize>
         </DragDropContext>
       </Flex>
     </Stack>
