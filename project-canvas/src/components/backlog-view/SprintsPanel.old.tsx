@@ -8,7 +8,7 @@ import {
 } from "./backlogHelper"
 import { Column } from "./Column"
 
-export function SprintsColumn({
+export function SprintsPanel({
   columns,
   sprints,
 }: {

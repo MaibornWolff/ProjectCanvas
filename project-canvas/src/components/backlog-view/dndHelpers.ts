@@ -4,13 +4,14 @@ import { Issue, Sprint } from "project-extender"
 export const onDragEnd = async ({
   source,
   destination,
-  columns,
-  updateColumn,
-  sprints,
+  issuesWrappers,
+  updateIssuesWrapper,
 }: DropResult & {
-  columns: Map<string, { id: string; list: Issue[] }>
-  updateColumn: (t1: string, t2: { id: string; list: Issue[] }) => void
-  sprints: Map<string, Sprint>
+  issuesWrappers: Map<string, { id: string; issues: Issue[]; sprint?: Sprint }>
+  updateIssuesWrapper: (
+    key: string,
+    value: { id: string; issues: Issue[]; sprint?: Sprint }
+  ) => void
 }) => {
   if (destination === undefined || destination === null) return null
 
@@ -20,56 +21,42 @@ export const onDragEnd = async ({
   )
     return null
 
-  const start = columns.get(source.droppableId)
-  const end = columns.get(destination.droppableId)
+  const start = issuesWrappers.get(source.droppableId)!
+  const end = issuesWrappers.get(destination.droppableId)!
 
   if (start === end) {
-    const newList = start!.list.filter(
+    const newList = start.issues.filter(
       (_: Issue, idx: number) => idx !== source.index
     )
-
-    newList.splice(destination.index, 0, start!.list[source.index])
-
-    const newCol = {
-      id: start!.id,
-      list: newList,
-    }
-
-    updateColumn(start!.id, newCol)
+    newList.splice(destination.index, 0, start.issues[source.index])
+    updateIssuesWrapper(start.id, {
+      ...start,
+      issues: newList,
+    })
     return null
   }
 
-  const movedIssue = start!.list[source.index]
-  const destinationSprintId = sprints.get(end!.id)?.id
-
-  const newStartList = start!.list.filter(
+  const newStartIssues = start.issues.filter(
     (_: Issue, idx: number) => idx !== source.index
   )
+  const newEndIssues = end.issues.slice()
+  newEndIssues.splice(destination.index, 0, start.issues[source.index])
 
-  const newStartCol = {
-    id: start!.id,
-    list: newStartList,
-  }
+  updateIssuesWrapper(start.id, {
+    ...start,
+    issues: newStartIssues,
+  })
+  updateIssuesWrapper(end.id, { ...end, issues: newEndIssues })
 
-  const newEndList = end!.list
-
-  newEndList.splice(destination.index, 0, start!.list[source.index])
-
-  const newEndCol = {
-    id: end!.id,
-    list: newEndList,
-  }
-
-  updateColumn(start!.id, newStartCol)
-  updateColumn(end!.id, newEndCol)
-
-  if (destinationSprintId !== undefined) {
+  const movedIssueKey = start.issues[source.index].issueKey
+  const destinationSprintId = end.sprint?.id
+  if (destinationSprintId) {
     await fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToSprint`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         sprint: destinationSprintId,
-        issue: movedIssue.issueKey,
+        issue: movedIssueKey,
       }),
     })
   } else if (destination.droppableId === "Backlog") {
@@ -77,7 +64,7 @@ export const onDragEnd = async ({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        issue: movedIssue.issueKey,
+        issue: movedIssueKey,
       }),
     })
   }

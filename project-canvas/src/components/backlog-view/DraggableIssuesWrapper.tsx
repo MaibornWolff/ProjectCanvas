@@ -3,29 +3,28 @@ import { Issue } from "project-extender"
 import { IssueCard } from "./IssueCard"
 import { StrictModeDroppable } from "./StrictModeDroppable"
 
-export function Column({
-  col,
+export function DraggableIssuesWrapper({
+  id,
+  issues,
 }: {
-  col: {
-    id: string
-    list: Issue[]
-  }
+  id: string
+  issues: Issue[]
 }) {
   return (
-    <StrictModeDroppable droppableId={col.id}>
+    <StrictModeDroppable droppableId={id}>
       {(provided) =>
-        col.list.length !== 0 ? (
+        issues.length !== 0 ? (
           <Stack
             {...provided.droppableProps}
             ref={provided.innerRef}
             spacing="sm"
           >
-            {col.list.map((issue: Issue, index: number) => (
+            {issues.map((issue: Issue, index) => (
               <IssueCard
                 {...issue}
                 key={issue.issueKey}
                 index={index}
-                columnId={col.id}
+                columnId={id}
               />
             ))}
             {provided.placeholder}

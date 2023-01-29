@@ -74,8 +74,10 @@ export const getIssuesBySprint = (
 ): Promise<Issue[]> => {
   if (typeof projectKey === "undefined")
     return Promise.reject(new Error("Invalid Project Key"))
+
   if (typeof sprintId === "undefined")
     return Promise.reject(new Error("Invalid Sprint id"))
+
   return fetch(
     `${
       import.meta.env.VITE_EXTENDER
