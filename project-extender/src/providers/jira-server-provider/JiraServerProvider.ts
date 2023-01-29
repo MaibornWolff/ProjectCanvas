@@ -261,14 +261,7 @@ class JiraServerProvider implements ProviderApi {
         .then(() => {
           resolve()
         })
-        // .then(async (response) => {
-        //   console.log(
-        //     `moved between issue ${rankBefore} and issue ${rankAfter}`
-        //   )
-        //   console.log("move to sprint and rank ->")
-        //   console.log(await response.json())
-        //   resolve()
-        // })
+
         .catch((error) => {
           reject(
             new Error(
@@ -310,15 +303,19 @@ class JiraServerProvider implements ProviderApi {
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const rankCustomField = this.customFields.get("Rank")
-      const body = {
+      const body: {
+        rankCustomFieldId: string
+        issues: string[]
+        rankBeforeIssue?: string
+        rankAfterIssue?: string
+      } = {
         rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
         issues: [issue],
-        // eslint-disable-next-line no-nested-ternary
-        ...(rankBefore
-          ? { rankBeforeIssue: rankBefore }
-          : rankAfter
-          ? { rankAfterIssue: rankAfter }
-          : {}),
+      }
+      if (rankBefore) {
+        body.rankBeforeIssue = rankBefore
+      } else if (rankAfter) {
+        body.rankAfterIssue = rankAfter
       }
       fetch(`http://${this.loginOptions.url}/rest/agile/1.0/issue/rank`, {
         method: "PUT",
@@ -332,14 +329,7 @@ class JiraServerProvider implements ProviderApi {
         .then(() => {
           resolve()
         })
-        // .then(async (response) => {
-        //   console.log(
-        //     `moved between issue ${rankBefore} and issue ${rankAfter}`
-        //   )
-        //   console.log("rank in backog -> ")
-        //   console.log(await response.json())
-        //   resolve()
-        // })
+
         .catch((error) =>
           reject(
             new Error(`Error in moving this issue to the Backlog: ${error}`)
