@@ -24,6 +24,7 @@ import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper"
 import { SprintsPanel } from "./IssuesWrapper/SprintsPanel"
 import { onDragEnd } from "./helpers/draggingHelpers"
 import { resizeDivider } from "./helpers/resizeDivider"
+import { ReloadButton } from "./ReloadButton"
 
 export function BacklogView() {
   const navigate = useNavigate()
@@ -95,28 +96,24 @@ export function BacklogView() {
 
   return (
     <Stack sx={{ minHeight: "100%" }}>
-      <Stack
-        align="left"
-        sx={{
-          paddingBottom: "10px",
-          paddingTop: "10px",
-          gap: "10px",
-        }}
-      >
-        <Group sx={{ gap: "5px", color: "#6B778C" }}>
-          <Text
-            onClick={() => navigate("/projectsview")}
-            sx={{
-              ":hover": {
-                textDecoration: "underline",
-                cursor: "pointer",
-              },
-            }}
-          >
-            Projects
-          </Text>
-          <Text>/</Text>
-          <Text>{projectName}</Text>
+      <Stack align="left" py="xs" spacing="md">
+        <Group>
+          <Group spacing="xs" c="dimmed">
+            <Text
+              onClick={() => navigate("/projectsview")}
+              sx={{
+                ":hover": {
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              Projects
+            </Text>
+            <Text>/</Text>
+            <Text>{projectName}</Text>
+          </Group>
+          <ReloadButton ml="auto" mr="xs" />
         </Group>
         <Title>Backlog</Title>
       </Stack>
