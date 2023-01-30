@@ -138,24 +138,25 @@ export function IssueCard({
                   src={assignee?.avatarUrls["24x24"]}
                   size="sm"
                   radius="xl"
-                  ml={5}
-                  mr={5}
+                  ml={4}
+                  mr={4}
                 />
               ) : (
                 <Avatar sx={{ backgroundColor: "transparent" }} />
               )}
             </Tooltip>
-            {storyPointsEstimate && (
-              <Badge
-                size="sm"
-                px="6px"
-                color={storyPointsColor}
-                variant="filled"
-                sx={{ alignSelf: "flex-start" }}
-              >
-                {storyPointsEstimate}
-              </Badge>
-            )}
+
+            <Badge
+              w="24px"
+              p="0"
+              bg={
+                storyPointsEstimate !== null ? storyPointsColor : "transparent"
+              }
+              variant="filled"
+              sx={{ alignSelf: "flex-start" }}
+            >
+              {storyPointsEstimate}
+            </Badge>
           </Group>
         </Paper>
       )}
