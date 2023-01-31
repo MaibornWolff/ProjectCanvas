@@ -50,7 +50,7 @@ export function IssueCard({
   }
 
   return (
-    <Draggable draggableId={issueKey} index={index}>
+    <Draggable key={issueKey} draggableId={issueKey} index={index}>
       {(provided) => (
         <Paper
           ref={provided.innerRef}
