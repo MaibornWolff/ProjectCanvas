@@ -43,13 +43,13 @@ export function BacklogView() {
     setIssuesWrappers((map) => new Map(map.set(key, value)))
   }
 
-  const { data: sprints } = useQuery({
+  const { data: sprints, isError: isErrorSprints } = useQuery({
     queryKey: ["sprints", currentBoardId],
     queryFn: () => getSprints(currentBoardId),
     enabled: !!currentBoardId,
   })
 
-  useQueries({
+  const sprintsIssuesResults = useQueries({
     queries:
       sprints?.map((sprint) => ({
         queryKey: ["issues", "sprints", projectKey, sprints, sprint.id],
@@ -66,24 +66,40 @@ export function BacklogView() {
         },
       })) ?? [],
   })
+  const isErrorSprintsIssues = sprintsIssuesResults.some(
+    ({ isError }) => isError
+  )
 
-  const { isLoading: isLoadingBacklogIssues } = useQuery({
-    queryKey: ["issues", projectKey, currentBoardId],
-    queryFn: () => getBacklogIssues(projectKey, currentBoardId),
-    enabled: !!projectKey,
-    onSuccess: (backlogIssues) => {
-      updateIssuesWrapper("Backlog", {
-        sprint: undefined,
-        issues: backlogIssues.filter(
-          (issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask"
-        ),
-      })
-    },
-  })
+  const { isLoading: isLoadingBacklogIssues, isError: isErrorBacklogIssues } =
+    useQuery({
+      queryKey: ["issues", projectKey, currentBoardId],
+      queryFn: () => getBacklogIssues(projectKey, currentBoardId),
+      enabled: !!projectKey,
+      onSuccess: (backlogIssues) => {
+        updateIssuesWrapper("Backlog", {
+          sprint: undefined,
+          issues: backlogIssues.filter(
+            (issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask"
+          ),
+        })
+      },
+    })
 
   useEffect(() => {
     resizeDivider()
   }, [isLoadingBacklogIssues])
+
+  if (isErrorSprints || isErrorBacklogIssues || isErrorSprintsIssues)
+    return (
+      <Center style={{ width: "100%", height: "100%" }}>
+        <Text w="300">
+          An error has occurred while loading. This is due to an internal error.
+          Please report this behavior to the developers. <br />
+          (This is a placeholder and will be replaced with better error
+          messages)
+        </Text>
+      </Center>
+    )
 
   if (isLoadingBacklogIssues)
     return (
