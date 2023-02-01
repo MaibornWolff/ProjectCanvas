@@ -39,7 +39,7 @@ class JiraServerProvider implements ProviderApi {
 
   async isLoggedIn(): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch(`http://${this.loginOptions.url}/rest/auth/1/session`, {
+      fetch(`${this.loginOptions.url}/rest/auth/1/session`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -63,7 +63,7 @@ class JiraServerProvider implements ProviderApi {
 
   async logout(): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch(`http://${this.loginOptions.url}/rest/auth/1/session`, {
+      fetch(`${this.loginOptions.url}/rest/auth/1/session`, {
         method: "DELETE",
         headers: {
           Authorization: this.getAuthHeader(),
@@ -80,16 +80,13 @@ class JiraServerProvider implements ProviderApi {
   }
 
   async mapCustomFields(): Promise<void> {
-    const response = await fetch(
-      `http://${this.loginOptions.url}/rest/api/2/field`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: this.getAuthHeader(),
-        },
-      }
-    )
+    const response = await fetch(`${this.loginOptions.url}/rest/api/2/field`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: this.getAuthHeader(),
+      },
+    })
     const data = await response.json()
     data.forEach((field: { name: string; id: string }) => {
       this.customFields.set(field.name, field.id)
@@ -98,7 +95,7 @@ class JiraServerProvider implements ProviderApi {
 
   async getProjects(): Promise<Project[]> {
     const response = await fetch(
-      `http://${this.loginOptions.url}/rest/api/2/project?expand=lead,description`,
+      `${this.loginOptions.url}/rest/api/2/project?expand=lead,description`,
       {
         method: "GET",
         headers: {
@@ -122,7 +119,7 @@ class JiraServerProvider implements ProviderApi {
 
   async getBoardIds(project: string): Promise<number[]> {
     const response = await fetch(
-      `http://${this.loginOptions.url}/rest/agile/1.0/board?projectKeyOrId=${project}`,
+      `${this.loginOptions.url}/rest/agile/1.0/board?projectKeyOrId=${project}`,
       {
         method: "GET",
         headers: {
@@ -142,7 +139,7 @@ class JiraServerProvider implements ProviderApi {
 
   async getSprints(boardId: number): Promise<Sprint[]> {
     const response = await fetch(
-      `http://${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/sprint`,
+      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/sprint`,
       {
         method: "GET",
         headers: {
@@ -179,7 +176,7 @@ class JiraServerProvider implements ProviderApi {
 
   async getIssuesByProject(project: string): Promise<Issue[]> {
     return this.fetchIssues(
-      `http://${this.loginOptions.url}/rest/api/2/search?jql=project=${project}&maxResults=10000`
+      `${this.loginOptions.url}/rest/api/2/search?jql=project=${project}&maxResults=10000`
     )
   }
 
@@ -188,7 +185,7 @@ class JiraServerProvider implements ProviderApi {
     project: string
   ): Promise<Issue[]> {
     return this.fetchIssues(
-      `http://${this.loginOptions.url}/rest/api/2/search?jql=sprint=${sprintId} AND project=${project}`
+      `${this.loginOptions.url}/rest/api/2/search?jql=sprint=${sprintId} AND project=${project}`
     )
   }
 
@@ -197,7 +194,7 @@ class JiraServerProvider implements ProviderApi {
     boardId: number
   ): Promise<Issue[]> {
     const response = await this.fetchIssues(
-      `http://${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
+      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
     )
 
     return response
@@ -232,22 +229,19 @@ class JiraServerProvider implements ProviderApi {
 
   async moveIssueToSprint(sprint: number, issue: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `http://${this.loginOptions.url}/rest/agile/1.0/sprint/${sprint}/issue`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            Authorization: this.getAuthHeader(),
-            "Content-Type": "application/json",
-          },
-          body: `{
+      fetch(`${this.loginOptions.url}/rest/agile/1.0/sprint/${sprint}/issue`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: this.getAuthHeader(),
+          "Content-Type": "application/json",
+        },
+        body: `{
             "issues": [
               "${issue}"
             ]
           }`,
-        }
-      )
+      })
         .then(() => resolve())
         .catch((error) => {
           reject(
@@ -261,7 +255,7 @@ class JiraServerProvider implements ProviderApi {
 
   async moveIssueToBacklog(issue: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch(`http://${this.loginOptions.url}/rest/agile/1.0/backlog/issue`, {
+      fetch(`${this.loginOptions.url}/rest/agile/1.0/backlog/issue`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -285,7 +279,7 @@ class JiraServerProvider implements ProviderApi {
 
   async getIssueStoryPointsEstimate(issue: string): Promise<number> {
     return new Promise((resolve, reject) => {
-      fetch(`http://${this.loginOptions.url}/rest/api/2/issue/${issue}`, {
+      fetch(`${this.loginOptions.url}/rest/api/2/issue/${issue}`, {
         method: "GET",
         headers: {
           Accept: "application/json",
