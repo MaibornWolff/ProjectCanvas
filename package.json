@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "canvas": "yarn extender:build && yarn --cwd project-canvas dev",
+    "canvas:build": "yarn extender:build && yarn --cwd project-canvas build ",
     "extender": "yarn --cwd project-extender start",
     "extender:build": "yarn --cwd project-extender build",
     "jira": "yarn --cwd fake-jira-server start",
