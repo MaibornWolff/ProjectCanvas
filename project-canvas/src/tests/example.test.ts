@@ -1,24 +1,30 @@
-// import {ElectronApplication, Page, PlaywrightTestConfig} from '@playwright/test';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  ElectronApplication,
+  Page,
+  PlaywrightTestConfig,
+} from "@playwright/test"
 
-// const { _electron: electron } = require('playwright')
-// const { test, expect  } = require('@playwright/test')
+const { _electron: electron } = require("playwright")
+const { test, expect } = require("@playwright/test")
 
-// test('launch app', async () => {
-//   const electronApp = await electron.launch({ args: ['dist-electron/electron/main/index.js'] })
+test("launch app", async () => {
+  const electronApp = await electron.launch({
+    executablePath: "release/1.0.0/win-unpacked/ProjectCanvas.exe",
+  })
 
-//   const isPackaged = await electronApp.evaluate(async ({ app }) => {
-//     // This runs in Electron's main process, parameter here is always
-//     // the result of the require('electron') in the main app script.
-//     return app.isPackaged
-//   })
-//   console.log(isPackaged) // false (because we're in development mode)
-//   console.log("TER<efv<awetga<w4erghaywe4tga<w4etg")
-//   const window = await electronApp.firstWindow();
-//   console.log(await window.title());
+  let windowText
+  while (!windowText) {
+    // eslint-disable-next-line no-await-in-loop
+    const window = await electronApp.firstWindow()
+    // eslint-disable-next-line no-await-in-loop
+    windowText = await window.title()
+  }
+  console.log(`Title is ${windowText}`)
 
-//   // close app
-//   await electronApp.close()
-// })
+  // close app
+  await electronApp.close()
+})
 
 // test('save screenshot', async () => {
 //   const electronApp = await electron.launch({ args: ['dist-electron/electron/main/index.js'] })

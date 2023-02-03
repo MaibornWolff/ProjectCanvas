@@ -4,7 +4,8 @@
 //  * in both renderer and main processes
 //  */
 
-// import { expect, test } from '@playwright/test'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { expect, test } from "@playwright/test"
 // import {
 //   clickMenuItemById,
 //   findLatestBuild,
