@@ -15,6 +15,7 @@ import {
   NavLink,
   Paper,
   Popover,
+  Select,
 } from "@mantine/core"
 import {
   IssueBean,
@@ -27,6 +28,7 @@ import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
 import { RichTextEditor } from "@mantine/rte"
 import { DateTime } from "ts-luxon"
 import { useDisclosure } from "@mantine/hooks"
+import { IconChevronDown } from "@tabler/icons"
 
 interface ImageSize {
   text: string
@@ -46,6 +48,8 @@ const NONE: string = "None"
 const STATUS: string = "Done"
 const ACTIVITY: string = "Activity"
 const SHOW: string = "Show:"
+const EPIC_LINK: string = "Epic link"
+const DETAILS: string = "Details"
 
 const IMAGE_SIZES: ImageTypeSizes = {
   avatarImageSize: { text: "32x32", size: 32 },
@@ -83,11 +87,11 @@ export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
   const [pageOfComments, setPageOfComments] = useState<PageOfComments>({})
   const [openedPopOver, { close, open }] = useDisclosure(false)
 
-  const fetchData = (id: string): void => {
+  const fetchData = (idOrKey: string): void => {
     Promise.all(
       [
-        `${import.meta.env.VITE_EXTENDER}/issue/${id}`,
-        `${import.meta.env.VITE_EXTENDER}/issue/${id}/comments`,
+        `${import.meta.env.VITE_EXTENDER}/issue/${idOrKey}`,
+        `${import.meta.env.VITE_EXTENDER}/issue/${idOrKey}/comments`,
       ].map((request) =>
         fetch(request)
           .then((res) => res.json())
@@ -98,6 +102,7 @@ export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
         res.forEach((data, idx) => {
           if (idx === 0) {
             setIssue(data)
+            console.log(data)
           } else {
             setPageOfComments(data)
           }
@@ -175,9 +180,9 @@ export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
 
   const findCustomFieldByName = (fieldName: string): string | undefined => {
     const result = issue?.names
-      ? Object.entries(issue.names).filter(
-          (field: [key: string, name: string]) => field[1] === fieldName
-        )?.[0][0]
+      ? Object.entries(issue.names).find(
+          (field: [key: string, value: string]) => field[1] === fieldName
+        )?.[0]
       : undefined
     return result || undefined
   }
@@ -344,6 +349,19 @@ export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
     ),
   })
 
+  const epicLinks: ReactJSXElement = createField({
+    header: EPIC_LINK,
+    child: createRow(
+      createText(
+        issue?.fields &&
+          findCustomFieldByName(EPIC_LINK) &&
+          issue.fields[findCustomFieldByName(EPIC_LINK)!]
+          ? issue.fields[findCustomFieldByName(EPIC_LINK)!]
+          : NONE
+      )
+    ),
+  })
+
   const assignee: ReactJSXElement = createField({
     header: issue?.names?.assignee,
     child: createAvatar({
@@ -406,7 +424,6 @@ export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
                   <Text truncate>{task?.fields?.summary}</Text>
                 </Group>
               }
-              // eslint-disable-next-line no-param-reassign
               onClick={() => {
                 fetchData(task.key!)
               }}
@@ -509,6 +526,18 @@ export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
           {comments}
         </Stack>
         <Stack style={{ flex: "1 1 auto" }}>
+          <Select
+            rightSection={<IconChevronDown />}
+            data={[
+              {
+                value: issue?.fields?.status?.name,
+                label: issue?.fields?.status?.name,
+              },
+            ]}
+            placeholder={issue?.fields?.status?.name}
+            style={{ maxWidth: "30%" }}
+            disabled
+          />
           <Card shadow="sm" radius="md" withBorder>
             <Card.Section>
               <Button
@@ -516,10 +545,10 @@ export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
                 variant="outline"
                 fullWidth
               >
-                Details
+                {DETAILS}
               </Button>
             </Card.Section>
-            <Card.Section inheritPadding px="xs">
+            <Card.Section px="xs">
               <Stack>
                 <Collapse in={openedDetail}>
                   <Space h="xs" />
@@ -528,6 +557,7 @@ export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
                     {labels}
                     {sprint}
                     {storyPoints}
+                    {epicLinks}
                     {reporter}
                   </Stack>
                   <Space h="xs" />
