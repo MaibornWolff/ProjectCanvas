@@ -14,7 +14,7 @@ export function LoginForm({
   const { t } = useTranslation("login")
   const form = useForm<LoginFormValues>({
     initialValues: {
-      url: "localhost:8080",
+      url: "http://localhost:8080",
       username: "admin",
       password: "admin",
     },
@@ -29,7 +29,7 @@ export function LoginForm({
         <TextInput
           required
           label={t("url")}
-          placeholder={t("url")}
+          placeholder={t("urlPlaceholder")}
           {...form.getInputProps("url")}
         />
         <TextInput
