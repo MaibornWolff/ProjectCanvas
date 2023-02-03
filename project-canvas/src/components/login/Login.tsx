@@ -43,7 +43,7 @@ export function Login() {
         </Group>
         <Image
           mx="auto"
-          src="/project_canvas_logo.svg"
+          src="./project_canvas_logo.svg"
           sx={(theme) => ({
             maxWidth: "220px",
             backgroundColor:
