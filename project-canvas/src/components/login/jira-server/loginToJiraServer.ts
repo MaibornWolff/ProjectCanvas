@@ -13,21 +13,28 @@ export function loginToJiraServer({
     body: JSON.stringify({
       provider: "JiraServer",
       ...loginOptions,
+      url: addProtocol(loginOptions.url),
     }),
   }).then((response) => {
     if (response.status === 401) {
-      return showNotification({
+      showNotification({
         title: "Wrong Password or username",
         message: "Please check your username or password 🤥",
       })
     }
     if (response.status === 403) {
-      return showNotification({
-        title: "Wrong URL",
-        message: "Please check your URL",
+      showNotification({
+        title: "Invalid URL",
+        message: "URL doesn't correspond to a Jira Server Instance",
       })
     }
     if (response.ok) onSuccess()
-    return () => {}
   })
+}
+
+function addProtocol(url: string) {
+  if (!/^(?:f|ht)tps?:\/\//.test(url)) {
+    return `https://${url}`
+  }
+  return url
 }

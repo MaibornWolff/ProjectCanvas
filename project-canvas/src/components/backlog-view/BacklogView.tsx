@@ -1,78 +1,133 @@
 import {
-  Box,
   Center,
   Divider,
   Flex,
   Group,
   Loader,
+  ScrollArea,
   Stack,
   Text,
   Title,
 } from "@mantine/core"
+import { useQueries, useQuery } from "@tanstack/react-query"
 import { Issue, Sprint } from "project-extender"
 import { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../lib/Store"
-import { Column } from "./Column"
-import { onDragEnd } from "./dndHelpers"
-import { getIssues } from "./issueFetcher"
-import { resizeDivider } from "./resizeDivider"
-import { SprintsColumn } from "./SprintsColumn"
+import { onDragEnd } from "./helpers/draggingHelpers"
+import {
+  getBacklogIssues,
+  getIssuesBySprint,
+  getSprints,
+} from "./helpers/queryFetchers"
+import { resizeDivider } from "./helpers/resizeDivider"
+import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper"
+import { SprintsPanel } from "./IssuesWrapper/SprintsPanel"
+import { ReloadButton } from "./ReloadButton"
 
 export function BacklogView() {
   const navigate = useNavigate()
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
-  const [isLoading, setIsLoading] = useState(true)
-  const [sprints, setSprints] = useState(new Map<string, Sprint>())
-  const [columns, setColumns] = useState(
-    new Map<string, { id: string; list: Issue[] }>()
+  const currentBoardId = boardIds[0]
+
+  const [issuesWrappers, setIssuesWrappers] = useState(
+    new Map<string, { issues: Issue[]; sprint?: Sprint }>()
   )
-  const updateSprints = (key: string, value: Sprint) => {
-    setSprints((map) => new Map(map.set(key, value)))
-  }
-  const updateColumn = (key: string, value: { id: string; list: Issue[] }) => {
-    setColumns((map) => new Map(map.set(key, value)))
+  const updateIssuesWrapper = (
+    key: string,
+    value: { issues: Issue[]; sprint?: Sprint }
+  ) => {
+    setIssuesWrappers((map) => new Map(map.set(key, value)))
   }
 
-  useEffect(() => {
-    getIssues(projectKey, boardIds, updateColumn, updateSprints, setIsLoading)
-  }, [])
+  const { data: sprints, isError: isErrorSprints } = useQuery({
+    queryKey: ["sprints", currentBoardId],
+    queryFn: () => getSprints(currentBoardId),
+    enabled: !!currentBoardId,
+  })
+
+  const sprintsIssuesResults = useQueries({
+    queries:
+      sprints?.map((sprint) => ({
+        queryKey: ["issues", "sprints", projectKey, sprints, sprint.id],
+        queryFn: () => getIssuesBySprint(projectKey, sprint.id),
+        enabled: !!projectKey && !!sprints,
+        onSuccess: (issues: Issue[]) => {
+          updateIssuesWrapper(sprint.name, {
+            sprint,
+            issues: issues.filter(
+              (issue: Issue) =>
+                issue.type !== "Epic" && issue.type !== "Subtask"
+            ),
+          })
+        },
+      })) ?? [],
+  })
+  const isErrorSprintsIssues = sprintsIssuesResults.some(
+    ({ isError }) => isError
+  )
+
+  const { isLoading: isLoadingBacklogIssues, isError: isErrorBacklogIssues } =
+    useQuery({
+      queryKey: ["issues", projectKey, currentBoardId],
+      queryFn: () => getBacklogIssues(projectKey, currentBoardId),
+      enabled: !!projectKey,
+      onSuccess: (backlogIssues) => {
+        updateIssuesWrapper("Backlog", {
+          sprint: undefined,
+          issues: backlogIssues.filter(
+            (issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask"
+          ),
+        })
+      },
+    })
 
   useEffect(() => {
     resizeDivider()
-  }, [isLoading])
+  }, [isLoadingBacklogIssues])
 
-  return isLoading ? (
-    <Center style={{ width: "100%", height: "100%" }}>
-      <Loader />
-    </Center>
-  ) : (
+  if (isErrorSprints || isErrorBacklogIssues || isErrorSprintsIssues)
+    return (
+      <Center style={{ width: "100%", height: "100%" }}>
+        <Text w="300">
+          An error has occurred while loading. This is due to an internal error.
+          Please report this behavior to the developers. <br />
+          (This is a placeholder and will be replaced with better error
+          messages)
+        </Text>
+      </Center>
+    )
+
+  if (isLoadingBacklogIssues)
+    return (
+      <Center style={{ width: "100%", height: "100%" }}>
+        <Loader />
+      </Center>
+    )
+
+  return (
     <Stack sx={{ minHeight: "100%" }}>
-      <Stack
-        align="left"
-        sx={{
-          paddingBottom: "10px",
-          paddingTop: "10px",
-          gap: "10px",
-        }}
-      >
-        <Group sx={{ gap: "5px", color: "#6B778C" }}>
-          <Text
-            onClick={() => navigate("/projectsview")}
-            sx={{
-              ":hover": {
-                textDecoration: "underline",
-                cursor: "pointer",
-              },
-            }}
-          >
-            Projects
-          </Text>
-          <Text>/</Text>
-          <Text>{projectName}</Text>
+      <Stack align="left" py="xs" spacing="md">
+        <Group>
+          <Group spacing="xs" c="dimmed">
+            <Text
+              onClick={() => navigate("/projectsview")}
+              sx={{
+                ":hover": {
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              Projects
+            </Text>
+            <Text>/</Text>
+            <Text>{projectName}</Text>
+          </Group>
+          <ReloadButton ml="auto" mr="xs" />
         </Group>
         <Title>Backlog</Title>
       </Stack>
@@ -80,21 +135,29 @@ export function BacklogView() {
       <Flex sx={{ flexGrow: 1 }}>
         <DragDropContext
           onDragEnd={(dropResult) =>
-            onDragEnd({ ...dropResult, columns, updateColumn, sprints })
+            onDragEnd({
+              ...dropResult,
+              issuesWrappers,
+              updateIssuesWrapper,
+            })
           }
         >
-          <Box
+          <ScrollArea.Autosize
             className="left-panel"
+            maxHeight="80vh"
             w="50%"
-            h={600}
             p="sm"
             sx={{
               minWidth: "260px",
-              overflow: "auto",
             }}
           >
-            <Column col={columns.get("Backlog")!} />
-          </Box>
+            {issuesWrappers.get("Backlog") && (
+              <DraggableIssuesWrapper
+                id="Backlog"
+                issues={issuesWrappers.get("Backlog")!.issues}
+              />
+            )}
+          </ScrollArea.Autosize>
           <Divider
             size="xl"
             className="resize-handle"
@@ -103,15 +166,24 @@ export function BacklogView() {
               cursor: "col-resize",
             }}
           />
-          <Box
+          <ScrollArea.Autosize
             className="right-panel"
-            h={600}
+            maxHeight="80vh"
             w="50%"
             p="sm"
-            sx={{ minWidth: "260px", overflow: "auto" }}
+            sx={{ minWidth: "260px" }}
           >
-            <SprintsColumn columns={columns} sprints={sprints} />
-          </Box>
+            <SprintsPanel
+              sprintsWithIssues={
+                Array.from(issuesWrappers.values()).filter(
+                  (issuesWrapper) => issuesWrapper.sprint !== undefined
+                ) as unknown as {
+                  issues: Issue[]
+                  sprint: Sprint
+                }[]
+              }
+            />
+          </ScrollArea.Autosize>
         </DragDropContext>
       </Flex>
     </Stack>
