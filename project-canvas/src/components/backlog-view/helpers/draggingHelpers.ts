@@ -1,7 +1,7 @@
 import { DropResult } from "react-beautiful-dnd"
 import { Issue, Sprint } from "project-extender"
 
-export const onDragEnd = async ({
+export const onDragEnd = ({
   source,
   destination,
   issuesWrappers,
@@ -42,7 +42,7 @@ export const onDragEnd = async ({
         : newList[destination.index + 1].issueKey
 
     if (destinationSprintId) {
-      await fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToSprintAndRank`, {
+      fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToSprintAndRank`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -53,7 +53,7 @@ export const onDragEnd = async ({
         }),
       })
     } else if (destination.droppableId === "Backlog") {
-      await fetch(`${import.meta.env.VITE_EXTENDER}/rankIssueInBacklog`, {
+      fetch(`${import.meta.env.VITE_EXTENDER}/rankIssueInBacklog`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -91,7 +91,7 @@ export const onDragEnd = async ({
       : newEndIssues[destination.index + 1].issueKey
 
   if (destinationSprintId) {
-    await fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToSprintAndRank`, {
+    fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToSprintAndRank`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -102,7 +102,7 @@ export const onDragEnd = async ({
       }),
     })
   } else if (destination.droppableId === "Backlog") {
-    await fetch(`${import.meta.env.VITE_EXTENDER}/rankIssueInBacklog`, {
+    fetch(`${import.meta.env.VITE_EXTENDER}/rankIssueInBacklog`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -111,7 +111,7 @@ export const onDragEnd = async ({
         rankAfter: keyOfIssueRankedBefore,
       }),
     }).then(async () => {
-      await fetch(`${import.meta.env.VITE_EXTENDER}/rankIssueInBacklog`, {
+      fetch(`${import.meta.env.VITE_EXTENDER}/rankIssueInBacklog`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

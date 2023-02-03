@@ -15,6 +15,7 @@ import { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../lib/Store"
+import { sortIssuesByRank } from "./helpers/backlogHelpers"
 import { onDragEnd } from "./helpers/draggingHelpers"
 import {
   getBacklogIssues,
@@ -58,10 +59,14 @@ export function BacklogView() {
         onSuccess: (issues: Issue[]) => {
           updateIssuesWrapper(sprint.name, {
             sprint,
-            issues: issues.filter(
-              (issue: Issue) =>
-                issue.type !== "Epic" && issue.type !== "Subtask"
-            ),
+            issues: issues
+              .filter(
+                (issue: Issue) =>
+                  issue.type !== "Epic" && issue.type !== "Subtask"
+              )
+              .sort((issueA: Issue, issueB: Issue) =>
+                sortIssuesByRank(issueA, issueB)
+              ),
           })
         },
       })) ?? [],
