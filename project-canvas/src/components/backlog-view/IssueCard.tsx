@@ -33,6 +33,7 @@ export function IssueCard({
   let iconGradient1: string
   let iconGradient2: string
   let storyPointsColor: string
+
   switch (status) {
     case "To Do":
       storyPointsColor = "gray.6"
@@ -142,7 +143,7 @@ export function IssueCard({
                   mr={4}
                 />
               ) : (
-                <Avatar sx={{ backgroundColor: "transparent" }} />
+                <Avatar radius="xl" />
               )}
             </Tooltip>
 
@@ -150,7 +151,10 @@ export function IssueCard({
               w="24px"
               p="0"
               bg={
-                storyPointsEstimate !== null ? storyPointsColor : "transparent"
+                storyPointsEstimate !== undefined &&
+                storyPointsEstimate !== null
+                  ? storyPointsColor
+                  : "transparent"
               }
               variant="filled"
               sx={{ alignSelf: "flex-start" }}

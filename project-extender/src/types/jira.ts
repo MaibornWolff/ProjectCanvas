@@ -19,11 +19,12 @@ export interface JiraIssue {
   key: string
   fields: {
     summary: string
-    creator: { displayName: string }
+    creator: { name: string; displayName: string }
     status: { name: string }
     issuetype: { name: string }
     customfield_10107: number
     parent: { id: string; fields: { summary: string } }
+    epic: { name: string }
     labels: string[]
     assignee: {
       displayName: string

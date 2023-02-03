@@ -24,14 +24,15 @@ export interface ProviderApi {
   getProjects(): Promise<Project[]>
   getBoardIds(project: string): Promise<number[]>
   getSprints(BoardId: number): Promise<Sprint[]>
-  getIssuesByProject(project: string): Promise<Issue[]>
+  getIssuesByProject(project: string, boardId: number): Promise<Issue[]>
   getBacklogIssuesByProjectAndBoard(
     project: string,
     boardId: number
   ): Promise<Issue[]>
   getIssuesBySprintAndProject(
     sprintId: number,
-    project: string
+    project: string,
+    boardId: number
   ): Promise<Issue[]>
   moveIssueToSprint(sprint: number, issue: string): Promise<void>
   moveIssueToBacklog(issue: string): Promise<void>

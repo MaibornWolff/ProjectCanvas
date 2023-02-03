@@ -127,10 +127,10 @@ server.get<{
 })
 
 server.get<{
-  Querystring: { project: string }
+  Querystring: { project: string; boardId: number }
 }>("/issuesByProject", (request, reply) => {
   issueProvider
-    .getIssuesByProject(request.query.project)
+    .getIssuesByProject(request.query.project, request.query.boardId)
     .then((issues) => {
       reply.status(200).send(issues)
     })
@@ -138,10 +138,14 @@ server.get<{
 })
 
 server.get<{
-  Querystring: { sprint: number; project: string }
+  Querystring: { sprint: number; project: string; boardId: number }
 }>("/issuesBySprintAndProject", (request, reply) => {
   issueProvider
-    .getIssuesBySprintAndProject(request.query.sprint, request.query.project)
+    .getIssuesBySprintAndProject(
+      request.query.sprint,
+      request.query.project,
+      request.query.boardId
+    )
     .then((issues) => {
       reply.status(200).send(issues)
     })

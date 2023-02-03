@@ -25,7 +25,7 @@ export const getIssues = async (
           const issuesForSprintResponse = await fetch(
             `${import.meta.env.VITE_EXTENDER}/issuesBySprintAndProject?sprint=${
               sprint.id
-            }&project=${projectKey}`
+            }&project=${projectKey}&boardId=${boardId}`
           )
           const issuesForSprints = await issuesForSprintResponse.json()
           updateColumn(sprint.name, {
