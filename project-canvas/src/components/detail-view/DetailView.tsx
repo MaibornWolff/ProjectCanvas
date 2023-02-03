@@ -40,7 +40,6 @@ interface ImageTypeSizes {
   iconImageSize: ImageSize
 }
 
-// Labels
 const SPRINT: string = "Sprint"
 const STORY_POINTS: string = "Story point estimate"
 const CHILD_ISSUES: string = "Child Issues"
@@ -48,7 +47,7 @@ const NONE: string = "None"
 const STATUS: string = "Done"
 const ACTIVITY: string = "Activity"
 const SHOW: string = "Show:"
-const EPIC_LINK: string = "Epic link"
+const EPIC_LINK: string = "Epic Link"
 const DETAILS: string = "Details"
 
 const IMAGE_SIZES: ImageTypeSizes = {
@@ -102,7 +101,6 @@ export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
         res.forEach((data, idx) => {
           if (idx === 0) {
             setIssue(data)
-            console.log(data)
           } else {
             setPageOfComments(data)
           }
