@@ -6,18 +6,70 @@ import {
   Avatar,
   Flex,
   Badge,
-  List,
   Collapse,
+  Text,
+  Stack,
+  Breadcrumbs,
+  Card,
+  Space,
+  NavLink,
+  Paper,
+  Popover,
 } from "@mantine/core"
 import {
   IssueBean,
   IssueTypeDetails,
   PageOfComments,
   Comment,
+  Attachment,
 } from "project-extender"
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
 import { RichTextEditor } from "@mantine/rte"
-import { CardView } from "./CardView"
+import { DateTime } from "ts-luxon"
+import { useDisclosure } from "@mantine/hooks"
+
+interface ImageSize {
+  text: string
+  size: number
+}
+
+interface ImageTypeSizes {
+  avatarImageSize: ImageSize
+  iconImageSize: ImageSize
+}
+
+// Labels
+const SPRINT: string = "Sprint"
+const STORY_POINTS: string = "Story point estimate"
+const CHILD_ISSUES: string = "Child Issues"
+const NONE: string = "None"
+const STATUS: string = "Done"
+const ACTIVITY: string = "Activity"
+const SHOW: string = "Show:"
+
+const IMAGE_SIZES: ImageTypeSizes = {
+  avatarImageSize: { text: "32x32", size: 32 },
+  iconImageSize: { text: "16x16", size: 16 },
+}
+
+const LOCALE: string = "en-US"
+
+interface FieldProps {
+  header?: string | undefined
+  dimmed?: boolean | undefined
+  bold?: number | undefined
+  textSize?: number | "xs" | "sm" | "md" | "lg" | "xl"
+  child?: ReactJSXElement | undefined
+}
+
+interface AvatarProps {
+  url?: string | undefined
+  size?: number
+  radius?: number | "xs" | "sm" | "md" | "lg" | "xl"
+  default?: boolean | undefined
+  name?: string | undefined
+  textSize?: number | "xs" | "sm" | "md" | "lg" | "xl"
+}
 
 export interface DetailViewProps {
   opened: boolean
@@ -26,20 +78,16 @@ export interface DetailViewProps {
 }
 
 export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
-  const avatarImageSize: { text: string; size: number } = {
-    text: "32x32",
-    size: 32,
-  }
-
-  const [openedSubtasks, setopenedSubtasks] = useState(true)
+  const [openedDetail, setOpenedDetail] = useState(true)
   const [issue, setIssue] = useState<IssueBean>({})
   const [pageOfComments, setPageOfComments] = useState<PageOfComments>({})
+  const [openedPopOver, { close, open }] = useDisclosure(false)
 
-  useEffect(() => {
+  const fetchData = (id: string): void => {
     Promise.all(
       [
-        `${import.meta.env.VITE_EXTENDER}/issue/${keyOrId}`,
-        `${import.meta.env.VITE_EXTENDER}/issue/${keyOrId}/comments`,
+        `${import.meta.env.VITE_EXTENDER}/issue/${id}`,
+        `${import.meta.env.VITE_EXTENDER}/issue/${id}/comments`,
       ].map((request) =>
         fetch(request)
           .then((res) => res.json())
@@ -48,18 +96,22 @@ export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
     )
       .then((res) =>
         res.forEach((data, idx) => {
-          if (idx === 0) setIssue(data)
-          else {
+          if (idx === 0) {
+            setIssue(data)
+          } else {
             setPageOfComments(data)
           }
-          // console.log(data)
         })
       )
       .then((res) => res)
       .catch((err) => err)
-  }, [])
+  }
 
-  const title: ReactJSXElement = (
+  useEffect(() => {
+    fetchData(keyOrId)
+  }, [opened])
+
+  const createAvatar = (avatarProps: AvatarProps): ReactJSXElement => (
     <Flex
       gap="xs"
       justify="flex-start"
@@ -67,39 +119,43 @@ export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
       direction="row"
       wrap="wrap"
     >
-      {issue?.fields?.parent && (
-        <>
-          <Avatar
-            src={issue?.fields?.parent?.fields?.issuetype?.iconUrl}
-            size={avatarImageSize.size}
-            alt="ParentIssueTypeIcon"
-          />
-          <h4>{issue?.fields ? `${issue?.fields?.parent?.key} /` : ""}</h4>
-        </>
+      {(avatarProps.url || avatarProps.default) && (
+        <Avatar
+          src={avatarProps.url}
+          size={avatarProps.size}
+          radius={avatarProps.radius}
+        />
       )}
-      <Avatar
-        src={issue?.fields?.issuetype?.iconUrl}
-        size={avatarImageSize.size}
-        alt="IssueTypeIcon"
-      />
-      <h4>{issue?.key ? issue.key : ""}</h4>
+      {(avatarProps.name || avatarProps.default) && (
+        <Text fz={avatarProps.textSize || "sm"} fw={500}>
+          {avatarProps.name || "Unassigned"}
+        </Text>
+      )}
     </Flex>
   )
 
-  // TODO: Mantine RichTextEditor isn't able to handle embedded images
-  const description: ReactJSXElement = (
-    <>
-      {/* TODO: Only for test purpose 
-              <p>{`${issue?.renderedFields?.description}`}</p> */}
-
-      <RichTextEditor
-        readOnly
-        value={`${issue?.renderedFields?.description}`}
-      />
-    </>
+  const createField = (fieldProps: FieldProps): ReactJSXElement => (
+    <Flex
+      gap="xs"
+      justify="flex-start"
+      align="stretch"
+      direction="column"
+      wrap="wrap"
+    >
+      {fieldProps.header && (
+        <Text
+          fz={fieldProps.textSize || "xs"}
+          c={fieldProps.dimmed ? "dimmed" : "dark"}
+          fw={fieldProps.bold || 500}
+        >
+          {fieldProps.header}
+        </Text>
+      )}
+      {fieldProps.child}
+    </Flex>
   )
 
-  const labels: ReactJSXElement = (
+  const createRow = (child: ReactJSXElement): ReactJSXElement => (
     <Flex
       gap="xs"
       justify="flex-start"
@@ -107,209 +163,382 @@ export function DetailView({ opened, setOpened, keyOrId }: DetailViewProps) {
       direction="row"
       wrap="wrap"
     >
-      {issue?.fields?.labels?.map((label: string) => (
-        <Badge key={label} color="indigo" variant="light">
-          {label}
-        </Badge>
-      ))}
+      {child}
     </Flex>
   )
 
-  const created: ReactJSXElement = <p>{`${issue?.renderedFields?.created}`}</p>
-
-  const updated: ReactJSXElement = <p>{`${issue?.renderedFields?.updated}`}</p>
-
-  const summary: ReactJSXElement = <p>{`${issue?.fields?.summary}`}</p>
-
-  const assignee: ReactJSXElement = (
-    <Flex
-      gap="xs"
-      justify="flex-start"
-      align="center"
-      direction="row"
-      wrap="wrap"
-    >
-      <Avatar
-        src={issue?.fields?.assignee?.avatarUrls[avatarImageSize.text]}
-        size={avatarImageSize.size}
-        alt="IssueAssigneeIcon"
-      />
-      <p>{issue?.fields?.assignee?.displayName}</p>
-    </Flex>
+  const createText = (text: string | undefined): ReactJSXElement => (
+    <Text fz="sm" fw={500}>
+      {text}
+    </Text>
   )
 
-  const reporter: ReactJSXElement = (
-    <Flex
-      gap="xs"
-      justify="flex-start"
-      align="center"
-      direction="row"
-      wrap="wrap"
-    >
-      <Avatar
-        src={issue?.fields?.reporter?.avatarUrls[avatarImageSize.text]}
-        size={avatarImageSize.size}
-        alt="IssueAssigneeIcon"
-      />
-      <p>{issue?.fields?.reporter?.displayName}</p>
-    </Flex>
-  )
+  const findCustomFieldByName = (fieldName: string): string | undefined => {
+    const result = issue?.names
+      ? Object.entries(issue.names).filter(
+          (field: [key: string, name: string]) => field[1] === fieldName
+        )?.[0][0]
+      : undefined
+    return result || undefined
+  }
 
-  const priority: ReactJSXElement = (
-    <Flex
-      gap="xs"
-      justify="flex-start"
-      align="center"
-      direction="row"
-      wrap="wrap"
-    >
-      <Avatar
-        src={issue?.fields?.priority?.iconUrl}
-        size={avatarImageSize.size}
-        alt="IssuePriorityIcon"
-      />
-      <p>{issue?.fields?.priority?.name}</p>
-    </Flex>
-  )
-
-  const subtasks: ReactJSXElement = (
-    <Flex
-      gap="xs"
-      justify="flex-start"
-      align="center"
-      direction="row"
-      wrap="wrap"
-    >
-      <Button onClick={() => setopenedSubtasks((o) => !o)} fullWidth>
-        Subtasks
-      </Button>
-      <Collapse in={openedSubtasks}>
-        <List spacing="xs" size="sm" center>
-          {issue?.fields?.subtasks?.map((task: IssueBean) => (
-            <List.Item
-              key={task?.key}
-              icon={
-                <Avatar
-                  src={(task?.fields?.issuetype as IssueTypeDetails).iconUrl}
-                  size={avatarImageSize.size}
-                  alt="IssueSubstaskIcon"
-                />
+  const title: ReactJSXElement = (
+    <Breadcrumbs>
+      {issue?.fields?.parent && (
+        <NavLink
+          label={
+            <Group spacing="xs" position="left" align="center">
+              {createAvatar({
+                url: issue?.fields?.parent?.fields?.issuetype?.iconUrl,
+                size: IMAGE_SIZES.avatarImageSize.size,
+              })}
+              <Text
+                size="sm"
+                color="blue"
+                td={
+                  issue?.fields?.parent?.fields?.status?.name === STATUS
+                    ? "line-through"
+                    : "none"
+                }
+                sx={{
+                  ":hover": {
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                  },
+                }}
+              >
+                {issue?.fields?.parent?.key}
+              </Text>
+            </Group>
+          }
+          onClick={() => fetchData(issue?.fields?.parent?.key!)}
+        />
+      )}
+      <NavLink
+        label={
+          <Group spacing="xs">
+            {createAvatar({
+              url: issue?.fields?.issuetype?.iconUrl,
+              size: IMAGE_SIZES.avatarImageSize.size,
+            })}
+            <Text
+              size="sm"
+              color="blue"
+              td={
+                issue?.fields?.status?.name === STATUS ? "line-through" : "none"
               }
+              sx={{
+                ":hover": {
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                },
+              }}
             >
-              <p>{task?.fields?.summary}</p>
-            </List.Item>
-          ))}
-        </List>
-      </Collapse>
-    </Flex>
+              {issue?.key}
+            </Text>
+          </Group>
+        }
+      />
+    </Breadcrumbs>
   )
 
-  const comments: ReactJSXElement = (
-    <Flex
-      gap="xs"
-      justify="flex-start"
-      align="center"
-      direction="row"
-      wrap="wrap"
-    >
-      <Button onClick={() => setopenedSubtasks((o) => !o)} fullWidth>
-        Comments
-      </Button>
-      <Collapse in={openedSubtasks}>
-        <List spacing="xs" size="sm" center>
+  // TODO: Mantine RichTextEditor isn't able to handle embedded images
+  const description: ReactJSXElement = createField({
+    header: issue?.names?.description,
+    dimmed: false,
+    bold: 600,
+    textSize: "sm",
+    child: (
+      <RichTextEditor readOnly value={issue?.renderedFields?.description} />
+    ),
+  })
+
+  const labels: ReactJSXElement = createField({
+    header: issue?.names?.labels,
+    child: createRow(
+      issue?.fields?.labels?.length > 0
+        ? issue?.fields?.labels?.map((label: string) => (
+            <Badge key={label} color="indigo" variant="light">
+              <Text>{label}</Text>
+            </Badge>
+          ))
+        : createText(NONE)
+    ),
+  })
+
+  const created: ReactJSXElement = createField({
+    header: issue?.names?.created,
+    child: createRow(createText(issue?.renderedFields?.created)),
+  })
+
+  const updated: ReactJSXElement = createField({
+    header: issue?.names?.updated,
+    child: createRow(createText(issue?.renderedFields?.updated)),
+  })
+
+  const summary: ReactJSXElement = createField({
+    header: issue?.fields?.summary,
+    textSize: "xl",
+    bold: 1000,
+  })
+
+  const sprint: ReactJSXElement = createField({
+    header: SPRINT,
+    child: createRow(
+      issue?.fields &&
+        findCustomFieldByName(SPRINT) &&
+        issue?.fields[findCustomFieldByName(SPRINT)!] ? (
+        <>
+          <Text fz="sm" fw={500}>
+            {issue.fields[findCustomFieldByName(SPRINT)!][0].name}
+          </Text>
+          {issue.fields[findCustomFieldByName(SPRINT)!].length > 1 && (
+            <Popover
+              width={200}
+              position="top"
+              withArrow
+              shadow="md"
+              opened={openedPopOver}
+            >
+              <Popover.Target>
+                <Badge
+                  color="gray"
+                  size="lg"
+                  onMouseEnter={open}
+                  onMouseLeave={close}
+                >
+                  {`+${
+                    issue.fields[findCustomFieldByName(SPRINT)!].length - 1
+                  }`}
+                </Badge>
+              </Popover.Target>
+              <Popover.Dropdown sx={{ pointerEvents: "none" }}>
+                {issue.fields[findCustomFieldByName(SPRINT)!]
+                  .filter(
+                    (item: { name: string; state: string }, idx: number) =>
+                      idx !== 0 /* && item.state === "active" */
+                  )
+                  .map((item: { name: string }) => (
+                    <Text size="sm">{item.name}</Text>
+                  ))}
+              </Popover.Dropdown>
+            </Popover>
+          )}
+        </>
+      ) : (
+        createText(NONE)
+      )
+    ),
+  })
+
+  const storyPoints: ReactJSXElement = createField({
+    header: STORY_POINTS,
+    child: createRow(
+      createText(
+        issue?.fields &&
+          findCustomFieldByName(STORY_POINTS) &&
+          issue.fields[findCustomFieldByName(STORY_POINTS)!]
+          ? issue.fields[findCustomFieldByName(STORY_POINTS)!]
+          : NONE
+      )
+    ),
+  })
+
+  const assignee: ReactJSXElement = createField({
+    header: issue?.names?.assignee,
+    child: createAvatar({
+      url: issue?.fields?.assignee?.avatarUrls[
+        IMAGE_SIZES.avatarImageSize.text
+      ],
+      size: IMAGE_SIZES.avatarImageSize.size,
+      radius: "xl",
+      name: issue?.fields?.assignee?.displayName,
+      default: true,
+    }),
+  })
+
+  const reporter: ReactJSXElement = createField({
+    header: issue?.names?.reporter,
+    child: createAvatar({
+      url: issue?.fields?.reporter?.avatarUrls[
+        IMAGE_SIZES.avatarImageSize.text
+      ],
+      size: IMAGE_SIZES.avatarImageSize.size,
+      radius: "xl",
+      name: issue?.fields?.reporter?.displayName,
+      default: true,
+    }),
+  })
+
+  const subtasks: ReactJSXElement = createField({
+    header: CHILD_ISSUES,
+    dimmed: false,
+    bold: 600,
+    textSize: "sm",
+    child: (
+      <Stack spacing="xs">
+        {issue?.fields?.subtasks?.map((task: IssueBean) => (
+          <Paper shadow="xs" radius="xs" p="xs">
+            <NavLink
+              label={
+                <Group spacing="xs" position="left" align="center">
+                  <Avatar
+                    src={(task?.fields?.issuetype as IssueTypeDetails).iconUrl}
+                    size={IMAGE_SIZES.iconImageSize.size}
+                  />
+                  <Text
+                    size="sm"
+                    color="blue"
+                    td={
+                      issue?.fields?.status?.name === STATUS
+                        ? "line-through"
+                        : "none"
+                    }
+                    sx={{
+                      ":hover": {
+                        textDecoration: "underline",
+                        cursor: "pointer",
+                      },
+                    }}
+                  >
+                    {task?.key}
+                  </Text>
+                  <Text truncate>{task?.fields?.summary}</Text>
+                </Group>
+              }
+              // eslint-disable-next-line no-param-reassign
+              onClick={() => {
+                fetchData(task.key!)
+              }}
+            />
+          </Paper>
+        ))}
+      </Stack>
+    ),
+  })
+
+  const comments: ReactJSXElement = createField({
+    header: ACTIVITY,
+    dimmed: false,
+    bold: 600,
+    textSize: "sm",
+    child: (
+      <>
+        <Group spacing="xs">
+          <Text size="sm">{SHOW}</Text>
+          <Button variant="light" color="gray" size="xs" compact disabled>
+            <Text>{issue?.names?.comment}</Text>
+          </Button>
+          <Badge>{pageOfComments?.comments?.length || 0}</Badge>
+        </Group>
+        <Stack>
           {pageOfComments?.comments?.map((comment: Comment) => (
-            <>
-              {/* TODO: Only for test purpose 
-              <p>{comment?.renderedBody}</p> */}
-              <List.Item key={comment?.id}>
-                <RichTextEditor readOnly value={comment?.renderedBody} />
-              </List.Item>
-            </>
+            <Stack>
+              <Group>
+                <Avatar
+                  src={comment?.author?.avatarUrls?.["32x32"]}
+                  size={32}
+                  radius="xl"
+                />
+                <Text fz="sm" fw={600}>
+                  {comment?.author?.displayName}
+                </Text>
+                <Text fz="xs">
+                  {comment?.updated
+                    ? DateTime.fromISO(comment?.updated)
+                        .setLocale(LOCALE)
+                        .toLocaleString(DateTime.DATETIME_MED)
+                    : NONE}
+                </Text>
+              </Group>
+              <RichTextEditor readOnly value={comment?.renderedBody} />
+            </Stack>
           ))}
-        </List>
-      </Collapse>
-    </Flex>
-  )
+        </Stack>
+      </>
+    ),
+  })
+
+  const attachments: ReactJSXElement = createField({
+    header: issue?.names?.attachment,
+    dimmed: false,
+    bold: 600,
+    textSize: "sm",
+    child: (
+      <Stack spacing="xs">
+        {issue?.fields?.attachment &&
+          issue?.fields.attachment.map((att: Attachment) => (
+            <Paper shadow="xs" radius="xs" p="xs">
+              <Group position="apart" spacing="xs">
+                <Text truncate>{att.filename}</Text>
+                {att.created && (
+                  <Text>
+                    {DateTime.fromISO(att.created)
+                      .setLocale(LOCALE)
+                      .toLocaleString(DateTime.DATETIME_MED)}
+                  </Text>
+                )}
+              </Group>
+            </Paper>
+          ))}
+      </Stack>
+    ),
+  })
 
   return (
-    <>
-      <Modal
-        size="80%"
-        opened={opened}
-        onClose={() => setOpened(false)}
-        title={title}
-        overflow="inside"
+    <Modal
+      size="80%"
+      opened={opened}
+      onClose={() => setOpened(false)}
+      title={title}
+      overlayBlur={0}
+      overflow="inside"
+    >
+      <Flex
+        gap="xl"
+        justify="flex-start"
+        align="flex-start"
+        direction="row"
+        wrap="wrap"
       >
-        <Group noWrap align="flex-start" mt="xs" grow>
-          <div>
-            <div>
-              <h5>Summary</h5>
-              {summary}
-            </div>
-
-            <div>
-              <h5>Description</h5>
-              {description}
-            </div>
-
-            <h5>Estimate</h5>
-
-            <div>
-              <h5>Prority</h5>
-              {priority}
-            </div>
-
-            <h5>Component</h5>
-
-            <div>
-              <h5>Labels</h5>
-              {labels}
-            </div>
-
-            <h5>Affected versions</h5>
-
-            <h5>Fix versions</h5>
-
-            <h5>Epic link</h5>
-
-            <div>
-              <h5>Reporter</h5>
-              {reporter}
-            </div>
-
-            <div>
-              <h5>Assignee</h5>
-              {assignee}
-            </div>
-
-            <div>
-              <h5>Date created</h5>
-              {created}
-            </div>
-
-            <div>
-              <h5>Date updated</h5>
-              {updated}
-            </div>
-
-            <h5>Issue links</h5>
-
-            <div>{comments}</div>
-
-            <h5>Attachments</h5>
-
-            <div>{subtasks}</div>
-          </div>
-
-          <div>
-            <CardView />
-          </div>
-        </Group>
-      </Modal>
-
-      {/* <Group position="center">
-        <Button onClick={() => setOpened(true)}>Open Modal</Button>
-      </Group> */}
-    </>
+        <Stack style={{ flex: "3 1 auto" }}>
+          {summary}
+          {description}
+          {attachments}
+          {subtasks}
+          {comments}
+        </Stack>
+        <Stack style={{ flex: "1 1 auto" }}>
+          <Card shadow="sm" radius="md" withBorder>
+            <Card.Section>
+              <Button
+                onClick={() => setOpenedDetail(!openedDetail)}
+                variant="outline"
+                fullWidth
+              >
+                Details
+              </Button>
+            </Card.Section>
+            <Card.Section inheritPadding px="xs">
+              <Stack>
+                <Collapse in={openedDetail}>
+                  <Space h="xs" />
+                  <Stack spacing="md">
+                    {assignee}
+                    {labels}
+                    {sprint}
+                    {storyPoints}
+                    {reporter}
+                  </Stack>
+                  <Space h="xs" />
+                </Collapse>
+              </Stack>
+            </Card.Section>
+          </Card>
+          {created}
+          {updated}
+        </Stack>
+      </Flex>
+    </Modal>
   )
 }

@@ -319,14 +319,34 @@ class JiraServerProvider implements ProviderApi {
     })
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getIssue(issueIdOrKey: string): Promise<IssueBean> {
-    throw new Error("Method not implemented.")
+  async getIssue(issueIdOrKey: string): Promise<IssueBean> {
+    return fetch(
+      `http://${this.loginOptions.url}/rest/api/2/issue/${issueIdOrKey}?fields=*all&expand=names,renderedFields,changelog`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: this.getAuthHeader(),
+        },
+      }
+    )
+      .then((res) => res.json())
+      .catch((error) => error)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getIssueComments(issueIdOrKey: string): Promise<PageOfComments> {
-    throw new Error("Method not implemented.")
+  async getIssueComments(issueIdOrKey: string): Promise<PageOfComments> {
+    return fetch(
+      `http://${this.loginOptions.url}/rest/api/2/issue/${issueIdOrKey}/comment?orderBy=-created&expand=renderedBody`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: this.getAuthHeader(),
+        },
+      }
+    )
+      .then((res) => res.json())
+      .catch((error) => error)
   }
 }
 

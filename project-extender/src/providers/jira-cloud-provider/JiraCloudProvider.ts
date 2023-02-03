@@ -305,8 +305,9 @@ class JiraCloudProvider implements ProviderApi {
 
   async getIssue(issueIdOrKey: string): Promise<IssueBean> {
     return fetch(
-      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}?fields=*all&expand=names,renderedFields,transitions,changelog,schema`,
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}?fields=*all&expand=names,renderedFields,changelog`,
       {
+        method: "GET",
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${this.accessToken}`,
@@ -319,8 +320,9 @@ class JiraCloudProvider implements ProviderApi {
 
   async getIssueComments(issueIdOrKey: string): Promise<PageOfComments> {
     return fetch(
-      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment?expand=renderedBody`,
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment?orderBy=-created&expand=renderedBody`,
       {
+        method: "GET",
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${this.accessToken}`,

@@ -55,7 +55,7 @@ export function IssueCard({
   }
 
   return (
-    <>
+    <div key={issueKey}>
       <DetailView
         opened={showModal}
         setOpened={setShowModal}
@@ -139,6 +139,6 @@ export function IssueCard({
           </Paper>
         )}
       </Draggable>
-    </>
+    </div>
   )
 }
