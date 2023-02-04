@@ -25,8 +25,6 @@ class JiraCloudProvider implements ProviderApi {
   }) {
     if (this.accessToken === undefined)
       this.accessToken = await getAccessToken(oauthLoginOptions)
-    console.log(this.accessToken)
-
     await fetch("https://api.atlassian.com/oauth/token/accessible-resources", {
       headers: {
         Accept: "application/json",
