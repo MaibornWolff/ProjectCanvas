@@ -45,6 +45,16 @@ export interface Issue {
   rank: string
 }
 
+export interface IssueType {
+  id: string
+  description: string
+  name: string
+  subtask: boolean
+  scopeType: string
+  scopeProjectKey: string
+  scopeProjectName: string
+}
+
 export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
   month: "2-digit",

@@ -2,8 +2,13 @@
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Issue, Sprint, Project, dateTimeFormat } from "../../types"
-import { JiraIssue, JiraProject, JiraSprint } from "../../types/jira"
+import { Issue, Sprint, Project, dateTimeFormat, IssueType } from "../../types"
+import {
+  JiraIssue,
+  JiraIssueType,
+  JiraProject,
+  JiraSprint,
+} from "../../types/jira"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
@@ -94,6 +99,38 @@ class JiraCloudProvider implements ProviderApi {
     }))
 
     return projects
+  }
+
+  async getIssueTypes(): Promise<IssueType[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issuetype`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const issueTypesResponse: Promise<JiraIssueType[]> = response.json()
+          const issueTypes = (await issueTypesResponse).map(
+            (issueType: JiraIssueType) => ({
+              id: issueType.id,
+              description: issueType.description,
+              name: issueType.name,
+              subtask: issueType.subtask,
+              scopeType: issueType.scope.type,
+              scopeProjectKey: issueType.scope.project.key,
+              scopeProjectName: issueType.scope.project.name,
+            })
+          )
+          resolve(issueTypes)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the issue types: ${error}`))
+        )
+    })
   }
 
   async getBoardIds(project: string): Promise<number[]> {

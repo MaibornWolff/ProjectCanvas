@@ -1,3 +1,4 @@
+import { useState } from "react"
 import {
   Button,
   Divider,
@@ -11,19 +12,29 @@ import {
   TextInput,
 } from "@mantine/core"
 import { IconFileUpload } from "@tabler/icons"
+import { CustomDatePicker } from "./CustomDatePicker"
 import { RichText } from "./RichText"
+import { useCanvasStore } from "../../../lib/Store"
 
 export function CreateIssue() {
+  const projects = useCanvasStore((state) => state.stateProjects)
+  const [selectedProjectKey, setSelectedProjectKey] = useState<string | null>(
+    ""
+  )
+
   return (
     <Stack sx={{ overflow: "hidden" }}>
       <ScrollArea>
         <Paper sx={{ maxHeight: "600px" }}>
+          <CustomDatePicker />
           <Select
             label="Project"
             placeholder="Project "
             searchable
             nothingFound="No options"
-            data={["Project 1", "Project 2", "Project 3", "Project 4"]}
+            value={selectedProjectKey}
+            data={projects.map((project) => `${project.name} (${project.key})`)}
+            onChange={setSelectedProjectKey}
             w="50%"
             required
           />
