@@ -1,10 +1,14 @@
-import { Anchor, Box, Group, Header, Image } from "@mantine/core"
+import { Anchor, Box, Button, Group, Header, Image, Modal } from "@mantine/core"
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
+import { CreateIssue } from "../backlog-view/Issue/CreateIssue"
 import { LogoutButton } from "./LogoutButton"
 
 export function LayoutHeader() {
   const navigate = useNavigate()
+  const [opened, setOpened] = useState(false)
+
   return (
     <Header
       height="60"
@@ -44,6 +48,15 @@ export function LayoutHeader() {
           >
             Backlog
           </Anchor>
+          <Button onClick={() => setOpened(true)}>Create</Button>
+          <Modal
+            opened={opened}
+            onClose={() => setOpened(false)}
+            title="Create Issue"
+            size="70%"
+          >
+            <CreateIssue />
+          </Modal>
           <ColorSchemeToggle size="34px" ml="auto" />
           <LogoutButton />
         </Group>

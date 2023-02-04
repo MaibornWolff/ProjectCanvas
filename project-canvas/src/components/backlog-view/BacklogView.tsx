@@ -1,9 +1,11 @@
 import {
+  Button,
   Center,
   Divider,
   Flex,
   Group,
   Loader,
+  Modal,
   ScrollArea,
   Stack,
   Text,
@@ -15,6 +17,7 @@ import { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../lib/Store"
+import { CreateIssue } from "./Issue/CreateIssue"
 import { sortIssuesByRank } from "./helpers/backlogHelpers"
 import { onDragEnd } from "./helpers/draggingHelpers"
 import {
@@ -33,6 +36,7 @@ export function BacklogView() {
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
   const currentBoardId = boardIds[0]
+  const [opened, setOpened] = useState(false)
 
   const [issuesWrappers, setIssuesWrappers] = useState(
     new Map<string, { issues: Issue[]; sprint?: Sprint }>()
@@ -154,7 +158,7 @@ export function BacklogView() {
         >
           <ScrollArea.Autosize
             className="left-panel"
-            maxHeight="80vh"
+            maxHeight="70vh"
             w="50%"
             p="sm"
             sx={{
@@ -167,6 +171,26 @@ export function BacklogView() {
                 issues={issuesWrappers.get("Backlog")!.issues}
               />
             )}
+            <Button
+              mt="xs"
+              variant="subtle"
+              color="gray"
+              compact
+              radius="xs"
+              display="flex"
+              onClick={() => setOpened(true)}
+              sx={{ justifyContent: "left" }}
+            >
+              + Create Issue
+            </Button>
+            <Modal
+              opened={opened}
+              onClose={() => setOpened(false)}
+              title="Create Issue"
+              size="70%"
+            >
+              <CreateIssue />
+            </Modal>
           </ScrollArea.Autosize>
           <Divider
             size="xl"
