@@ -178,8 +178,12 @@ export function BacklogView() {
               compact
               radius="xs"
               display="flex"
+              w="100%"
               onClick={() => setOpened(true)}
-              sx={{ justifyContent: "left" }}
+              sx={{
+                justifyContent: "left",
+                ":hover": { backgroundColor: "#E8E2E2" },
+              }}
             >
               + Create Issue
             </Button>
