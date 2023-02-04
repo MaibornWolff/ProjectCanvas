@@ -1,6 +1,7 @@
 {
   "choseProvider": "Bitte wählen Sie einen Anbieter",
   "url": "Instance URL",
+  "urlPlaceholder": "https://jira.example.com",
   "username": "Benutzername",
   "password": "Password",
   "button": {

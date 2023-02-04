@@ -25,7 +25,7 @@ export function LayoutHeader() {
       >
         <Group spacing="xl">
           <Image
-            src="/project_canvas_logo_sm.svg"
+            src="./project_canvas_logo_sm.svg"
             height={36}
             width={36}
             fit="contain"
