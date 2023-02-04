@@ -19,7 +19,7 @@ export interface JiraIssue {
   key: string
   fields: {
     summary: string
-    creator: { displayName: string }
+    creator: { name: string; displayName: string }
     status: { name: string }
     issuetype: { name: string }
     // TODO: improve this, let's try not to:
@@ -29,6 +29,18 @@ export interface JiraIssue {
     //    based on the mapped fields (this.customFields),
     //    it might change based on the jira instance
     customfield_10107: number
+    parent: { id: string; fields: { summary: string } }
+    epic: { name: string }
+    labels: string[]
+    assignee: {
+      displayName: string
+      avatarUrls: {
+        "16x16": string
+        "24x24": string
+        "36x36": string
+        "48x48": string
+      }
+    }
     [rankCustomField: string]: string | unknown
   }
 }

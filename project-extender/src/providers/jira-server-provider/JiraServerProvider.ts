@@ -174,18 +174,19 @@ class JiraServerProvider implements ProviderApi {
     return sprints
   }
 
-  async getIssuesByProject(project: string): Promise<Issue[]> {
+  async getIssuesByProject(project: string, boardId: number): Promise<Issue[]> {
     return this.fetchIssues(
-      `${this.loginOptions.url}/rest/api/2/search?jql=project=${project}&maxResults=10000`
+      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/issue?jql=project=${project}&maxResults=10000`
     )
   }
 
   async getIssuesBySprintAndProject(
     sprintId: number,
-    project: string
+    project: string,
+    boardId: number
   ): Promise<Issue[]> {
     return this.fetchIssues(
-      `${this.loginOptions.url}/rest/api/2/search?jql=sprint=${sprintId} AND project=${project}`
+      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/sprint/${sprintId}/issue?jql=project=${project}`
     )
   }
 
@@ -216,12 +217,18 @@ class JiraServerProvider implements ProviderApi {
       data.issues.map(async (element: JiraIssue, index: number) => ({
         issueKey: element.key,
         summary: element.fields.summary,
-        creator: element.fields.creator.displayName,
+        creator: element.fields.creator.name,
         status: element.fields.status.name,
         type: element.fields.issuetype.name,
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(
           element.key
         ),
+        epic: element.fields.epic?.name,
+        labels: element.fields.labels,
+        assignee: {
+          displayName: element.fields.assignee?.displayName,
+          avatarUrls: element.fields.assignee?.avatarUrls,
+        },
         rank: element.fields[rankCustomField!],
         index,
       }))

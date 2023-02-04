@@ -25,7 +25,6 @@ class JiraCloudProvider implements ProviderApi {
   }) {
     if (this.accessToken === undefined)
       this.accessToken = await getAccessToken(oauthLoginOptions)
-
     await fetch("https://api.atlassian.com/oauth/token/accessible-resources", {
       headers: {
         Accept: "application/json",
@@ -200,6 +199,12 @@ class JiraCloudProvider implements ProviderApi {
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(
           element.key
         ),
+        epic: element.fields.parent?.fields.summary,
+        labels: element.fields.labels,
+        assignee: {
+          displayName: element.fields.assignee?.displayName,
+          avatarUrls: element.fields.assignee?.avatarUrls,
+        },
         rank: element.fields[rankCustomField],
         index,
       }))
