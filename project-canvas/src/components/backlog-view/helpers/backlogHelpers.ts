@@ -20,3 +20,13 @@ export const sortSprintsByActive = (sprintA: Sprint, sprintB: Sprint) => {
   }
   return sprintA.name.localeCompare(sprintB.name)
 }
+
+export const sortIssuesByRank = (issueA: Issue, issueB: Issue) => {
+  if (issueA.rank < issueB.rank) {
+    return -1
+  }
+  if (issueA.rank > issueB.rank) {
+    return 1
+  }
+  return 0
+}

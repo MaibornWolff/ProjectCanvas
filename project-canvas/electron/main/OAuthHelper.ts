@@ -12,10 +12,9 @@ export function handleOAuth2(win) {
     "read:me",
     "read:jira-user",
     "manage:jira-configuration",
-    "read:jira-work",
     "read:account",
     "manage:jira-project",
-    "manage:jira-configuration",
+    "read:jira-work",
     "write:jira-work",
     "manage:jira-webhook",
     "manage:jira-data-provider",
@@ -25,6 +24,7 @@ export function handleOAuth2(win) {
     "write:sprint:jira-software",
     "write:board-scope:jira-software",
     "read:issue:jira-software",
+    "write:issue:jira-software",
   ].join("%20")
   const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
   const AUDIENCE = "api.atlassian.com"
