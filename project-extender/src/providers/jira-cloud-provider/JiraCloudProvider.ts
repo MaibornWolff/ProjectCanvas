@@ -181,7 +181,7 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async fetchIssues(url: string): Promise<Issue[]> {
-    const rankCustomField = this.customFields.get("Rank")
+    const rankCustomField = this.customFields.get("Rank") || ""
     const response = await fetch(url, {
       headers: {
         Accept: "application/json",
@@ -200,7 +200,7 @@ class JiraCloudProvider implements ProviderApi {
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(
           element.key
         ),
-        rank: element.fields[rankCustomField!],
+        rank: element.fields[rankCustomField],
         index,
       }))
     )
@@ -234,10 +234,7 @@ class JiraCloudProvider implements ProviderApi {
           body: JSON.stringify(body),
         }
       )
-        .then(() => {
-          resolve()
-        })
-
+        .then(() => resolve())
         .catch((error) => {
           reject(
             new Error(

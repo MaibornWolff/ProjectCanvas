@@ -83,9 +83,14 @@ export function BacklogView() {
       onSuccess: (backlogIssues) => {
         updateIssuesWrapper("Backlog", {
           sprint: undefined,
-          issues: backlogIssues.filter(
-            (issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask"
-          ),
+          issues: backlogIssues
+            .filter(
+              (issue: Issue) =>
+                issue.type !== "Epic" && issue.type !== "Subtask"
+            )
+            .sort((issueA: Issue, issueB: Issue) =>
+              sortIssuesByRank(issueA, issueB)
+            ),
         })
       },
     })
