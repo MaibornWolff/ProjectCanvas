@@ -54,7 +54,7 @@ export function BacklogView() {
     queries:
       sprints?.map((sprint) => ({
         queryKey: ["issues", "sprints", projectKey, sprints, sprint.id],
-        queryFn: () => getIssuesBySprint(projectKey, sprint.id),
+        queryFn: () => getIssuesBySprint(projectKey, sprint.id, boardIds[0]),
         enabled: !!projectKey && !!sprints,
         onSuccess: (issues: Issue[]) => {
           updateIssuesWrapper(sprint.name, {
