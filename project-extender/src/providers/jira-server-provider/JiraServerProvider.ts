@@ -176,7 +176,7 @@ class JiraServerProvider implements ProviderApi {
 
   async getIssuesByProject(project: string, boardId: number): Promise<Issue[]> {
     return this.fetchIssues(
-      `http://${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/issue?jql=project=${project}&maxResults=10000`
+      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/issue?jql=project=${project}&maxResults=10000`
     )
   }
 
@@ -186,7 +186,7 @@ class JiraServerProvider implements ProviderApi {
     boardId: number
   ): Promise<Issue[]> {
     return this.fetchIssues(
-      `http://${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/sprint/${sprintId}/issue?jql=project=${project}`
+      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/sprint/${sprintId}/issue?jql=project=${project}`
     )
   }
 
