@@ -263,9 +263,7 @@ class JiraCloudProvider implements ProviderApi {
           }`,
         }
       )
-        .then(() => {
-          resolve()
-        })
+        .then(() => resolve())
         .catch((error) =>
           reject(
             new Error(`Error in moving this issue to the Backlog: ${error}`)
@@ -308,10 +306,7 @@ class JiraCloudProvider implements ProviderApi {
           body: JSON.stringify(body),
         }
       )
-        .then(() => {
-          resolve()
-        })
-
+        .then(() => resolve())
         .catch((error) =>
           reject(
             new Error(`Error in moving this issue to the Backlog: ${error}`)
