@@ -109,8 +109,8 @@ class JiraServerProvider implements ProviderApi {
       const projects = data.map((project: JiraProject) => ({
         key: project.key,
         name: project.name,
-        type: project.projectTypeKey,
         lead: project.lead.displayName,
+        type: project.projectTypeKey,
       }))
       return projects
     }
@@ -202,6 +202,7 @@ class JiraServerProvider implements ProviderApi {
   }
 
   async fetchIssues(url: string): Promise<Issue[]> {
+    const rankCustomField = this.customFields.get("Rank")
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -228,14 +229,27 @@ class JiraServerProvider implements ProviderApi {
           displayName: element.fields.assignee?.displayName,
           avatarUrls: element.fields.assignee?.avatarUrls,
         },
+        rank: element.fields[rankCustomField!],
         index,
       }))
     )
     return issues
   }
 
-  async moveIssueToSprint(sprint: number, issue: string): Promise<void> {
+  async moveIssueToSprintAndRank(
+    sprint: number,
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
+      const body = {
+        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+        issues: [issue],
+        ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
+        ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
+      }
       fetch(`${this.loginOptions.url}/rest/agile/1.0/sprint/${sprint}/issue`, {
         method: "POST",
         headers: {
@@ -243,13 +257,10 @@ class JiraServerProvider implements ProviderApi {
           Authorization: this.getAuthHeader(),
           "Content-Type": "application/json",
         },
-        body: `{
-            "issues": [
-              "${issue}"
-            ]
-          }`,
+        body: JSON.stringify(body),
       })
         .then(() => resolve())
+
         .catch((error) => {
           reject(
             new Error(
@@ -276,6 +287,48 @@ class JiraServerProvider implements ProviderApi {
         }`,
       })
         .then(() => resolve())
+        .catch((error) =>
+          reject(
+            new Error(`Error in moving this issue to the Backlog: ${error}`)
+          )
+        )
+    })
+  }
+
+  async rankIssueInBacklog(
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
+      const body: {
+        rankCustomFieldId: string
+        issues: string[]
+        rankBeforeIssue?: string
+        rankAfterIssue?: string
+      } = {
+        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+        issues: [issue],
+      }
+      if (rankBefore) {
+        body.rankBeforeIssue = rankBefore
+      } else if (rankAfter) {
+        body.rankAfterIssue = rankAfter
+      }
+      fetch(`http://${this.loginOptions.url}/rest/agile/1.0/issue/rank`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          Authorization: this.getAuthHeader(),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      })
+        .then(() => {
+          resolve()
+        })
+
         .catch((error) =>
           reject(
             new Error(`Error in moving this issue to the Backlog: ${error}`)

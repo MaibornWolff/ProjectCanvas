@@ -34,8 +34,18 @@ export interface ProviderApi {
     project: string,
     boardId: number
   ): Promise<Issue[]>
-  moveIssueToSprint(sprint: number, issue: string): Promise<void>
+  moveIssueToSprintAndRank(
+    sprint: number,
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void>
   moveIssueToBacklog(issue: string): Promise<void>
+  rankIssueInBacklog(
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void>
 }
 
 export abstract class ProviderCreator {

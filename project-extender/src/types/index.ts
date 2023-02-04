@@ -42,6 +42,7 @@ export interface Issue {
       "48x48": string
     }
   }
+  rank: string
 }
 
 export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {

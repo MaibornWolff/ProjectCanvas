@@ -167,10 +167,15 @@ server.get<{
 })
 
 server.post<{
-  Body: { sprint: number; issue: string }
-}>("/moveIssueToSprint", (request, reply) => {
+  Body: { sprint: number; issue: string; rankBefore: string; rankAfter: string }
+}>("/moveIssueToSprintAndRank", (request, reply) => {
   issueProvider
-    .moveIssueToSprint(request.body.sprint, request.body.issue)
+    .moveIssueToSprintAndRank(
+      request.body.sprint,
+      request.body.issue,
+      request.body.rankBefore,
+      request.body.rankAfter
+    )
     .then(() => {
       reply.status(200).send()
     })
@@ -182,6 +187,25 @@ server.post<{
 }>("/moveIssueToBacklog", (request, reply) => {
   issueProvider
     .moveIssueToBacklog(request.body.issue)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.put<{
+  Body: {
+    issue: string
+    rankBefore: string
+    rankAfter: string
+  }
+}>("/rankIssueInBacklog", (request, reply) => {
+  issueProvider
+    .rankIssueInBacklog(
+      request.body.issue,
+      request.body.rankBefore,
+      request.body.rankAfter
+    )
     .then(() => {
       reply.status(200).send()
     })

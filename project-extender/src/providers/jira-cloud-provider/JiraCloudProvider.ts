@@ -182,13 +182,13 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async fetchIssues(url: string): Promise<Issue[]> {
+    const rankCustomField = this.customFields.get("Rank")
     const response = await fetch(url, {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${this.accessToken}`,
       },
     })
-
     const data = await response.json()
 
     const issues: Promise<Issue[]> = Promise.all(
@@ -207,6 +207,7 @@ class JiraCloudProvider implements ProviderApi {
           displayName: element.fields.assignee?.displayName,
           avatarUrls: element.fields.assignee?.avatarUrls,
         },
+        rank: element.fields[rankCustomField!],
         index,
       }))
     )
@@ -214,8 +215,20 @@ class JiraCloudProvider implements ProviderApi {
     return issues
   }
 
-  async moveIssueToSprint(sprint: number, issue: string): Promise<void> {
+  async moveIssueToSprintAndRank(
+    sprint: number,
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
+      const body = {
+        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+        issues: [issue],
+        ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
+        ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
+      }
       fetch(
         `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint/${sprint}/issue`,
         {
@@ -225,16 +238,13 @@ class JiraCloudProvider implements ProviderApi {
             Authorization: `Bearer ${this.accessToken}`,
             "Content-Type": "application/json",
           },
-          body: `{
-            "issues": [
-              "${issue}"
-            ]
-          }`,
+          body: JSON.stringify(body),
         }
       )
         .then(() => {
           resolve()
         })
+
         .catch((error) => {
           reject(
             new Error(
@@ -263,7 +273,55 @@ class JiraCloudProvider implements ProviderApi {
           }`,
         }
       )
-        .then(() => resolve())
+        .then(() => {
+          resolve()
+        })
+        .catch((error) =>
+          reject(
+            new Error(`Error in moving this issue to the Backlog: ${error}`)
+          )
+        )
+    })
+  }
+
+  async rankIssueInBacklog(
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
+      const body: {
+        rankCustomFieldId: string
+        issues: string[]
+        rankBeforeIssue?: string
+        rankAfterIssue?: string
+      } = {
+        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+        issues: [issue],
+      }
+      if (rankBefore) {
+        body.rankBeforeIssue = rankBefore
+      } else if (rankAfter) {
+        body.rankAfterIssue = rankAfter
+      }
+
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/issue/rank`,
+        {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      )
+        .then(() => {
+          resolve()
+        })
+
         .catch((error) =>
           reject(
             new Error(`Error in moving this issue to the Backlog: ${error}`)

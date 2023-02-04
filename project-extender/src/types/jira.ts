@@ -35,5 +35,6 @@ export interface JiraIssue {
         "48x48": string
       }
     }
+    [rankCustomField: string]: string | unknown
   }
 }
