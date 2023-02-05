@@ -385,8 +385,98 @@ class JiraCloudProvider implements ProviderApi {
         )
     })
   }
-}
 
+  async createIssue(
+    issueSummary: string,
+    issueTypeId: number,
+    projectId: number,
+    reporterId: number,
+    assigneeId: number,
+    sprintId: number,
+    storyPointsEstimate: number,
+    description: string,
+    status: string
+  ): Promise<void> {
+    let transitionId: number | null
+    switch (status) {
+      case "In Proogress":
+        transitionId = 21
+        break
+      case "Review":
+        transitionId = 3
+        break
+      case "Done":
+        transitionId = 31
+        break
+      default:
+        transitionId = null
+    }
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue`,
+        {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fields: {
+              summary: issueSummary,
+              issueType: { id: issueTypeId },
+              project: {
+                id: projectId,
+              },
+              reporter: {
+                id: reporterId,
+              },
+              assignee: {
+                id: assigneeId,
+              },
+              description: {
+                type: "doc",
+                version: 1,
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        text: description,
+                        type: "text",
+                      },
+                    ],
+                  },
+                ],
+              },
+              ...this.customFieldFunction("sprint", sprintId),
+              ...this.customFieldFunction(
+                "Story point estimate",
+                storyPointsEstimate
+              ),
+            },
+            transition: { id: transitionId },
+          }),
+        }
+      )
+        .then(() => resolve())
+        .catch((error) =>
+          reject(new Error(`Error in Creating issue: ${error}`))
+        )
+    })
+  }
+
+  customFieldFunction(param: string, id: number) {
+    switch (param) {
+      case "sprint":
+        return { [this.customFields.get("Sprint")!]: id }
+      case "storyPoints":
+        return { [this.customFields.get("Story point estimate")!]: id }
+      default:
+        return null
+    }
+  }
+}
 export class JiraCloudProviderCreator extends ProviderCreator {
   public factoryMethod(): ProviderApi {
     return new JiraCloudProvider()

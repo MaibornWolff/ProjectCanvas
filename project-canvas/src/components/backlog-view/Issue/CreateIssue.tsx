@@ -25,7 +25,7 @@ export function CreateIssue() {
   return (
     <Stack sx={{ overflow: "hidden" }}>
       <ScrollArea>
-        <Paper sx={{ maxHeight: "600px" }}>
+        <Paper sx={{ height: "500px" }}>
           <CustomDatePicker />
           <Select
             label="Project"
