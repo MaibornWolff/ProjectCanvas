@@ -22,10 +22,10 @@ export interface ProviderApi {
   isLoggedIn(): Promise<void>
   logout(): Promise<void>
   getProjects(): Promise<Project[]>
-  getIssueTypes(): Promise<IssueType[]>
   getBoardIds(project: string): Promise<number[]>
   getSprints(BoardId: number): Promise<Sprint[]>
   getIssuesByProject(project: string, boardId: number): Promise<Issue[]>
+  getIssueTypesByProject(projectKeyOrId: string): Promise<IssueType[]>
   getBacklogIssuesByProjectAndBoard(
     project: string,
     boardId: number

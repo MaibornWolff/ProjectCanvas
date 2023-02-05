@@ -1,25 +1,17 @@
-import { IssueType, Project } from "project-extender"
-import { useQuery } from "@tanstack/react-query"
 import { Center, Loader } from "@mantine/core"
-import { ProjectsTable } from "./ProjectsTable"
+import { useQuery } from "@tanstack/react-query"
+import { Project } from "project-extender"
 import { useCanvasStore } from "../../lib/Store"
-import { getIssueTypes, getProjects } from "./queryFetchers"
+import { getProjects } from "./queryFetchers"
+import { ProjectsTable } from "./Table/ProjectsTable"
 
 export function ProjectsView() {
-  const { setProjects, setIssueTypes } = useCanvasStore()
+  const { setProjects } = useCanvasStore()
   const { data: projects, isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: getProjects,
     onSuccess: (_projects: Project[]) => {
       setProjects(_projects)
-    },
-  })
-
-  useQuery({
-    queryKey: ["issueTypes"],
-    queryFn: getIssueTypes,
-    onSuccess: (issueTypes: IssueType[]) => {
-      setIssueTypes(issueTypes)
     },
   })
 

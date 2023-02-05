@@ -12,8 +12,10 @@ import {
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { IconFileUpload } from "@tabler/icons"
+import { useQuery } from "@tanstack/react-query"
 import { Dispatch, SetStateAction } from "react"
 import { useCanvasStore } from "../../lib/Store"
+import { getIssueTypes } from "../projects-view/queryFetchers"
 import { RichText } from "./RichText"
 
 export function CreateIssueModal({
@@ -24,14 +26,7 @@ export function CreateIssueModal({
   setOpened: Dispatch<SetStateAction<boolean>>
 }) {
   const projects = useCanvasStore((state) => state.projects)
-  const issueTypes = useCanvasStore((state) => state.issueTypes)
   const selectedProject = useCanvasStore((state) => state.selectedProject)
-  const mappedIssueTypes = issueTypes.reduce((map, issueType) => {
-    const key = issueType.scopeProjectId || -1
-    const names = map.get(key) || []
-    names.push(issueType.name)
-    return map.set(key, names)
-  }, new Map())
 
   const theme = useMantineTheme()
   const form = useForm<{
@@ -57,7 +52,11 @@ export function CreateIssueModal({
       reporter: "",
     },
   })
-
+  const { data: issueTypes, isLoading } = useQuery({
+    queryKey: ["issueTypes", form.getInputProps("project").value],
+    queryFn: () => getIssueTypes(form.getInputProps("project").value!),
+    enabled: !!form.getInputProps("project").value,
+  })
   return (
     <Modal
       opened={opened}
@@ -97,11 +96,9 @@ export function CreateIssueModal({
             placeholder="Story"
             nothingFound="No options"
             data={
-              Array.from(mappedIssueTypes.keys()).includes(
-                form.getInputProps("project").value
-              )
-                ? mappedIssueTypes.get(form.getInputProps("project").value)
-                : mappedIssueTypes.get(-1)
+              !isLoading && issueTypes
+                ? issueTypes?.map((issueType) => issueType.name)
+                : []
             }
             searchable
             required
@@ -112,7 +109,16 @@ export function CreateIssueModal({
             label="Status"
             placeholder="To do"
             nothingFound="No options"
-            data={["To do", "In Progress", "Review", "Done"]}
+            data={
+              !isLoading && issueTypes
+                ? issueTypes
+                    .find(
+                      (issueType) =>
+                        issueType.name === form.getInputProps("issueType").value
+                    )
+                    ?.statuses?.map((status) => status.name) || []
+                : []
+            }
             {...form.getInputProps("status")}
           />
           <TextInput

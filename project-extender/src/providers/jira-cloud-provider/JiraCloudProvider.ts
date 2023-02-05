@@ -102,10 +102,10 @@ class JiraCloudProvider implements ProviderApi {
     return projects
   }
 
-  async getIssueTypes(): Promise<IssueType[]> {
+  async getIssueTypesByProject(projectIdOrKey: string): Promise<IssueType[]> {
     return new Promise((resolve, reject) => {
       fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issuetype`,
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/project/${projectIdOrKey}/statuses`,
         {
           headers: {
             Accept: "application/json",
@@ -114,20 +114,8 @@ class JiraCloudProvider implements ProviderApi {
         }
       )
         .then(async (response) => {
-          const issueTypesResponse: JiraIssueType[] = await response.json()
-          const issueTypes = issueTypesResponse.map(
-            (issueType: JiraIssueType) => ({
-              id: issueType.id,
-              description: issueType.description,
-              name: issueType.name,
-              subtask: issueType.subtask,
-              scopeType: issueType.scope?.type,
-              scopeProjectId: issueType.scope?.project?.id,
-              scopeProjectKey: issueType.scope?.project?.key,
-              scopeProjectName: issueType.scope?.project?.name,
-            })
-          )
-          resolve(issueTypes)
+          const issueTypes: JiraIssueType[] = await response.json()
+          resolve(issueTypes as IssueType[])
         })
         .catch((error) =>
           reject(new Error(`Error in fetching the issue types: ${error}`))

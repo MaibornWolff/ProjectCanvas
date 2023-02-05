@@ -123,30 +123,20 @@ class JiraServerProvider implements ProviderApi {
     return Promise.reject(new Error(response.statusText))
   }
 
-  async getIssueTypes(): Promise<IssueType[]> {
+  async getIssueTypesByProject(projectIdOrKey: string): Promise<IssueType[]> {
     return new Promise((resolve, reject) => {
-      fetch(`${this.loginOptions.url}/rest/api/2/issuetype`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: this.getAuthHeader(),
-        },
-      })
+      fetch(
+        `${this.loginOptions.url}/rest/api/2/project/${projectIdOrKey}/statuses`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: this.getAuthHeader(),
+          },
+        }
+      )
         .then(async (response) => {
-          const issueTypesResponse: JiraIssueType[] = await response.json()
-          const issueTypes = issueTypesResponse.map(
-            (issueType: JiraIssueType) => ({
-              id: issueType.id,
-              description: issueType.description,
-              name: issueType.name,
-              subtask: issueType.subtask,
-              scopeType: issueType.scope?.type,
-              scopeProjectId: issueType.scope?.project?.id,
-              scopeProjectKey: issueType.scope?.project?.key,
-              scopeProjectName: issueType.scope?.project?.name,
-            })
-          )
-          resolve(issueTypes)
+          const issueTypes: JiraIssueType[] = await response.json()
+          resolve(issueTypes as IssueType[])
         })
         .catch((error) =>
           reject(new Error(`Error in fetching the issue types: ${error}`))
@@ -231,11 +221,9 @@ class JiraServerProvider implements ProviderApi {
     project: string,
     boardId: number
   ): Promise<Issue[]> {
-    const response = await this.fetchIssues(
+    return this.fetchIssues(
       `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
     )
-
-    return response
   }
 
   async fetchIssues(url: string): Promise<Issue[]> {
@@ -284,8 +272,8 @@ class JiraServerProvider implements ProviderApi {
       const body = {
         rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
         issues: [issue],
-        ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
-        ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
+        ...(rankAfter && { rankAfterIssue: rankAfter }),
+        ...(rankBefore && { rankBeforeIssue: rankBefore }),
       }
       fetch(`${this.loginOptions.url}/rest/agile/1.0/sprint/${sprint}/issue`, {
         method: "POST",
