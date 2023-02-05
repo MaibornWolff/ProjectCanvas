@@ -2,23 +2,22 @@ import { IssueType, Project } from "project-extender"
 import { create } from "zustand"
 
 export interface CanvasStore {
-  stateProjects: Project[]
+  projects: Project[]
   selectedProject: Project | undefined
   selectedProjectBoardIds: number[]
   issueTypes: IssueType[]
-  setStateProjects: (projects: Project[]) => void
+  setProjects: (projects: Project[]) => void
   setSelectedProject: (project: Project) => void
   setselectedProjectBoardIds: (boards: number[]) => void
   setIssueTypes: (types: IssueType[]) => void
 }
 
 export const useCanvasStore = create<CanvasStore>()((set) => ({
-  stateProjects: [],
+  projects: [],
   selectedProject: undefined,
   selectedProjectBoardIds: [],
   issueTypes: [],
-  setStateProjects: (projects: Project[]) =>
-    set(() => ({ stateProjects: projects })),
+  setProjects: (projects: Project[]) => set(() => ({ projects })),
   setselectedProjectBoardIds: (boards: number[]) =>
     set(() => ({ selectedProjectBoardIds: boards })),
   setSelectedProject: (row: Project | undefined) =>

@@ -18,6 +18,7 @@ export interface Sprint {
 export interface Project {
   name: string
   key: string
+  id?: number
   lead: string
   type: string
 }
@@ -50,9 +51,10 @@ export interface IssueType {
   description: string
   name: string
   subtask: boolean
-  scopeType: string
-  scopeProjectKey: string
-  scopeProjectName: string
+  scopeType?: string
+  scopeProjectId?: number
+  scopeProjectKey?: string
+  scopeProjectName?: string
 }
 
 export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
