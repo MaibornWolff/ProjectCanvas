@@ -1,22 +1,28 @@
-import { useState } from "react"
 import {
   Button,
   Divider,
   FileInput,
   Group,
+  Modal,
   NumberInput,
-  Paper,
-  ScrollArea,
   Select,
   Stack,
   TextInput,
+  useMantineTheme,
 } from "@mantine/core"
+import { useForm } from "@mantine/form"
 import { IconFileUpload } from "@tabler/icons"
-import { CustomDatePicker } from "./CustomDatePicker"
-import { RichText } from "./RichText"
+import { Dispatch, SetStateAction, useState } from "react"
 import { useCanvasStore } from "../../lib/Store"
+import { RichText } from "./RichText"
 
-export function CreateIssue() {
+export function CreateIssueModal({
+  opened,
+  setOpened,
+}: {
+  opened: boolean
+  setOpened: Dispatch<SetStateAction<boolean>>
+}) {
   const projects = useCanvasStore((state) => state.projects)
   const issueTypes = useCanvasStore((state) => state.issueTypes)
   const mappedIssueTypes = issueTypes.reduce((map, issueType) => {
@@ -33,27 +39,65 @@ export function CreateIssue() {
     name: "",
     id: -1,
   })
+  const theme = useMantineTheme()
+  const form = useForm<{
+    project: string
+    issueType: string
+    summary: string
+    assignee: string
+    sprint: string
+    status: string
+    storyPointsEstimate: number
+    attachement: string
+    reporter: string
+  }>({
+    initialValues: {
+      project: "",
+      issueType: "",
+      summary: "",
+      assignee: "",
+      sprint: "",
+      status: "",
+      storyPointsEstimate: 0,
+      attachement: "",
+      reporter: "",
+    },
+  })
 
   return (
-    <Stack sx={{ overflow: "hidden" }}>
-      <ScrollArea>
-        <Paper sx={{ height: "500px" }}>
-          <CustomDatePicker />
+    <Modal
+      opened={opened}
+      onClose={() => setOpened(false)}
+      title="Create Issue"
+      size="70%"
+      overflow="inside"
+      overlayColor={
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[9]
+          : theme.colors.gray[2]
+      }
+      overlayOpacity={0.55}
+      overlayBlur={3}
+    >
+      <form onSubmit={form.onSubmit(() => {})}>
+        <Stack spacing="md">
           <Select
             label="Project"
-            placeholder="Project "
-            searchable
+            placeholder="Project"
             nothingFound="No options"
             value={selectedProjectInfo.name}
             data={projects.map((project) => `${project.name} (${project.key})`)}
+            searchable
+            required
+            {...form.getInputProps("project")}
             onChange={(value) => {
+              form.getInputProps("project").onChange(value)
+              form.setFieldValue("issueType", "")
               const selectedProject = projects.find(
                 (project) => `${project.name} (${project.key})` === value
               )
               setSelectedProjectInfo({ name: value, id: selectedProject?.id })
             }}
-            w="50%"
-            required
           />
           <Select
             label="Issue Type"
@@ -66,9 +110,9 @@ export function CreateIssue() {
                 ? mappedIssueTypes.get(selectedProjectInfo.id)
                 : mappedIssueTypes.get(-1)
             }
-            w="50%"
             searchable
             required
+            {...form.getInputProps("issueType")}
           />
           <Divider m={10} />
           <Select
@@ -76,54 +120,62 @@ export function CreateIssue() {
             placeholder="To do"
             nothingFound="No options"
             data={["To do", "In Progress", "Review", "Done"]}
-            w="50%"
-            c="gray"
+            {...form.getInputProps("status")}
           />
-          <TextInput label="Summary" withAsterisk />
+          <TextInput
+            label="Summary"
+            withAsterisk
+            {...form.getInputProps("summary")}
+          />
           <RichText />
           <Select
             label="Assignee"
             placeholder="Unassigned"
-            searchable
             nothingFound="No options"
             data={["Person 1", "Person 2", "Person 3", "Person 4"]}
-            w="50%"
+            searchable
+            {...form.getInputProps("assignee")}
           />
           <Select
             label="Sprint"
-            placeholder="Sprint 1 "
-            searchable
+            placeholder="Sprint 1"
             nothingFound="No options"
             data={["Sprint 1", "Sprint 2", "Sprint 3", "Sprint 4"]}
-            w="50%"
+            searchable
+            {...form.getInputProps("sprint")}
           />
-          <NumberInput label="Story Point Estimate" w="50%" />
+          <NumberInput
+            label="Story Point Estimate"
+            {...form.getInputProps("storyPointsEstimate")}
+          />
           <Select
             label="Reporter"
             placeholder="Person 1 "
-            searchable
             nothingFound="No options"
             data={["Person 1", "Person 2", "Person 3", "Person 4"]}
-            w="50%"
+            searchable
             required
+            {...form.getInputProps("reporter")}
           />
           <FileInput
             label="Attachement"
             placeholder="Upload Files"
             icon={<IconFileUpload />}
             multiple
+            {...form.getInputProps("attachement")}
           />
-        </Paper>
-      </ScrollArea>
-
-      <Group display="flex" sx={{ justifyContent: "flex-end" }}>
-        <Button variant="light" w="10%" color="gray.8">
-          cancel
-        </Button>
-        <Button type="submit" w="10%">
-          Create
-        </Button>
-      </Group>
-    </Stack>
+          <Group position="right">
+            <Button
+              variant="light"
+              color="gray"
+              onClick={() => setOpened(false)}
+            >
+              Cancel
+            </Button>
+            <Button type="submit">Create</Button>
+          </Group>
+        </Stack>
+      </form>
+    </Modal>
   )
 }
