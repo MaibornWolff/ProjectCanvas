@@ -94,6 +94,7 @@ class JiraCloudProvider implements ProviderApi {
     const projects = data.values.map((project: JiraProject) => ({
       key: project.key,
       name: project.name,
+      id: project.id,
       lead: project.lead.displayName,
       type: project.projectTypeKey,
     }))
@@ -113,16 +114,17 @@ class JiraCloudProvider implements ProviderApi {
         }
       )
         .then(async (response) => {
-          const issueTypesResponse: Promise<JiraIssueType[]> = response.json()
-          const issueTypes = (await issueTypesResponse).map(
+          const issueTypesResponse: JiraIssueType[] = await response.json()
+          const issueTypes = issueTypesResponse.map(
             (issueType: JiraIssueType) => ({
               id: issueType.id,
               description: issueType.description,
               name: issueType.name,
               subtask: issueType.subtask,
-              scopeType: issueType.scope.type,
-              scopeProjectKey: issueType.scope.project.key,
-              scopeProjectName: issueType.scope.project.name,
+              scopeType: issueType.scope?.type,
+              scopeProjectId: issueType.scope?.project?.id,
+              scopeProjectKey: issueType.scope?.project?.key,
+              scopeProjectName: issueType.scope?.project?.name,
             })
           )
           resolve(issueTypes)

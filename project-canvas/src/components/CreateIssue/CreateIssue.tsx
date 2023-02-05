@@ -14,13 +14,25 @@ import {
 import { IconFileUpload } from "@tabler/icons"
 import { CustomDatePicker } from "./CustomDatePicker"
 import { RichText } from "./RichText"
-import { useCanvasStore } from "../../../lib/Store"
+import { useCanvasStore } from "../../lib/Store"
 
 export function CreateIssue() {
-  const projects = useCanvasStore((state) => state.stateProjects)
-  const [selectedProjectKey, setSelectedProjectKey] = useState<string | null>(
-    ""
-  )
+  const projects = useCanvasStore((state) => state.projects)
+  const issueTypes = useCanvasStore((state) => state.issueTypes)
+  const mappedIssueTypes = issueTypes.reduce((map, issueType) => {
+    const key = issueType.scopeProjectId || -1
+    const names = map.get(key) || []
+    names.push(issueType.name)
+    return map.set(key, names)
+  }, new Map())
+
+  const [selectedProjectInfo, setSelectedProjectInfo] = useState<{
+    name: string | null
+    id: number | undefined
+  }>({
+    name: "",
+    id: -1,
+  })
 
   return (
     <Stack sx={{ overflow: "hidden" }}>
@@ -32,19 +44,30 @@ export function CreateIssue() {
             placeholder="Project "
             searchable
             nothingFound="No options"
-            value={selectedProjectKey}
+            value={selectedProjectInfo.name}
             data={projects.map((project) => `${project.name} (${project.key})`)}
-            onChange={setSelectedProjectKey}
+            onChange={(value) => {
+              const selectedProject = projects.find(
+                (project) => `${project.name} (${project.key})` === value
+              )
+              setSelectedProjectInfo({ name: value, id: selectedProject?.id })
+            }}
             w="50%"
             required
           />
           <Select
             label="Issue Type"
-            placeholder="Story "
-            searchable
+            placeholder="Story"
             nothingFound="No options"
-            data={["Story", "Task", "Bug", "Epic"]}
+            data={
+              Array.from(mappedIssueTypes.keys()).includes(
+                selectedProjectInfo.id
+              )
+                ? mappedIssueTypes.get(selectedProjectInfo.id)
+                : mappedIssueTypes.get(-1)
+            }
             w="50%"
+            searchable
             required
           />
           <Divider m={10} />

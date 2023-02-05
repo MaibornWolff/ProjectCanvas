@@ -17,7 +17,7 @@ import { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../lib/Store"
-import { CreateIssue } from "./Issue/CreateIssue"
+import { CreateIssue } from "../CreateIssue/CreateIssue"
 import { sortIssuesByRank } from "./helpers/backlogHelpers"
 import { onDragEnd } from "./helpers/draggingHelpers"
 import {

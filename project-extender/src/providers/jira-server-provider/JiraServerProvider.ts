@@ -2,8 +2,13 @@
 /* eslint-disable class-methods-use-this */
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { dateTimeFormat, Issue, Project, Sprint } from "../../types"
-import { JiraIssue, JiraProject, JiraSprint } from "../../types/jira"
+import { dateTimeFormat, Issue, IssueType, Project, Sprint } from "../../types"
+import {
+  JiraIssue,
+  JiraIssueType,
+  JiraProject,
+  JiraSprint,
+} from "../../types/jira"
 
 class JiraServerProvider implements ProviderApi {
   private loginOptions = {
@@ -109,12 +114,44 @@ class JiraServerProvider implements ProviderApi {
       const projects = data.map((project: JiraProject) => ({
         key: project.key,
         name: project.name,
+        id: project.id,
         lead: project.lead.displayName,
         type: project.projectTypeKey,
       }))
       return projects
     }
     return Promise.reject(new Error(response.statusText))
+  }
+
+  async getIssueTypes(): Promise<IssueType[]> {
+    return new Promise((resolve, reject) => {
+      fetch(`${this.loginOptions.url}/rest/api/2/issuetype`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: this.getAuthHeader(),
+        },
+      })
+        .then(async (response) => {
+          const issueTypesResponse: JiraIssueType[] = await response.json()
+          const issueTypes = issueTypesResponse.map(
+            (issueType: JiraIssueType) => ({
+              id: issueType.id,
+              description: issueType.description,
+              name: issueType.name,
+              subtask: issueType.subtask,
+              scopeType: issueType.scope?.type,
+              scopeProjectId: issueType.scope?.project?.id,
+              scopeProjectKey: issueType.scope?.project?.key,
+              scopeProjectName: issueType.scope?.project?.name,
+            })
+          )
+          resolve(issueTypes)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the issue types: ${error}`))
+        )
+    })
   }
 
   async getBoardIds(project: string): Promise<number[]> {

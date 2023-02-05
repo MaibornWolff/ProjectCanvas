@@ -1,30 +1,36 @@
-import { Project } from "project-extender"
-import { useEffect, useState } from "react"
+import { IssueType, Project } from "project-extender"
 import { useQuery } from "@tanstack/react-query"
+import { Center, Loader } from "@mantine/core"
 import { ProjectsTable } from "./ProjectsTable"
 import { useCanvasStore } from "../../lib/Store"
-import { getIssueTypes } from "./queryFetchers"
+import { getIssueTypes, getProjects } from "./queryFetchers"
 
 export function ProjectsView() {
-  const [projects, setProjects] = useState<Project[]>([])
-  const { setStateProjects, setIssueTypes } = useCanvasStore()
-  const getProjects = async () => {
-    const data = await fetch(`${import.meta.env.VITE_EXTENDER}/projects`)
-    const projectsArray = await data.json()
-    setProjects(projectsArray)
-    setStateProjects(projectsArray)
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data: issueTypes, isError: isErrorIssueTypes } = useQuery({
-    queryKey: ["issueTypes"],
-    queryFn: () => getIssueTypes(),
-    onSuccess: (types) => setIssueTypes(types),
+  const { setProjects, setIssueTypes } = useCanvasStore()
+  const { data: projects, isLoading } = useQuery({
+    queryKey: ["projects"],
+    queryFn: getProjects,
+    onSuccess: (_projects: Project[]) => {
+      setProjects(_projects)
+    },
   })
 
-  useEffect(() => {
-    getProjects()
-  }, [])
+  useQuery({
+    queryKey: ["issueTypes"],
+    queryFn: getIssueTypes,
+    onSuccess: (issueTypes: IssueType[]) => {
+      setIssueTypes(issueTypes)
+    },
+  })
 
-  return <ProjectsTable data={projects} />
+  if (isLoading)
+    return (
+      <Center style={{ width: "100%", height: "100%" }}>
+        <Loader />
+      </Center>
+    )
+
+  return (
+    projects && <ProjectsTable data={projects.map(({ id, ...rest }) => rest)} />
+  )
 }

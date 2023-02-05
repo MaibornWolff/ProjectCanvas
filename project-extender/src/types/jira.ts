@@ -1,5 +1,6 @@
 export interface JiraProject {
   projectTypeKey: string
+  id: number
   name: string
   key: string
   lead: {
@@ -49,11 +50,12 @@ export interface JiraIssueType {
   description: string
   name: string
   subtask: boolean
-  scope: {
-    type: string
-    project: {
-      key: string
-      name: string
+  scope?: {
+    type?: string
+    project?: {
+      id?: number
+      key?: string
+      name?: string
     }
   }
 }
