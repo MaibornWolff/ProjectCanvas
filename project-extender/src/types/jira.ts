@@ -44,3 +44,16 @@ export interface JiraIssue {
     [rankCustomField: string]: string | unknown
   }
 }
+export interface JiraIssueType {
+  id: string
+  description: string
+  name: string
+  subtask: boolean
+  scope: {
+    type: string
+    project: {
+      key: string
+      name: string
+    }
+  }
+}

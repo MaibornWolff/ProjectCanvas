@@ -103,6 +103,15 @@ server.get("/projects", async (_, reply) => {
     .catch((error) => reply.status(400).send(error))
 })
 
+server.get("/issueTypes", async (_, reply) => {
+  await issueProvider
+    .getIssueTypes()
+    .then((issueTypes) => {
+      reply.status(200).send(issueTypes)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
 server.get<{ Querystring: { project: string } }>(
   "/boardIdsByProject",
   async (request, reply) => {

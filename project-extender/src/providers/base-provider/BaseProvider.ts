@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { Issue, Project, Sprint } from "../../types"
+import { Issue, IssueType, Project, Sprint } from "../../types"
 
 export interface BasicLoginOptions {
   url: string
@@ -22,6 +22,7 @@ export interface ProviderApi {
   isLoggedIn(): Promise<void>
   logout(): Promise<void>
   getProjects(): Promise<Project[]>
+  getIssueTypes(): Promise<IssueType[]>
   getBoardIds(project: string): Promise<number[]>
   getSprints(BoardId: number): Promise<Sprint[]>
   getIssuesByProject(project: string, boardId: number): Promise<Issue[]>

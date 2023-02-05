@@ -23,6 +23,7 @@
     "@mantine/core": "^5.10.0",
     "@mantine/form": "^5.8.3",
     "@mantine/hooks": "^5.10.0",
+    "@mantine/dates": "^5.10",
     "@mantine/notifications": "^5.10.0",
     "@tabler/icons": "^1.116.1",
     "@tanstack/react-query": "^4.23.0",
@@ -36,7 +37,8 @@
     "react-dom": "^18.2.0",
     "react-i18next": "11.18.6",
     "react-router-dom": "^6.4.5",
-    "zustand": "^4.3.1"
+    "zustand": "^4.3.1",
+    "dayjs": "^1.11.7"
   },
   "devDependencies": {
     "@types/react": "^18.0.21",
