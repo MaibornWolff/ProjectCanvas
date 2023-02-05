@@ -12,7 +12,7 @@ import {
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { IconFileUpload } from "@tabler/icons"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction } from "react"
 import { useCanvasStore } from "../../lib/Store"
 import { RichText } from "./RichText"
 
@@ -25,6 +25,7 @@ export function CreateIssueModal({
 }) {
   const projects = useCanvasStore((state) => state.projects)
   const issueTypes = useCanvasStore((state) => state.issueTypes)
+  const selectedProject = useCanvasStore((state) => state.selectedProject)
   const mappedIssueTypes = issueTypes.reduce((map, issueType) => {
     const key = issueType.scopeProjectId || -1
     const names = map.get(key) || []
@@ -32,13 +33,6 @@ export function CreateIssueModal({
     return map.set(key, names)
   }, new Map())
 
-  const [selectedProjectInfo, setSelectedProjectInfo] = useState<{
-    name: string | null
-    id: number | undefined
-  }>({
-    name: "",
-    id: -1,
-  })
   const theme = useMantineTheme()
   const form = useForm<{
     project: string
@@ -52,7 +46,7 @@ export function CreateIssueModal({
     reporter: string
   }>({
     initialValues: {
-      project: "",
+      project: selectedProject?.name || "",
       issueType: "",
       summary: "",
       assignee: "",
@@ -85,18 +79,17 @@ export function CreateIssueModal({
             label="Project"
             placeholder="Project"
             nothingFound="No options"
-            value={selectedProjectInfo.name}
-            data={projects.map((project) => `${project.name} (${project.key})`)}
+            data={projects.map((project) => ({
+              value: project.id,
+              label: `${project.name} (${project.key})`,
+            }))}
             searchable
             required
             {...form.getInputProps("project")}
             onChange={(value) => {
               form.getInputProps("project").onChange(value)
               form.setFieldValue("issueType", "")
-              const selectedProject = projects.find(
-                (project) => `${project.name} (${project.key})` === value
-              )
-              setSelectedProjectInfo({ name: value, id: selectedProject?.id })
+              form.setFieldValue("status", "")
             }}
           />
           <Select
@@ -105,9 +98,9 @@ export function CreateIssueModal({
             nothingFound="No options"
             data={
               Array.from(mappedIssueTypes.keys()).includes(
-                selectedProjectInfo.id
+                form.getInputProps("project").value
               )
-                ? mappedIssueTypes.get(selectedProjectInfo.id)
+                ? mappedIssueTypes.get(form.getInputProps("project").value)
                 : mappedIssueTypes.get(-1)
             }
             searchable
