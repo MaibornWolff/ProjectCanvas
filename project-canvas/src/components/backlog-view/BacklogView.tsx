@@ -5,7 +5,6 @@ import {
   Flex,
   Group,
   Loader,
-  Modal,
   ScrollArea,
   Stack,
   Text,
@@ -17,7 +16,7 @@ import { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../lib/Store"
-import { CreateIssue } from "../CreateIssue/CreateIssue"
+import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
 import { sortIssuesByRank } from "./helpers/backlogHelpers"
 import { onDragEnd } from "./helpers/draggingHelpers"
 import {
@@ -32,11 +31,11 @@ import { ReloadButton } from "./ReloadButton"
 
 export function BacklogView() {
   const navigate = useNavigate()
+  const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
   const currentBoardId = boardIds[0]
-  const [opened, setOpened] = useState(false)
 
   const [issuesWrappers, setIssuesWrappers] = useState(
     new Map<string, { issues: Issue[]; sprint?: Sprint }>()
@@ -179,7 +178,7 @@ export function BacklogView() {
               radius="xs"
               display="flex"
               w="100%"
-              onClick={() => setOpened(true)}
+              onClick={() => setCreateIssueModalOpened(true)}
               sx={{
                 justifyContent: "left",
                 ":hover": { backgroundColor: "#E8E2E2" },
@@ -187,14 +186,10 @@ export function BacklogView() {
             >
               + Create Issue
             </Button>
-            <Modal
-              opened={opened}
-              onClose={() => setOpened(false)}
-              title="Create Issue"
-              size="70%"
-            >
-              <CreateIssue />
-            </Modal>
+            <CreateIssueModal
+              opened={createIssueModalOpened}
+              setOpened={setCreateIssueModalOpened}
+            />
           </ScrollArea.Autosize>
           <Divider
             size="xl"

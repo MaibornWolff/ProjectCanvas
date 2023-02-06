@@ -1,7 +1,11 @@
 import { IssueType } from "project-extender"
 
-export const getIssueTypes = (): Promise<IssueType[]> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/issueTypes`)
+export const getIssueTypes = (projectIdOrKey: string): Promise<IssueType[]> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/issueTypesByProject?projectIdOrKey=${projectIdOrKey}`
+  )
     .then((issueTypes) => issueTypes.json())
     .catch((err) => err)
 

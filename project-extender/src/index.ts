@@ -103,9 +103,11 @@ server.get("/projects", async (_, reply) => {
     .catch((error) => reply.status(400).send(error))
 })
 
-server.get("/issueTypes", async (_, reply) => {
+server.get<{
+  Querystring: { projectIdOrKey: string }
+}>("/issueTypesByProject", async (request, reply) => {
   await issueProvider
-    .getIssueTypes()
+    .getIssueTypesByProject(request.query.projectIdOrKey)
     .then((issueTypes) => {
       reply.status(200).send(issueTypes)
     })
