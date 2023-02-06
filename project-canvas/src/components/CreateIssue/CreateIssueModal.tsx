@@ -96,8 +96,8 @@ export function CreateIssueModal({
             placeholder="Story"
             nothingFound="No options"
             data={
-              !isLoading && issueTypes
-                ? issueTypes?.map((issueType) => issueType.name)
+              !isLoading && issueTypes && issueTypes instanceof Array
+                ? issueTypes.map((issueType) => issueType.name)
                 : []
             }
             searchable
@@ -110,7 +110,7 @@ export function CreateIssueModal({
             placeholder="To do"
             nothingFound="No options"
             data={
-              !isLoading && issueTypes
+              !isLoading && issueTypes && issueTypes instanceof Array
                 ? issueTypes
                     .find(
                       (issueType) =>
