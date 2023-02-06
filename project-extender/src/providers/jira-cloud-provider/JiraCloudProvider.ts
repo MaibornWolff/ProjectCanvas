@@ -390,93 +390,95 @@ class JiraCloudProvider implements ProviderApi {
 
   async createIssue(
     issueSummary: string,
-    issueTypeId: number,
-    projectId: number,
-    reporterId: number,
-    assigneeId: number,
+    issueTypeId: string,
+    projectId: string,
+    reporterId: string,
+    assigneeId: string,
     sprintId: number,
     storyPointsEstimate: number,
     description: string,
     status: string
-  ): Promise<void> {
-    let transitionId: number | null
-    switch (status) {
-      case "In Proogress":
-        transitionId = 21
-        break
-      case "Review":
-        transitionId = 3
-        break
-      case "Done":
-        transitionId = 31
-        break
-      default:
-        transitionId = null
-    }
-    return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue`,
-        {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fields: {
-              summary: issueSummary,
-              issueType: { id: issueTypeId },
-              project: {
-                id: projectId,
-              },
-              reporter: {
-                id: reporterId,
-              },
-              assignee: {
-                id: assigneeId,
-              },
-              description: {
-                type: "doc",
-                version: 1,
-                content: [
-                  {
-                    type: "paragraph",
-                    content: [
-                      {
-                        text: description,
-                        type: "text",
-                      },
-                    ],
-                  },
-                ],
-              },
-              ...this.customFieldFunction("sprint", sprintId),
-              ...this.customFieldFunction(
-                "Story point estimate",
-                storyPointsEstimate
-              ),
+  ) {
+    const CreatedIssue = fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fields: {
+            summary: issueSummary,
+            issuetype: { id: issueTypeId },
+            project: {
+              id: projectId,
             },
-            transition: { id: transitionId },
-          }),
-        }
-      )
-        .then(() => resolve())
-        .catch((error) =>
-          reject(new Error(`Error in Creating issue: ${error}`))
-        )
-    })
+            reporter: {
+              id: reporterId,
+            },
+            assignee: {
+              id: assigneeId,
+            },
+            description: {
+              type: "doc",
+              version: 1,
+              content: [
+                {
+                  type: "paragraph",
+                  content: [
+                    {
+                      text: description,
+                      type: "text",
+                    },
+                  ],
+                },
+              ],
+            },
+            [this.customFields.get("Sprint")!]: sprintId,
+            [this.customFields.get("Story point estimate")!]:
+              storyPointsEstimate,
+          },
+        }),
+      }
+    )
+    const Success = await CreatedIssue
+    const SuccessJson = await Success.json()
+    this.setTransition(SuccessJson.id, status)
   }
 
-  customFieldFunction(param: string, id: number) {
-    switch (param) {
-      case "sprint":
-        return { [this.customFields.get("Sprint")!]: id }
-      case "storyPoints":
-        return { [this.customFields.get("Story point estimate")!]: id }
-      default:
-        return null
-    }
+  async setTransition(issueKey: string, status: string): Promise<void> {
+    const transitions = new Map<string, string>()
+    const transitonResponse = await fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueKey}/transitions`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      }
+    )
+
+    const data = await transitonResponse.json()
+
+    data.transitions.forEach((field: { name: string; id: string }) => {
+      transitions.set(field.name, field.id)
+    })
+    const transitionId = +transitions.get(status)!
+
+    fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueKey}/transitions`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ transition: { id: transitionId } }),
+      }
+    )
   }
 }
 export class JiraCloudProviderCreator extends ProviderCreator {

@@ -47,6 +47,18 @@ export interface ProviderApi {
     rankBefore: string,
     rankAfter: string
   ): Promise<void>
+
+  createIssue(
+    issueSummary: string,
+    issueTypeId: string,
+    projectId: string,
+    reporterId: string,
+    assigneeId: string,
+    sprintId: number,
+    storyPointsEstimate: number,
+    description: string,
+    status: string
+  ): void
 }
 
 export abstract class ProviderCreator {
