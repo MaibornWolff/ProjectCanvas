@@ -12,10 +12,14 @@ import {
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { IconFileUpload } from "@tabler/icons"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { Dispatch, SetStateAction } from "react"
 import { useCanvasStore } from "../../lib/Store"
-import { getIssueTypes } from "../projects-view/queryFetchers"
+import {
+  createNewIssue,
+  getAssignableUsersByProject,
+  getIssueTypes,
+} from "./queryFunctions"
 import { RichText } from "./RichText"
 
 export function CreateIssueModal({
@@ -41,7 +45,7 @@ export function CreateIssueModal({
     reporter: string
   }>({
     initialValues: {
-      project: selectedProject?.name || "",
+      project: selectedProject?.id || "0",
       issueType: "",
       summary: "",
       assignee: "",
@@ -57,6 +61,13 @@ export function CreateIssueModal({
     queryFn: () => getIssueTypes(form.getInputProps("project").value!),
     enabled: !!form.getInputProps("project").value,
   })
+  const { data: assignableUsers } = useQuery({
+    queryKey: ["assignableUsers", form.getInputProps("project").value],
+    queryFn: () =>
+      getAssignableUsersByProject(form.getInputProps("project").value!),
+    enabled: !!form.getInputProps("project").value,
+  })
+
   return (
     <Modal
       opened={opened}
@@ -72,12 +83,19 @@ export function CreateIssueModal({
       overlayOpacity={0.55}
       overlayBlur={3}
     >
-      <form onSubmit={form.onSubmit(() => {})}>
+      <form
+        onSubmit={form.onSubmit((issue) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { data: createdIssue } = useMutation({
+            mutationFn: () => createNewIssue(issue).then(() => {}),
+          })
+        })}
+      >
         <Stack spacing="md">
           <Select
             label="Project"
             placeholder="Project"
-            nothingFound="No options"
+            nothingFound="No Options"
             data={projects.map((project) => ({
               value: project.id,
               label: `${project.name} (${project.key})`,
@@ -89,15 +107,19 @@ export function CreateIssueModal({
               form.getInputProps("project").onChange(value)
               form.setFieldValue("issueType", "")
               form.setFieldValue("status", "")
+              form.setFieldValue("assignee", "")
             }}
           />
           <Select
             label="Issue Type"
             placeholder="Story"
-            nothingFound="No options"
+            nothingFound="No Options"
             data={
               !isLoading && issueTypes && issueTypes instanceof Array
-                ? issueTypes.map((issueType) => issueType.name)
+                ? issueTypes.map((issueType) => ({
+                    value: issueType.id,
+                    label: issueType.name,
+                  }))
                 : []
             }
             searchable
@@ -107,14 +129,18 @@ export function CreateIssueModal({
           <Divider m={10} />
           <Select
             label="Status"
-            placeholder="To do"
-            nothingFound="No options"
+            placeholder="To Do"
+            nothingFound={
+              form.getInputProps("issueType").value === ""
+                ? "Please Select an Issue Type First."
+                : "No Options"
+            }
             data={
               !isLoading && issueTypes && issueTypes instanceof Array
                 ? issueTypes
                     .find(
                       (issueType) =>
-                        issueType.name === form.getInputProps("issueType").value
+                        issueType.id === form.getInputProps("issueType").value
                     )
                     ?.statuses?.map((status) => status.name) || []
                 : []
@@ -130,15 +156,22 @@ export function CreateIssueModal({
           <Select
             label="Assignee"
             placeholder="Unassigned"
-            nothingFound="No options"
-            data={["Person 1", "Person 2", "Person 3", "Person 4"]}
+            nothingFound="No Options"
+            data={
+              !isLoading && assignableUsers && assignableUsers instanceof Array
+                ? assignableUsers.map((assignableUser) => ({
+                    value: assignableUser.accountId,
+                    label: assignableUser.displayName,
+                  }))
+                : []
+            }
             searchable
             {...form.getInputProps("assignee")}
           />
           <Select
             label="Sprint"
             placeholder="Sprint 1"
-            nothingFound="No options"
+            nothingFound="No Options"
             data={["Sprint 1", "Sprint 2", "Sprint 3", "Sprint 4"]}
             searchable
             {...form.getInputProps("sprint")}
@@ -149,9 +182,16 @@ export function CreateIssueModal({
           />
           <Select
             label="Reporter"
-            placeholder="Person 1 "
-            nothingFound="No options"
-            data={["Person 1", "Person 2", "Person 3", "Person 4"]}
+            placeholder="Unassigned"
+            nothingFound="No Options"
+            data={
+              !isLoading && assignableUsers && assignableUsers instanceof Array
+                ? assignableUsers.map((assignableUser) => ({
+                    value: assignableUser.accountId,
+                    label: assignableUser.displayName,
+                  }))
+                : []
+            }
             searchable
             required
             {...form.getInputProps("reporter")}

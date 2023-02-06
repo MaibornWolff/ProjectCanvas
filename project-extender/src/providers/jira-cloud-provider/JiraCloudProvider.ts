@@ -2,7 +2,14 @@
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Issue, Sprint, Project, dateTimeFormat, IssueType } from "../../types"
+import {
+  Issue,
+  Sprint,
+  Project,
+  dateTimeFormat,
+  IssueType,
+  User,
+} from "../../types"
 import {
   JiraIssue,
   JiraIssueType,
@@ -119,6 +126,31 @@ class JiraCloudProvider implements ProviderApi {
         })
         .catch((error) =>
           reject(new Error(`Error in fetching the issue types: ${error}`))
+        )
+    })
+  }
+
+  async getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/user/assignable/search?project=${projectIdOrKey}`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const users: User[] = await response.json()
+          resolve(users as User[])
+        })
+        .catch((error) =>
+          reject(
+            new Error(
+              `Error in fetching the assignable users for the project ${projectIdOrKey}: ${error}`
+            )
+          )
         )
     })
   }
@@ -376,17 +408,27 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
-  async createIssue(
-    issueSummary: string,
-    issueTypeId: string,
-    projectId: string,
-    reporterId: string,
-    assigneeId: string,
-    sprintId: number,
-    storyPointsEstimate: number,
-    description: string,
+  async createIssue({
+    issueSummary,
+    issueTypeId,
+    projectId,
+    reporterId,
+    assigneeId,
+    sprintId,
+    storyPointsEstimate,
+    description,
+    status,
+  }: {
+    issueSummary: string
+    issueTypeId: string
+    projectId: string
+    reporterId: string
+    assigneeId: string
+    sprintId: string
+    storyPointsEstimate: number
+    description: string
     status: string
-  ) {
+  }): Promise<string> {
     const CreatedIssue = fetch(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue`,
       {
@@ -409,6 +451,7 @@ class JiraCloudProvider implements ProviderApi {
             assignee: {
               id: assigneeId,
             },
+            status: {},
             description: {
               type: "doc",
               version: 1,
@@ -434,6 +477,7 @@ class JiraCloudProvider implements ProviderApi {
     const Success = await CreatedIssue
     const SuccessJson = await Success.json()
     this.setTransition(SuccessJson.id, status)
+    return SuccessJson.key
   }
 
   async setTransition(issueKey: string, status: string): Promise<void> {

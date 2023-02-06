@@ -114,6 +114,17 @@ server.get<{
     .catch((error) => reply.status(400).send(error))
 })
 
+server.get<{
+  Querystring: { projectIdOrKey: string }
+}>("/assignableUsersByProject", async (request, reply) => {
+  await issueProvider
+    .getAssignableUsersByProject(request.query.projectIdOrKey)
+    .then((users) => {
+      reply.status(200).send(users)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
 server.get<{ Querystring: { project: string } }>(
   "/boardIdsByProject",
   async (request, reply) => {
@@ -219,6 +230,29 @@ server.put<{
     )
     .then(() => {
       reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.post<{
+  Body: {
+    issue: {
+      issueSummary: string
+      issueTypeId: string
+      projectId: string
+      reporterId: string
+      assigneeId: string
+      sprintId: string
+      storyPointsEstimate: number
+      description: string
+      status: string
+    }
+  }
+}>("/createIssue", (request, reply) => {
+  issueProvider
+    .createIssue(request.body.issue)
+    .then((issueKey) => {
+      reply.status(200).send(issueKey)
     })
     .catch((error) => reply.status(400).send(error))
 })
