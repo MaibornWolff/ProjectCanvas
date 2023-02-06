@@ -2,7 +2,14 @@
 /* eslint-disable class-methods-use-this */
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { dateTimeFormat, Issue, IssueType, Project, Sprint } from "../../types"
+import {
+  dateTimeFormat,
+  Issue,
+  IssueType,
+  Project,
+  Sprint,
+  User,
+} from "../../types"
 import {
   JiraIssue,
   JiraIssueType,
@@ -180,7 +187,7 @@ class JiraServerProvider implements ProviderApi {
 
     const sprints: Sprint[] = data.values
       .filter((element: { state: string }) => element.state !== "closed")
-      .map((element: JiraSprint, index: number) => {
+      .map((element: JiraSprint) => {
         const sDate = new Date(element.startDate)
         const startDate = Number.isNaN(sDate.getTime())
           ? "Invalid Date"
@@ -195,7 +202,6 @@ class JiraServerProvider implements ProviderApi {
           state: element.state,
           startDate,
           endDate,
-          index,
         }
       })
     return sprints
@@ -239,7 +245,7 @@ class JiraServerProvider implements ProviderApi {
     const data = await response.json()
 
     const issues: Promise<Issue[]> = Promise.all(
-      data.issues.map(async (element: JiraIssue, index: number) => ({
+      data.issues.map(async (element: JiraIssue) => ({
         issueKey: element.key,
         summary: element.fields.summary,
         creator: element.fields.creator.name,
@@ -255,7 +261,6 @@ class JiraServerProvider implements ProviderApi {
           avatarUrls: element.fields.assignee?.avatarUrls,
         },
         rank: element.fields[rankCustomField!],
-        index,
       }))
     )
     return issues
@@ -387,6 +392,15 @@ class JiraServerProvider implements ProviderApi {
           )
         )
     })
+  }
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+
+  getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
+    throw new Error("Method not implemented.")
+  }
+
+  createIssue(issue: Issue): Promise<string> {
+    throw new Error("Method not implemented.")
   }
 }
 

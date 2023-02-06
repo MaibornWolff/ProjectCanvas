@@ -9,6 +9,7 @@ import {
 } from "./providers/base-provider"
 import { JiraCloudProviderCreator } from "./providers/jira-cloud-provider"
 import { JiraServerProviderCreator } from "./providers/jira-server-provider"
+import { Issue } from "./types"
 
 export * from "./types"
 
@@ -236,17 +237,7 @@ server.put<{
 
 server.post<{
   Body: {
-    issue: {
-      issueSummary: string
-      issueTypeId: string
-      projectId: string
-      reporterId: string
-      assigneeId: string
-      sprintId: string
-      storyPointsEstimate: number
-      description: string
-      status: string
-    }
+    issue: Issue
   }
 }>("/createIssue", (request, reply) => {
   issueProvider

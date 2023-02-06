@@ -1,4 +1,4 @@
-import { IssueType, User } from "project-extender"
+import { Issue, IssueType, User } from "project-extender"
 
 export const getIssueTypes = (projectIdOrKey: string): Promise<IssueType[]> =>
   fetch(
@@ -20,21 +20,9 @@ export const getAssignableUsersByProject = (
     .then((users) => users.json())
     .catch((err) => err)
 
-export const createNewIssue = (issue: {
-  project: string
-  issueType: string
-  summary: string
-  assignee: string
-  sprint: string
-  status: string
-  storyPointsEstimate: number
-  attachement: string
-  reporter: string
-}): Promise<string> =>
+export const createNewIssue = (issue: Issue) =>
   fetch(`${import.meta.env.VITE_EXTENDER}/createIssue`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(issue),
-  })
-    .then((users) => users.json())
-    .catch((err) => err)
+    body: JSON.stringify({ issue }),
+  }).catch((err) => err)

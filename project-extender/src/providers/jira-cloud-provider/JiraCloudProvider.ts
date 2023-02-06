@@ -189,7 +189,7 @@ class JiraCloudProvider implements ProviderApi {
 
     const sprints: Sprint[] = data.values
       .filter((element: { state: string }) => element.state !== "closed")
-      .map((element: JiraSprint, index: number) => {
+      .map((element: JiraSprint) => {
         const sDate = new Date(element.startDate)
         const startDate = Number.isNaN(sDate.getTime())
           ? "Invalid Date"
@@ -204,7 +204,6 @@ class JiraCloudProvider implements ProviderApi {
           state: element.state,
           startDate,
           endDate,
-          index,
         }
       })
     return sprints
@@ -249,7 +248,7 @@ class JiraCloudProvider implements ProviderApi {
     const data = await response.json()
 
     const issues: Promise<Issue[]> = Promise.all(
-      data.issues.map(async (element: JiraIssue, index: number) => ({
+      data.issues.map(async (element: JiraIssue) => ({
         issueKey: element.key,
         summary: element.fields.summary,
         creator: element.fields.creator.displayName,
@@ -265,7 +264,6 @@ class JiraCloudProvider implements ProviderApi {
           avatarUrls: element.fields.assignee?.avatarUrls,
         },
         rank: element.fields[rankCustomField],
-        index,
       }))
     )
 
@@ -409,27 +407,17 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async createIssue({
-    issueSummary,
-    issueTypeId,
+    summary,
+    type,
     projectId,
-    reporterId,
-    assigneeId,
-    sprintId,
-    storyPointsEstimate,
+    reporter,
+    assignee,
+    // sprintId,
+    // storyPointsEstimate,
     description,
-    status,
-  }: {
-    issueSummary: string
-    issueTypeId: string
-    projectId: string
-    reporterId: string
-    assigneeId: string
-    sprintId: string
-    storyPointsEstimate: number
-    description: string
-    status: string
-  }): Promise<string> {
-    const CreatedIssue = fetch(
+  }: // status,
+  Issue): Promise<string> {
+    const createdIssue = await fetch(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue`,
       {
         method: "POST",
@@ -440,18 +428,15 @@ class JiraCloudProvider implements ProviderApi {
         },
         body: JSON.stringify({
           fields: {
-            summary: issueSummary,
-            issuetype: { id: issueTypeId },
+            summary,
+            issuetype: { id: type },
             project: {
               id: projectId,
             },
             reporter: {
-              id: reporterId,
+              id: reporter,
             },
-            assignee: {
-              id: assigneeId,
-            },
-            status: {},
+            assignee,
             description: {
               type: "doc",
               version: 1,
@@ -467,17 +452,16 @@ class JiraCloudProvider implements ProviderApi {
                 },
               ],
             },
-            [this.customFields.get("Sprint")!]: sprintId,
-            [this.customFields.get("Story point estimate")!]:
-              storyPointsEstimate,
+            // [this.customFields.get("Sprint")!]: sprintId,
+            // [this.customFields.get("Story point estimate")!]:
+            //   storyPointsEstimate,
           },
         }),
       }
-    )
-    const Success = await CreatedIssue
-    const SuccessJson = await Success.json()
-    this.setTransition(SuccessJson.id, status)
-    return SuccessJson.key
+    ).then((data) => data.json())
+    // console.log(createdIssue)
+    // this.setTransition(SuccessJson.id, status)
+    return createdIssue.key
   }
 
   async setTransition(issueKey: string, status: string): Promise<void> {

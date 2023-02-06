@@ -7,12 +7,15 @@ import {
   NumberInput,
   Select,
   Stack,
+  Textarea,
   TextInput,
   useMantineTheme,
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
+import { showNotification } from "@mantine/notifications"
 import { IconFileUpload } from "@tabler/icons"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { Issue } from "project-extender"
 import { Dispatch, SetStateAction } from "react"
 import { useCanvasStore } from "../../lib/Store"
 import {
@@ -20,7 +23,6 @@ import {
   getAssignableUsersByProject,
   getIssueTypes,
 } from "./queryFunctions"
-import { RichText } from "./RichText"
 
 export function CreateIssueModal({
   opened,
@@ -33,39 +35,44 @@ export function CreateIssueModal({
   const selectedProject = useCanvasStore((state) => state.selectedProject)
 
   const theme = useMantineTheme()
-  const form = useForm<{
-    project: string
-    issueType: string
-    summary: string
-    assignee: string
-    sprint: string
-    status: string
-    storyPointsEstimate: number
-    attachement: string
-    reporter: string
-  }>({
+  const form = useForm<Issue>({
     initialValues: {
-      project: selectedProject?.id || "0",
-      issueType: "",
+      projectId: selectedProject?.id || "0",
+      type: "",
       summary: "",
-      assignee: "",
-      sprint: "",
+      description: "",
+      assignee: { id: "" },
+      sprintId: "",
       status: "",
       storyPointsEstimate: 0,
       attachement: "",
       reporter: "",
-    },
+    } as Issue,
   })
   const { data: issueTypes, isLoading } = useQuery({
-    queryKey: ["issueTypes", form.getInputProps("project").value],
-    queryFn: () => getIssueTypes(form.getInputProps("project").value!),
-    enabled: !!form.getInputProps("project").value,
+    queryKey: ["issueTypes", form.getInputProps("projectId").value],
+    queryFn: () => getIssueTypes(form.getInputProps("projectId").value!),
+    enabled: !!form.getInputProps("projectId").value,
   })
   const { data: assignableUsers } = useQuery({
-    queryKey: ["assignableUsers", form.getInputProps("project").value],
+    queryKey: ["assignableUsers", form.getInputProps("projectId").value],
     queryFn: () =>
-      getAssignableUsersByProject(form.getInputProps("project").value!),
-    enabled: !!form.getInputProps("project").value,
+      getAssignableUsersByProject(form.getInputProps("projectId").value!),
+    enabled: !!form.getInputProps("projectId").value,
+  })
+  const mutation = useMutation({
+    mutationFn: (issue: Issue) => createNewIssue(issue),
+    onError: () => {
+      showNotification({
+        message: `The issue couldn't be created! 😢`,
+        color: "red",
+      })
+    },
+    onSuccess: () => {
+      showNotification({
+        message: `The issue has been created`,
+      })
+    },
   })
 
   return (
@@ -84,11 +91,9 @@ export function CreateIssueModal({
       overlayBlur={3}
     >
       <form
-        onSubmit={form.onSubmit((issue) => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { data: createdIssue } = useMutation({
-            mutationFn: () => createNewIssue(issue).then(() => {}),
-          })
+        onSubmit={form.onSubmit((issue, event) => {
+          event.preventDefault()
+          mutation.mutate(issue)
         })}
       >
         <Stack spacing="md">
@@ -102,12 +107,12 @@ export function CreateIssueModal({
             }))}
             searchable
             required
-            {...form.getInputProps("project")}
+            {...form.getInputProps("projectId")}
             onChange={(value) => {
-              form.getInputProps("project").onChange(value)
-              form.setFieldValue("issueType", "")
+              form.getInputProps("projectId").onChange(value)
+              form.setFieldValue("type", "")
               form.setFieldValue("status", "")
-              form.setFieldValue("assignee", "")
+              form.setFieldValue("assignee.id", "")
             }}
           />
           <Select
@@ -124,14 +129,14 @@ export function CreateIssueModal({
             }
             searchable
             required
-            {...form.getInputProps("issueType")}
+            {...form.getInputProps("type")}
           />
           <Divider m={10} />
           <Select
             label="Status"
             placeholder="To Do"
             nothingFound={
-              form.getInputProps("issueType").value === ""
+              form.getInputProps("type").value === ""
                 ? "Please Select an Issue Type First."
                 : "No Options"
             }
@@ -140,7 +145,7 @@ export function CreateIssueModal({
                 ? issueTypes
                     .find(
                       (issueType) =>
-                        issueType.id === form.getInputProps("issueType").value
+                        issueType.id === form.getInputProps("type").value
                     )
                     ?.statuses?.map((status) => status.name) || []
                 : []
@@ -149,10 +154,13 @@ export function CreateIssueModal({
           />
           <TextInput
             label="Summary"
-            withAsterisk
+            required
             {...form.getInputProps("summary")}
           />
-          <RichText />
+          <Textarea
+            label="Description"
+            {...form.getInputProps("description")}
+          />
           <Select
             label="Assignee"
             placeholder="Unassigned"
@@ -166,15 +174,15 @@ export function CreateIssueModal({
                 : []
             }
             searchable
-            {...form.getInputProps("assignee")}
+            {...form.getInputProps("assignee.id")}
           />
           <Select
             label="Sprint"
-            placeholder="Sprint 1"
+            placeholder=""
             nothingFound="No Options"
-            data={["Sprint 1", "Sprint 2", "Sprint 3", "Sprint 4"]}
+            data={[]}
             searchable
-            {...form.getInputProps("sprint")}
+            {...form.getInputProps("sprintId")}
           />
           <NumberInput
             label="Story Point Estimate"

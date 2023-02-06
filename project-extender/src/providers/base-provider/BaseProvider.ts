@@ -49,17 +49,7 @@ export interface ProviderApi {
     rankAfter: string
   ): Promise<void>
 
-  createIssue(issue: {
-    issueSummary: string
-    issueTypeId: string
-    projectId: string
-    reporterId: string
-    assigneeId: string
-    sprintId: string
-    storyPointsEstimate: number
-    description: string
-    status: string
-  }): Promise<string>
+  createIssue(issue: Issue): Promise<string>
 }
 
 export abstract class ProviderCreator {

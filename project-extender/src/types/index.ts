@@ -16,9 +16,9 @@ export interface Sprint {
 }
 
 export interface Project {
-  name: string
+  id: string
   key: string
-  id?: string
+  name: string
   lead: string
   type: string
 }
@@ -28,13 +28,13 @@ export interface Issue {
   summary: string
   creator: string
   status: string
-  index: number
-  columnId: string
   type: string
+  description: string
   storyPointsEstimate: number
   epic: string
   labels: string[]
   assignee: {
+    id: string
     displayName: string
     avatarUrls: {
       "16x16": string
@@ -44,6 +44,10 @@ export interface Issue {
     }
   }
   rank: string
+  reporter: string
+  attachement: string
+  sprintId: string
+  projectId: string
 }
 
 interface IssueStatus {
