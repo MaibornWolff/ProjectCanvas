@@ -402,6 +402,10 @@ class JiraServerProvider implements ProviderApi {
   createIssue(issue: Issue): Promise<string> {
     throw new Error("Method not implemented.")
   }
+
+  getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
+    throw new Error("Method not implemented.")
+  }
 }
 
 export class JiraServerProviderCreator extends ProviderCreator {

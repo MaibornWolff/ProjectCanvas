@@ -16,7 +16,7 @@ export interface Sprint {
 }
 
 export interface Project {
-  id: string
+  id?: string
   key: string
   name: string
   lead: string

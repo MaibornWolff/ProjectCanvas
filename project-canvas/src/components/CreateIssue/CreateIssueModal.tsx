@@ -21,7 +21,10 @@ import { useCanvasStore } from "../../lib/Store"
 import {
   createNewIssue,
   getAssignableUsersByProject,
+  getEpicsByProject,
   getIssueTypes,
+  getBoardIds,
+  getSprints,
 } from "./queryFunctions"
 
 export function CreateIssueModal({
@@ -73,6 +76,22 @@ export function CreateIssueModal({
         message: `The issue has been created`,
       })
     },
+  })
+  const { data: boardIds } = useQuery({
+    queryKey: ["boards", form.getInputProps("projectId").value],
+    queryFn: () => getBoardIds(form.getInputProps("projectId").value!),
+    enabled: !!form.getInputProps("projectId").value,
+  })
+  const { data: sprints } = useQuery({
+    queryKey: ["sprints"],
+    queryFn: () => getSprints(boardIds![0]),
+    enabled: !!boardIds && !!boardIds[0], // TODO: fetch when boards are fetched (iterate over all boards)
+  })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: epics } = useQuery({
+    queryKey: ["epics", form.getInputProps("projectId").value],
+    queryFn: () => getEpicsByProject(form.getInputProps("projectId").value!),
+    enabled: !!form.getInputProps("projectId").value,
   })
 
   return (
@@ -180,7 +199,14 @@ export function CreateIssueModal({
             label="Sprint"
             placeholder=""
             nothingFound="No Options"
-            data={[]}
+            data={
+              !isLoading && sprints && sprints instanceof Array
+                ? sprints.map((sprint) => ({
+                    value: sprint.id,
+                    label: sprint.name,
+                  }))
+                : []
+            }
             searchable
             {...form.getInputProps("sprintId")}
           />

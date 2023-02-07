@@ -50,6 +50,7 @@ export interface ProviderApi {
   ): Promise<void>
 
   createIssue(issue: Issue): Promise<string>
+  getEpicsByProject(projectIdOrKey: string): Promise<Issue[]>
 }
 
 export abstract class ProviderCreator {

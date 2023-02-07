@@ -496,6 +496,43 @@ class JiraCloudProvider implements ProviderApi {
       }
     )
   }
+
+  async getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/search?jql=issuetype = Epic AND project = ${projectIdOrKey}`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const epicData = await response.json()
+
+          const epics: Promise<Issue[]> = Promise.all(
+            epicData.issues.map(async (element: JiraIssue) => ({
+              issueKey: element.key,
+              summary: element.fields.summary,
+              labels: element.fields.labels,
+              assignee: {
+                displayName: element.fields.assignee?.displayName,
+                avatarUrls: element.fields.assignee?.avatarUrls,
+              },
+            }))
+          )
+          resolve(epics)
+        })
+        .catch((error) =>
+          reject(
+            new Error(
+              `Error in fetching the epics for the project ${projectIdOrKey}: ${error}`
+            )
+          )
+        )
+    })
+  }
 }
 export class JiraCloudProviderCreator extends ProviderCreator {
   public factoryMethod(): ProviderApi {

@@ -247,3 +247,14 @@ server.post<{
     })
     .catch((error) => reply.status(400).send(error))
 })
+
+server.get<{
+  Querystring: { projectIdOrKey: string }
+}>("/epicsByProject", (request, reply) => {
+  issueProvider
+    .getEpicsByProject(request.query.projectIdOrKey)
+    .then((epics) => {
+      reply.status(200).send(epics)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
