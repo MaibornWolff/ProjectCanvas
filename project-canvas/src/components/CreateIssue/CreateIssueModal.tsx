@@ -14,7 +14,7 @@ import {
 import { useForm } from "@mantine/form"
 import { showNotification } from "@mantine/notifications"
 import { IconFileUpload } from "@tabler/icons"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { Dispatch, SetStateAction } from "react"
 import { useCanvasStore } from "../../lib/Store"
@@ -34,34 +34,49 @@ export function CreateIssueModal({
   opened: boolean
   setOpened: Dispatch<SetStateAction<boolean>>
 }) {
+  const queryClient = useQueryClient()
+  const theme = useMantineTheme()
+
   const projects = useCanvasStore((state) => state.projects)
   const selectedProject = useCanvasStore((state) => state.selectedProject)
 
-  const theme = useMantineTheme()
   const form = useForm<Issue>({
     initialValues: {
-      projectId: selectedProject?.id || "0",
+      projectId: selectedProject?.id,
       type: "",
       summary: "",
       description: "",
       assignee: { id: "" },
-      sprintId: "",
-      status: "",
-      storyPointsEstimate: 0,
-      attachement: "",
+      status: "To Do",
       reporter: "",
     } as Issue,
   })
   const { data: issueTypes, isLoading } = useQuery({
     queryKey: ["issueTypes", form.getInputProps("projectId").value],
     queryFn: () => getIssueTypes(form.getInputProps("projectId").value!),
-    enabled: !!form.getInputProps("projectId").value,
+    enabled: !!projects && !!form.getInputProps("projectId").value,
   })
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", form.getInputProps("projectId").value],
     queryFn: () =>
       getAssignableUsersByProject(form.getInputProps("projectId").value!),
-    enabled: !!form.getInputProps("projectId").value,
+    enabled: !!projects && !!form.getInputProps("projectId").value,
+  })
+  const { data: boardIds } = useQuery({
+    queryKey: ["boards", form.getInputProps("projectId").value],
+    queryFn: () => getBoardIds(form.getInputProps("projectId").value!),
+    enabled: !!projects && !!form.getInputProps("projectId").value,
+  })
+  const { data: sprints } = useQuery({
+    queryKey: ["sprints"],
+    // TODO: fetch when boards are fetched (iterate over all boards) or select a specific one
+    queryFn: () => getSprints(boardIds![0]),
+    enabled: !!projects && !!boardIds && !!boardIds[0],
+  })
+  const { data: epics } = useQuery({
+    queryKey: ["epics", form.getInputProps("projectId").value],
+    queryFn: () => getEpicsByProject(form.getInputProps("projectId").value!),
+    enabled: !!projects && !!form.getInputProps("projectId").value,
   })
   const mutation = useMutation({
     mutationFn: (issue: Issue) => createNewIssue(issue),
@@ -73,27 +88,14 @@ export function CreateIssueModal({
     },
     onSuccess: () => {
       showNotification({
-        message: `The issue has been created`,
+        message: `The issue has been created!`,
+        color: "green",
       })
+      queryClient.invalidateQueries({ queryKey: ["issues"] })
+      setOpened(false)
+      form.reset()
     },
   })
-  const { data: boardIds } = useQuery({
-    queryKey: ["boards", form.getInputProps("projectId").value],
-    queryFn: () => getBoardIds(form.getInputProps("projectId").value!),
-    enabled: !!form.getInputProps("projectId").value,
-  })
-  const { data: sprints } = useQuery({
-    queryKey: ["sprints"],
-    queryFn: () => getSprints(boardIds![0]),
-    enabled: !!boardIds && !!boardIds[0], // TODO: fetch when boards are fetched (iterate over all boards)
-  })
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data: epics } = useQuery({
-    queryKey: ["epics", form.getInputProps("projectId").value],
-    queryFn: () => getEpicsByProject(form.getInputProps("projectId").value!),
-    enabled: !!form.getInputProps("projectId").value,
-  })
-
   return (
     <Modal
       opened={opened}
@@ -131,7 +133,7 @@ export function CreateIssueModal({
               form.getInputProps("projectId").onChange(value)
               form.setFieldValue("type", "")
               form.setFieldValue("status", "")
-              form.setFieldValue("assignee.id", "")
+              form.setFieldValue("assignee.id", null)
             }}
           />
           <Select
@@ -140,15 +142,21 @@ export function CreateIssueModal({
             nothingFound="No Options"
             data={
               !isLoading && issueTypes && issueTypes instanceof Array
-                ? issueTypes.map((issueType) => ({
-                    value: issueType.id,
-                    label: issueType.name,
-                  }))
+                ? issueTypes
+                    .filter((issueType) => issueType.name !== "Subtask")
+                    .map((issueType) => ({
+                      value: issueType.id,
+                      label: issueType.name,
+                    }))
                 : []
             }
             searchable
             required
             {...form.getInputProps("type")}
+            onChange={(value) => {
+              form.getInputProps("type").onChange(value)
+              form.setFieldValue("status", "To Do")
+            }}
           />
           <Divider m={10} />
           <Select
@@ -192,12 +200,13 @@ export function CreateIssueModal({
                   }))
                 : []
             }
+            clearable
             searchable
             {...form.getInputProps("assignee.id")}
           />
           <Select
             label="Sprint"
-            placeholder=""
+            placeholder="Backlog"
             nothingFound="No Options"
             data={
               !isLoading && sprints && sprints instanceof Array
@@ -208,10 +217,33 @@ export function CreateIssueModal({
                 : []
             }
             searchable
+            clearable
             {...form.getInputProps("sprintId")}
           />
+          {form.getInputProps("type").value !==
+            issueTypes?.find((issueType) => issueType.name === "Epic")?.id && (
+            <Select
+              label="Epic"
+              placeholder=""
+              nothingFound="No Options"
+              data={
+                epics && epics instanceof Array
+                  ? epics.map((epic) => ({
+                      value: epic.issueKey,
+                      label: epic.summary,
+                    }))
+                  : []
+              }
+              searchable
+              clearable
+              {...form.getInputProps("epic")}
+            />
+          )}
+
           <NumberInput
+            min={0}
             label="Story Point Estimate"
+            defaultValue={null}
             {...form.getInputProps("storyPointsEstimate")}
           />
           <Select
@@ -227,6 +259,7 @@ export function CreateIssueModal({
                 : []
             }
             searchable
+            clearable
             required
             {...form.getInputProps("reporter")}
           />
@@ -235,6 +268,7 @@ export function CreateIssueModal({
             placeholder="Upload Files"
             icon={<IconFileUpload />}
             multiple
+            disabled
             {...form.getInputProps("attachement")}
           />
           <Group position="right">

@@ -28,6 +28,8 @@ export function handleOAuth2(win) {
     "read:issue-meta:jira",
     "read:avatar:jira",
     "read:field-configuration:jira",
+    "read:epic:jira-software",
+    "write:epic:jira-software",
   ].join("%20")
   const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
   const AUDIENCE = "api.atlassian.com"

@@ -412,56 +412,64 @@ class JiraCloudProvider implements ProviderApi {
     projectId,
     reporter,
     assignee,
-    // sprintId,
-    // storyPointsEstimate,
+    sprintId,
+    storyPointsEstimate,
     description,
-  }: // status,
-  Issue): Promise<string> {
-    const createdIssue = await fetch(
-      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${this.accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fields: {
-            summary,
-            issuetype: { id: type },
-            project: {
-              id: projectId,
-            },
-            reporter: {
-              id: reporter,
-            },
-            assignee,
-            description: {
-              type: "doc",
-              version: 1,
-              content: [
-                {
-                  type: "paragraph",
-                  content: [
-                    {
-                      text: description,
-                      type: "text",
-                    },
-                  ],
-                },
-              ],
-            },
-            // [this.customFields.get("Sprint")!]: sprintId,
-            // [this.customFields.get("Story point estimate")!]:
-            //   storyPointsEstimate,
+    status,
+    epic,
+  }: Issue): Promise<string> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
           },
-        }),
-      }
-    ).then((data) => data.json())
-    // console.log(createdIssue)
-    // this.setTransition(SuccessJson.id, status)
-    return createdIssue.key
+          body: JSON.stringify({
+            fields: {
+              summary,
+              parent: { key: epic },
+              issuetype: { id: type },
+              project: {
+                id: projectId,
+              },
+              reporter: {
+                id: reporter,
+              },
+              assignee,
+              description: {
+                type: "doc",
+                version: 1,
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        text: description,
+                        type: "text",
+                      },
+                    ],
+                  },
+                ],
+              },
+              [this.customFields.get("Sprint")!]: sprintId,
+              [this.customFields.get("Story point estimate")!]:
+                storyPointsEstimate,
+            },
+          }),
+        }
+      )
+        .then(async (data) => {
+          const createdIssue = await data.json()
+          resolve(createdIssue)
+          this.setTransition(createdIssue.id, status)
+          // this.setEpicLink(createdIssue.key, epic)
+        })
+        .catch((error) => reject(new Error(`Error creating issue: ${error}`)))
+    })
   }
 
   async setTransition(issueKey: string, status: string): Promise<void> {
