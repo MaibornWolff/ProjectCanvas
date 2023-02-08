@@ -16,8 +16,9 @@ export interface Sprint {
 }
 
 export interface Project {
-  name: string
+  id?: string
   key: string
+  name: string
   lead: string
   type: string
 }
@@ -27,13 +28,13 @@ export interface Issue {
   summary: string
   creator: string
   status: string
-  index: number
-  columnId: string
   type: string
+  description: string
   storyPointsEstimate: number
   epic: string
   labels: string[]
   assignee: {
+    id: string
     displayName: string
     avatarUrls: {
       "16x16": string
@@ -43,6 +44,30 @@ export interface Issue {
     }
   }
   rank: string
+  reporter: string
+  attachement: string
+  sprintId: string
+  projectId: string
+}
+
+interface IssueStatus {
+  description?: string
+  id: string
+  name: string
+}
+
+export interface IssueType {
+  id: string
+  name?: string
+  statuses?: IssueStatus[]
+  subtask: boolean
+}
+
+export interface User {
+  accountId: string
+  emailAddress: string
+  avatarUrls: { [key: string]: string }
+  displayName: string
 }
 
 export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {

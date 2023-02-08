@@ -1,4 +1,5 @@
 import {
+  Button,
   Center,
   Divider,
   Flex,
@@ -15,6 +16,7 @@ import { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../lib/Store"
+import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
 import { sortIssuesByRank } from "./helpers/backlogHelpers"
 import { onDragEnd } from "./helpers/draggingHelpers"
 import {
@@ -29,6 +31,7 @@ import { ReloadButton } from "./ReloadButton"
 
 export function BacklogView() {
   const navigate = useNavigate()
+  const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
@@ -154,7 +157,7 @@ export function BacklogView() {
         >
           <ScrollArea.Autosize
             className="left-panel"
-            maxHeight="80vh"
+            maxHeight="70vh"
             w="50%"
             p="sm"
             sx={{
@@ -167,6 +170,26 @@ export function BacklogView() {
                 issues={issuesWrappers.get("Backlog")!.issues}
               />
             )}
+            <Button
+              mt="xs"
+              variant="subtle"
+              color="gray"
+              compact
+              radius="xs"
+              display="flex"
+              w="100%"
+              onClick={() => setCreateIssueModalOpened(true)}
+              sx={{
+                justifyContent: "left",
+                ":hover": { backgroundColor: "#E8E2E2" },
+              }}
+            >
+              + Create Issue
+            </Button>
+            <CreateIssueModal
+              opened={createIssueModalOpened}
+              setOpened={setCreateIssueModalOpened}
+            />
           </ScrollArea.Autosize>
           <Divider
             size="xl"

@@ -9,6 +9,7 @@ import {
 } from "./providers/base-provider"
 import { JiraCloudProviderCreator } from "./providers/jira-cloud-provider"
 import { JiraServerProviderCreator } from "./providers/jira-server-provider"
+import { Issue } from "./types"
 
 export * from "./types"
 
@@ -99,6 +100,28 @@ server.get("/projects", async (_, reply) => {
     .getProjects()
     .then((projects) => {
       reply.status(200).send(projects)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.get<{
+  Querystring: { projectIdOrKey: string }
+}>("/issueTypesByProject", async (request, reply) => {
+  await issueProvider
+    .getIssueTypesByProject(request.query.projectIdOrKey)
+    .then((issueTypes) => {
+      reply.status(200).send(issueTypes)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.get<{
+  Querystring: { projectIdOrKey: string }
+}>("/assignableUsersByProject", async (request, reply) => {
+  await issueProvider
+    .getAssignableUsersByProject(request.query.projectIdOrKey)
+    .then((users) => {
+      reply.status(200).send(users)
     })
     .catch((error) => reply.status(400).send(error))
 })
@@ -208,6 +231,30 @@ server.put<{
     )
     .then(() => {
       reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.post<{
+  Body: {
+    issue: Issue
+  }
+}>("/createIssue", (request, reply) => {
+  issueProvider
+    .createIssue(request.body.issue)
+    .then((issueKey) => {
+      reply.status(200).send(issueKey)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.get<{
+  Querystring: { projectIdOrKey: string }
+}>("/epicsByProject", (request, reply) => {
+  issueProvider
+    .getEpicsByProject(request.query.projectIdOrKey)
+    .then((epics) => {
+      reply.status(200).send(epics)
     })
     .catch((error) => reply.status(400).send(error))
 })
