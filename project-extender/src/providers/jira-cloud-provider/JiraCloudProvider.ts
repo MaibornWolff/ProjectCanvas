@@ -466,7 +466,6 @@ class JiraCloudProvider implements ProviderApi {
           const createdIssue = await data.json()
           resolve(createdIssue)
           this.setTransition(createdIssue.id, status)
-          // this.setEpicLink(createdIssue.key, epic)
         })
         .catch((error) => reject(new Error(`Error creating issue: ${error}`)))
     })
