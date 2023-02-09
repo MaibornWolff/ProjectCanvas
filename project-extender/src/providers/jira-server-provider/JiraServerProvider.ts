@@ -2,8 +2,20 @@
 /* eslint-disable class-methods-use-this */
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { dateTimeFormat, Issue, Project, Sprint } from "../../types"
-import { JiraIssue, JiraProject, JiraSprint } from "../../types/jira"
+import {
+  dateTimeFormat,
+  Issue,
+  IssueType,
+  Project,
+  Sprint,
+  User,
+} from "../../types"
+import {
+  JiraIssue,
+  JiraIssueType,
+  JiraProject,
+  JiraSprint,
+} from "../../types/jira"
 
 class JiraServerProvider implements ProviderApi {
   private loginOptions = {
@@ -109,12 +121,34 @@ class JiraServerProvider implements ProviderApi {
       const projects = data.map((project: JiraProject) => ({
         key: project.key,
         name: project.name,
-        type: project.projectTypeKey,
+        id: project.id,
         lead: project.lead.displayName,
+        type: project.projectTypeKey,
       }))
       return projects
     }
     return Promise.reject(new Error(response.statusText))
+  }
+
+  async getIssueTypesByProject(projectIdOrKey: string): Promise<IssueType[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `${this.loginOptions.url}/rest/api/2/project/${projectIdOrKey}/statuses`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: this.getAuthHeader(),
+          },
+        }
+      )
+        .then(async (response) => {
+          const issueTypes: JiraIssueType[] = await response.json()
+          resolve(issueTypes as IssueType[])
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the issue types: ${error}`))
+        )
+    })
   }
 
   async getBoardIds(project: string): Promise<number[]> {
@@ -153,7 +187,7 @@ class JiraServerProvider implements ProviderApi {
 
     const sprints: Sprint[] = data.values
       .filter((element: { state: string }) => element.state !== "closed")
-      .map((element: JiraSprint, index: number) => {
+      .map((element: JiraSprint) => {
         const sDate = new Date(element.startDate)
         const startDate = Number.isNaN(sDate.getTime())
           ? "Invalid Date"
@@ -168,24 +202,24 @@ class JiraServerProvider implements ProviderApi {
           state: element.state,
           startDate,
           endDate,
-          index,
         }
       })
     return sprints
   }
 
-  async getIssuesByProject(project: string): Promise<Issue[]> {
+  async getIssuesByProject(project: string, boardId: number): Promise<Issue[]> {
     return this.fetchIssues(
-      `${this.loginOptions.url}/rest/api/2/search?jql=project=${project}&maxResults=10000`
+      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/issue?jql=project=${project}&maxResults=10000`
     )
   }
 
   async getIssuesBySprintAndProject(
     sprintId: number,
-    project: string
+    project: string,
+    boardId: number
   ): Promise<Issue[]> {
     return this.fetchIssues(
-      `${this.loginOptions.url}/rest/api/2/search?jql=sprint=${sprintId} AND project=${project}`
+      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/sprint/${sprintId}/issue?jql=project=${project}`
     )
   }
 
@@ -193,14 +227,13 @@ class JiraServerProvider implements ProviderApi {
     project: string,
     boardId: number
   ): Promise<Issue[]> {
-    const response = await this.fetchIssues(
+    return this.fetchIssues(
       `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
     )
-
-    return response
   }
 
   async fetchIssues(url: string): Promise<Issue[]> {
+    const rankCustomField = this.customFields.get("Rank")
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -212,23 +245,41 @@ class JiraServerProvider implements ProviderApi {
     const data = await response.json()
 
     const issues: Promise<Issue[]> = Promise.all(
-      data.issues.map(async (element: JiraIssue, index: number) => ({
+      data.issues.map(async (element: JiraIssue) => ({
         issueKey: element.key,
         summary: element.fields.summary,
-        creator: element.fields.creator.displayName,
+        creator: element.fields.creator.name,
         status: element.fields.status.name,
         type: element.fields.issuetype.name,
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(
           element.key
         ),
-        index,
+        epic: element.fields.epic?.name,
+        labels: element.fields.labels,
+        assignee: {
+          displayName: element.fields.assignee?.displayName,
+          avatarUrls: element.fields.assignee?.avatarUrls,
+        },
+        rank: element.fields[rankCustomField!],
       }))
     )
     return issues
   }
 
-  async moveIssueToSprint(sprint: number, issue: string): Promise<void> {
+  async moveIssueToSprintAndRank(
+    sprint: number,
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
+      const body = {
+        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+        issues: [issue],
+        ...(rankAfter && { rankAfterIssue: rankAfter }),
+        ...(rankBefore && { rankBeforeIssue: rankBefore }),
+      }
       fetch(`${this.loginOptions.url}/rest/agile/1.0/sprint/${sprint}/issue`, {
         method: "POST",
         headers: {
@@ -236,13 +287,10 @@ class JiraServerProvider implements ProviderApi {
           Authorization: this.getAuthHeader(),
           "Content-Type": "application/json",
         },
-        body: `{
-            "issues": [
-              "${issue}"
-            ]
-          }`,
+        body: JSON.stringify(body),
       })
         .then(() => resolve())
+
         .catch((error) => {
           reject(
             new Error(
@@ -277,6 +325,48 @@ class JiraServerProvider implements ProviderApi {
     })
   }
 
+  async rankIssueInBacklog(
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
+      const body: {
+        rankCustomFieldId: string
+        issues: string[]
+        rankBeforeIssue?: string
+        rankAfterIssue?: string
+      } = {
+        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+        issues: [issue],
+      }
+      if (rankBefore) {
+        body.rankBeforeIssue = rankBefore
+      } else if (rankAfter) {
+        body.rankAfterIssue = rankAfter
+      }
+      fetch(`http://${this.loginOptions.url}/rest/agile/1.0/issue/rank`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          Authorization: this.getAuthHeader(),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      })
+        .then(() => {
+          resolve()
+        })
+
+        .catch((error) =>
+          reject(
+            new Error(`Error in moving this issue to the Backlog: ${error}`)
+          )
+        )
+    })
+  }
+
   async getIssueStoryPointsEstimate(issue: string): Promise<number> {
     return new Promise((resolve, reject) => {
       fetch(`${this.loginOptions.url}/rest/api/2/issue/${issue}`, {
@@ -302,6 +392,19 @@ class JiraServerProvider implements ProviderApi {
           )
         )
     })
+  }
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+
+  getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
+    throw new Error("Method not implemented.")
+  }
+
+  createIssue(issue: Issue): Promise<string> {
+    throw new Error("Method not implemented.")
+  }
+
+  getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
+    throw new Error("Method not implemented.")
   }
 }
 

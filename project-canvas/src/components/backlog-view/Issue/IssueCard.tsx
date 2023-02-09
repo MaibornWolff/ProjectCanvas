@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Badge,
   Center,
   Group,
@@ -6,6 +7,7 @@ import {
   Stack,
   Text,
   ThemeIcon,
+  Tooltip,
 } from "@mantine/core"
 import {
   IconBookmark,
@@ -23,10 +25,29 @@ export function IssueCard({
   status,
   type,
   storyPointsEstimate,
+  epic,
+  labels,
+  assignee,
 }: Issue) {
   let icon: JSX.Element
   let iconGradient1: string
   let iconGradient2: string
+  let storyPointsColor: string
+
+  switch (status) {
+    case "To Do":
+      storyPointsColor = "gray.6"
+      break
+    case "In Progress":
+      storyPointsColor = "blue.8"
+      break
+    case "Done":
+      storyPointsColor = "green.9"
+      break
+    default:
+      storyPointsColor = "gray.6"
+  }
+
   switch (type) {
     case "Story":
       icon = <IconBookmark />
@@ -63,8 +84,7 @@ export function IssueCard({
               gap: 0,
               padding: theme.spacing.xs,
               transition: "background-color .8s ease-out",
-              boxShadow:
-                "0 0 1px 0 rgb(9 30 66 / 31%), 0 2px 4px -1px rgb(9 30 66 / 25%)",
+              boxShadow: theme.shadows.xs,
               ":hover": {
                 backgroundColor: "#ebecf0",
                 transition: "background-color .1s ease-in",
@@ -82,40 +102,65 @@ export function IssueCard({
             </Center>
 
             <Stack spacing={0} sx={{ flex: 12 }}>
-              <Text
-                size="sm"
-                color="blue"
-                td={status === "Done" ? "line-through" : "none"}
-                sx={{
-                  ":hover": {
-                    textDecoration: "underline",
-                    cursor: "pointer",
-                  },
-                }}
-              >
-                {issueKey}
-              </Text>
-
+              <Group>
+                <Text
+                  size="sm"
+                  color="blue"
+                  td={status === "Done" ? "line-through" : "none"}
+                  sx={{
+                    ":hover": {
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                    },
+                  }}
+                >
+                  {issueKey}
+                </Text>
+                {epic && <Badge color="violet">{epic}</Badge>}
+                {labels?.length !== 0 &&
+                  labels.map((label) => <Badge color="yellow">{label}</Badge>)}
+              </Group>
               <Text size="lg">{summary}</Text>
-
               <Group align="center" spacing="sm">
                 <Text size="sm">{type}</Text>
                 <Text size="sm">•</Text>
                 <Text size="sm">{status}</Text>
               </Group>
             </Stack>
+            <Tooltip
+              label={
+                assignee.displayName !== undefined
+                  ? assignee.displayName
+                  : "unassigned"
+              }
+            >
+              {assignee.avatarUrls !== undefined ? (
+                <Avatar
+                  src={assignee?.avatarUrls["24x24"]}
+                  size="sm"
+                  radius="xl"
+                  ml={4}
+                  mr={4}
+                />
+              ) : (
+                <Avatar radius="xl" />
+              )}
+            </Tooltip>
 
-            {storyPointsEstimate && (
-              <Badge
-                size="sm"
-                px="6px"
-                color="gray.6"
-                variant="filled"
-                sx={{ alignSelf: "flex-start" }}
-              >
-                {storyPointsEstimate}
-              </Badge>
-            )}
+            <Badge
+              w="24px"
+              p="0"
+              bg={
+                storyPointsEstimate !== undefined &&
+                storyPointsEstimate !== null
+                  ? storyPointsColor
+                  : "transparent"
+              }
+              variant="filled"
+              sx={{ alignSelf: "flex-start" }}
+            >
+              {storyPointsEstimate}
+            </Badge>
           </Group>
         </Paper>
       )}

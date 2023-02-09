@@ -1,7 +1,7 @@
 import { DropResult } from "react-beautiful-dnd"
 import { Issue, Sprint } from "project-extender"
 
-export const onDragEnd = async ({
+export const onDragEnd = ({
   source,
   destination,
   issuesWrappers,
@@ -25,12 +25,45 @@ export const onDragEnd = async ({
   const startId = source.droppableId
   const end = issuesWrappers.get(destination.droppableId)!
   const endId = destination.droppableId
+  const movedIssueKey = start.issues[source.index].issueKey
+  const destinationSprintId = end.sprint?.id
 
   if (start === end) {
     const newList = start.issues.filter(
       (_: Issue, idx: number) => idx !== source.index
     )
     newList.splice(destination.index, 0, start.issues[source.index])
+
+    const keyOfIssueRankedBefore =
+      destination.index === 0 ? "" : newList[destination.index - 1].issueKey
+    const keyOfIssueRankedAfter =
+      destination.index === newList.length - 1
+        ? ""
+        : newList[destination.index + 1].issueKey
+
+    if (destinationSprintId) {
+      fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToSprintAndRank`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sprint: destinationSprintId,
+          issue: movedIssueKey,
+          rankBefore: keyOfIssueRankedAfter,
+          rankAfter: keyOfIssueRankedBefore,
+        }),
+      })
+    } else if (destination.droppableId === "Backlog") {
+      fetch(`${import.meta.env.VITE_EXTENDER}/rankIssueInBacklog`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          issue: movedIssueKey,
+          rankBefore: keyOfIssueRankedAfter,
+          rankAfter: keyOfIssueRankedBefore,
+        }),
+      })
+    }
+
     updateIssuesWrapper(startId, {
       ...start,
       issues: newList,
@@ -50,24 +83,43 @@ export const onDragEnd = async ({
   })
   updateIssuesWrapper(endId, { ...end, issues: newEndIssues })
 
-  const movedIssueKey = start.issues[source.index].issueKey
-  const destinationSprintId = end.sprint?.id
+  const keyOfIssueRankedBefore =
+    destination.index === 0 ? "" : newEndIssues[destination.index - 1].issueKey
+  const keyOfIssueRankedAfter =
+    destination.index === newEndIssues.length - 1
+      ? ""
+      : newEndIssues[destination.index + 1].issueKey
+
   if (destinationSprintId) {
-    await fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToSprint`, {
+    fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToSprintAndRank`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         sprint: destinationSprintId,
         issue: movedIssueKey,
+        rankBefore: keyOfIssueRankedAfter,
+        rankAfter: keyOfIssueRankedBefore,
       }),
     })
   } else if (destination.droppableId === "Backlog") {
-    await fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToBacklog`, {
-      method: "POST",
+    fetch(`${import.meta.env.VITE_EXTENDER}/rankIssueInBacklog`, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         issue: movedIssueKey,
+        rankBefore: keyOfIssueRankedAfter,
+        rankAfter: keyOfIssueRankedBefore,
       }),
+    }).then(async () => {
+      fetch(`${import.meta.env.VITE_EXTENDER}/rankIssueInBacklog`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          issue: movedIssueKey,
+          rankBefore: keyOfIssueRankedAfter,
+          rankAfter: keyOfIssueRankedBefore,
+        }),
+      })
     })
   }
 

@@ -2,8 +2,20 @@
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { Issue, Sprint, Project, dateTimeFormat } from "../../types"
-import { JiraIssue, JiraProject, JiraSprint } from "../../types/jira"
+import {
+  Issue,
+  Sprint,
+  Project,
+  dateTimeFormat,
+  IssueType,
+  User,
+} from "../../types"
+import {
+  JiraIssue,
+  JiraIssueType,
+  JiraProject,
+  JiraSprint,
+} from "../../types/jira"
 import { getAccessToken } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
@@ -25,7 +37,6 @@ class JiraCloudProvider implements ProviderApi {
   }) {
     if (this.accessToken === undefined)
       this.accessToken = await getAccessToken(oauthLoginOptions)
-
     await fetch("https://api.atlassian.com/oauth/token/accessible-resources", {
       headers: {
         Accept: "application/json",
@@ -90,11 +101,58 @@ class JiraCloudProvider implements ProviderApi {
     const projects = data.values.map((project: JiraProject) => ({
       key: project.key,
       name: project.name,
+      id: project.id,
       lead: project.lead.displayName,
       type: project.projectTypeKey,
     }))
 
     return projects
+  }
+
+  async getIssueTypesByProject(projectIdOrKey: string): Promise<IssueType[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/project/${projectIdOrKey}/statuses`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const issueTypes: JiraIssueType[] = await response.json()
+          resolve(issueTypes as IssueType[])
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the issue types: ${error}`))
+        )
+    })
+  }
+
+  async getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/user/assignable/search?project=${projectIdOrKey}`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const users: User[] = await response.json()
+          resolve(users as User[])
+        })
+        .catch((error) =>
+          reject(
+            new Error(
+              `Error in fetching the assignable users for the project ${projectIdOrKey}: ${error}`
+            )
+          )
+        )
+    })
   }
 
   async getBoardIds(project: string): Promise<number[]> {
@@ -131,7 +189,7 @@ class JiraCloudProvider implements ProviderApi {
 
     const sprints: Sprint[] = data.values
       .filter((element: { state: string }) => element.state !== "closed")
-      .map((element: JiraSprint, index: number) => {
+      .map((element: JiraSprint) => {
         const sDate = new Date(element.startDate)
         const startDate = Number.isNaN(sDate.getTime())
           ? "Invalid Date"
@@ -146,7 +204,6 @@ class JiraCloudProvider implements ProviderApi {
           state: element.state,
           startDate,
           endDate,
-          index,
         }
       })
     return sprints
@@ -181,17 +238,17 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   async fetchIssues(url: string): Promise<Issue[]> {
+    const rankCustomField = this.customFields.get("Rank") || ""
     const response = await fetch(url, {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${this.accessToken}`,
       },
     })
-
     const data = await response.json()
 
     const issues: Promise<Issue[]> = Promise.all(
-      data.issues.map(async (element: JiraIssue, index: number) => ({
+      data.issues.map(async (element: JiraIssue) => ({
         issueKey: element.key,
         summary: element.fields.summary,
         creator: element.fields.creator.displayName,
@@ -200,15 +257,33 @@ class JiraCloudProvider implements ProviderApi {
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(
           element.key
         ),
-        index,
+        epic: element.fields.parent?.fields.summary,
+        labels: element.fields.labels,
+        assignee: {
+          displayName: element.fields.assignee?.displayName,
+          avatarUrls: element.fields.assignee?.avatarUrls,
+        },
+        rank: element.fields[rankCustomField],
       }))
     )
 
     return issues
   }
 
-  async moveIssueToSprint(sprint: number, issue: string): Promise<void> {
+  async moveIssueToSprintAndRank(
+    sprint: number,
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
+      const body = {
+        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+        issues: [issue],
+        ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
+        ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
+      }
       fetch(
         `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint/${sprint}/issue`,
         {
@@ -218,16 +293,10 @@ class JiraCloudProvider implements ProviderApi {
             Authorization: `Bearer ${this.accessToken}`,
             "Content-Type": "application/json",
           },
-          body: `{
-            "issues": [
-              "${issue}"
-            ]
-          }`,
+          body: JSON.stringify(body),
         }
       )
-        .then(() => {
-          resolve()
-        })
+        .then(() => resolve())
         .catch((error) => {
           reject(
             new Error(
@@ -254,6 +323,49 @@ class JiraCloudProvider implements ProviderApi {
               "${issue}"
             ]
           }`,
+        }
+      )
+        .then(() => resolve())
+        .catch((error) =>
+          reject(
+            new Error(`Error in moving this issue to the Backlog: ${error}`)
+          )
+        )
+    })
+  }
+
+  async rankIssueInBacklog(
+    issue: string,
+    rankBefore: string,
+    rankAfter: string
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
+      const body: {
+        rankCustomFieldId: string
+        issues: string[]
+        rankBeforeIssue?: string
+        rankAfterIssue?: string
+      } = {
+        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+        issues: [issue],
+      }
+      if (rankBefore) {
+        body.rankBeforeIssue = rankBefore
+      } else if (rankAfter) {
+        body.rankAfterIssue = rankAfter
+      }
+
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/issue/rank`,
+        {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
         }
       )
         .then(() => resolve())
@@ -293,8 +405,142 @@ class JiraCloudProvider implements ProviderApi {
         )
     })
   }
-}
 
+  async createIssue({
+    summary,
+    type,
+    projectId,
+    reporter,
+    assignee,
+    sprintId,
+    storyPointsEstimate,
+    description,
+    status,
+    epic,
+  }: Issue): Promise<string> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fields: {
+              summary,
+              parent: { key: epic },
+              issuetype: { id: type },
+              project: {
+                id: projectId,
+              },
+              reporter: {
+                id: reporter,
+              },
+              assignee,
+              description: {
+                type: "doc",
+                version: 1,
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        text: description,
+                        type: "text",
+                      },
+                    ],
+                  },
+                ],
+              },
+              [this.customFields.get("Sprint")!]: sprintId,
+              [this.customFields.get("Story point estimate")!]:
+                storyPointsEstimate,
+            },
+          }),
+        }
+      )
+        .then(async (data) => {
+          const createdIssue = await data.json()
+          resolve(createdIssue)
+          this.setTransition(createdIssue.id, status)
+        })
+        .catch((error) => reject(new Error(`Error creating issue: ${error}`)))
+    })
+  }
+
+  async setTransition(issueKey: string, status: string): Promise<void> {
+    const transitions = new Map<string, string>()
+    const transitonResponse = await fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueKey}/transitions`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      }
+    )
+
+    const data = await transitonResponse.json()
+
+    data.transitions.forEach((field: { name: string; id: string }) => {
+      transitions.set(field.name, field.id)
+    })
+    const transitionId = +transitions.get(status)!
+
+    fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueKey}/transitions`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ transition: { id: transitionId } }),
+      }
+    )
+  }
+
+  async getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/search?jql=issuetype = Epic AND project = ${projectIdOrKey}`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const epicData = await response.json()
+
+          const epics: Promise<Issue[]> = Promise.all(
+            epicData.issues.map(async (element: JiraIssue) => ({
+              issueKey: element.key,
+              summary: element.fields.summary,
+              labels: element.fields.labels,
+              assignee: {
+                displayName: element.fields.assignee?.displayName,
+                avatarUrls: element.fields.assignee?.avatarUrls,
+              },
+            }))
+          )
+          resolve(epics)
+        })
+        .catch((error) =>
+          reject(
+            new Error(
+              `Error in fetching the epics for the project ${projectIdOrKey}: ${error}`
+            )
+          )
+        )
+    })
+  }
+}
 export class JiraCloudProviderCreator extends ProviderCreator {
   public factoryMethod(): ProviderApi {
     return new JiraCloudProvider()
