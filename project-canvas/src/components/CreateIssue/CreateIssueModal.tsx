@@ -4,6 +4,7 @@ import {
   FileInput,
   Group,
   Modal,
+  MultiSelect,
   NumberInput,
   Select,
   Stack,
@@ -26,6 +27,7 @@ import {
   getIssueTypes,
   getBoardIds,
   getSprints,
+  getLabels,
 } from "./queryFunctions"
 
 export function CreateIssueModal({
@@ -78,6 +80,10 @@ export function CreateIssueModal({
     queryKey: ["epics", form.getInputProps("projectId").value],
     queryFn: () => getEpicsByProject(form.getInputProps("projectId").value!),
     enabled: !!projects && !!form.getInputProps("projectId").value,
+  })
+  const { data: labels } = useQuery({
+    queryKey: ["labels"],
+    queryFn: () => getLabels(),
   })
   const mutation = useMutation({
     mutationFn: (issue: Issue) => createNewIssue(issue),
@@ -157,8 +163,8 @@ export function CreateIssueModal({
             onChange={(value) => {
               form.getInputProps("type").onChange(value)
               form.setFieldValue("status", "To Do")
-              form.setFieldValue("startDate", null)
-              form.setFieldValue("dueDate", null)
+              form.setFieldValue("startDate", null as unknown as Date)
+              form.setFieldValue("dueDate", null as unknown as Date)
             }}
           />
           <Divider m={10} />
@@ -280,7 +286,7 @@ export function CreateIssueModal({
                   form.getInputProps("dueDate").value &&
                   form.getInputProps("dueDate").value < value
                 )
-                  form.setFieldValue("dueDate", null)
+                  form.setFieldValue("dueDate", null as unknown as Date)
               }}
             />
           )}
@@ -294,6 +300,15 @@ export function CreateIssueModal({
               {...form.getInputProps("dueDate")}
             />
           )}
+          <MultiSelect
+            label="Label"
+            placeholder="Choose labels"
+            nothingFound="No Options"
+            data={labels}
+            searchable
+            clearable
+            {...form.getInputProps("labels")}
+          />
           <FileInput
             label="Attachement"
             placeholder="Upload Files"

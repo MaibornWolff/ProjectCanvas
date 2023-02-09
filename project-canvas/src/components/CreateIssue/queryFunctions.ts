@@ -49,3 +49,8 @@ export const getSprints = (boardId: number): Promise<Sprint[]> =>
   fetch(`${import.meta.env.VITE_EXTENDER}/sprintsByBoardId?boardId=${boardId}`)
     .then((sprints) => sprints.json())
     .catch((err) => err)
+
+export const getLabels = (): Promise<string[]> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/labels`)
+    .then((labels) => labels.json())
+    .catch((err) => err)

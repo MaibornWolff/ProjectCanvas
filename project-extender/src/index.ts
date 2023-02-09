@@ -258,3 +258,12 @@ server.get<{
     })
     .catch((error) => reply.status(400).send(error))
 })
+
+server.get("/labels", async (_, reply) => {
+  await issueProvider
+    .getLabels()
+    .then((labels) => {
+      reply.status(200).send(labels)
+    })
+    .catch((error) => reply.status(400).send(error))
+})

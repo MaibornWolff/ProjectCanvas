@@ -25,6 +25,15 @@ class JiraCloudProvider implements ProviderApi {
 
   private customFields = new Map<string, string>()
 
+  offsetDate(date: Date) {
+    if (!date) {
+      return null
+    }
+    const convertedDate = new Date(date)
+    const timezoneOffset = convertedDate.getTimezoneOffset()
+    return new Date(convertedDate.getTime() - timezoneOffset * 60 * 1000)
+  }
+
   async login({
     oauthLoginOptions,
   }: {
@@ -419,7 +428,11 @@ class JiraCloudProvider implements ProviderApi {
     epic,
     startDate,
     dueDate,
+    labels,
   }: Issue): Promise<string> {
+    const offsetStartDate = this.offsetDate(startDate)
+    const offsetDueDate = this.offsetDate(dueDate)
+
     return new Promise((resolve, reject) => {
       fetch(
         `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue`,
@@ -457,8 +470,13 @@ class JiraCloudProvider implements ProviderApi {
                   },
                 ],
               },
-              startDate: startDate.toISOString(),
-              [this.customFields.get("Due date")!]: dueDate.toString(),
+              labels,
+              ...(offsetStartDate && {
+                [this.customFields.get("Start date")!]: offsetStartDate,
+              }),
+              ...(offsetDueDate && {
+                [this.customFields.get("Due date")!]: offsetDueDate,
+              }),
               [this.customFields.get("Sprint")!]: sprintId,
               [this.customFields.get("Story point estimate")!]:
                 storyPointsEstimate,
@@ -468,11 +486,12 @@ class JiraCloudProvider implements ProviderApi {
       )
         .then(async (data) => {
           const createdIssue = await data.json()
-          // console.log(createdIssue)
           resolve(createdIssue.key)
           this.setTransition(createdIssue.id, status)
         })
-        .catch((error) => reject(new Error(`Error creating issue: ${error}`)))
+        .catch((error) => {
+          reject(new Error(`Error creating issue: ${error}`))
+        })
     })
   }
 
@@ -542,6 +561,29 @@ class JiraCloudProvider implements ProviderApi {
               `Error in fetching the epics for the project ${projectIdOrKey}: ${error}`
             )
           )
+        )
+    })
+  }
+
+  async getLabels(): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/label`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const labelData = await response.json()
+          const labels: Promise<string[]> = labelData.values
+
+          resolve(labels)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the labels: ${error}`))
         )
     })
   }
