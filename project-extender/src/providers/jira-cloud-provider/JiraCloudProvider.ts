@@ -417,6 +417,8 @@ class JiraCloudProvider implements ProviderApi {
     description,
     status,
     epic,
+    startDate,
+    dueDate,
   }: Issue): Promise<string> {
     return new Promise((resolve, reject) => {
       fetch(
@@ -455,6 +457,8 @@ class JiraCloudProvider implements ProviderApi {
                   },
                 ],
               },
+              startDate: startDate.toISOString(),
+              [this.customFields.get("Due date")!]: dueDate.toString(),
               [this.customFields.get("Sprint")!]: sprintId,
               [this.customFields.get("Story point estimate")!]:
                 storyPointsEstimate,
@@ -464,7 +468,8 @@ class JiraCloudProvider implements ProviderApi {
       )
         .then(async (data) => {
           const createdIssue = await data.json()
-          resolve(createdIssue)
+          // console.log(createdIssue)
+          resolve(createdIssue.key)
           this.setTransition(createdIssue.id, status)
         })
         .catch((error) => reject(new Error(`Error creating issue: ${error}`)))

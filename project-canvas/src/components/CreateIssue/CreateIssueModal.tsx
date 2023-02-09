@@ -11,6 +11,7 @@ import {
   TextInput,
   useMantineTheme,
 } from "@mantine/core"
+import { DatePicker } from "@mantine/dates"
 import { useForm } from "@mantine/form"
 import { showNotification } from "@mantine/notifications"
 import { IconFileUpload } from "@tabler/icons"
@@ -156,6 +157,8 @@ export function CreateIssueModal({
             onChange={(value) => {
               form.getInputProps("type").onChange(value)
               form.setFieldValue("status", "To Do")
+              form.setFieldValue("startDate", null)
+              form.setFieldValue("dueDate", null)
             }}
           />
           <Divider m={10} />
@@ -263,6 +266,34 @@ export function CreateIssueModal({
             required
             {...form.getInputProps("reporter")}
           />
+          {form.getInputProps("type").value ===
+            issueTypes?.find((issueType) => issueType.name === "Epic")?.id && (
+            <DatePicker
+              label="Start Date"
+              placeholder=""
+              clearable
+              {...form.getInputProps("startDate")}
+              onChange={(value) => {
+                form.getInputProps("startDate").onChange(value)
+                if (
+                  value &&
+                  form.getInputProps("dueDate").value &&
+                  form.getInputProps("dueDate").value < value
+                )
+                  form.setFieldValue("dueDate", null)
+              }}
+            />
+          )}
+          {form.getInputProps("type").value ===
+            issueTypes?.find((issueType) => issueType.name === "Epic")?.id && (
+            <DatePicker
+              label="Due Date"
+              placeholder=""
+              minDate={form.getInputProps("startDate").value}
+              clearable
+              {...form.getInputProps("dueDate")}
+            />
+          )}
           <FileInput
             label="Attachement"
             placeholder="Upload Files"

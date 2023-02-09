@@ -48,6 +48,8 @@ export interface Issue {
   attachement: string
   sprintId: string
   projectId: string
+  startDate: Date
+  dueDate: Date
 }
 
 interface IssueStatus {
