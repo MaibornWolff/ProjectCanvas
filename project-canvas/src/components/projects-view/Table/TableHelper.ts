@@ -4,7 +4,7 @@ import { keys } from "@mantine/utils"
 export function filterData(data: Project[], search: string) {
   const query = search.toLowerCase().trim()
   return data.filter((item) =>
-    keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
+    keys(data[0]).some((key) => item[key]!.toLowerCase().includes(query))
   )
 }
 
@@ -24,11 +24,14 @@ export function sortData(
 
   return filterData(
     [...data].sort((a, b) => {
-      if (payload.reversed) {
-        return b[sortBy].localeCompare(a[sortBy])
-      }
+      if (sortBy in a && sortBy in b) {
+        if (payload.reversed) {
+          return b[sortBy]!.localeCompare(a[sortBy] || "")
+        }
 
-      return a[sortBy].localeCompare(b[sortBy])
+        return a[sortBy]!.localeCompare(b[sortBy] || "")
+      }
+      return 0
     }),
     payload.search
   )
