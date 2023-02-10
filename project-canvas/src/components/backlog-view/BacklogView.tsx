@@ -8,8 +8,10 @@ import {
   ScrollArea,
   Stack,
   Text,
+  TextInput,
   Title,
 } from "@mantine/core"
+import { IconSearch } from "@tabler/icons"
 import { useQueries, useQuery } from "@tanstack/react-query"
 import { Issue, Sprint } from "project-extender"
 import { useEffect, useState } from "react"
@@ -17,7 +19,7 @@ import { DragDropContext } from "react-beautiful-dnd"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../lib/Store"
 import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
-import { sortIssuesByRank } from "./helpers/backlogHelpers"
+import { searchIssuesFilter, sortIssuesByRank } from "./helpers/backlogHelpers"
 import { onDragEnd } from "./helpers/draggingHelpers"
 import {
   getBacklogIssues,
@@ -36,8 +38,12 @@ export function BacklogView() {
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
   const currentBoardId = boardIds[0]
+  const [search, setSearch] = useState("")
 
   const [issuesWrappers, setIssuesWrappers] = useState(
+    new Map<string, { issues: Issue[]; sprint?: Sprint }>()
+  )
+  const [searchedissuesWrappers, setSearchedissuesWrappers] = useState(
     new Map<string, { issues: Issue[]; sprint?: Sprint }>()
   )
   const updateIssuesWrapper = (
@@ -45,6 +51,7 @@ export function BacklogView() {
     value: { issues: Issue[]; sprint?: Sprint }
   ) => {
     setIssuesWrappers((map) => new Map(map.set(key, value)))
+    setSearchedissuesWrappers((map) => new Map(map.set(key, value)))
   }
 
   const { data: sprints, isError: isErrorSprints } = useQuery({
@@ -114,13 +121,22 @@ export function BacklogView() {
       </Center>
     )
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const currentSearch = event.currentTarget.value
+    setSearch(currentSearch)
+    searchIssuesFilter(
+      currentSearch,
+      issuesWrappers,
+      searchedissuesWrappers,
+      setSearchedissuesWrappers
+    )
+  }
   if (isLoadingBacklogIssues)
     return (
       <Center style={{ width: "100%", height: "100%" }}>
         <Loader />
       </Center>
     )
-
   return (
     <Stack sx={{ minHeight: "100%" }}>
       <Stack align="left" py="xs" spacing="md">
@@ -143,6 +159,13 @@ export function BacklogView() {
           <ReloadButton ml="auto" mr="xs" />
         </Group>
         <Title>Backlog</Title>
+        <TextInput
+          placeholder="Search by issue summary"
+          mb="md"
+          icon={<IconSearch size={14} stroke={1.5} />}
+          value={search}
+          onChange={handleSearchChange}
+        />
       </Stack>
 
       <Flex sx={{ flexGrow: 1 }}>
@@ -164,10 +187,10 @@ export function BacklogView() {
               minWidth: "260px",
             }}
           >
-            {issuesWrappers.get("Backlog") && (
+            {searchedissuesWrappers.get("Backlog") && (
               <DraggableIssuesWrapper
                 id="Backlog"
-                issues={issuesWrappers.get("Backlog")!.issues}
+                issues={searchedissuesWrappers.get("Backlog")!.issues}
               />
             )}
             <Button
@@ -208,7 +231,7 @@ export function BacklogView() {
           >
             <SprintsPanel
               sprintsWithIssues={
-                Array.from(issuesWrappers.values()).filter(
+                Array.from(searchedissuesWrappers.values()).filter(
                   (issuesWrapper) => issuesWrapper.sprint !== undefined
                 ) as unknown as {
                   issues: Issue[]
