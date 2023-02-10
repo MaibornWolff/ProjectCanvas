@@ -43,7 +43,7 @@ export function BacklogView() {
   const [issuesWrappers, setIssuesWrappers] = useState(
     new Map<string, { issues: Issue[]; sprint?: Sprint }>()
   )
-  const [searchedissueWrapper, setSearchedissueWrapper] = useState(
+  const [searchedissuesWrappers, setSearchedissuesWrappers] = useState(
     new Map<string, { issues: Issue[]; sprint?: Sprint }>()
   )
   const updateIssuesWrapper = (
@@ -51,7 +51,7 @@ export function BacklogView() {
     value: { issues: Issue[]; sprint?: Sprint }
   ) => {
     setIssuesWrappers((map) => new Map(map.set(key, value)))
-    setSearchedissueWrapper((map) => new Map(map.set(key, value)))
+    setSearchedissuesWrappers((map) => new Map(map.set(key, value)))
   }
 
   const { data: sprints, isError: isErrorSprints } = useQuery({
@@ -122,14 +122,13 @@ export function BacklogView() {
     )
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.currentTarget
-    const currentSearch = value
+    const currentSearch = event.currentTarget.value
     setSearch(currentSearch)
     searchIssuesFilter(
       currentSearch,
       issuesWrappers,
-      searchedissueWrapper,
-      setSearchedissueWrapper
+      searchedissuesWrappers,
+      setSearchedissuesWrappers
     )
   }
   if (isLoadingBacklogIssues)
@@ -161,7 +160,7 @@ export function BacklogView() {
         </Group>
         <Title>Backlog</Title>
         <TextInput
-          placeholder="Search by any field"
+          placeholder="Search by issue summary"
           mb="md"
           icon={<IconSearch size={14} stroke={1.5} />}
           value={search}
@@ -188,10 +187,10 @@ export function BacklogView() {
               minWidth: "260px",
             }}
           >
-            {searchedissueWrapper.get("Backlog") && (
+            {searchedissuesWrappers.get("Backlog") && (
               <DraggableIssuesWrapper
                 id="Backlog"
-                issues={searchedissueWrapper.get("Backlog")!.issues}
+                issues={searchedissuesWrappers.get("Backlog")!.issues}
               />
             )}
             <Button
@@ -232,7 +231,7 @@ export function BacklogView() {
           >
             <SprintsPanel
               sprintsWithIssues={
-                Array.from(searchedissueWrapper.values()).filter(
+                Array.from(searchedissuesWrappers.values()).filter(
                   (issuesWrapper) => issuesWrapper.sprint !== undefined
                 ) as unknown as {
                   issues: Issue[]

@@ -59,7 +59,6 @@ export const searchIssuesFilter = (
       sprint?: Sprint | undefined
     } = { issues: [], sprint: issueWrapper.sprint }
     newIssueWrapper.sprint = issueWrapper.sprint
-
     newIssueWrapper.issues = issuesWrappers
       .get(issueWrapperKey)!
       .issues.filter(
