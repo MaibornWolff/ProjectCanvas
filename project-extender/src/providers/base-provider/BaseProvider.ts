@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { Issue, Project, Sprint } from "../../types"
+import { Issue, IssueType, Project, Sprint, User } from "../../types"
 
 export interface BasicLoginOptions {
   url: string
@@ -25,6 +25,8 @@ export interface ProviderApi {
   getBoardIds(project: string): Promise<number[]>
   getSprints(BoardId: number): Promise<Sprint[]>
   getIssuesByProject(project: string, boardId: number): Promise<Issue[]>
+  getIssueTypesByProject(projectKeyOrId: string): Promise<IssueType[]>
+  getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]>
   getBacklogIssuesByProjectAndBoard(
     project: string,
     boardId: number
@@ -46,6 +48,9 @@ export interface ProviderApi {
     rankBefore: string,
     rankAfter: string
   ): Promise<void>
+
+  createIssue(issue: Issue): Promise<string>
+  getEpicsByProject(projectIdOrKey: string): Promise<Issue[]>
 }
 
 export abstract class ProviderCreator {

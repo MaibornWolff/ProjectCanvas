@@ -1,17 +1,32 @@
+import { Center, Loader, Text } from "@mantine/core"
+import { useQuery } from "@tanstack/react-query"
 import { Project } from "project-extender"
-import { useEffect, useState } from "react"
-import { ProjectsTable } from "./ProjectsTable"
+import { useCanvasStore } from "../../lib/Store"
+import { getProjects } from "./queryFetchers"
+import { ProjectsTable } from "./Table/ProjectsTable"
 
 export function ProjectsView() {
-  const [projects, setProjects] = useState<Project[]>([])
-  const getProjects = async () => {
-    const data = await fetch(`${import.meta.env.VITE_EXTENDER}/projects`)
-    setProjects(await data.json())
-  }
+  const { setProjects } = useCanvasStore()
+  const { data: projects, isLoading } = useQuery({
+    queryKey: ["projects"],
+    queryFn: getProjects,
+    onSuccess: (_projects: Project[]) => {
+      setProjects(_projects)
+    },
+  })
 
-  useEffect(() => {
-    getProjects()
-  }, [])
+  if (isLoading)
+    return (
+      <Center style={{ width: "100%", height: "100%" }}>
+        <Loader />
+      </Center>
+    )
+  if (projects && projects.length > 0)
+    return <ProjectsTable data={projects.map(({ id, ...rest }) => rest)} />
 
-  return <ProjectsTable data={projects} />
+  return (
+    <Center style={{ width: "100%", height: "100%" }}>
+      <Text>No Projects Found</Text>
+    </Center>
+  )
 }

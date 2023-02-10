@@ -1,5 +1,6 @@
 export interface JiraProject {
   projectTypeKey: string
+  id: number
   name: string
   key: string
   lead: {
@@ -43,4 +44,17 @@ export interface JiraIssue {
     }
     [rankCustomField: string]: string | unknown
   }
+}
+
+interface JiraIssueStatus {
+  description?: string
+  id: string
+  name: string
+}
+
+export interface JiraIssueType {
+  id: string
+  name?: string
+  statuses?: JiraIssueStatus[]
+  subtask: boolean
 }

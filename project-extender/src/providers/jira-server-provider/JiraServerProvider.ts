@@ -2,8 +2,20 @@
 /* eslint-disable class-methods-use-this */
 import { fetch } from "cross-fetch"
 import { ProviderApi, ProviderCreator } from "../base-provider"
-import { dateTimeFormat, Issue, Project, Sprint } from "../../types"
-import { JiraIssue, JiraProject, JiraSprint } from "../../types/jira"
+import {
+  dateTimeFormat,
+  Issue,
+  IssueType,
+  Project,
+  Sprint,
+  User,
+} from "../../types"
+import {
+  JiraIssue,
+  JiraIssueType,
+  JiraProject,
+  JiraSprint,
+} from "../../types/jira"
 
 class JiraServerProvider implements ProviderApi {
   private loginOptions = {
@@ -109,12 +121,34 @@ class JiraServerProvider implements ProviderApi {
       const projects = data.map((project: JiraProject) => ({
         key: project.key,
         name: project.name,
+        id: project.id,
         lead: project.lead.displayName,
         type: project.projectTypeKey,
       }))
       return projects
     }
     return Promise.reject(new Error(response.statusText))
+  }
+
+  async getIssueTypesByProject(projectIdOrKey: string): Promise<IssueType[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `${this.loginOptions.url}/rest/api/2/project/${projectIdOrKey}/statuses`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: this.getAuthHeader(),
+          },
+        }
+      )
+        .then(async (response) => {
+          const issueTypes: JiraIssueType[] = await response.json()
+          resolve(issueTypes as IssueType[])
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the issue types: ${error}`))
+        )
+    })
   }
 
   async getBoardIds(project: string): Promise<number[]> {
@@ -153,7 +187,7 @@ class JiraServerProvider implements ProviderApi {
 
     const sprints: Sprint[] = data.values
       .filter((element: { state: string }) => element.state !== "closed")
-      .map((element: JiraSprint, index: number) => {
+      .map((element: JiraSprint) => {
         const sDate = new Date(element.startDate)
         const startDate = Number.isNaN(sDate.getTime())
           ? "Invalid Date"
@@ -168,7 +202,6 @@ class JiraServerProvider implements ProviderApi {
           state: element.state,
           startDate,
           endDate,
-          index,
         }
       })
     return sprints
@@ -194,11 +227,9 @@ class JiraServerProvider implements ProviderApi {
     project: string,
     boardId: number
   ): Promise<Issue[]> {
-    const response = await this.fetchIssues(
+    return this.fetchIssues(
       `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
     )
-
-    return response
   }
 
   async fetchIssues(url: string): Promise<Issue[]> {
@@ -214,7 +245,7 @@ class JiraServerProvider implements ProviderApi {
     const data = await response.json()
 
     const issues: Promise<Issue[]> = Promise.all(
-      data.issues.map(async (element: JiraIssue, index: number) => ({
+      data.issues.map(async (element: JiraIssue) => ({
         issueKey: element.key,
         summary: element.fields.summary,
         creator: element.fields.creator.name,
@@ -230,7 +261,6 @@ class JiraServerProvider implements ProviderApi {
           avatarUrls: element.fields.assignee?.avatarUrls,
         },
         rank: element.fields[rankCustomField!],
-        index,
       }))
     )
     return issues
@@ -247,8 +277,8 @@ class JiraServerProvider implements ProviderApi {
       const body = {
         rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
         issues: [issue],
-        ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
-        ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
+        ...(rankAfter && { rankAfterIssue: rankAfter }),
+        ...(rankBefore && { rankBeforeIssue: rankBefore }),
       }
       fetch(`${this.loginOptions.url}/rest/agile/1.0/sprint/${sprint}/issue`, {
         method: "POST",
@@ -362,6 +392,19 @@ class JiraServerProvider implements ProviderApi {
           )
         )
     })
+  }
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+
+  getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
+    throw new Error("Method not implemented.")
+  }
+
+  createIssue(issue: Issue): Promise<string> {
+    throw new Error("Method not implemented.")
+  }
+
+  getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
+    throw new Error("Method not implemented.")
   }
 }
 
