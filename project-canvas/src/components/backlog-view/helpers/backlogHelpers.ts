@@ -23,3 +23,36 @@ export const sortSprintsByActive = (sprintA: Sprint, sprintB: Sprint) => {
 
 export const sortIssuesByRank = (issueA: Issue, issueB: Issue) =>
   issueA.rank.localeCompare(issueB.rank)
+
+export const searchIssuesFilter = (
+  issueWrapper: {
+    issues: Issue[]
+    sprint?: Sprint | undefined
+  },
+  currentSearch: string,
+  issuesWrappers: Map<
+    string,
+    {
+      issues: Issue[]
+      sprint?: Sprint | undefined
+    }
+  >
+) => {
+  const newIssueWrapper: {
+    issues: Issue[]
+    sprint?: Sprint | undefined
+  } = { issues: [], sprint: issueWrapper.sprint }
+  newIssueWrapper.sprint = issueWrapper.sprint
+  const newIssueWrapperKey =
+    newIssueWrapper.sprint !== undefined
+      ? newIssueWrapper.sprint.name
+      : "Backlog"
+
+  newIssueWrapper.issues = issuesWrappers
+    .get(newIssueWrapperKey)!
+    .issues.filter(
+      (issue: Issue) =>
+        issue.summary.includes(currentSearch) || currentSearch === ""
+    )
+  return { newIssueWrapperKey, newIssueWrapper }
+}
