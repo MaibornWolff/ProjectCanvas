@@ -1,4 +1,4 @@
-import { Center, Loader } from "@mantine/core"
+import { Center, Loader, Text } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
 import { Project } from "project-extender"
 import { useCanvasStore } from "../../lib/Store"
@@ -21,8 +21,12 @@ export function ProjectsView() {
         <Loader />
       </Center>
     )
+  if (projects && projects.length > 0)
+    return <ProjectsTable data={projects.map(({ id, ...rest }) => rest)} />
 
   return (
-    projects && <ProjectsTable data={projects.map(({ id, ...rest }) => rest)} />
+    <Center style={{ width: "100%", height: "100%" }}>
+      <Text>No Projects Found</Text>
+    </Center>
   )
 }

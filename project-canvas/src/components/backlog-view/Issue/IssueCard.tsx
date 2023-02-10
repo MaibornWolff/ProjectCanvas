@@ -21,14 +21,14 @@ import { Draggable } from "react-beautiful-dnd"
 export function IssueCard({
   issueKey,
   summary,
-  index,
   status,
   type,
   storyPointsEstimate,
   epic,
   labels,
   assignee,
-}: Issue) {
+  index,
+}: Issue & { index: number }) {
   let icon: JSX.Element
   let iconGradient1: string
   let iconGradient2: string
@@ -118,7 +118,11 @@ export function IssueCard({
                 </Text>
                 {epic && <Badge color="violet">{epic}</Badge>}
                 {labels?.length !== 0 &&
-                  labels.map((label) => <Badge color="yellow">{label}</Badge>)}
+                  labels.map((label) => (
+                    <Badge key={`${issueKey}-${label}`} color="yellow">
+                      {label}
+                    </Badge>
+                  ))}
               </Group>
               <Text size="lg">{summary}</Text>
               <Group align="center" spacing="sm">
