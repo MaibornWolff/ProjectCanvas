@@ -1,4 +1,5 @@
 import { Issue, Sprint } from "project-extender"
+import { Dispatch, SetStateAction } from "react"
 
 export const storyPointsAccumulator = (issues: Issue[], status: string) =>
   issues.reduce((accumulator, currentValue) => {
@@ -25,10 +26,6 @@ export const sortIssuesByRank = (issueA: Issue, issueB: Issue) =>
   issueA.rank.localeCompare(issueB.rank)
 
 export const searchIssuesFilter = (
-  issueWrapper: {
-    issues: Issue[]
-    sprint?: Sprint | undefined
-  },
   currentSearch: string,
   issuesWrappers: Map<
     string,
@@ -36,23 +33,41 @@ export const searchIssuesFilter = (
       issues: Issue[]
       sprint?: Sprint | undefined
     }
+  >,
+  searchedissueWrapper: Map<
+    string,
+    {
+      issues: Issue[]
+      sprint?: Sprint | undefined
+    }
+  >,
+  setSearchedissueWrapper: Dispatch<
+    SetStateAction<
+      Map<
+        string,
+        {
+          issues: Issue[]
+          sprint?: Sprint | undefined
+        }
+      >
+    >
   >
 ) => {
-  const newIssueWrapper: {
-    issues: Issue[]
-    sprint?: Sprint | undefined
-  } = { issues: [], sprint: issueWrapper.sprint }
-  newIssueWrapper.sprint = issueWrapper.sprint
-  const newIssueWrapperKey =
-    newIssueWrapper.sprint !== undefined
-      ? newIssueWrapper.sprint.name
-      : "Backlog"
+  searchedissueWrapper.forEach((issueWrapper, issueWrapperKey) => {
+    const newIssueWrapper: {
+      issues: Issue[]
+      sprint?: Sprint | undefined
+    } = { issues: [], sprint: issueWrapper.sprint }
+    newIssueWrapper.sprint = issueWrapper.sprint
 
-  newIssueWrapper.issues = issuesWrappers
-    .get(newIssueWrapperKey)!
-    .issues.filter(
-      (issue: Issue) =>
-        issue.summary.includes(currentSearch) || currentSearch === ""
+    newIssueWrapper.issues = issuesWrappers
+      .get(issueWrapperKey)!
+      .issues.filter(
+        (issue: Issue) =>
+          issue.summary.includes(currentSearch) || currentSearch === ""
+      )
+    setSearchedissueWrapper(
+      (map) => new Map(map.set(issueWrapperKey, newIssueWrapper))
     )
-  return { newIssueWrapperKey, newIssueWrapper }
+  })
 }

@@ -125,16 +125,12 @@ export function BacklogView() {
     const { value } = event.currentTarget
     const currentSearch = value
     setSearch(currentSearch)
-    searchedissueWrapper.forEach((issueWrapper) => {
-      const { newIssueWrapperKey, newIssueWrapper } = searchIssuesFilter(
-        issueWrapper,
-        currentSearch,
-        issuesWrappers
-      )
-      setSearchedissueWrapper(
-        (map) => new Map(map.set(newIssueWrapperKey, newIssueWrapper))
-      )
-    })
+    searchIssuesFilter(
+      currentSearch,
+      issuesWrappers,
+      searchedissueWrapper,
+      setSearchedissueWrapper
+    )
   }
   if (isLoadingBacklogIssues)
     return (
