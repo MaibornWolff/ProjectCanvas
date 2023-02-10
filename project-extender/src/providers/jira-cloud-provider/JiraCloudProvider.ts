@@ -332,6 +332,25 @@ class JiraCloudProvider implements ProviderApi {
       .then((res) => res.json())
       .catch((error) => error)
   }
+
+  async getAttachmentThumbnail(
+    id: number,
+    width: number = 150,
+    height: number = 125
+  ): Promise<Object> {
+    return fetch(
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/attachment/thumbnail/${id}?redirect=true&fallbackToDefault=true&width=${width}&height=${height}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      }
+    )
+      .then((res) => res.json())
+      .catch((error) => error)
+  }
 }
 
 export class JiraCloudProviderCreator extends ProviderCreator {

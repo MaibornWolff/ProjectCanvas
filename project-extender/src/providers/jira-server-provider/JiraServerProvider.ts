@@ -348,6 +348,16 @@ class JiraServerProvider implements ProviderApi {
       .then((res) => res.json())
       .catch((error) => error)
   }
+
+  async getAttachmentThumbnail(
+    id: number,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    width: number = 150,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    height: number = 125
+  ): Promise<Object> {
+    throw new Error("Method not implemented.")
+  }
 }
 
 export class JiraServerProviderCreator extends ProviderCreator {

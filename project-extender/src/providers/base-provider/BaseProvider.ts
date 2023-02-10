@@ -37,6 +37,11 @@ export interface ProviderApi {
   moveIssueToBacklog(issue: string): Promise<void>
   getIssue(issueIdOrKey: string): Promise<IssueBean>
   getIssueComments(issueIdOrKey: string): Promise<PageOfComments>
+  getAttachmentThumbnail(
+    id: number,
+    width?: number,
+    height?: number
+  ): Promise<Object>
 }
 
 export abstract class ProviderCreator {

@@ -206,3 +206,19 @@ server.get<{
     })
     .catch((error) => reply.status(400).send(error))
 })
+
+server.get<{
+  Params: { id: number }
+  Querystring: { width?: number; height?: number }
+}>("/attachment/:id", (request, reply) => {
+  issueProvider
+    .getAttachmentThumbnail(
+      request.params.id,
+      request.query.width,
+      request.query.height
+    )
+    .then((att: object) => {
+      reply.status(200).send(att)
+    })
+    .catch((error) => reply.status(400).send(error))
+})

@@ -55,7 +55,7 @@ export function IssueCard({
   }
 
   return (
-    <div key={issueKey}>
+    <div>
       <DetailView
         opened={showModal}
         setOpened={setShowModal}
