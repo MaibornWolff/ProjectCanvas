@@ -1,12 +1,3 @@
-export interface DndListProps {
-  data: {
-    position: number
-    mass: number
-    symbol: string
-    name: string
-  }[]
-}
-
 export interface Sprint {
   id: number
   name: string
@@ -23,6 +14,15 @@ export interface Project {
   type: string
 }
 
+export interface Priority {
+  statusColor: string
+  description: string
+  iconUrl: string
+  name: string
+  id: string
+  isDefault: boolean
+}
+
 export interface Issue {
   issueKey: string
   summary: string
@@ -37,10 +37,10 @@ export interface Issue {
     id: string
     displayName: string
     avatarUrls: {
-      "16x16": string
-      "24x24": string
-      "36x36": string
       "48x48": string
+      "24x24": string
+      "16x16": string
+      "32x32": string
     }
   }
   rank: string
@@ -50,6 +50,7 @@ export interface Issue {
   projectId: string
   startDate: Date
   dueDate: Date
+  priority: Priority
 }
 
 interface IssueStatus {
@@ -68,7 +69,12 @@ export interface IssueType {
 export interface User {
   accountId: string
   emailAddress: string
-  avatarUrls: { [key: string]: string }
+  avatarUrls: {
+    "48x48": string
+    "24x24": string
+    "16x16": string
+    "32x32": string
+  }
   displayName: string
 }
 

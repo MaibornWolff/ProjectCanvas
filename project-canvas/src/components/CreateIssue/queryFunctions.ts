@@ -1,4 +1,4 @@
-import { Issue, IssueType, User, Sprint } from "project-extender"
+import { Issue, IssueType, User, Sprint, Priority } from "project-extender"
 
 export const getIssueTypes = (projectIdOrKey: string): Promise<IssueType[]> =>
   fetch(
@@ -53,4 +53,19 @@ export const getSprints = (boardId: number): Promise<Sprint[]> =>
 export const getLabels = (): Promise<string[]> =>
   fetch(`${import.meta.env.VITE_EXTENDER}/labels`)
     .then((labels) => labels.json())
+    .catch((err) => err)
+
+export const getCurrentUser = (): Promise<User> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/currentUser`)
+    .then((user) => user.json())
+    .catch((err) => err)
+
+export const getPriorities = (): Promise<Priority[]> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/priorities`)
+    .then((priorities) => priorities.json())
+    .catch((err) => err)
+
+export const getIssueTypesWithFieldsMap = (): Promise<Map<string, string[]>> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/issueTypesWithFieldsMap`)
+    .then((map) => map.json())
     .catch((err) => err)

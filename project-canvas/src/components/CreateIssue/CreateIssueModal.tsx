@@ -28,7 +28,11 @@ import {
   getBoardIds,
   getSprints,
   getLabels,
+  getCurrentUser,
+  getPriorities,
+  getIssueTypesWithFieldsMap,
 } from "./queryFunctions"
+import { SelectItem } from "./SelectItem"
 
 export function CreateIssueModal({
   opened,
@@ -43,6 +47,11 @@ export function CreateIssueModal({
   const projects = useCanvasStore((state) => state.projects)
   const selectedProject = useCanvasStore((state) => state.selectedProject)
 
+  const { data: currentUser } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: () => getCurrentUser(),
+  })
+
   const form = useForm<Issue>({
     initialValues: {
       projectId: selectedProject?.id,
@@ -51,7 +60,7 @@ export function CreateIssueModal({
       description: "",
       assignee: { id: "" },
       status: "To Do",
-      reporter: "",
+      reporter: currentUser?.accountId,
     } as Issue,
   })
   const { data: issueTypes, isLoading } = useQuery({
@@ -84,6 +93,14 @@ export function CreateIssueModal({
   const { data: labels } = useQuery({
     queryKey: ["labels"],
     queryFn: () => getLabels(),
+  })
+  const { data: priorities } = useQuery({
+    queryKey: ["priorities"],
+    queryFn: () => getPriorities(),
+  })
+  const { data: issueTypesWithFieldsMap } = useQuery({
+    queryKey: ["issueTypesWithFieldsMap"],
+    queryFn: () => getIssueTypesWithFieldsMap(),
   })
   const mutation = useMutation({
     mutationFn: (issue: Issue) => createNewIssue(issue),
@@ -141,6 +158,10 @@ export function CreateIssueModal({
               form.setFieldValue("type", "")
               form.setFieldValue("status", "")
               form.setFieldValue("assignee.id", null)
+              form.setFieldValue(
+                "reporter",
+                currentUser?.accountId || "Select a Reporter"
+              )
             }}
           />
           <Select
@@ -162,9 +183,19 @@ export function CreateIssueModal({
             {...form.getInputProps("type")}
             onChange={(value) => {
               form.getInputProps("type").onChange(value)
+              if (
+                issueTypes?.find((issueType) => issueType.name === "Epic")
+                  ?.id === value
+              ) {
+                form.setFieldValue("sprintId", null as unknown as string)
+                form.setFieldValue(
+                  "storyPointsEstimate",
+                  null as unknown as number
+                )
+                form.setFieldValue("epic", null as unknown as string)
+              }
               form.setFieldValue("status", "To Do")
-              form.setFieldValue("startDate", null as unknown as Date)
-              form.setFieldValue("dueDate", null as unknown as Date)
+              form.setFieldValue("priorities", "")
             }}
           />
           <Divider m={10} />
@@ -201,9 +232,11 @@ export function CreateIssueModal({
             label="Assignee"
             placeholder="Unassigned"
             nothingFound="No Options"
+            itemComponent={SelectItem}
             data={
               !isLoading && assignableUsers && assignableUsers instanceof Array
                 ? assignableUsers.map((assignableUser) => ({
+                    image: assignableUser.avatarUrls["24x24"],
                     value: assignableUser.accountId,
                     label: assignableUser.displayName,
                   }))
@@ -213,22 +246,50 @@ export function CreateIssueModal({
             searchable
             {...form.getInputProps("assignee.id")}
           />
-          <Select
-            label="Sprint"
-            placeholder="Backlog"
-            nothingFound="No Options"
-            data={
-              !isLoading && sprints && sprints instanceof Array
-                ? sprints.map((sprint) => ({
-                    value: sprint.id,
-                    label: sprint.name,
-                  }))
-                : []
-            }
-            searchable
-            clearable
-            {...form.getInputProps("sprintId")}
-          />
+          {form.getInputProps("type") &&
+            issueTypesWithFieldsMap &&
+            issueTypesWithFieldsMap.size > 0 &&
+            issueTypesWithFieldsMap
+              .get(form.getInputProps("type"))
+              ?.includes("priority") && (
+              <Select
+                label="Priority"
+                placeholder="Choose priority"
+                nothingFound="Select an Issue Type first"
+                itemComponent={SelectItem}
+                data={
+                  priorities
+                    ? priorities.map((priority) => ({
+                        image: priority.iconUrl,
+                        value: priority.name,
+                        label: priority.name,
+                      }))
+                    : []
+                }
+                searchable
+                clearable
+                {...form.getInputProps("priorities")}
+              />
+            )}
+          {form.getInputProps("type").value !==
+            issueTypes?.find((issueType) => issueType.name === "Epic")?.id && (
+            <Select
+              label="Sprint"
+              placeholder="Backlog"
+              nothingFound="No Options"
+              data={
+                !isLoading && sprints && sprints instanceof Array
+                  ? sprints.map((sprint) => ({
+                      value: sprint.id,
+                      label: sprint.name,
+                    }))
+                  : []
+              }
+              searchable
+              clearable
+              {...form.getInputProps("sprintId")}
+            />
+          )}
           {form.getInputProps("type").value !==
             issueTypes?.find((issueType) => issueType.name === "Epic")?.id && (
             <Select
@@ -248,58 +309,55 @@ export function CreateIssueModal({
               {...form.getInputProps("epic")}
             />
           )}
-
-          <NumberInput
-            min={0}
-            label="Story Point Estimate"
-            defaultValue={null}
-            {...form.getInputProps("storyPointsEstimate")}
-          />
+          {form.getInputProps("type").value !==
+            issueTypes?.find((issueType) => issueType.name === "Epic")?.id && (
+            <NumberInput
+              min={0}
+              label="Story Point Estimate"
+              defaultValue={null}
+              {...form.getInputProps("storyPointsEstimate")}
+            />
+          )}
           <Select
             label="Reporter"
-            placeholder="Unassigned"
+            placeholder={currentUser?.displayName || "Select a Reporter"}
             nothingFound="No Options"
+            itemComponent={SelectItem}
             data={
               !isLoading && assignableUsers && assignableUsers instanceof Array
                 ? assignableUsers.map((assignableUser) => ({
+                    image: assignableUser.avatarUrls["24x24"],
                     value: assignableUser.accountId,
                     label: assignableUser.displayName,
                   }))
                 : []
             }
-            searchable
-            clearable
             required
+            searchable
             {...form.getInputProps("reporter")}
           />
-          {form.getInputProps("type").value ===
-            issueTypes?.find((issueType) => issueType.name === "Epic")?.id && (
-            <DatePicker
-              label="Start Date"
-              placeholder=""
-              clearable
-              {...form.getInputProps("startDate")}
-              onChange={(value) => {
-                form.getInputProps("startDate").onChange(value)
-                if (
-                  value &&
-                  form.getInputProps("dueDate").value &&
-                  form.getInputProps("dueDate").value < value
-                )
-                  form.setFieldValue("dueDate", null as unknown as Date)
-              }}
-            />
-          )}
-          {form.getInputProps("type").value ===
-            issueTypes?.find((issueType) => issueType.name === "Epic")?.id && (
-            <DatePicker
-              label="Due Date"
-              placeholder=""
-              minDate={form.getInputProps("startDate").value}
-              clearable
-              {...form.getInputProps("dueDate")}
-            />
-          )}
+          <DatePicker
+            label="Start Date"
+            placeholder=""
+            clearable
+            {...form.getInputProps("startDate")}
+            onChange={(value) => {
+              form.getInputProps("startDate").onChange(value)
+              if (
+                value &&
+                form.getInputProps("dueDate").value &&
+                form.getInputProps("dueDate").value < value
+              )
+                form.setFieldValue("dueDate", null as unknown as Date)
+            }}
+          />
+          <DatePicker
+            label="Due Date"
+            placeholder=""
+            minDate={form.getInputProps("startDate").value}
+            clearable
+            {...form.getInputProps("dueDate")}
+          />
           <MultiSelect
             label="Label"
             placeholder="Choose labels"
