@@ -141,7 +141,7 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
-  async getIssueTypesWithFieldsMap(): Promise<Map<string, string[]>> {
+  async getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
     return new Promise((resolve, reject) => {
       fetch(
         `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/createmeta?expand=projects.issuetypes.fields`,
@@ -154,9 +154,7 @@ class JiraCloudProvider implements ProviderApi {
       )
         .then(async (response) => {
           const metadata = await response.json()
-
-          const issueTypeToFieldsMap: Map<string, string[]> = new Map()
-
+          const issueTypeToFieldsMap: { [key: string]: string[] } = {}
           metadata.projects.forEach(
             (project: {
               id: string
@@ -165,19 +163,16 @@ class JiraCloudProvider implements ProviderApi {
                 id: string
               }[]
             }) => {
-              project.issuetypes.map(
-                (issuetype: { id: string }) => issuetype.id
-              )
               project.issuetypes.forEach((issuetype) => {
                 const fieldKeys = Object.keys(issuetype.fields)
-                issueTypeToFieldsMap.set(issuetype.id, fieldKeys)
+                issueTypeToFieldsMap[issuetype.id] = fieldKeys
               })
             }
           )
           resolve(issueTypeToFieldsMap)
         })
         .catch((error) =>
-          reject(new Error(`Error in fetching the issue types: ${error}`))
+          reject(new Error(`Error in fetching the issue types map: ${error}`))
         )
     })
   }
@@ -493,6 +488,7 @@ class JiraCloudProvider implements ProviderApi {
     startDate,
     dueDate,
     labels,
+    priority,
   }: Issue): Promise<string> {
     const offsetStartDate = this.offsetDate(startDate)
     const offsetDueDate = this.offsetDate(dueDate)
@@ -518,6 +514,7 @@ class JiraCloudProvider implements ProviderApi {
               reporter: {
                 id: reporter,
               },
+              ...(priority.id && { priority }),
               assignee,
               description: {
                 type: "doc",

@@ -289,8 +289,8 @@ server.get("/priorities", async (_, reply) => {
 server.get("/issueTypesWithFieldsMap", async (_, reply) => {
   await issueProvider
     .getIssueTypesWithFieldsMap()
-    .then((map) => {
-      reply.status(200).send(map)
+    .then((mapResponse) => {
+      reply.status(200).send(mapResponse)
     })
     .catch((error) => reply.status(400).send(error))
 })

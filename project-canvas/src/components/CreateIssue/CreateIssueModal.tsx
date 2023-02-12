@@ -61,6 +61,7 @@ export function CreateIssueModal({
       assignee: { id: "" },
       status: "To Do",
       reporter: currentUser?.accountId,
+      priority: { id: "" },
     } as Issue,
   })
   const { data: issueTypes, isLoading } = useQuery({
@@ -195,7 +196,7 @@ export function CreateIssueModal({
                 form.setFieldValue("epic", null as unknown as string)
               }
               form.setFieldValue("status", "To Do")
-              form.setFieldValue("priorities", "")
+              form.setFieldValue("priority.id", null)
             }}
           />
           <Divider m={10} />
@@ -246,11 +247,10 @@ export function CreateIssueModal({
             searchable
             {...form.getInputProps("assignee.id")}
           />
-          {form.getInputProps("type") &&
-            issueTypesWithFieldsMap &&
+          {issueTypesWithFieldsMap &&
             issueTypesWithFieldsMap.size > 0 &&
             issueTypesWithFieldsMap
-              .get(form.getInputProps("type"))
+              .get(form.getInputProps("type").value)
               ?.includes("priority") && (
               <Select
                 label="Priority"
@@ -261,14 +261,14 @@ export function CreateIssueModal({
                   priorities
                     ? priorities.map((priority) => ({
                         image: priority.iconUrl,
-                        value: priority.name,
+                        value: priority.id,
                         label: priority.name,
                       }))
                     : []
                 }
                 searchable
                 clearable
-                {...form.getInputProps("priorities")}
+                {...form.getInputProps("priority.id")}
               />
             )}
           {form.getInputProps("type").value !==

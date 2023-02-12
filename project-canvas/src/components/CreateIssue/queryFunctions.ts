@@ -67,5 +67,10 @@ export const getPriorities = (): Promise<Priority[]> =>
 
 export const getIssueTypesWithFieldsMap = (): Promise<Map<string, string[]>> =>
   fetch(`${import.meta.env.VITE_EXTENDER}/issueTypesWithFieldsMap`)
-    .then((map) => map.json())
+    .then(async (mapResponse) => {
+      const resp: { [key: string]: string[] } = await mapResponse.json()
+      const map = new Map<string, string[]>()
+      Object.entries(resp).forEach(([key, value]) => map.set(key, value))
+      return map
+    })
     .catch((err) => err)

@@ -54,7 +54,7 @@ export interface ProviderApi {
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]>
   getLabels(): Promise<string[]>
   getPriorities(): Promise<Priority[]>
-  getIssueTypesWithFieldsMap(): Promise<Map<string, string[]>>
+  getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }>
 }
 
 export abstract class ProviderCreator {
