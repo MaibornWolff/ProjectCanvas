@@ -3,6 +3,7 @@ import {
   Badge,
   Center,
   Group,
+  Modal,
   Paper,
   Stack,
   Text,
@@ -15,8 +16,10 @@ import {
   IconCheck,
   IconQuestionMark,
 } from "@tabler/icons"
-import { Issue } from "project-extender"
+import { Issue } from "project-extender/"
+import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
+import { DetailView } from "./DetailView"
 
 export function IssueCard({
   issueKey,
@@ -28,11 +31,13 @@ export function IssueCard({
   labels,
   assignee,
   index,
+  ...props
 }: Issue & { index: number }) {
   let icon: JSX.Element
   let iconGradient1: string
   let iconGradient2: string
   let storyPointsColor: string
+  const [opened, setOpened] = useState(false)
 
   switch (status) {
     case "To Do":
@@ -113,9 +118,29 @@ export function IssueCard({
                       cursor: "pointer",
                     },
                   }}
+                  onClick={() => setOpened(true)}
                 >
                   {issueKey}
                 </Text>
+                <Modal
+                  opened={opened}
+                  onClose={() => setOpened(false)}
+                  size="85%"
+                  withCloseButton={false}
+                >
+                  <DetailView
+                    issueKey={issueKey}
+                    summary={summary}
+                    status={status}
+                    type={type}
+                    storyPointsEstimate={storyPointsEstimate}
+                    epic={epic}
+                    labels={labels}
+                    assignee={assignee}
+                    icon={icon}
+                    {...props}
+                  />
+                </Modal>
                 {epic && <Badge color="violet">{epic}</Badge>}
                 {labels?.length !== 0 &&
                   labels.map((label) => (

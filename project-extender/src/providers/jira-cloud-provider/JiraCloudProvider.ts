@@ -216,12 +216,9 @@ class JiraCloudProvider implements ProviderApi {
     return response
   }
 
-  async getIssuesBySprintAndProject(
-    sprintId: number,
-    project: string
-  ): Promise<Issue[]> {
+  async getIssuesBySprintAndProject(sprintId: number): Promise<Issue[]> {
     const response = await this.fetchIssues(
-      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/search?jql=sprint=${sprintId} AND project=${project}`
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint/${sprintId}/issue`
     )
     return response
   }
@@ -264,6 +261,11 @@ class JiraCloudProvider implements ProviderApi {
           avatarUrls: element.fields.assignee?.avatarUrls,
         },
         rank: element.fields[rankCustomField],
+        description: element.fields.description,
+        subtasks: element.fields.subtasks,
+        created: element.fields.created,
+        updated: element.fields.updated,
+        comment: element.fields.comment,
       }))
     )
 
