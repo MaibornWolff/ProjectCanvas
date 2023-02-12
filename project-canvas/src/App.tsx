@@ -1,8 +1,9 @@
 import { Route, Routes } from "react-router-dom"
-import { BacklogView } from "./components/backlog-view"
 import { Layout } from "./components/layout"
 import { Login } from "./components/login"
 import { ProjectsView } from "./components/projects-view"
+import { BacklogView } from "./components/backlog-view"
+import { StoryMapView } from "./components/StoryMapView"
 
 export function App() {
   return (
@@ -11,6 +12,7 @@ export function App() {
       <Route element={<Layout />}>
         <Route path="projectsview" element={<ProjectsView />} />
         <Route path="backlogview" element={<BacklogView />} />
+        <Route path="storymapview" element={<StoryMapView />} />
       </Route>
     </Routes>
   )
