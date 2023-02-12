@@ -1,4 +1,5 @@
 import { DraggableLocation, DropResult } from "react-beautiful-dnd"
+import { ItemType } from "../Cards"
 
 const reorder = <T>(list: T[], startIndex: number, endIndex: number) => {
   const result = Array.from(list)
@@ -25,33 +26,46 @@ const move = <T>(
 
 export const onDragEnd = (
   result: DropResult,
-  lists: Map<string, string[]>,
-  updateList: (key: string, value: string[]) => void
+  lists: Map<string, { type: ItemType; items: string[] }>,
+  updateList: (key: string, value: { type: ItemType; items: string[] }) => void
 ) => {
   const { source, destination } = result
 
   // dropped outside the list
-  if (!destination) {
+  if (
+    !destination ||
+    lists.get(source.droppableId)!.type !==
+      lists.get(destination.droppableId)!.type
+  ) {
     return
   }
 
   if (source.droppableId === destination.droppableId) {
     const items = reorder(
-      lists.get(source.droppableId)!,
+      lists.get(source.droppableId)!.items,
       source.index,
       destination.index
     )
-    updateList(source.droppableId, items)
+    updateList(source.droppableId, {
+      type: lists.get(source.droppableId)!.type,
+      items,
+    })
   }
 
   if (source.droppableId !== destination.droppableId) {
     const { newSource, newDestination } = move(
-      lists.get(source.droppableId)!,
-      lists.get(destination.droppableId)!,
+      lists.get(source.droppableId)!.items,
+      lists.get(destination.droppableId)!.items,
       source,
       destination
     )
-    updateList(source.droppableId, newSource)
-    updateList(destination.droppableId, newDestination)
+    updateList(source.droppableId, {
+      type: lists.get(source.droppableId)!.type,
+      items: newSource,
+    })
+    updateList(destination.droppableId, {
+      type: lists.get(destination.droppableId)!.type,
+      items: newDestination,
+    })
   }
 }

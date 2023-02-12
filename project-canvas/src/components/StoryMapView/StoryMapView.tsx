@@ -1,58 +1,59 @@
-import { Group, Stack } from "@mantine/core"
+import { Group } from "@mantine/core"
 import { useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
-import { StrictModeDroppable } from "../common/StrictModeDroppable"
-import { ItemCard } from "./Cards/ItemCard"
+import { ItemType } from "./Cards/ItemCard"
+import { CaseColumn } from "./CaseColumn"
 import { onDragEnd } from "./helpers/draggingHelpers"
 
 export function StoryMapView() {
   const [lists, setLists] = useState(
-    new Map([
-      ["list1", ["item1", "item2"]],
-      ["list2", ["item1(2)", "item2(2)"]],
+    new Map<string, { type: ItemType; items: string[] }>([
+      ["list1", { type: "title", items: ["title"] }],
+      ["list1-action", { type: "action", items: ["item1", "item2"] }],
+      ["list1-subAction", { type: "subAction", items: ["item1-s", "item2-s"] }],
+      [
+        "list1-subAction2",
+        { type: "subAction", items: ["item1-s2", "item2-s2"] },
+      ],
+      ["list2", { type: "title", items: ["title2"] }],
+      ["list2-action", { type: "action", items: ["item1(2)", "item2(2)"] }],
+      [
+        "list2-subAction",
+        { type: "subAction", items: ["item1-s(2)", "item2-s(2)"] },
+      ],
+      [
+        "list2-subAction2",
+        { type: "subAction", items: ["item1-s2(2)", "item2-s2(2)"] },
+      ],
     ])
   )
-  const updateList = (key: string, value: string[]) => {
+  const updateList = (
+    key: string,
+    value: { type: ItemType; items: string[] }
+  ) => {
     setLists((map) => new Map(map.set(key, value)))
   }
+
   return (
     <DragDropContext
       onDragEnd={(dropResult) => onDragEnd(dropResult, lists, updateList)}
     >
-      <Group>
-        <StrictModeDroppable droppableId="list1">
-          {(provided) => (
-            <Stack
-              spacing="lg"
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {Array.from(lists.get("list1")!).map((value, index) => (
-                <ItemCard key={value} id={value} index={index}>
-                  {value}
-                </ItemCard>
-              ))}
-              {provided.placeholder}
-            </Stack>
-          )}
-        </StrictModeDroppable>
-        <StrictModeDroppable droppableId="list2">
-          {(provided) => (
-            <Stack
-              spacing="lg"
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {Array.from(lists.get("list2")!).map((value, index) => (
-                <ItemCard key={value} id={value} index={index}>
-                  {value}
-                </ItemCard>
-              ))}
+      <Group align="start">
+        <CaseColumn
+          list="list1"
+          title={lists.get("list1")!.items}
+          actions={lists.get("list1-action")!.items}
+          subActions1={lists.get("list1-subAction")!.items}
+          subActions2={lists.get("list1-subAction2")!.items}
+        />
 
-              {provided.placeholder}
-            </Stack>
-          )}
-        </StrictModeDroppable>
+        <CaseColumn
+          list="list2"
+          title={lists.get("list2")!.items}
+          actions={lists.get("list2-action")!.items}
+          subActions1={lists.get("list2-subAction")!.items}
+          subActions2={lists.get("list2-subAction2")!.items}
+        />
       </Group>
     </DragDropContext>
   )
