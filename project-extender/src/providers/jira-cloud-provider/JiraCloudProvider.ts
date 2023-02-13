@@ -9,10 +9,12 @@ import {
   dateTimeFormat,
   IssueType,
   User,
+  Priority,
 } from "../../types"
 import {
   JiraIssue,
   JiraIssueType,
+  JiraPriority,
   JiraProject,
   JiraSprint,
 } from "../../types/jira"
@@ -24,6 +26,15 @@ class JiraCloudProvider implements ProviderApi {
   private cloudID = ""
 
   private customFields = new Map<string, string>()
+
+  offsetDate(date: Date) {
+    if (!date) {
+      return date
+    }
+    const convertedDate = new Date(date)
+    const timezoneOffset = convertedDate.getTimezoneOffset()
+    return new Date(convertedDate.getTime() - timezoneOffset * 60 * 1000)
+  }
 
   async login({
     oauthLoginOptions,
@@ -130,6 +141,42 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
+  async getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/createmeta?expand=projects.issuetypes.fields`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const metadata = await response.json()
+          const issueTypeToFieldsMap: { [key: string]: string[] } = {}
+          metadata.projects.forEach(
+            (project: {
+              id: string
+              issuetypes: {
+                fields: {}
+                id: string
+              }[]
+            }) => {
+              project.issuetypes.forEach((issuetype) => {
+                const fieldKeys = Object.keys(issuetype.fields)
+                issueTypeToFieldsMap[issuetype.id] = fieldKeys
+              })
+            }
+          )
+          resolve(issueTypeToFieldsMap)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the issue types map: ${error}`))
+        )
+    })
+  }
+
   async getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
     return new Promise((resolve, reject) => {
       fetch(
@@ -151,6 +198,27 @@ class JiraCloudProvider implements ProviderApi {
               `Error in fetching the assignable users for the project ${projectIdOrKey}: ${error}`
             )
           )
+        )
+    })
+  }
+
+  async getCurrentUser(): Promise<User> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/myself`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const user: User = await response.json()
+          resolve(user as User)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the current user: ${error}`))
         )
     })
   }
@@ -417,7 +485,14 @@ class JiraCloudProvider implements ProviderApi {
     description,
     status,
     epic,
+    startDate,
+    dueDate,
+    labels,
+    priority,
   }: Issue): Promise<string> {
+    const offsetStartDate = this.offsetDate(startDate)
+    const offsetDueDate = this.offsetDate(dueDate)
+
     return new Promise((resolve, reject) => {
       fetch(
         `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue`,
@@ -439,6 +514,7 @@ class JiraCloudProvider implements ProviderApi {
               reporter: {
                 id: reporter,
               },
+              ...(priority.id && { priority }),
               assignee,
               description: {
                 type: "doc",
@@ -455,19 +531,32 @@ class JiraCloudProvider implements ProviderApi {
                   },
                 ],
               },
-              [this.customFields.get("Sprint")!]: sprintId,
-              [this.customFields.get("Story point estimate")!]:
-                storyPointsEstimate,
+              labels,
+              ...(offsetStartDate && {
+                [this.customFields.get("Start date")!]: offsetStartDate,
+              }),
+              ...(offsetDueDate && {
+                [this.customFields.get("Due date")!]: offsetDueDate,
+              }),
+              ...(sprintId && {
+                [this.customFields.get("Sprint")!]: sprintId,
+              }),
+              ...(storyPointsEstimate && {
+                [this.customFields.get("Story point estimate")!]:
+                  storyPointsEstimate,
+              }),
             },
           }),
         }
       )
         .then(async (data) => {
           const createdIssue = await data.json()
-          resolve(createdIssue)
+          resolve(createdIssue.key)
           this.setTransition(createdIssue.id, status)
         })
-        .catch((error) => reject(new Error(`Error creating issue: ${error}`)))
+        .catch((error) => {
+          reject(new Error(`Error creating issue: ${error}`))
+        })
     })
   }
 
@@ -537,6 +626,51 @@ class JiraCloudProvider implements ProviderApi {
               `Error in fetching the epics for the project ${projectIdOrKey}: ${error}`
             )
           )
+        )
+    })
+  }
+
+  async getLabels(): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/label`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const labelData = await response.json()
+          const labels: Promise<string[]> = labelData.values
+
+          resolve(labels)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the labels: ${error}`))
+        )
+    })
+  }
+
+  async getPriorities(): Promise<Priority[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/priority/search`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const priorityData: JiraPriority = await response.json()
+          const priorities: Priority[] = priorityData.values
+          resolve(priorities)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the labels: ${error}`))
         )
     })
   }

@@ -1,3 +1,5 @@
+import { Priority } from "."
+
 export interface JiraProject {
   projectTypeKey: string
   id: number
@@ -57,4 +59,8 @@ export interface JiraIssueType {
   name?: string
   statuses?: JiraIssueStatus[]
   subtask: boolean
+}
+
+export interface JiraPriority {
+  values: Priority[]
 }
