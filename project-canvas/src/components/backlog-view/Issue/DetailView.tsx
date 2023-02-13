@@ -15,7 +15,7 @@ import {
 } from "@mantine/core"
 import { IconBinaryTree2 } from "@tabler/icons"
 import { Issue } from "project-extender"
-import { ReactElement } from "react"
+import { IssueIcon } from "./IssueIcon"
 
 export function DetailView({
   issueKey,
@@ -32,27 +32,40 @@ export function DetailView({
   created,
   updated,
   comment,
-  icon,
-}: Issue & { icon: ReactElement }) {
+  type,
+}: Issue) {
   return (
     <Paper p={10}>
-      <Group mb={40}>
-        <Text>{epic}</Text> / {icon} <Text>{issueKey}</Text>
+      <Group mb={40} sx={{ gap: "8px" }} color="dimmed" fs="italic">
+        <IssueIcon type="Epic" />{" "}
+        {epic !== undefined ? (
+          <Text>{epic}</Text>
+        ) : (
+          <Text tt="uppercase">Add Epic</Text>
+        )}{" "}
+        /
+        <IssueIcon type={type} /> <Text>{issueKey}</Text>
       </Group>
       <Grid>
-        <Box w="60%">
+        <Box w="60%" sx={{ overflow: "auto", maxHeight: "550px" }}>
           <Title order={2} mb={30}>
             {summary}
           </Title>
-          <Group mb={30}>
-            <Text color="dimmed">Description</Text>
-            <Text>{description}</Text>
-          </Group>
+          <Text color="dimmed">Description</Text>
+          {description !== "" ? (
+            <Group mb={30}>
+              <Text>{description}</Text>
+            </Group>
+          ) : (
+            <Text color="dimmed" mb={30} fs="italic">
+              Add Description
+            </Text>
+          )}
 
           <Text color="dimmed" mb={10}>
             Child Issues
           </Text>
-          {subtasks !== undefined ? (
+          {subtasks.length !== 0 ? (
             <Paper mb={30} withBorder>
               <Stack spacing="xs">
                 {subtasks.map((subtask) => (
@@ -76,25 +89,42 @@ export function DetailView({
               </Stack>
             </Paper>
           ) : (
-            <Text>Add child Issue</Text>
+            <Text color="dimmed" mb={30} fs="italic">
+              Add child Issue
+            </Text>
           )}
-          <Stack>
+          <Stack mb={10}>
             <Text color="dimmed">Comments</Text>
             {comment.comments.map((commentBody) => (
-              <Stack key={commentBody.id}>
-                <Group>
-                  <Avatar
-                    src={commentBody.author.avatarUrls["48x48"]}
-                    radius="xl"
-                  />
-                  <Stack spacing="xs">
-                    <Text fw={500} color="dimmed" mt={20}>
-                      {commentBody.author.displayName}
-                    </Text>
-                    <Text> {commentBody.body}</Text>
-                  </Stack>
-                </Group>
-              </Stack>
+              <Paper
+                radius="lg"
+                shadow="sm"
+                withBorder
+                sx={{ minHeight: "10px" }}
+              >
+                <Stack key={commentBody.id} p={10}>
+                  <Group>
+                    <Avatar
+                      src={commentBody.author.avatarUrls["48x48"]}
+                      radius="xl"
+                    />
+                    <Stack spacing="xs">
+                      <Group>
+                        <Text fw={600} color="dimmed" mt={20}>
+                          {commentBody.author.displayName}
+                        </Text>
+                        <Text color="dimmed" mt={20} size="xs">
+                          {new Intl.DateTimeFormat("en-GB", {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          }).format(new Date(commentBody.created))}
+                        </Text>
+                      </Group>
+                      <Text> {commentBody.body}</Text>
+                    </Stack>
+                  </Group>
+                </Stack>
+              </Paper>
             ))}
           </Stack>
         </Box>
