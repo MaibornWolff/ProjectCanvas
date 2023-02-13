@@ -6,14 +6,12 @@ export function CaseColumn({
   list,
   title,
   actions,
-  subActions1,
-  subActions2,
+  subActions,
 }: {
   list: string
   title: string[]
   actions: string[]
-  subActions1: string[]
-  subActions2: string[]
+  subActions: string[][]
 }) {
   return (
     <Stack>
@@ -74,7 +72,7 @@ export function CaseColumn({
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {subActions1.map((value, index) => (
+              {subActions[0].map((value, index) => (
                 <ItemCard
                   key={value}
                   id={`${list}-subAction-${value}`}
@@ -96,7 +94,7 @@ export function CaseColumn({
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {subActions2.map((value, index) => (
+              {subActions[1].map((value, index) => (
                 <ItemCard
                   key={value}
                   id={`${list}-subAction2-${value}`}

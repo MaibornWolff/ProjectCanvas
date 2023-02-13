@@ -43,16 +43,20 @@ export function StoryMapView() {
           list="list1"
           title={lists.get("list1")!.items}
           actions={lists.get("list1-action")!.items}
-          subActions1={lists.get("list1-subAction")!.items}
-          subActions2={lists.get("list1-subAction2")!.items}
+          subActions={[
+            lists.get("list1-subAction")!.items,
+            lists.get("list1-subAction2")!.items,
+          ]}
         />
 
         <CaseColumn
           list="list2"
           title={lists.get("list2")!.items}
           actions={lists.get("list2-action")!.items}
-          subActions1={lists.get("list2-subAction")!.items}
-          subActions2={lists.get("list2-subAction2")!.items}
+          subActions={[
+            lists.get("list2-subAction")!.items,
+            lists.get("list2-subAction2")!.items,
+          ]}
         />
       </Group>
     </DragDropContext>
