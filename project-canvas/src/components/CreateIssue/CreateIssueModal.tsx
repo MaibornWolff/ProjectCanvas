@@ -161,7 +161,7 @@ export function CreateIssueModal({
               form.setFieldValue("assignee.id", null)
               form.setFieldValue(
                 "reporter",
-                currentUser?.accountId || "Select a Reporter"
+                currentUser?.accountId || (null as unknown as string)
               )
             }}
           />
