@@ -3,20 +3,17 @@ import {
   Badge,
   Center,
   Group,
+  Modal,
   Paper,
   Stack,
   Text,
-  ThemeIcon,
   Tooltip,
 } from "@mantine/core"
-import {
-  IconBookmark,
-  IconBug,
-  IconCheck,
-  IconQuestionMark,
-} from "@tabler/icons"
 import { Issue } from "project-extender"
+import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
+import { DetailView } from "./DetailView"
+import { IssueIcon } from "./IssueIcon"
 
 export function IssueCard({
   issueKey,
@@ -28,11 +25,10 @@ export function IssueCard({
   labels,
   assignee,
   index,
+  ...props
 }: Issue & { index: number }) {
-  let icon: JSX.Element
-  let iconGradient1: string
-  let iconGradient2: string
   let storyPointsColor: string
+  const [opened, setOpened] = useState(false)
 
   switch (status) {
     case "To Do":
@@ -46,28 +42,6 @@ export function IssueCard({
       break
     default:
       storyPointsColor = "gray.6"
-  }
-
-  switch (type) {
-    case "Story":
-      icon = <IconBookmark />
-      iconGradient1 = "teal"
-      iconGradient2 = "lime"
-      break
-    case "Task":
-      icon = <IconCheck />
-      iconGradient1 = "teal"
-      iconGradient2 = "blue"
-      break
-    case "Bug":
-      icon = <IconBug />
-      iconGradient1 = "orange"
-      iconGradient2 = "red"
-      break
-    default:
-      icon = <IconQuestionMark />
-      iconGradient1 = "white"
-      iconGradient2 = "white"
   }
 
   return (
@@ -92,13 +66,7 @@ export function IssueCard({
             })}
           >
             <Center sx={{ flex: 1, minWidth: "48px" }}>
-              <ThemeIcon
-                size="sm"
-                variant="gradient"
-                gradient={{ from: iconGradient1, to: iconGradient2, deg: 105 }}
-              >
-                {icon}
-              </ThemeIcon>
+              <IssueIcon type={type} />
             </Center>
 
             <Stack spacing={0} sx={{ flex: 12 }}>
@@ -113,9 +81,28 @@ export function IssueCard({
                       cursor: "pointer",
                     },
                   }}
+                  onClick={() => setOpened(true)}
                 >
                   {issueKey}
                 </Text>
+                <Modal
+                  opened={opened}
+                  onClose={() => setOpened(false)}
+                  size="85%"
+                  withCloseButton={false}
+                >
+                  <DetailView
+                    issueKey={issueKey}
+                    summary={summary}
+                    status={status}
+                    type={type}
+                    storyPointsEstimate={storyPointsEstimate}
+                    epic={epic}
+                    labels={labels}
+                    assignee={assignee}
+                    {...props}
+                  />
+                </Modal>
                 {epic && <Badge color="violet">{epic}</Badge>}
                 {labels?.length !== 0 &&
                   labels.map((label) => (

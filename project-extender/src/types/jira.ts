@@ -1,3 +1,5 @@
+import { Priority } from "."
+
 export interface JiraProject {
   projectTypeKey: string
   id: number
@@ -19,6 +21,7 @@ export interface JiraSprint {
 export interface JiraIssue {
   key: string
   fields: {
+    description: string
     summary: string
     creator: { name: string; displayName: string }
     status: { name: string }
@@ -43,6 +46,35 @@ export interface JiraIssue {
       }
     }
     [rankCustomField: string]: string | unknown
+    subtasks: {
+      id: string
+      key: string
+      fields: {
+        summary: string
+      }
+    }[]
+    created: string
+    updated: string
+    comment: {
+      comments: [
+        {
+          id: string
+          author: {
+            accountId: string
+            avatarUrls: {
+              "48x48": string
+              "24x24": string
+              "16x16": string
+              "32x32": string
+            }
+            displayName: string
+          }
+          body: string
+          created: string
+          updated: string
+        }
+      ]
+    }
   }
 }
 
@@ -57,4 +89,8 @@ export interface JiraIssueType {
   name?: string
   statuses?: JiraIssueStatus[]
   subtask: boolean
+}
+
+export interface JiraPriority {
+  values: Priority[]
 }

@@ -126,6 +126,15 @@ server.get<{
     .catch((error) => reply.status(400).send(error))
 })
 
+server.get("/currentUser", async (_, reply) => {
+  await issueProvider
+    .getCurrentUser()
+    .then((user) => {
+      reply.status(200).send(user)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
 server.get<{ Querystring: { project: string } }>(
   "/boardIdsByProject",
   async (request, reply) => {
@@ -162,13 +171,9 @@ server.get<{
 
 server.get<{
   Querystring: { sprint: number; project: string; boardId: number }
-}>("/issuesBySprintAndProject", (request, reply) => {
+}>("/issuesBySprint", (request, reply) => {
   issueProvider
-    .getIssuesBySprintAndProject(
-      request.query.sprint,
-      request.query.project,
-      request.query.boardId
-    )
+    .getIssuesBySprint(request.query.sprint)
     .then((issues) => {
       reply.status(200).send(issues)
     })
@@ -255,6 +260,33 @@ server.get<{
     .getEpicsByProject(request.query.projectIdOrKey)
     .then((epics) => {
       reply.status(200).send(epics)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.get("/labels", async (_, reply) => {
+  await issueProvider
+    .getLabels()
+    .then((labels) => {
+      reply.status(200).send(labels)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.get("/priorities", async (_, reply) => {
+  await issueProvider
+    .getPriorities()
+    .then((priorities) => {
+      reply.status(200).send(priorities)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.get("/issueTypesWithFieldsMap", async (_, reply) => {
+  await issueProvider
+    .getIssueTypesWithFieldsMap()
+    .then((mapResponse) => {
+      reply.status(200).send(mapResponse)
     })
     .catch((error) => reply.status(400).send(error))
 })

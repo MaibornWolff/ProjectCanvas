@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { Issue, IssueType, Project, Sprint, User } from "../../types"
+import { Issue, IssueType, Priority, Project, Sprint, User } from "../../types"
 
 export interface BasicLoginOptions {
   url: string
@@ -27,15 +27,12 @@ export interface ProviderApi {
   getIssuesByProject(project: string, boardId: number): Promise<Issue[]>
   getIssueTypesByProject(projectKeyOrId: string): Promise<IssueType[]>
   getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]>
+  getCurrentUser(): Promise<User>
   getBacklogIssuesByProjectAndBoard(
     project: string,
     boardId: number
   ): Promise<Issue[]>
-  getIssuesBySprintAndProject(
-    sprintId: number,
-    project: string,
-    boardId: number
-  ): Promise<Issue[]>
+  getIssuesBySprint(sprintId: number): Promise<Issue[]>
   moveIssueToSprintAndRank(
     sprint: number,
     issue: string,
@@ -51,6 +48,9 @@ export interface ProviderApi {
 
   createIssue(issue: Issue): Promise<string>
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]>
+  getLabels(): Promise<string[]>
+  getPriorities(): Promise<Priority[]>
+  getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }>
 }
 
 export abstract class ProviderCreator {

@@ -6,15 +6,9 @@ export const getSprints = (boardId: number): Promise<Sprint[]> =>
     .catch((err) => err)
 
 export const getIssuesBySprint = (
-  projectKey: string | undefined,
-  sprintId: number | undefined,
-  boardId: number
+  sprintId: number | undefined
 ): Promise<Issue[]> =>
-  fetch(
-    `${
-      import.meta.env.VITE_EXTENDER
-    }/issuesBySprintAndProject?sprint=${sprintId}&project=${projectKey}&boardId=${boardId}`
-  )
+  fetch(`${import.meta.env.VITE_EXTENDER}/issuesBySprint?sprint=${sprintId}`)
     .then((issues) => issues.json())
     .catch((err) => err)
 
