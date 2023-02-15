@@ -216,7 +216,7 @@ class JiraCloudProvider implements ProviderApi {
     return response
   }
 
-  async getIssuesBySprintAndProject(sprintId: number): Promise<Issue[]> {
+  async getIssuesBySprint(sprintId: number): Promise<Issue[]> {
     const response = await this.fetchIssues(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint/${sprintId}/issue`
     )

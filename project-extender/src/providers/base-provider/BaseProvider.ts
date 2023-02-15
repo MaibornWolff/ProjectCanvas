@@ -31,11 +31,7 @@ export interface ProviderApi {
     project: string,
     boardId: number
   ): Promise<Issue[]>
-  getIssuesBySprintAndProject(
-    sprintId: number,
-    project: string,
-    boardId: number
-  ): Promise<Issue[]>
+  getIssuesBySprint(sprintId: number): Promise<Issue[]>
   moveIssueToSprintAndRank(
     sprint: number,
     issue: string,

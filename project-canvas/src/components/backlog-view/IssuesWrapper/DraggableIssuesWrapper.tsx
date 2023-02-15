@@ -1,5 +1,5 @@
 import { Center, Stack, Text } from "@mantine/core"
-import { Issue } from "project-extender/"
+import { Issue } from "project-extender"
 import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 import { IssueCard } from "../Issue/IssueCard"
 

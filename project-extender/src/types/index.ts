@@ -72,7 +72,6 @@ export interface Issue {
           displayName: string
         }
         body: string
-
         created: string
         updated: string
       }

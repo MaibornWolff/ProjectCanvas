@@ -9,7 +9,7 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core"
-import { Issue } from "project-extender/"
+import { Issue } from "project-extender"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { DetailView } from "./DetailView"

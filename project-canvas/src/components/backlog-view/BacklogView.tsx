@@ -64,7 +64,7 @@ export function BacklogView() {
     queries:
       sprints?.map((sprint) => ({
         queryKey: ["issues", "sprints", projectKey, sprints, sprint.id],
-        queryFn: () => getIssuesBySprint(projectKey, sprint.id, currentBoardId),
+        queryFn: () => getIssuesBySprint(sprint.id),
         enabled: !!projectKey && !!sprints,
         onSuccess: (issues: Issue[]) => {
           updateIssuesWrapper(sprint.name, {
@@ -180,7 +180,7 @@ export function BacklogView() {
         >
           <ScrollArea.Autosize
             className="left-panel"
-            maxHeight="70vh"
+            maxHeight="60vh"
             w="50%"
             p="sm"
             sx={{
@@ -224,7 +224,7 @@ export function BacklogView() {
           />
           <ScrollArea.Autosize
             className="right-panel"
-            maxHeight="80vh"
+            maxHeight="calc(100-64)"
             w="50%"
             p="sm"
             sx={{ minWidth: "260px" }}

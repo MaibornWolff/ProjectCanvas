@@ -3,11 +3,13 @@ import {
   Avatar,
   Badge,
   Box,
+  Breadcrumbs,
   Button,
   Grid,
   Group,
   Menu,
   Paper,
+  ScrollArea,
   Stack,
   Text,
   ThemeIcon,
@@ -15,6 +17,8 @@ import {
 } from "@mantine/core"
 import { IconBinaryTree2 } from "@tabler/icons"
 import { Issue } from "project-extender"
+import { useState } from "react"
+import { Description } from "./Description"
 import { IssueIcon } from "./IssueIcon"
 
 export function DetailView({
@@ -34,35 +38,47 @@ export function DetailView({
   comment,
   type,
 }: Issue) {
+  const [defaultdescription, setdefaultdescription] = useState(description)
+  const [showInputEle, setShowInputEle] = useState(false)
+
   return (
     <Paper p={10}>
-      <Group mb={40} sx={{ gap: "8px" }} color="dimmed" fs="italic">
-        <IssueIcon type="Epic" />{" "}
+      <Breadcrumbs mb="50px">
         {epic !== undefined ? (
-          <Text>{epic}</Text>
+          <Group>
+            <IssueIcon type="Epic" />
+            {epic}
+          </Group>
         ) : (
           <Text tt="uppercase">Add Epic</Text>
-        )}{" "}
-        /
-        <IssueIcon type={type} /> <Text>{issueKey}</Text>
-      </Group>
+        )}
+        <Group>
+          <IssueIcon type={type} /> {issueKey}
+        </Group>
+      </Breadcrumbs>
       <Grid>
-        <Box w="60%" sx={{ overflow: "auto", maxHeight: "550px" }}>
+        <ScrollArea.Autosize
+          className="right-panel"
+          maxHeight="70vh"
+          w="60%"
+          p="sm"
+          sx={{ minWidth: "260px" }}
+        >
           <Title order={2} mb={30}>
             {summary}
           </Title>
-          <Text color="dimmed">Description</Text>
-          {description !== "" ? (
-            <Group mb={30}>
-              <Text>{description}</Text>
-            </Group>
-          ) : (
-            <Text color="dimmed" mb={30} fs="italic">
-              Add Description
-            </Text>
-          )}
+          <Text color="dimmed" mb="sm">
+            Description
+          </Text>
+          <Description
+            showInputEle={showInputEle}
+            handleChange={(e) => setdefaultdescription(e.target.value)}
+            handleBlur={() => setShowInputEle(false)}
+            handleDoubleClick={() => setShowInputEle(true)}
+            value={defaultdescription}
+          />
 
-          <Text color="dimmed" mb={10}>
+          <Text color="dimmed" mb="sm">
             Child Issues
           </Text>
           {subtasks.length !== 0 ? (
@@ -89,7 +105,7 @@ export function DetailView({
               </Stack>
             </Paper>
           ) : (
-            <Text color="dimmed" mb={30} fs="italic">
+            <Text color="dimmed" mb="xl" fs="italic">
               Add child Issue
             </Text>
           )}
@@ -127,7 +143,7 @@ export function DetailView({
               </Paper>
             ))}
           </Stack>
-        </Box>
+        </ScrollArea.Autosize>
         <Box w="40%" p={20}>
           <Menu shadow="md" width={150} position="bottom-start">
             <Menu.Target>
