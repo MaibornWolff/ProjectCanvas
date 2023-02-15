@@ -48,6 +48,35 @@ export interface Issue {
   attachement: string
   sprintId: string
   projectId: string
+  subtasks: {
+    id: string
+    key: string
+    fields: {
+      summary: string
+    }
+  }[]
+  created: string
+  updated: string
+  comment: {
+    comments: [
+      {
+        id: string
+        author: {
+          accountId: string
+          avatarUrls: {
+            "48x48": string
+            "24x24": string
+            "16x16": string
+            "32x32": string
+          }
+          displayName: string
+        }
+        body: string
+        created: string
+        updated: string
+      }
+    ]
+  }
   startDate: Date
   dueDate: Date
   priority: Priority

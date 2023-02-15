@@ -171,13 +171,9 @@ server.get<{
 
 server.get<{
   Querystring: { sprint: number; project: string; boardId: number }
-}>("/issuesBySprintAndProject", (request, reply) => {
+}>("/issuesBySprint", (request, reply) => {
   issueProvider
-    .getIssuesBySprintAndProject(
-      request.query.sprint,
-      request.query.project,
-      request.query.boardId
-    )
+    .getIssuesBySprint(request.query.sprint)
     .then((issues) => {
       reply.status(200).send(issues)
     })
