@@ -224,7 +224,7 @@ export function BacklogView() {
           />
           <ScrollArea.Autosize
             className="right-panel"
-            maxHeight="calc(100-64)"
+            maxHeight="64vh"
             w="50%"
             p="sm"
             sx={{ minWidth: "260px" }}
