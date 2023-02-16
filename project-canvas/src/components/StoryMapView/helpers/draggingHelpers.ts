@@ -1,5 +1,5 @@
 import { DraggableLocation, DropResult } from "react-beautiful-dnd"
-import { ItemType } from "../Cards"
+import { Action, Case } from "../CaseColumn"
 
 const reorder = <T>(list: T[], startIndex: number, endIndex: number) => {
   const result = Array.from(list)
@@ -24,48 +24,82 @@ const move = <T>(
   return { newSource: sourceClone, newDestination: destClone }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const isAction = (id: string) => true
+
 export const onDragEnd = (
   result: DropResult,
-  lists: Map<string, { type: ItemType; items: string[] }>,
-  updateList: (key: string, value: { type: ItemType; items: string[] }) => void
+  cases: Case[],
+  updateCase: (caseColumn: string, actions: Action[]) => void,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  updateCaseAction: (action: Action) => void
 ) => {
   const { source, destination } = result
 
   // dropped outside the list
-  if (
-    !destination ||
-    lists.get(source.droppableId)!.type !==
-      lists.get(destination.droppableId)!.type
-  ) {
+  if (!destination) {
     return
   }
-
-  if (source.droppableId === destination.droppableId) {
-    const items = reorder(
-      lists.get(source.droppableId)!.items,
-      source.index,
-      destination.index
+  // action? or subAction?
+  // if action
+  // check if same list or not
+  // get current list with id that's the same as title
+  // make update with updateCase
+  if (isAction(source.droppableId) && isAction(destination.droppableId)) {
+    const caseColumnSource = cases.find((c) => c.title === source.droppableId)
+    const caseColumnDest = cases.find(
+      (c) => c.title === destination.droppableId
     )
-    updateList(source.droppableId, {
-      type: lists.get(source.droppableId)!.type,
-      items,
-    })
+    if (!caseColumnSource || !caseColumnDest) return
+
+    if (source.droppableId === destination.droppableId) {
+      const items = reorder(
+        caseColumnSource!.actions,
+        source.index,
+        destination.index
+      )
+      updateCase(caseColumnSource.title, items)
+    }
+
+    if (source.droppableId !== destination.droppableId) {
+      const { newSource, newDestination } = move(
+        caseColumnSource!.actions,
+        caseColumnDest!.actions,
+        source,
+        destination
+      )
+
+      updateCase(caseColumnSource.title, newSource)
+      updateCase(caseColumnDest.title, newDestination)
+    }
   }
 
-  if (source.droppableId !== destination.droppableId) {
-    const { newSource, newDestination } = move(
-      lists.get(source.droppableId)!.items,
-      lists.get(destination.droppableId)!.items,
-      source,
-      destination
-    )
-    updateList(source.droppableId, {
-      type: lists.get(source.droppableId)!.type,
-      items: newSource,
-    })
-    updateList(destination.droppableId, {
-      type: lists.get(destination.droppableId)!.type,
-      items: newDestination,
-    })
-  }
+  // if (source.droppableId === destination.droppableId) {
+  //   const items = reorder(
+  //     lists.get(source.droppableId)!.items,
+  //     source.index,
+  //     destination.index
+  //   )
+  //   updateList(source.droppableId, {
+  //     type: lists.get(source.droppableId)!.type,
+  //     items,
+  //   })
+  // }
+
+  // if (source.droppableId !== destination.droppableId) {
+  //   const { newSource, newDestination } = move(
+  //     lists.get(source.droppableId)!.items,
+  //     lists.get(destination.droppableId)!.items,
+  //     source,
+  //     destination
+  //   )
+  //   updateList(source.droppableId, {
+  //     type: lists.get(source.droppableId)!.type,
+  //     items: newSource,
+  //   })
+  //   updateList(destination.droppableId, {
+  //     type: lists.get(destination.droppableId)!.type,
+  //     items: newDestination,
+  //   })
+  // }
 }

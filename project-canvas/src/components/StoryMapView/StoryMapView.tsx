@@ -1,64 +1,99 @@
-import { Group } from "@mantine/core"
-import { useState } from "react"
+import { Accordion, Group } from "@mantine/core"
 import { DragDropContext } from "react-beautiful-dnd"
-import { ItemType } from "./Cards/ItemCard"
-import { CaseColumn } from "./CaseColumn"
+import { useImmer } from "use-immer"
+import { Action, Case, CaseColumn } from "./CaseColumn"
+import { CaseSubActions } from "./CaseSubActions"
 import { onDragEnd } from "./helpers/draggingHelpers"
 
 export function StoryMapView() {
-  const [lists, setLists] = useState(
-    new Map<string, { type: ItemType; items: string[] }>([
-      ["list1", { type: "title", items: ["title"] }],
-      ["list1-action", { type: "action", items: ["item1", "item2"] }],
-      ["list1-subAction", { type: "subAction", items: ["item1-s", "item2-s"] }],
-      [
-        "list1-subAction2",
-        { type: "subAction", items: ["item1-s2", "item2-s2"] },
+  const [cases, setCases] = useImmer<Case[]>([
+    {
+      title: "title1",
+      actions: [
+        {
+          id: "a1",
+          action: "action1",
+          subActions: { id: "s1", items: ["sub-action1", "sub-action2"] },
+        },
+        {
+          id: "a2",
+          action: "action2",
+          subActions: { id: "s2", items: ["ction-1-2", "ction-2-2"] },
+        },
       ],
-      ["list2", { type: "title", items: ["title2"] }],
-      ["list2-action", { type: "action", items: ["item1(2)", "item2(2)"] }],
-      [
-        "list2-subAction",
-        { type: "subAction", items: ["item1-s(2)", "item2-s(2)"] },
+    },
+    {
+      title: "title3",
+      actions: [
+        {
+          id: "a3",
+          action: "action3",
+          subActions: { id: "s3", items: ["sub-action3", "sub-action23"] },
+        },
       ],
-      [
-        "list2-subAction2",
-        { type: "subAction", items: ["item1-s2(2)", "item2-s2(2)"] },
-      ],
-    ])
-  )
-  const updateList = (
-    key: string,
-    value: { type: ItemType; items: string[] }
-  ) => {
-    setLists((map) => new Map(map.set(key, value)))
+    },
+  ])
+  const updateCase = (caseId: string, actions: Action[]) => {
+    setCases((draft) => {
+      const caseColumn = draft.find((c) => c.title === caseId)
+      if (caseColumn) caseColumn.actions = actions
+    })
   }
+  const updateCaseAction = (action: Action) => {
+    setCases((draft) => {
+      draft.forEach((_caseColumn) => {
+        const newAction = _caseColumn.actions.find((a) => a.id === action.id)
+        if (newAction)
+          newAction.subActions = {
+            ...newAction.subActions,
+            ...action.subActions,
+          }
+      })
+    })
+  }
+
+  // useEffect(() => {
+  //   updateCaseAction({ id: "a1", subActions: { items: ["ss"] } } as Action)
+  //   updateCase("title3", [
+  //     { id: "a4", action: "22", subActions: { items: ["ss"] } } as Action,
+  //   ])
+  // }, [])
 
   return (
     <DragDropContext
-      onDragEnd={(dropResult) => onDragEnd(dropResult, lists, updateList)}
+      onDragEnd={(dropResult) =>
+        onDragEnd(dropResult, cases, updateCase, updateCaseAction)
+      }
     >
       <Group align="start">
-        <CaseColumn
-          list="list1"
-          title={lists.get("list1")!.items}
-          actions={lists.get("list1-action")!.items}
-          subActions={[
-            lists.get("list1-subAction")!.items,
-            lists.get("list1-subAction2")!.items,
-          ]}
-        />
-
-        <CaseColumn
-          list="list2"
-          title={lists.get("list2")!.items}
-          actions={lists.get("list2-action")!.items}
-          subActions={[
-            lists.get("list2-subAction")!.items,
-            lists.get("list2-subAction2")!.items,
-          ]}
-        />
+        {cases.map((caseColumn) => (
+          <CaseColumn
+            key={caseColumn.title}
+            title={caseColumn.title}
+            actions={caseColumn.actions}
+          />
+        ))}
       </Group>
+      <Accordion
+        variant="contained"
+        chevronPosition="left"
+        defaultValue="customization"
+        styles={{ content: { padding: 0 } }}
+      >
+        <Accordion.Item value="First">
+          <Accordion.Control>First</Accordion.Control>
+          <Accordion.Panel>
+            <Group align="start">
+              {cases.map((caseColumn) => (
+                <CaseSubActions
+                  key={caseColumn.title}
+                  actions={caseColumn.actions}
+                />
+              ))}
+            </Group>
+          </Accordion.Panel>
+        </Accordion.Item>
+      </Accordion>
     </DragDropContext>
   )
 }

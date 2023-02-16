@@ -1,4 +1,4 @@
-import { Paper, useMantineTheme } from "@mantine/core"
+import { Paper, PaperProps, useMantineTheme } from "@mantine/core"
 import { Draggable } from "react-beautiful-dnd"
 
 export type ItemType = "title" | "action" | "subAction"
@@ -8,12 +8,13 @@ export function ItemCard({
   index,
   children,
   itemType = "subAction",
+  ...props
 }: {
   id: string
   index: number
   children: string
   itemType?: ItemType
-}) {
+} & PaperProps) {
   const theme = useMantineTheme()
   const lookup = new Map<ItemType, string>([
     ["title", theme.colors.primaryBlue[0]],
@@ -36,10 +37,12 @@ export function ItemCard({
           }}
           radius="md"
           p="md"
+          m="0"
           shadow="md"
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
+          {...props}
         >
           {children}
         </Paper>

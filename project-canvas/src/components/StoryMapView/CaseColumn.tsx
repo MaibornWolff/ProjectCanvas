@@ -1,113 +1,69 @@
-import { Group, Stack } from "@mantine/core"
+import { Group, Paper, Stack } from "@mantine/core"
 import { StrictModeDroppable } from "../common/StrictModeDroppable"
 import { ItemCard } from "./Cards"
 
+export interface Action {
+  id: string
+  action: string
+  subActions: { id: string; items: string[] }
+}
+export interface Case {
+  title: string
+  actions: Action[]
+}
+
 export function CaseColumn({
-  list,
   title,
   actions,
-  subActions,
 }: {
-  list: string
-  title: string[]
-  actions: string[]
-  subActions: string[][]
+  title: string
+  actions: {
+    id: string
+    action: string
+    subActions: { id: string; items: string[] }
+  }[]
 }) {
   return (
     <Stack>
-      <StrictModeDroppable droppableId={list} direction="horizontal">
-        {(provided) => (
-          <Group
-            spacing="lg"
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
-            {title.map((value, index) => (
-              <ItemCard
-                key={value}
-                id={`${list}-title-${value}`}
-                index={index}
-                itemType="title"
-              >
-                {value}
-              </ItemCard>
-            ))}
-            {provided.placeholder}
-          </Group>
-        )}
-      </StrictModeDroppable>
-      <StrictModeDroppable
-        droppableId={`${list}-action`}
-        direction="horizontal"
+      <Paper
+        sx={(theme) => ({
+          height: "5em",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: theme.colors.primaryBlue[0],
+          width: "100%",
+        })}
+        radius="md"
+        p="md"
+        shadow="md"
       >
+        {title}
+      </Paper>
+
+      <StrictModeDroppable droppableId={title} direction="horizontal">
         {(provided) => (
           <Group
             bg="gray.2"
-            p="lg"
-            spacing="md"
+            spacing={0}
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {actions.map((value, index) => (
+            {actions.map(({ action }, index) => (
               <ItemCard
-                key={value}
-                id={`${list}-action-${value}`}
+                key={action}
+                id={`action-${action}`}
                 index={index}
                 itemType="action"
+                m="10px"
               >
-                {value}
+                {action}
               </ItemCard>
             ))}
             {provided.placeholder}
           </Group>
         )}
       </StrictModeDroppable>
-      <Group align="start">
-        <StrictModeDroppable droppableId={`${list}-subAction`}>
-          {(provided) => (
-            <Stack
-              bg="gray.3"
-              p="lg"
-              spacing="md"
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {subActions[0].map((value, index) => (
-                <ItemCard
-                  key={value}
-                  id={`${list}-subAction-${value}`}
-                  index={index}
-                >
-                  {value}
-                </ItemCard>
-              ))}
-              {provided.placeholder}
-            </Stack>
-          )}
-        </StrictModeDroppable>
-        <StrictModeDroppable droppableId={`${list}-subAction2`}>
-          {(provided) => (
-            <Stack
-              bg="gray.3"
-              p="lg"
-              spacing="md"
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {subActions[1].map((value, index) => (
-                <ItemCard
-                  key={value}
-                  id={`${list}-subAction2-${value}`}
-                  index={index}
-                >
-                  {value}
-                </ItemCard>
-              ))}
-              {provided.placeholder}
-            </Stack>
-          )}
-        </StrictModeDroppable>
-      </Group>
     </Stack>
   )
 }
