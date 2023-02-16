@@ -20,12 +20,14 @@ export const getAssignableUsersByProject = (
     .then((users) => users.json())
     .catch((err) => err)
 
-export const createNewIssue = (issue: Issue) =>
+export const createNewIssue = (issue: Issue): Promise<string> =>
   fetch(`${import.meta.env.VITE_EXTENDER}/createIssue`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ issue }),
-  }).catch((err) => err)
+  })
+    .then((issueKey) => issueKey.json())
+    .catch((err) => err)
 
 export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> =>
   fetch(
