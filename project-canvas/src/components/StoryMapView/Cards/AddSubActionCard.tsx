@@ -1,17 +1,20 @@
-import { Paper } from "@mantine/core"
+import { Paper, PaperProps } from "@mantine/core"
+import { IconPlus } from "@tabler/icons"
+import { MouseEventHandler } from "react"
 import { Draggable } from "react-beautiful-dnd"
 
-export function SubActionCard({
+export function AddSubActionCard({
   id,
   index,
-  children,
+  onClick,
+  ...props
 }: {
   id: string
   index: number
-  children: string
-}) {
+  onClick: MouseEventHandler<HTMLDivElement>
+} & PaperProps) {
   return (
-    <Draggable draggableId={id} index={index}>
+    <Draggable draggableId={id} index={index} isDragDisabled>
       {(provided) => (
         <Paper
           sx={{
@@ -20,15 +23,20 @@ export function SubActionCard({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            background: "transparent",
+            border: "2px dashed lightgray",
+            color: "gray",
+            cursor: "pointer",
           }}
           radius="md"
           p="md"
-          shadow="md"
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
+          {...props}
+          onClick={onClick}
         >
-          {children}
+          <IconPlus />
         </Paper>
       )}
     </Draggable>

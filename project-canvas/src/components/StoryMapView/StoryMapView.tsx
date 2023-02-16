@@ -1,7 +1,7 @@
 import { Accordion, Group } from "@mantine/core"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useImmer } from "use-immer"
-import { Action, Case, CaseColumn } from "./CaseColumn"
+import { Action, Case, CaseColumn, SubAction } from "./CaseColumn"
 import { CaseSubActions } from "./CaseSubActions"
 import { onDragEnd } from "./helpers/draggingHelpers"
 
@@ -13,13 +13,19 @@ export function StoryMapView() {
       actions: [
         {
           id: "s1",
-          action: "action1",
-          subActions: ["sub-action1", "sub-action2"],
+          title: "action1",
+          subActions: [
+            { id: "ss-1", title: "sub-action11" },
+            { id: "ss-2", title: "sub-action12" },
+          ],
         },
         {
           id: "s2",
-          action: "action2",
-          subActions: ["sub-action11", "sub-action22"],
+          title: "action2",
+          subActions: [
+            { id: "ss-3", title: "sub-action21" },
+            { id: "ss-4", title: "sub-action22" },
+          ],
         },
       ],
     },
@@ -29,8 +35,8 @@ export function StoryMapView() {
       actions: [
         {
           id: "s3",
-          action: "action3",
-          subActions: ["sub-action3", "sub-action23"],
+          title: "action3",
+          subActions: [{ id: "ss-5", title: "sub-action3" }],
         },
       ],
     },
@@ -39,6 +45,12 @@ export function StoryMapView() {
     setCases((draft) => {
       const caseColumn = draft.find((c) => c.title === caseId)
       if (caseColumn) caseColumn.actions = actions
+    })
+  }
+  const addAction = (caseId: string, action: Action) => {
+    setCases((draft) => {
+      const caseColumn = draft.find((c) => c.title === caseId)
+      if (caseColumn) caseColumn.actions.push(action)
     })
   }
   const updateCaseAction = ({ id, subActions }: Action) => {
@@ -50,6 +62,15 @@ export function StoryMapView() {
       if (caseAction) caseAction.subActions = subActions
     })
   }
+  const addSubAction = (actionId: string, subAction: SubAction) => {
+    setCases((draft) => {
+      const caseAction = draft
+        .map((_caseColumn) => _caseColumn.actions)
+        .flat()
+        .find((a) => a.id === actionId)
+      if (caseAction) caseAction.subActions.push(subAction)
+    })
+  }
 
   return (
     <DragDropContext
@@ -59,15 +80,14 @@ export function StoryMapView() {
     >
       <Group align="start">
         {cases.map((caseColumn) => (
-          <CaseColumn key={caseColumn.title} {...caseColumn} />
+          <CaseColumn
+            key={caseColumn.title}
+            addAction={addAction}
+            {...caseColumn}
+          />
         ))}
       </Group>
-      <Accordion
-        variant="contained"
-        chevronPosition="left"
-        defaultValue="customization"
-        styles={{ content: { padding: 0 } }}
-      >
+      <Accordion chevronPosition="left" styles={{ content: { padding: 0 } }}>
         <Accordion.Item value="First">
           <Accordion.Control>First</Accordion.Control>
           <Accordion.Panel>
@@ -76,6 +96,7 @@ export function StoryMapView() {
                 <CaseSubActions
                   key={caseColumn.title}
                   actions={caseColumn.actions}
+                  addSubAction={addSubAction}
                 />
               ))}
             </Group>

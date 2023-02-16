@@ -1,11 +1,19 @@
-import { Group, Paper, Stack } from "@mantine/core"
+import { Group, Stack } from "@mantine/core"
 import { StrictModeDroppable } from "../common/StrictModeDroppable"
 import { ItemCard } from "./Cards"
+import { AddSubActionCard } from "./Cards/AddSubActionCard"
+import { CaseTitleCard } from "./Cards/CaseTitleCard"
+import { getRndInteger } from "./helpers/utils"
+
+export interface SubAction {
+  id: string
+  title: string
+}
 
 export interface Action {
   id: string
-  action: string
-  subActions: string[]
+  title: string
+  subActions: SubAction[]
 }
 export interface Case {
   id: string
@@ -13,26 +21,17 @@ export interface Case {
   actions: Action[]
 }
 
-export function CaseColumn({ id, title, actions }: Case) {
+export function CaseColumn({
+  id: caseId,
+  title,
+  actions,
+  addAction,
+}: Case & { addAction: (caseId: string, action: Action) => void }) {
   return (
     <Stack>
-      <Paper
-        sx={(theme) => ({
-          height: "5em",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: theme.colors.primaryBlue[0],
-          width: "100%",
-        })}
-        radius="md"
-        p="md"
-        shadow="md"
-      >
-        {title}
-      </Paper>
+      <CaseTitleCard title={title} />
 
-      <StrictModeDroppable droppableId={id} direction="horizontal">
+      <StrictModeDroppable droppableId={caseId} direction="horizontal">
         {(provided) => (
           <Group
             bg="gray.2"
@@ -40,17 +39,29 @@ export function CaseColumn({ id, title, actions }: Case) {
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {actions.map(({ action }, index) => (
+            {actions.map((action, index) => (
               <ItemCard
-                key={action}
-                id={`action-${action}`}
+                key={action.id}
+                id={`action-${action.id}`}
                 index={index}
                 itemType="action"
                 m="10px"
               >
-                {action}
+                {action.title}
               </ItemCard>
             ))}
+            <AddSubActionCard
+              onClick={() =>
+                addAction(caseId, {
+                  id: `s-${getRndInteger()}`,
+                  title: "New Action",
+                  subActions: [],
+                })
+              }
+              id={`action-add-${caseId}`}
+              index={100}
+              m="10px"
+            />
             {provided.placeholder}
           </Group>
         )}
