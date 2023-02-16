@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Accordion, Group } from "@mantine/core"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useImmer } from "use-immer"
@@ -47,12 +48,6 @@ export function StoryMapView() {
       if (caseColumn) caseColumn.actions = actions
     })
   }
-  const addAction = (caseId: string, action: Action) => {
-    setCases((draft) => {
-      const caseColumn = draft.find((c) => c.title === caseId)
-      if (caseColumn) caseColumn.actions.push(action)
-    })
-  }
   const updateCaseAction = ({ id, subActions }: Action) => {
     setCases((draft) => {
       const caseAction = draft
@@ -62,16 +57,50 @@ export function StoryMapView() {
       if (caseAction) caseAction.subActions = subActions
     })
   }
+
+  const editCase = ({ id, title }: Case) => {
+    setCases((draft) => {
+      const caseColumn = draft.find((c) => c.id === id)
+      if (caseColumn) caseColumn.title = title
+    })
+  }
+
+  const addAction = (caseId: string, action: Action) => {
+    setCases((draft) => {
+      const caseColumn = draft.find((c) => c.id === caseId)
+      if (caseColumn) caseColumn.actions.push(action)
+    })
+  }
+  const editAction = ({ id, title }: Action) => {
+    setCases((draft) => {
+      const caseAction = draft
+        .map((_caseColumn) => _caseColumn.actions)
+        .flat()
+        .find((a) => a.id === id)
+      if (caseAction) caseAction.title = title
+    })
+  }
+
   const addSubAction = (actionId: string, subAction: SubAction) => {
     setCases((draft) => {
       const caseAction = draft
         .map((_caseColumn) => _caseColumn.actions)
         .flat()
-        .find((a) => a.id === actionId)
+        .find((_action) => _action.id === actionId)
       if (caseAction) caseAction.subActions.push(subAction)
     })
   }
-
+  const editSubAction = ({ id, title }: SubAction) => {
+    setCases((draft) => {
+      const subAction = draft
+        .map((_caseColumn) => _caseColumn.actions)
+        .flat()
+        .map((_action) => _action.subActions)
+        .flat()
+        .find((_subAction) => _subAction.id === id)
+      if (subAction) subAction.title = title
+    })
+  }
   return (
     <DragDropContext
       onDragEnd={(dropResult) =>

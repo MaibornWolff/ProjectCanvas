@@ -1,7 +1,7 @@
 import { Paper, PaperProps, useMantineTheme } from "@mantine/core"
 import { Draggable } from "react-beautiful-dnd"
 
-export type ItemType = "title" | "action" | "subAction"
+export type ItemType = "action" | "subAction"
 
 export function ItemCard({
   id,
@@ -17,7 +17,6 @@ export function ItemCard({
 } & PaperProps) {
   const theme = useMantineTheme()
   const lookup = new Map<ItemType, string>([
-    ["title", theme.colors.primaryBlue[0]],
     ["action", theme.colors.primaryGreen[0]],
     ["subAction", "white"],
   ])
@@ -33,7 +32,6 @@ export function ItemCard({
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: color,
-            width: itemType === "title" ? "100%" : "",
           }}
           radius="md"
           p="md"
