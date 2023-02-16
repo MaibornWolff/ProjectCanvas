@@ -8,25 +8,25 @@ import { onDragEnd } from "./helpers/draggingHelpers"
 export function StoryMapView() {
   const [cases, setCases] = useImmer<Case[]>([
     {
-      title: "title1",
+      title: "a1",
       actions: [
         {
-          id: "a1",
+          id: "s1",
           action: "action1",
           subActions: { id: "s1", items: ["sub-action1", "sub-action2"] },
         },
         {
-          id: "a2",
+          id: "s2",
           action: "action2",
           subActions: { id: "s2", items: ["ction-1-2", "ction-2-2"] },
         },
       ],
     },
     {
-      title: "title3",
+      title: "a2",
       actions: [
         {
-          id: "a3",
+          id: "s3",
           action: "action3",
           subActions: { id: "s3", items: ["sub-action3", "sub-action23"] },
         },
@@ -51,13 +51,6 @@ export function StoryMapView() {
       })
     })
   }
-
-  // useEffect(() => {
-  //   updateCaseAction({ id: "a1", subActions: { items: ["ss"] } } as Action)
-  //   updateCase("title3", [
-  //     { id: "a4", action: "22", subActions: { items: ["ss"] } } as Action,
-  //   ])
-  // }, [])
 
   return (
     <DragDropContext

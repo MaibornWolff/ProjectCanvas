@@ -24,8 +24,8 @@ const move = <T>(
   return { newSource: sourceClone, newDestination: destClone }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const isAction = (id: string) => true
+const isAction = (caseId: string) => caseId.match(/^a/g)
+const isSubAction = (actionId: string) => actionId.match(/^s/g)
 
 export const onDragEnd = (
   result: DropResult,
@@ -74,32 +74,51 @@ export const onDragEnd = (
     }
   }
 
-  // if (source.droppableId === destination.droppableId) {
-  //   const items = reorder(
-  //     lists.get(source.droppableId)!.items,
-  //     source.index,
-  //     destination.index
-  //   )
-  //   updateList(source.droppableId, {
-  //     type: lists.get(source.droppableId)!.type,
-  //     items,
-  //   })
-  // }
+  if (isSubAction(source.droppableId) && isSubAction(destination.droppableId)) {
+    const caseActionSource = cases
+      .map((c) => c.actions)
+      .flat()
+      .find((a) => a.id === source.droppableId)
+    // .map((a) => a.subActions)
+    // .flat()
+    const caseActionDest = cases
+      .map((c) => c.actions)
+      .flat()
+      .find((a) => a.id === destination.droppableId)
+    // .map((a) => a.subActions)
+    // .flat()
 
-  // if (source.droppableId !== destination.droppableId) {
-  //   const { newSource, newDestination } = move(
-  //     lists.get(source.droppableId)!.items,
-  //     lists.get(destination.droppableId)!.items,
-  //     source,
-  //     destination
-  //   )
-  //   updateList(source.droppableId, {
-  //     type: lists.get(source.droppableId)!.type,
-  //     items: newSource,
-  //   })
-  //   updateList(destination.droppableId, {
-  //     type: lists.get(destination.droppableId)!.type,
-  //     items: newDestination,
-  //   })
-  // }
+    if (!caseActionSource || !caseActionDest) return
+
+    if (source.droppableId === destination.droppableId) {
+      const items = reorder(
+        caseActionSource!.subActions.items,
+        source.index,
+        destination.index
+      )
+
+      updateCaseAction({
+        ...caseActionSource,
+        subActions: { ...caseActionSource.subActions, items },
+      })
+    }
+
+    if (source.droppableId !== destination.droppableId) {
+      const { newSource, newDestination } = move(
+        caseActionSource!.subActions.items,
+        caseActionDest!.subActions.items,
+        source,
+        destination
+      )
+
+      updateCaseAction({
+        ...caseActionSource,
+        subActions: { ...caseActionSource.subActions, items: newSource },
+      })
+      updateCaseAction({
+        ...caseActionDest,
+        subActions: { ...caseActionDest.subActions, items: newDestination },
+      })
+    }
+  }
 }
