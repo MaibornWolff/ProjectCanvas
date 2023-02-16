@@ -79,45 +79,42 @@ export const onDragEnd = (
       .map((c) => c.actions)
       .flat()
       .find((a) => a.id === source.droppableId)
-    // .map((a) => a.subActions)
-    // .flat()
+
     const caseActionDest = cases
       .map((c) => c.actions)
       .flat()
       .find((a) => a.id === destination.droppableId)
-    // .map((a) => a.subActions)
-    // .flat()
 
     if (!caseActionSource || !caseActionDest) return
 
     if (source.droppableId === destination.droppableId) {
       const items = reorder(
-        caseActionSource!.subActions.items,
+        caseActionSource!.subActions,
         source.index,
         destination.index
       )
 
       updateCaseAction({
         ...caseActionSource,
-        subActions: { ...caseActionSource.subActions, items },
+        subActions: items,
       })
     }
 
     if (source.droppableId !== destination.droppableId) {
       const { newSource, newDestination } = move(
-        caseActionSource!.subActions.items,
-        caseActionDest!.subActions.items,
+        caseActionSource!.subActions,
+        caseActionDest!.subActions,
         source,
         destination
       )
 
       updateCaseAction({
         ...caseActionSource,
-        subActions: { ...caseActionSource.subActions, items: newSource },
+        subActions: newSource,
       })
       updateCaseAction({
         ...caseActionDest,
-        subActions: { ...caseActionDest.subActions, items: newDestination },
+        subActions: newDestination,
       })
     }
   }

@@ -5,24 +5,15 @@ import { ItemCard } from "./Cards"
 export interface Action {
   id: string
   action: string
-  subActions: { id: string; items: string[] }
+  subActions: string[]
 }
 export interface Case {
+  id: string
   title: string
   actions: Action[]
 }
 
-export function CaseColumn({
-  title,
-  actions,
-}: {
-  title: string
-  actions: {
-    id: string
-    action: string
-    subActions: { id: string; items: string[] }
-  }[]
-}) {
+export function CaseColumn({ id, title, actions }: Case) {
   return (
     <Stack>
       <Paper
@@ -41,7 +32,7 @@ export function CaseColumn({
         {title}
       </Paper>
 
-      <StrictModeDroppable droppableId={title} direction="horizontal">
+      <StrictModeDroppable droppableId={id} direction="horizontal">
         {(provided) => (
           <Group
             bg="gray.2"

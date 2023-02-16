@@ -1,35 +1,28 @@
 import { Group, Stack } from "@mantine/core"
 import { StrictModeDroppable } from "../common/StrictModeDroppable"
 import { ItemCard } from "./Cards"
+import { Action } from "./CaseColumn"
 
-export function CaseSubActions({
-  actions,
-}: {
-  actions: {
-    id: string
-    action: string
-    subActions: { id: string; items: string[] }
-  }[]
-}) {
+export function CaseSubActions({ actions }: { actions: Action[] }) {
   return (
     <Stack>
       <Group align="start" spacing={0} bg="gray.3">
-        {actions.map(({ subActions }) => (
-          <StrictModeDroppable key={subActions.id} droppableId={subActions.id}>
+        {actions.map(({ id, subActions }) => (
+          <StrictModeDroppable key={id} droppableId={id}>
             {(provided) => (
               <Stack
                 spacing={0}
                 ref={provided.innerRef}
                 {...provided.droppableProps}
               >
-                {subActions.items.map((subActionItem, index) => (
+                {subActions.map((subAction, index) => (
                   <ItemCard
-                    key={subActionItem}
-                    id={`subAction-${subActionItem}`}
+                    key={subAction}
+                    id={`subAction-${subAction}`}
                     index={index}
                     m="10px"
                   >
-                    {subActionItem}
+                    {subAction}
                   </ItemCard>
                 ))}
                 {provided.placeholder}

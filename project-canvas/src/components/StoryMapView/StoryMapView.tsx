@@ -8,27 +8,29 @@ import { onDragEnd } from "./helpers/draggingHelpers"
 export function StoryMapView() {
   const [cases, setCases] = useImmer<Case[]>([
     {
+      id: "a1",
       title: "a1",
       actions: [
         {
           id: "s1",
           action: "action1",
-          subActions: { id: "s1", items: ["sub-action1", "sub-action2"] },
+          subActions: ["sub-action1", "sub-action2"],
         },
         {
           id: "s2",
           action: "action2",
-          subActions: { id: "s2", items: ["ction-1-2", "ction-2-2"] },
+          subActions: ["sub-action11", "sub-action22"],
         },
       ],
     },
     {
+      id: "a2",
       title: "a2",
       actions: [
         {
           id: "s3",
           action: "action3",
-          subActions: { id: "s3", items: ["sub-action3", "sub-action23"] },
+          subActions: ["sub-action3", "sub-action23"],
         },
       ],
     },
@@ -39,16 +41,13 @@ export function StoryMapView() {
       if (caseColumn) caseColumn.actions = actions
     })
   }
-  const updateCaseAction = (action: Action) => {
+  const updateCaseAction = ({ id, subActions }: Action) => {
     setCases((draft) => {
-      draft.forEach((_caseColumn) => {
-        const newAction = _caseColumn.actions.find((a) => a.id === action.id)
-        if (newAction)
-          newAction.subActions = {
-            ...newAction.subActions,
-            ...action.subActions,
-          }
-      })
+      const caseAction = draft
+        .map((_caseColumn) => _caseColumn.actions)
+        .flat()
+        .find((a) => a.id === id)
+      if (caseAction) caseAction.subActions = subActions
     })
   }
 
@@ -60,11 +59,7 @@ export function StoryMapView() {
     >
       <Group align="start">
         {cases.map((caseColumn) => (
-          <CaseColumn
-            key={caseColumn.title}
-            title={caseColumn.title}
-            actions={caseColumn.actions}
-          />
+          <CaseColumn key={caseColumn.title} {...caseColumn} />
         ))}
       </Group>
       <Accordion
