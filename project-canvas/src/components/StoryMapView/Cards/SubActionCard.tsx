@@ -20,7 +20,7 @@ export function SubActionCard({
       index={index}
       editItem={() => editSubAction({ id, title: "NEW SUB BABY" })}
       itemType="subAction"
-      m="10px"
+      m="sm"
       {...props}
     >
       {children}

@@ -20,7 +20,7 @@ export function ActionCard({
       index={index}
       editItem={() => editAction({ id, title: "NEWWW" } as Action)}
       itemType="action"
-      m="10px"
+      m="sm"
       {...props}
     >
       {children}
