@@ -2,9 +2,10 @@
 import { Accordion, Group } from "@mantine/core"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useImmer } from "use-immer"
-import { Action, Case, CaseColumn, SubAction } from "./CaseColumn"
+import { CaseColumn } from "./CaseColumn"
 import { CaseSubActions } from "./CaseSubActions"
 import { onDragEnd } from "./helpers/draggingHelpers"
+import { Case, Action, SubAction } from "./types"
 
 export function StoryMapView() {
   const [cases, setCases] = useImmer<Case[]>([
@@ -53,7 +54,7 @@ export function StoryMapView() {
       const caseAction = draft
         .map((_caseColumn) => _caseColumn.actions)
         .flat()
-        .find((a) => a.id === id)
+        .find((_action) => _action.id === id)
       if (caseAction) caseAction.subActions = subActions
     })
   }
@@ -76,7 +77,7 @@ export function StoryMapView() {
       const caseAction = draft
         .map((_caseColumn) => _caseColumn.actions)
         .flat()
-        .find((a) => a.id === id)
+        .find((_action) => _action.id === id)
       if (caseAction) caseAction.title = title
     })
   }
@@ -112,6 +113,7 @@ export function StoryMapView() {
           <CaseColumn
             key={caseColumn.title}
             addAction={addAction}
+            editAction={editAction}
             {...caseColumn}
           />
         ))}
@@ -126,6 +128,7 @@ export function StoryMapView() {
                   key={caseColumn.title}
                   actions={caseColumn.actions}
                   addSubAction={addSubAction}
+                  editSubAction={editSubAction}
                 />
               ))}
             </Group>

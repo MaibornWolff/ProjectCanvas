@@ -1,4 +1,4 @@
-import { Paper } from "@mantine/core"
+import { Paper, Title } from "@mantine/core"
 
 export function CaseTitleCard({ title }: { title: string }) {
   return (
@@ -11,11 +11,11 @@ export function CaseTitleCard({ title }: { title: string }) {
         backgroundColor: theme.colors.primaryBlue[0],
         width: "100%",
       })}
-      radius="md"
+      radius="sm"
       p="md"
       shadow="md"
     >
-      {title}
+      <Title size="1.6em">{title}</Title>
     </Paper>
   )
 }

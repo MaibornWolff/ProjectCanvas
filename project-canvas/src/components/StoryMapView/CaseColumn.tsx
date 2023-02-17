@@ -1,32 +1,21 @@
 import { Group, Stack } from "@mantine/core"
 import { StrictModeDroppable } from "../common/StrictModeDroppable"
-import { ItemCard } from "./Cards"
+import { ActionCard } from "./Cards/ActionCard"
 import { AddSubActionCard } from "./Cards/AddSubActionCard"
 import { CaseTitleCard } from "./Cards/CaseTitleCard"
 import { getRndInteger } from "./helpers/utils"
-
-export interface SubAction {
-  id: string
-  title: string
-}
-
-export interface Action {
-  id: string
-  title: string
-  subActions: SubAction[]
-}
-export interface Case {
-  id: string
-  title: string
-  actions: Action[]
-}
+import { Case, Action } from "./types"
 
 export function CaseColumn({
   id: caseId,
   title,
   actions,
   addAction,
-}: Case & { addAction: (caseId: string, action: Action) => void }) {
+  editAction,
+}: Case & {
+  addAction: (caseId: string, action: Action) => void
+  editAction: ({ id, title }: Action) => void
+}) {
   return (
     <Stack>
       <CaseTitleCard title={title} />
@@ -40,17 +29,18 @@ export function CaseColumn({
             {...provided.droppableProps}
           >
             {actions.map((action, index) => (
-              <ItemCard
+              <ActionCard
                 key={action.id}
-                id={`action-${action.id}`}
+                id={action.id}
                 index={index}
-                itemType="action"
-                m="10px"
+                editAction={editAction}
               >
                 {action.title}
-              </ItemCard>
+              </ActionCard>
             ))}
             <AddSubActionCard
+              id={`action-add-${caseId}`}
+              index={actions.length}
               onClick={() =>
                 addAction(caseId, {
                   id: `s-${getRndInteger()}`,
@@ -58,9 +48,6 @@ export function CaseColumn({
                   subActions: [],
                 })
               }
-              id={`action-add-${caseId}`}
-              index={100}
-              m="10px"
             />
             {provided.placeholder}
           </Group>

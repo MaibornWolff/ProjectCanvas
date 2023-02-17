@@ -1,16 +1,18 @@
 import { Group, Stack } from "@mantine/core"
 import { StrictModeDroppable } from "../common/StrictModeDroppable"
-import { ItemCard } from "./Cards"
 import { AddSubActionCard } from "./Cards/AddSubActionCard"
-import { Action, SubAction } from "./CaseColumn"
+import { SubActionCard } from "./Cards/SubActionCard"
 import { getRndInteger } from "./helpers/utils"
+import { Action, SubAction } from "./types"
 
 export function CaseSubActions({
   actions,
   addSubAction,
+  editSubAction,
 }: {
   actions: Action[]
   addSubAction: (actionId: string, subAction: SubAction) => void
+  editSubAction: ({ id, title }: SubAction) => void
 }) {
   return (
     <Stack>
@@ -24,19 +26,18 @@ export function CaseSubActions({
                 {...provided.droppableProps}
               >
                 {subActions.map((subAction, index) => (
-                  <ItemCard
+                  <SubActionCard
                     key={subAction.id}
-                    id={`subAction-${subAction.id}`}
+                    id={subAction.id}
                     index={index}
-                    m="10px"
+                    editSubAction={editSubAction}
                   >
                     {subAction.title}
-                  </ItemCard>
+                  </SubActionCard>
                 ))}
                 <AddSubActionCard
                   id={`subAction-add-${actionId}`}
-                  index={100}
-                  m="10px"
+                  index={subActions.length}
                   onClick={() =>
                     addSubAction(actionId, {
                       id: `ss-${getRndInteger()}`,

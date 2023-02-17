@@ -29,6 +29,7 @@ export function AddSubActionCard({
             cursor: "pointer",
           }}
           radius="md"
+          m="sm"
           p="md"
           ref={provided.innerRef}
           {...provided.draggableProps}

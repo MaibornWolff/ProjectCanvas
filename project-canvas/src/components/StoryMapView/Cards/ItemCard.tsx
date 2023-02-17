@@ -7,20 +7,18 @@ export function ItemCard({
   id,
   index,
   children,
+  editItem,
   itemType = "subAction",
   ...props
 }: {
   id: string
   index: number
   children: string
+  editItem: () => void
   itemType?: ItemType
 } & PaperProps) {
   const theme = useMantineTheme()
-  const lookup = new Map<ItemType, string>([
-    ["action", theme.colors.primaryGreen[0]],
-    ["subAction", "white"],
-  ])
-  const color = lookup.get(itemType)
+
   return (
     <Draggable draggableId={id} index={index}>
       {(provided) => (
@@ -31,16 +29,18 @@ export function ItemCard({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: color,
+            backgroundColor:
+              itemType === "action" ? theme.colors.primaryGreen[0] : "white",
           }}
-          radius="md"
+          radius="sm"
           p="md"
-          m="0"
-          shadow="md"
+          m="sm"
+          shadow="sm"
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           {...props}
+          onClick={editItem}
         >
           {children}
         </Paper>
