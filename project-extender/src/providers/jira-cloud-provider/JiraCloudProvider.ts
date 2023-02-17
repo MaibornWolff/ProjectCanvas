@@ -638,32 +638,46 @@ class JiraCloudProvider implements ProviderApi {
           },
           body: JSON.stringify({
             fields: {
-              summary,
-              parent: { key: epic },
-              issuetype: { id: type },
-              project: {
-                id: projectId,
-              },
-              reporter: {
-                id: reporter,
-              },
+              ...(summary && {
+                summary,
+              }),
+              ...(epic && {
+                summparent: { key: epic },
+              }),
+              ...(type && {
+                issuetype: { id: type },
+              }),
+              ...(projectId && {
+                project: {
+                  id: projectId,
+                },
+              }),
+              ...(reporter && {
+                reporter: {
+                  id: reporter,
+                },
+              }),
               ...(priority.id && { priority }),
-              assignee,
-              description: {
-                type: "doc",
-                version: 1,
-                content: [
-                  {
-                    type: "paragraph",
-                    content: [
-                      {
-                        text: description,
-                        type: "text",
-                      },
-                    ],
-                  },
-                ],
-              },
+              ...(assignee && {
+                assignee,
+              }),
+              ...(description && {
+                description: {
+                  type: "doc",
+                  version: 1,
+                  content: [
+                    {
+                      type: "paragraph",
+                      content: [
+                        {
+                          text: description,
+                          type: "text",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              }),
               ...(labels && {
                 labels,
               }),
@@ -688,7 +702,7 @@ class JiraCloudProvider implements ProviderApi {
         }
       )
         .then(async (data) => {
-          if (data.status === 201) {
+          if (data.status === 204) {
             const createdIssue = await data.json()
             resolve(JSON.stringify(createdIssue.key))
           }
@@ -701,6 +715,13 @@ class JiraCloudProvider implements ProviderApi {
           if (data.status === 403) {
             reject(
               new Error("The user does not have the necessary permissions")
+            )
+          }
+          if (data.status === 404) {
+            reject(
+              new Error(
+                "The issue was not found or the user does not have the necessary permissions"
+              )
             )
           }
         })
