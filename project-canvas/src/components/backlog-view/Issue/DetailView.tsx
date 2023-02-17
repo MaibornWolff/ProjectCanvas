@@ -15,9 +15,11 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core"
-import { IconBinaryTree2 } from "@tabler/icons"
+import { IconBinaryTree2, IconCaretDown } from "@tabler/icons"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
+import { getIssueTypes, setStatus } from "../../CreateIssue/queryFunctions"
 import { Description } from "./Description"
 import { IssueIcon } from "./IssueIcon"
 
@@ -37,10 +39,25 @@ export function DetailView({
   updated,
   comment,
   type,
+  projectId,
 }: Issue) {
   const [defaultdescription, setdefaultdescription] = useState(description)
   const [showInputEle, setShowInputEle] = useState(false)
 
+  const { data: issueTypes } = useQuery({
+    queryKey: ["issueTypes", projectId],
+    queryFn: () => getIssueTypes(projectId),
+    enabled: !!projectId,
+  })
+  const queryClient = useQueryClient()
+
+  const [defaultStatus, setDefaultStatus] = useState(status)
+  const mutation = useMutation({
+    mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["issues"] })
+    },
+  })
   return (
     <Paper p={10}>
       <Breadcrumbs mb="50px">
@@ -149,18 +166,34 @@ export function DetailView({
             <Menu.Target>
               <Button
                 w={150}
-                sx={{ display: "flex", justifyContent: "flex-start" }}
-                mb={10}
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  flexDirection: "row",
+                }}
+                mb="md"
               >
-                {status}
+                {defaultStatus}
+                <ThemeIcon bg="transparent" ml="50px">
+                  <IconCaretDown />
+                </ThemeIcon>
               </Button>
             </Menu.Target>
 
             <Menu.Dropdown>
-              <Menu.Item>To Do</Menu.Item>
-              <Menu.Item>In Progress</Menu.Item>
-              <Menu.Item>Review</Menu.Item>
-              <Menu.Item>Done</Menu.Item>
+              {issueTypes &&
+                issueTypes
+                  .find((issueType) => issueType.name === type)
+                  ?.statuses?.map((issueStatus) => (
+                    <Menu.Item
+                      onClick={() => {
+                        mutation.mutate(issueStatus.name)
+                        setDefaultStatus(issueStatus.name)
+                      }}
+                    >
+                      {issueStatus.name}
+                    </Menu.Item>
+                  ))}
             </Menu.Dropdown>
           </Menu>
           <Accordion variant="contained" defaultValue="Details" mb={30}>

@@ -76,3 +76,12 @@ export const getIssueTypesWithFieldsMap = (): Promise<Map<string, string[]>> =>
       return map
     })
     .catch((err) => err)
+export const setStatus = (
+  issueKey: string,
+  targetStatus: string
+): Promise<void> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/setStatus?issueKey=${issueKey}&targetStatus=${targetStatus} `
+  ).then(() => {})

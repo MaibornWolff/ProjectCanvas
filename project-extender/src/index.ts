@@ -290,3 +290,12 @@ server.get("/issueTypesWithFieldsMap", async (_, reply) => {
     })
     .catch((error) => reply.status(400).send(error))
 })
+server.get<{
+  Querystring: { issueKey: string; targetStatus: string }
+}>("/setStatus", (request, reply) => {
+  issueProvider
+    .setTransition(request.query.issueKey, request.query.targetStatus)
+    .then(() => {
+      reply.status(200).send()
+    })
+})

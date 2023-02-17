@@ -51,6 +51,7 @@ export interface ProviderApi {
   getLabels(): Promise<string[]>
   getPriorities(): Promise<Priority[]>
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }>
+  setTransition(issueIdOrKey: string, targetStatus: string): Promise<void>
 }
 
 export abstract class ProviderCreator {

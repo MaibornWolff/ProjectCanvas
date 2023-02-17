@@ -53,6 +53,7 @@ export interface JiraIssue {
         summary: string
       }
     }[]
+    project: { id: string }
     created: string
     updated: string
     comment: {

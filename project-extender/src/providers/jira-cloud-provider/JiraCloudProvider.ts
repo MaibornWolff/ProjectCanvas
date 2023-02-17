@@ -339,6 +339,7 @@ class JiraCloudProvider implements ProviderApi {
         created: element.fields.created,
         updated: element.fields.updated,
         comment: element.fields.comment,
+        projectId: element.fields.project.id,
       }))
     )
 
