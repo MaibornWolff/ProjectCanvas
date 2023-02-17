@@ -6,6 +6,7 @@ import {
   dateTimeFormat,
   Issue,
   IssueType,
+  Priority,
   Project,
   Sprint,
   User,
@@ -404,6 +405,32 @@ class JiraServerProvider implements ProviderApi {
   }
 
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
+    throw new Error("Method not implemented.")
+  }
+
+  getCurrentUser(): Promise<User> {
+    throw new Error("Method not implemented.")
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getIssuesBySprint(sprintId: number): Promise<Issue[]> {
+    throw new Error("Method not implemented.")
+  }
+
+  getLabels(): Promise<string[]> {
+    throw new Error("Method not implemented.")
+  }
+
+  getPriorities(): Promise<Priority[]> {
+    throw new Error("Method not implemented.")
+  }
+
+  getIssueTypesWithFieldsMap(): Promise<{
+    [
+      /* eslint-disable class-methods-use-this */
+      key: string
+    ]: string[]
+  }> {
     throw new Error("Method not implemented.")
   }
 }
