@@ -560,7 +560,7 @@ class JiraCloudProvider implements ProviderApi {
         }
       )
         .then(async (data) => {
-          if (data.status === 200) {
+          if (data.status === 201) {
             const createdIssue = await data.json()
             resolve(JSON.stringify(createdIssue.key))
             this.setTransition(createdIssue.id, status)
