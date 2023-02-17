@@ -18,7 +18,7 @@ export function Description(props: {
           autosize
         />
       ) : (
-        <Text onDoubleClick={props.handleDoubleClick} mb="xl">
+        <Text onClick={props.handleDoubleClick} mb="xl">
           {props.value !== null ? props.value : "Add Description"}
         </Text>
       )}
