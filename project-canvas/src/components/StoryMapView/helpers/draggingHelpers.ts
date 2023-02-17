@@ -1,5 +1,5 @@
 import { DraggableLocation, DropResult } from "react-beautiful-dnd"
-import { Action, Case } from "../CaseColumn"
+import { Case, Action } from "../types"
 
 const reorder = <T>(list: T[], startIndex: number, endIndex: number) => {
   const result = Array.from(list)
@@ -31,7 +31,6 @@ export const onDragEnd = (
   result: DropResult,
   cases: Case[],
   updateCase: (caseColumn: string, actions: Action[]) => void,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   updateCaseAction: (action: Action) => void
 ) => {
   const { source, destination } = result
@@ -40,11 +39,7 @@ export const onDragEnd = (
   if (!destination) {
     return
   }
-  // action? or subAction?
-  // if action
-  // check if same list or not
-  // get current list with id that's the same as title
-  // make update with updateCase
+
   if (isAction(source.droppableId) && isAction(destination.droppableId)) {
     const caseColumnSource = cases.find((c) => c.title === source.droppableId)
     const caseColumnDest = cases.find(
