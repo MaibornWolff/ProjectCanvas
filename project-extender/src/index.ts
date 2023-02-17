@@ -299,3 +299,14 @@ server.get<{
       reply.status(200).send()
     })
 })
+
+server.get<{
+  Querystring: { issueIdOrKey: string }
+}>("/editableIssueFieldsMap", async (request, reply) => {
+  await issueProvider
+    .getEditableIssueFieldsMap(request.query.issueIdOrKey)
+    .then((fields) => {
+      reply.status(200).send(fields)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
