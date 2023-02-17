@@ -182,6 +182,28 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
+  async getEditableIssueFieldsMap(issueIdOrKey: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/editmeta`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const metadata = await response.json()
+          const fieldKeys = Object.keys(metadata.fields)
+          resolve(fieldKeys)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the issue types map: ${error}`))
+        )
+    })
+  }
+
   async getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
     return new Promise((resolve, reject) => {
       fetch(
@@ -560,10 +582,115 @@ class JiraCloudProvider implements ProviderApi {
         }
       )
         .then(async (data) => {
-          if (data.status === 200) {
+          if (data.status === 201) {
             const createdIssue = await data.json()
             resolve(JSON.stringify(createdIssue.key))
             this.setTransition(createdIssue.id, status)
+          }
+          if (data.status === 400) {
+            reject(new Error(await data.json()))
+          }
+          if (data.status === 401) {
+            reject(new Error("User not authenticated"))
+          }
+          if (data.status === 403) {
+            reject(
+              new Error("The user does not have the necessary permissions")
+            )
+          }
+        })
+        .catch((error) => {
+          reject(new Error(`Error creating issue: ${error}`))
+        })
+    })
+  }
+
+  async editIssue(
+    {
+      summary,
+      type,
+      projectId,
+      reporter,
+      assignee,
+      sprintId,
+      storyPointsEstimate,
+      description,
+      epic,
+      startDate,
+      dueDate,
+      labels,
+      priority,
+    }: Issue,
+    issueKey: string
+  ): Promise<string> {
+    const offsetStartDate = this.offsetDate(startDate)
+    const offsetDueDate = this.offsetDate(dueDate)
+
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueKey}`,
+        {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fields: {
+              summary,
+              parent: { key: epic },
+              issuetype: { id: type },
+              project: {
+                id: projectId,
+              },
+              reporter: {
+                id: reporter,
+              },
+              ...(priority.id && { priority }),
+              assignee,
+              description: {
+                type: "doc",
+                version: 1,
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [
+                      {
+                        text: description,
+                        type: "text",
+                      },
+                    ],
+                  },
+                ],
+              },
+              ...(labels && {
+                labels,
+              }),
+              ...(offsetStartDate && {
+                [this.customFields.get("Start date")!]: offsetStartDate,
+              }),
+              ...(offsetDueDate && {
+                [this.customFields.get("Due date")!]: offsetDueDate,
+              }),
+              ...(sprintId && {
+                [this.customFields.get("Sprint")!]: sprintId,
+              }),
+              ...(storyPointsEstimate && {
+                [this.customFields.get("Story point estimate")!]:
+                  storyPointsEstimate,
+              }),
+              // ...(files && {
+              //   [this.customFields.get("Attachment")!]: files,
+              // }),
+            },
+          }),
+        }
+      )
+        .then(async (data) => {
+          if (data.status === 201) {
+            const createdIssue = await data.json()
+            resolve(JSON.stringify(createdIssue.key))
           }
           if (data.status === 400) {
             reject(new Error(await data.json()))
