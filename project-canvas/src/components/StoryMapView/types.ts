@@ -3,13 +3,23 @@ export interface SubAction {
   title: string
 }
 
+export interface SubActionGroup {
+  id: string
+  levelId: string
+  subActions: SubAction[]
+}
 export interface Action {
   id: string
   title: string
-  subActions: SubAction[]
+  subActionGroups: SubActionGroup[]
 }
 export interface Case {
   id: string
   title: string
   actions: Action[]
+}
+
+export interface SubActionLevel {
+  id: string
+  title: string
 }

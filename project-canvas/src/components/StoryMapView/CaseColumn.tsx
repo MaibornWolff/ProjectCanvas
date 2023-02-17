@@ -4,15 +4,17 @@ import { ActionCard } from "./Cards/ActionCard"
 import { AddSubActionCard } from "./Cards/AddSubActionCard"
 import { CaseTitleCard } from "./Cards/CaseTitleCard"
 import { getRndInteger } from "./helpers/utils"
-import { Case, Action } from "./types"
+import { Action, Case, SubActionLevel } from "./types"
 
 export function CaseColumn({
   id: caseId,
   title,
+  levels,
   actions,
   addAction,
   editAction,
 }: Case & {
+  levels: SubActionLevel[]
   addAction: (caseId: string, action: Action) => void
   editAction: ({ id, title }: Action) => void
 }) {
@@ -45,7 +47,11 @@ export function CaseColumn({
                 addAction(caseId, {
                   id: `s-${getRndInteger()}`,
                   title: "New Action",
-                  subActions: [],
+                  subActionGroups: levels.map((level) => ({
+                    id: `sg-${getRndInteger()}`,
+                    levelId: level.id,
+                    subActions: [],
+                  })),
                 })
               }
             />

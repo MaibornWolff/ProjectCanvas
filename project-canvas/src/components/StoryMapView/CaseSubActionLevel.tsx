@@ -3,22 +3,25 @@ import { StrictModeDroppable } from "../common/StrictModeDroppable"
 import { AddSubActionCard } from "./Cards/AddSubActionCard"
 import { SubActionCard } from "./Cards/SubActionCard"
 import { getRndInteger } from "./helpers/utils"
-import { Action, SubAction } from "./types"
+import { SubAction, SubActionGroup } from "./types"
 
-export function CaseSubActions({
-  actions,
+export function CaseSubActionLevel({
+  subActionGroups,
   addSubAction,
   editSubAction,
 }: {
-  actions: Action[]
+  subActionGroups: SubActionGroup[]
   addSubAction: (actionId: string, subAction: SubAction) => void
   editSubAction: ({ id, title }: SubAction) => void
 }) {
   return (
     <Stack>
       <Group align="start" spacing={0} bg="gray.3">
-        {actions.map(({ id: actionId, subActions }) => (
-          <StrictModeDroppable key={actionId} droppableId={actionId}>
+        {subActionGroups.map(({ id: subActionGroupId, subActions }) => (
+          <StrictModeDroppable
+            key={subActionGroupId}
+            droppableId={subActionGroupId}
+          >
             {(provided) => (
               <Stack
                 spacing={0}
@@ -36,10 +39,10 @@ export function CaseSubActions({
                   </SubActionCard>
                 ))}
                 <AddSubActionCard
-                  id={`subAction-add-${actionId}`}
+                  id={`subAction-add-${subActionGroupId}`}
                   index={subActions.length}
                   onClick={() =>
-                    addSubAction(actionId, {
+                    addSubAction(subActionGroupId, {
                       id: `ss-${getRndInteger()}`,
                       title: "New SubAction",
                     })
