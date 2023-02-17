@@ -27,6 +27,8 @@ class JiraCloudProvider implements ProviderApi {
 
   private customFields = new Map<string, string>()
 
+  private reversedCustomFields = new Map<string, string>()
+
   offsetDate(date: Date) {
     if (!date) {
       return date
@@ -95,6 +97,7 @@ class JiraCloudProvider implements ProviderApi {
     const data = await response.json()
     data.forEach((field: { name: string; id: string }) => {
       this.customFields.set(field.name, field.id)
+      this.reversedCustomFields.set(field.id, field.name)
     })
   }
 
@@ -165,7 +168,9 @@ class JiraCloudProvider implements ProviderApi {
             }) => {
               project.issuetypes.forEach((issuetype) => {
                 const fieldKeys = Object.keys(issuetype.fields)
-                issueTypeToFieldsMap[issuetype.id] = fieldKeys
+                issueTypeToFieldsMap[issuetype.id] = fieldKeys.map(
+                  (fieldKey) => this.reversedCustomFields.get(fieldKey)!
+                )
               })
             }
           )
@@ -547,14 +552,30 @@ class JiraCloudProvider implements ProviderApi {
                 [this.customFields.get("Story point estimate")!]:
                   storyPointsEstimate,
               }),
+              // ...(files && {
+              //   [this.customFields.get("Attachment")!]: files,
+              // }),
             },
           }),
         }
       )
         .then(async (data) => {
-          const createdIssue = await data.json()
-          resolve(createdIssue.key)
-          this.setTransition(createdIssue.id, status)
+          if (data.status === 200) {
+            const createdIssue = await data.json()
+            resolve(JSON.stringify(createdIssue.key))
+            this.setTransition(createdIssue.id, status)
+          }
+          if (data.status === 400) {
+            reject(new Error(await data.json()))
+          }
+          if (data.status === 401) {
+            reject(new Error("User not authenticated"))
+          }
+          if (data.status === 403) {
+            reject(
+              new Error("The user does not have the necessary permissions")
+            )
+          }
         })
         .catch((error) => {
           reject(new Error(`Error creating issue: ${error}`))
