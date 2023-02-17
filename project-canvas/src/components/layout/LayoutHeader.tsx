@@ -48,6 +48,13 @@ export function LayoutHeader() {
           >
             Backlog
           </Anchor>
+          <Anchor
+            component="button"
+            type="button"
+            onClick={() => navigate("/storymapview")}
+          >
+            Story Map
+          </Anchor>
           <Button onClick={() => setCreateIssueModalOpened(true)}>
             Create
           </Button>
