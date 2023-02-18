@@ -33,14 +33,22 @@ export function IssueSummary(props: { summary: string; issueKey: string }) {
           value={defaultsummary}
           onChange={(e) => setdefaultsummary(e.target.value)}
           onBlur={() => {
-            setshowSummaryInput(false)
-            mutationSummary.mutate({
-              summary: defaultsummary,
-            } as Issue)
+            if (defaultsummary === "")
+              showNotification({
+                message: `Summary of an issue cannot be empty`,
+                color: "red",
+              })
+            else {
+              setshowSummaryInput(false)
+              mutationSummary.mutate({
+                summary: defaultsummary,
+              } as Issue)
+            }
           }}
           variant="unstyled"
           size="xl"
           mb={30}
+          required
         />
       ) : (
         <Title order={2} mb={30} onClick={() => setshowSummaryInput(true)}>
