@@ -1,7 +1,6 @@
 import {
   Accordion,
   Avatar,
-  Badge,
   Box,
   Breadcrumbs,
   Button,
@@ -15,13 +14,19 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core"
+import { showNotification } from "@mantine/notifications"
 import { IconBinaryTree2, IconCaretDown } from "@tabler/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
-import { getIssueTypes, setStatus } from "../../CreateIssue/queryFunctions"
+import {
+  editIssue,
+  getIssueTypes,
+  setStatus,
+} from "../../CreateIssue/queryFunctions"
 import { Description } from "./Description"
 import { IssueIcon } from "./IssueIcon"
+import { Labels } from "./Labels"
 
 export function DetailView({
   issueKey,
@@ -56,6 +61,25 @@ export function DetailView({
     mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] })
+    },
+  })
+  const [defaultlabels, setdefaultlabels] = useState(labels)
+  const [showLabelsInput, setshowLabelsInput] = useState(false)
+
+  const mutationLalbels = useMutation({
+    mutationFn: (issue: Issue) => editIssue(issue, issueKey),
+    onError: () => {
+      showNotification({
+        message: `error occured while modifing the Labels 😢`,
+        color: "red",
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["issues"] })
+      showNotification({
+        message: `Labels for issue ${issueKey} has been modified!`,
+        color: "green",
+      })
     },
   })
   return (
@@ -213,15 +237,18 @@ export function DetailView({
                   </Group>
                   <Group grow>
                     <Text color="dimmed">Labels</Text>
-                    {labels.length !== 0 ? (
-                      <Group>
-                        {labels.map((label) => (
-                          <Badge>{label}</Badge>
-                        ))}
-                      </Group>
-                    ) : (
-                      <Text color="dimmed">None</Text>
-                    )}
+                    <Labels
+                      setLabels={setdefaultlabels}
+                      showLabelsInput={showLabelsInput}
+                      handleBlur={() => {
+                        setshowLabelsInput(false)
+                        mutationLalbels.mutate({
+                          labels: defaultlabels,
+                        } as Issue)
+                      }}
+                      handleDoubleClick={() => setshowLabelsInput(true)}
+                      labels={defaultlabels}
+                    />
                   </Group>
                   <Group grow>
                     <Text color="dimmed">Sprint</Text>

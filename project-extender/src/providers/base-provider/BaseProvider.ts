@@ -45,7 +45,7 @@ export interface ProviderApi {
     rankBefore: string,
     rankAfter: string
   ): Promise<void>
-
+  editIssue(issue: Issue, issueIdOrKey: string): Promise<void>
   createIssue(issue: Issue): Promise<string>
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]>
   getLabels(): Promise<string[]>

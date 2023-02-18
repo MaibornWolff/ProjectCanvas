@@ -623,7 +623,7 @@ class JiraCloudProvider implements ProviderApi {
       priority,
     }: Issue,
     issueKey: string
-  ): Promise<string> {
+  ): Promise<void> {
     const offsetStartDate = this.offsetDate(startDate)
     const offsetDueDate = this.offsetDate(dueDate)
 
@@ -658,7 +658,7 @@ class JiraCloudProvider implements ProviderApi {
                   id: reporter,
                 },
               }),
-              ...(priority.id && { priority }),
+              ...(priority && priority.id && { priority }),
               ...(assignee && {
                 assignee,
               }),
@@ -704,8 +704,7 @@ class JiraCloudProvider implements ProviderApi {
       )
         .then(async (data) => {
           if (data.status === 204) {
-            const createdIssue = await data.json()
-            resolve(JSON.stringify(createdIssue.key))
+            resolve()
           }
           if (data.status === 400) {
             reject(new Error(await data.json()))
