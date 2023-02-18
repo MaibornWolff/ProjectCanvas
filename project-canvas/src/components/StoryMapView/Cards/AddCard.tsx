@@ -3,7 +3,7 @@ import { IconPlus } from "@tabler/icons"
 import { MouseEventHandler } from "react"
 import { Draggable } from "react-beautiful-dnd"
 
-export function AddSubActionCard({
+export function AddCard({
   id,
   index,
   onClick,
@@ -28,7 +28,7 @@ export function AddSubActionCard({
             color: "gray",
             cursor: "pointer",
           }}
-          radius="md"
+          radius="sm"
           m="sm"
           p="md"
           ref={provided.innerRef}

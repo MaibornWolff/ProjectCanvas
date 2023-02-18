@@ -1,4 +1,5 @@
-import { Case, SubActionGroup, SubActionLevel } from "../types"
+import produce from "immer"
+import { Case, SubActionLevel } from "../types"
 
 export const getRndInteger = (min = 0, max = 100000) =>
   Math.floor(Math.random() * (max - min)) + min
@@ -16,10 +17,17 @@ export const getAllSubActions = (cases: Case[]) =>
     .map((_subActionGroup) => _subActionGroup.subActions)
     .flat()
 
-export const getAllSubActionGroupsForLevel = (
+export const getFilteredCasesForLevel = (
   cases: Case[],
   level: SubActionLevel
-): SubActionGroup[] =>
-  getAllSubActionGroups(cases).filter(
-    (_subActionGroup) => _subActionGroup.levelId === level.id
-  )
+): Case[] =>
+  produce(cases, (draft) => {
+    draft.forEach((_case) =>
+      _case.actions.forEach((_action) => {
+        // eslint-disable-next-line no-param-reassign
+        _action.subActionGroups = _action.subActionGroups.filter(
+          (_subActionGroup) => _subActionGroup.levelId === level.id
+        )
+      })
+    )
+  })

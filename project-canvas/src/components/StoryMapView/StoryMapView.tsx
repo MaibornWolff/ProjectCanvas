@@ -9,7 +9,7 @@ import { onDragEnd } from "./helpers/draggingHelpers"
 import {
   getAllActions,
   getAllSubActionGroups,
-  getAllSubActionGroupsForLevel,
+  getFilteredCasesForLevel,
   getAllSubActions,
   getRndInteger,
 } from "./helpers/utils"
@@ -65,17 +65,28 @@ export function StoryMapView() {
         },
       ],
     },
-    // {
-    //   id: "a2",
-    //   title: "a2",
-    //   actions: [
-    //     {
-    //       id: "s3",
-    //       title: "action3",
-    //       subActions: [{ id: "ss-5", title: "sub-action3" }],
-    //     },
-    //   ],
-    // },
+    {
+      id: "a2",
+      title: "a2",
+      actions: [
+        {
+          id: "s3",
+          title: "action3",
+          subActionGroups: [
+            {
+              id: "sg-5",
+              levelId: "level-1",
+              subActions: [],
+            },
+            {
+              id: "sg-6",
+              levelId: "level-2",
+              subActions: [{ id: "ss-3", title: "sub-action21" }],
+            },
+          ],
+        },
+      ],
+    },
   ])
   const updateCase = (caseId: string, actions: Action[]) => {
     setCases((draft) => {
@@ -130,11 +141,7 @@ export function StoryMapView() {
     })
   }
   return (
-    <DragDropContext
-      onDragEnd={(dropResult) =>
-        onDragEnd(dropResult, cases, updateCase, updateAction)
-      }
-    >
+    <DragDropContext onDragEnd={(dropResult) => {}}>
       <Group align="start">
         {cases.map((caseColumn) => (
           <CaseColumn
@@ -158,8 +165,8 @@ export function StoryMapView() {
             <Accordion.Panel>
               <Group align="start">
                 <CaseSubActionLevel
-                  key={level.id}
-                  subActionGroups={getAllSubActionGroupsForLevel(cases, level)}
+                  filteredCases={getFilteredCasesForLevel(cases, level)}
+                  levelId={level.id}
                   addSubAction={addSubAction}
                   editSubAction={editSubAction}
                 />

@@ -1,7 +1,7 @@
 import { Group, Stack } from "@mantine/core"
 import { StrictModeDroppable } from "../common/StrictModeDroppable"
 import { ActionCard } from "./Cards/ActionCard"
-import { AddSubActionCard } from "./Cards/AddSubActionCard"
+import { AddCard } from "./Cards/AddCard"
 import { CaseTitleCard } from "./Cards/CaseTitleCard"
 import { getRndInteger } from "./helpers/utils"
 import { Action, Case, SubActionLevel } from "./types"
@@ -21,11 +21,9 @@ export function CaseColumn({
   return (
     <Stack>
       <CaseTitleCard title={title} />
-
       <StrictModeDroppable droppableId={caseId} direction="horizontal">
         {(provided) => (
           <Group
-            bg="gray.2"
             spacing={0}
             ref={provided.innerRef}
             {...provided.droppableProps}
@@ -40,7 +38,7 @@ export function CaseColumn({
                 {action.title}
               </ActionCard>
             ))}
-            <AddSubActionCard
+            <AddCard
               id={`action-add-${caseId}`}
               index={actions.length}
               onClick={() =>
