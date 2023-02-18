@@ -324,19 +324,6 @@ server.get<{
     })
     .catch((error) => reply.status(400).send(error))
 })
-server.put<{
-  Body: {
-    issue: Issue
-    issueIdOrKey: string
-  }
-}>("/editIssue", (request, reply) => {
-  issueProvider
-    .editIssue(request.body.issue, request.body.issueIdOrKey)
-    .then(() => {
-      reply.status(200).send()
-    })
-    .catch((error) => reply.status(400).send(error))
-})
 
 server.get<{
   Querystring: { issueIdOrKey: string }
