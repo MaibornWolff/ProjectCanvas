@@ -12,7 +12,6 @@ import {
   Stack,
   Text,
   ThemeIcon,
-  Title,
 } from "@mantine/core"
 import { IconBinaryTree2, IconCaretDown } from "@tabler/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -25,6 +24,7 @@ import { IssueIcon } from "./IssueIcon"
 import { ReporterMenu } from "./ReporterMenu"
 import { Labels } from "./Labels"
 import { IssueSprint } from "./IssueSprint"
+import { IssueSummary } from "./IssueSummary"
 
 export function DetailView({
   issueKey,
@@ -84,9 +84,8 @@ export function DetailView({
           p="sm"
           sx={{ minWidth: "260px" }}
         >
-          <Title order={2} mb={30}>
-            {summary}
-          </Title>
+          <IssueSummary summary={summary} issueKey={issueKey} />
+
           <Text color="dimmed" mb="sm">
             Description
           </Text>
