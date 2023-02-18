@@ -3,8 +3,7 @@ import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Issue, Sprint } from "project-extender"
 import { useState } from "react"
-// eslint-disable-next-line import/extensions
-import { useCanvasStore } from "@/lib/Store"
+import { useCanvasStore } from "../../../lib/Store"
 import {
   editIssue,
   getSprints,

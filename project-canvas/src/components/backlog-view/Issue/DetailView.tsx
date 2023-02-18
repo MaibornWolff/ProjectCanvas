@@ -43,9 +43,6 @@ export function DetailView({
   projectId,
   sprint,
 }: Issue) {
-  const [defaultdescription, setdefaultdescription] = useState(description)
-  const [showInputEle, setShowInputEle] = useState(false)
-
   const { data: issueTypes } = useQuery({
     queryKey: ["issueTypes", projectId],
     queryFn: () => getIssueTypes(projectId),
@@ -89,13 +86,7 @@ export function DetailView({
           <Text color="dimmed" mb="sm">
             Description
           </Text>
-          <Description
-            showInputEle={showInputEle}
-            handleChange={(e) => setdefaultdescription(e.target.value)}
-            handleBlur={() => setShowInputEle(false)}
-            handleDoubleClick={() => setShowInputEle(true)}
-            value={defaultdescription}
-          />
+          <Description issueKey={issueKey} description={description} />
 
           <Text color="dimmed" mb="sm">
             Child Issues

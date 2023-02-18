@@ -2,13 +2,12 @@ import { TextInput, Title } from "@mantine/core"
 import { Issue } from "project-extender"
 import { useState } from "react"
 import { showNotification } from "@mantine/notifications"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { editIssue } from "../../CreateIssue/queryFunctions"
 
 export function IssueSummary(props: { summary: string; issueKey: string }) {
   const [defaultsummary, setdefaultsummary] = useState(props.summary)
   const [showSummaryInput, setshowSummaryInput] = useState(false)
-  const queryClient = useQueryClient()
 
   const mutationSummary = useMutation({
     mutationFn: (issue: Issue) => editIssue(issue, props.issueKey),
@@ -19,7 +18,6 @@ export function IssueSummary(props: { summary: string; issueKey: string }) {
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
       showNotification({
         message: `Summary of issue ${props.issueKey} has been modified!`,
         color: "green",
