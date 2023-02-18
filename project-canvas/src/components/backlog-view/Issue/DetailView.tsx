@@ -28,6 +28,7 @@ import {
 import { Description } from "./Description"
 import { IssueIcon } from "./IssueIcon"
 import { ReporterMenu } from "./ReporterMenu"
+import { StoryPointsEstMenu } from "./StoryPointsEstMenu"
 import { Labels } from "./Labels"
 
 export function DetailView({
@@ -261,14 +262,10 @@ export function DetailView({
                       <Text color="dimmed">None</Text>
                     )}
                   </Group>
-                  <Group grow>
-                    <Text color="dimmed">Story Points Estimate</Text>
-                    {storyPointsEstimate ? (
-                      <Text>{storyPointsEstimate}</Text>
-                    ) : (
-                      <Text color="dimmed">None</Text>
-                    )}
-                  </Group>
+                  <StoryPointsEstMenu
+                    issueKey={issueKey}
+                    storyPointsEstimate={storyPointsEstimate}
+                  />
                   <ReporterMenu issueKey={issueKey} />
                 </Stack>
               </Accordion.Panel>

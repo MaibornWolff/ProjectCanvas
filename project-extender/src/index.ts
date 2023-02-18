@@ -318,9 +318,9 @@ server.get<{
 
 server.get<{
   Querystring: { issueIdOrKey: string }
-}>("/editableIssueFieldsMap", async (request, reply) => {
+}>("/editableIssueFields", async (request, reply) => {
   await issueProvider
-    .getEditableIssueFieldsMap(request.query.issueIdOrKey)
+    .getEditableIssueFields(request.query.issueIdOrKey)
     .then((fields) => {
       reply.status(200).send(fields)
     })

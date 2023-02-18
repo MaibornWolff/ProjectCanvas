@@ -329,6 +329,7 @@ export function CreateIssueModal({
             min={0}
             label="Story Point Estimate"
             defaultValue={null}
+            precision={3}
             disabled={
               issueTypesWithFieldsMap &&
               issueTypesWithFieldsMap.size > 0 &&

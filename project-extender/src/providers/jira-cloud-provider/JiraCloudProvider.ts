@@ -182,7 +182,7 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
-  async getEditableIssueFieldsMap(issueIdOrKey: string): Promise<string[]> {
+  async getEditableIssueFields(issueIdOrKey: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
       fetch(
         `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/editmeta`,
@@ -195,7 +195,9 @@ class JiraCloudProvider implements ProviderApi {
       )
         .then(async (response) => {
           const metadata = await response.json()
-          const fieldKeys = Object.keys(metadata.fields)
+          const fieldKeys = Object.keys(metadata.fields).map(
+            (fieldKey) => this.reversedCustomFields.get(fieldKey)!
+          )
           resolve(fieldKeys)
         })
         .catch((error) =>

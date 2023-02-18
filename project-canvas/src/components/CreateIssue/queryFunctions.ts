@@ -104,3 +104,14 @@ export const getIssueReporter = (issueIdOrKey: string): Promise<User> =>
   )
     .then((reporter) => reporter.json())
     .catch((err) => err)
+
+export const getEditableIssueFields = (
+  issueIdOrKey: string
+): Promise<string[]> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/editableIssueFields?issueIdOrKey=${issueIdOrKey}`
+  )
+    .then((fields) => fields.json())
+    .catch((err) => err)
