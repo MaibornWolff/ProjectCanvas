@@ -14,17 +14,12 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core"
-import { showNotification } from "@mantine/notifications"
 import { IconBinaryTree2, IconCaretDown } from "@tabler/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
 import { AssigneeMenu } from "./AssigneeMenu"
-import {
-  editIssue,
-  getIssueTypes,
-  setStatus,
-} from "../../CreateIssue/queryFunctions"
+import { getIssueTypes, setStatus } from "../../CreateIssue/queryFunctions"
 import { Description } from "./Description"
 import { IssueIcon } from "./IssueIcon"
 import { ReporterMenu } from "./ReporterMenu"
@@ -64,25 +59,7 @@ export function DetailView({
       queryClient.invalidateQueries({ queryKey: ["issues"] })
     },
   })
-  const [defaultlabels, setdefaultlabels] = useState(labels)
-  const [showLabelsInput, setshowLabelsInput] = useState(false)
 
-  const mutationLalbels = useMutation({
-    mutationFn: (issue: Issue) => editIssue(issue, issueKey),
-    onError: () => {
-      showNotification({
-        message: `error occured while modifing the Labels 😢`,
-        color: "red",
-      })
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
-      showNotification({
-        message: `Labels for issue ${issueKey} has been modified!`,
-        color: "green",
-      })
-    },
-  })
   return (
     <Paper p={10}>
       <Breadcrumbs mb="50px">
@@ -240,18 +217,7 @@ export function DetailView({
                   )}
                   <Group grow>
                     <Text color="dimmed">Labels</Text>
-                    <Labels
-                      setLabels={setdefaultlabels}
-                      showLabelsInput={showLabelsInput}
-                      handleBlur={() => {
-                        setshowLabelsInput(false)
-                        mutationLalbels.mutate({
-                          labels: defaultlabels,
-                        } as Issue)
-                      }}
-                      handleDoubleClick={() => setshowLabelsInput(true)}
-                      labels={defaultlabels}
-                    />
+                    <Labels labels={labels} issueKey={issueKey} />
                   </Group>
                   <Group grow>
                     <Text color="dimmed">Sprint</Text>
