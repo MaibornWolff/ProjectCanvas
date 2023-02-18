@@ -36,7 +36,7 @@ export function Labels(props: {
           {props.labels.length !== 0 ? (
             <Group onDoubleClick={props.handleDoubleClick}>
               {props.labels.map((label) => (
-                <Badge>{label}</Badge>
+                <Badge color="yellow">{label}</Badge>
               ))}
             </Group>
           ) : (
