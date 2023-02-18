@@ -54,7 +54,7 @@ export function DetailView({
   const queryClient = useQueryClient()
 
   const [defaultStatus, setDefaultStatus] = useState(status)
-  const mutation = useMutation({
+  const mutationStatus = useMutation({
     mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] })
@@ -190,7 +190,7 @@ export function DetailView({
                   ?.statuses?.map((issueStatus) => (
                     <Menu.Item
                       onClick={() => {
-                        mutation.mutate(issueStatus.name)
+                        mutationStatus.mutate(issueStatus.name)
                         setDefaultStatus(issueStatus.name)
                       }}
                     >
