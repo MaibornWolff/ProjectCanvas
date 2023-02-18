@@ -412,7 +412,6 @@ class JiraServerProvider implements ProviderApi {
     throw new Error("Method not implemented.")
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getIssuesBySprint(sprintId: number): Promise<Issue[]> {
     throw new Error("Method not implemented.")
   }
@@ -425,12 +424,7 @@ class JiraServerProvider implements ProviderApi {
     throw new Error("Method not implemented.")
   }
 
-  getIssueTypesWithFieldsMap(): Promise<{
-    [
-      /* eslint-disable class-methods-use-this */
-      key: string
-    ]: string[]
-  }> {
+  getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
     throw new Error("Method not implemented.")
   }
 }
