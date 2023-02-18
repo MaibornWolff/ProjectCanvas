@@ -253,6 +253,20 @@ server.post<{
     .catch((error) => reply.status(400).send(error))
 })
 
+server.put<{
+  Body: {
+    issue: Issue
+    issueIdOrKey: string
+  }
+}>("/editIssue", (request, reply) => {
+  issueProvider
+    .editIssue(request.body.issue, request.body.issueIdOrKey)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
 server.get<{
   Querystring: { projectIdOrKey: string }
 }>("/epicsByProject", (request, reply) => {
@@ -320,6 +334,17 @@ server.put<{
     .editIssue(request.body.issue, request.body.issueIdOrKey)
     .then(() => {
       reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.get<{
+  Querystring: { issueIdOrKey: string }
+}>("/issueReporter", async (request, reply) => {
+  await issueProvider
+    .getIssueReporter(request.query.issueIdOrKey)
+    .then((reporter) => {
+      reply.status(200).send(reporter)
     })
     .catch((error) => reply.status(400).send(error))
 })

@@ -47,12 +47,14 @@ export interface ProviderApi {
   ): Promise<void>
   editIssue(issue: Issue, issueIdOrKey: string): Promise<void>
   createIssue(issue: Issue): Promise<string>
+  editIssue(issue: Issue, issueIdOrKey: string): Promise<void>
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]>
   getLabels(): Promise<string[]>
   getPriorities(): Promise<Priority[]>
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }>
   setTransition(issueIdOrKey: string, targetStatus: string): Promise<void>
   getEditableIssueFieldsMap(issueIdOrKey: string): Promise<string[]>
+  getIssueReporter(issueIdOrKey: string): Promise<User>
 }
 
 export abstract class ProviderCreator {

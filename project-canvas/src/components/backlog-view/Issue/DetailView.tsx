@@ -19,6 +19,7 @@ import { IconBinaryTree2, IconCaretDown } from "@tabler/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
+import { AssigneeMenu } from "./AssigneeMenu"
 import {
   editIssue,
   getIssueTypes,
@@ -26,6 +27,7 @@ import {
 } from "../../CreateIssue/queryFunctions"
 import { Description } from "./Description"
 import { IssueIcon } from "./IssueIcon"
+import { ReporterMenu } from "./ReporterMenu"
 import { Labels } from "./Labels"
 
 export function DetailView({
@@ -36,7 +38,6 @@ export function DetailView({
   epic,
   labels,
   assignee,
-  creator,
   description,
   sprintId,
   subtasks,
@@ -185,7 +186,7 @@ export function DetailView({
             ))}
           </Stack>
         </ScrollArea.Autosize>
-        <Box w="40%" p={20}>
+        <Box w="40%" p={10}>
           <Menu shadow="md" width={150} position="bottom-start">
             <Menu.Target>
               <Button
@@ -220,21 +221,23 @@ export function DetailView({
                   ))}
             </Menu.Dropdown>
           </Menu>
-          <Accordion variant="contained" defaultValue="Details" mb={30}>
+          <Accordion variant="contained" defaultValue="Details" mb={20}>
             <Accordion.Item value="Details">
               <Accordion.Control sx={{ textAlign: "left" }}>
                 Details
               </Accordion.Control>
               <Accordion.Panel>
                 <Stack>
-                  <Group grow>
-                    <Text color="dimmed">Assignee</Text>
-                    {assignee.displayName ? (
-                      <Text>{assignee.displayName}</Text>
-                    ) : (
+                  {assignee ? (
+                    <AssigneeMenu
+                      assignee={assignee as Issue["assignee"]}
+                      issueKey={issueKey}
+                    />
+                  ) : (
+                    <Group grow>
                       <Text color="dimmed">None</Text>
-                    )}
-                  </Group>
+                    </Group>
+                  )}
                   <Group grow>
                     <Text color="dimmed">Labels</Text>
                     <Labels
@@ -266,10 +269,7 @@ export function DetailView({
                       <Text color="dimmed">None</Text>
                     )}
                   </Group>
-                  <Group grow>
-                    <Text color="dimmed">Reporter</Text>
-                    <Text>{creator}</Text>
-                  </Group>
+                  <ReporterMenu issueKey={issueKey} />
                 </Stack>
               </Accordion.Panel>
             </Accordion.Item>
