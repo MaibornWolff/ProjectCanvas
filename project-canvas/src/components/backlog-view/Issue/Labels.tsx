@@ -19,6 +19,7 @@ export function Labels(props: {
     queryKey: ["labels"],
     queryFn: () => getLabels(),
   })
+
   return (
     <span>
       {props.showLabelsInput ? (
@@ -27,6 +28,7 @@ export function Labels(props: {
           nothingFound="No Options"
           searchable
           clearable
+          defaultValue={props.labels}
           data={allLabels!}
           onBlur={props.handleBlur}
           onChange={props.setLabels}
