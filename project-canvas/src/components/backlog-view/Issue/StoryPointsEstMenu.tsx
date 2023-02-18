@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Text, Group, NumberInput, Chip, Loader, Box } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
@@ -19,6 +19,10 @@ export function StoryPointsEstMenu({
   const timeoutRef = useRef<number | null>(null)
   const [showEditableInput, setShowEditableInput] = useState(false)
   const [showLoader, setShowLoader] = useState(false)
+
+  useEffect(() => {
+    setShowLoader(false)
+  }, [storyPointsEstimate])
 
   const { data: editableFields } = useQuery({
     queryKey: ["reporter", issueKey],
@@ -51,7 +55,6 @@ export function StoryPointsEstMenu({
 
     timeoutRef.current = window.setTimeout(() => {
       setShowEditableInput(false)
-      setShowLoader(false)
       mutation.mutate({ storyPointsEstimate: currentValue } as Issue)
     }, 2000)
   }
