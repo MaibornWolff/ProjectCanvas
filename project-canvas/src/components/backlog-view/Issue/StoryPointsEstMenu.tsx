@@ -1,5 +1,5 @@
-import { useRef } from "react"
-import { Text, Group, NumberInput } from "@mantine/core"
+import { useState, useRef } from "react"
+import { Text, Group, NumberInput, Chip, Loader, Box } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
@@ -17,6 +17,8 @@ export function StoryPointsEstMenu({
 }) {
   const queryClient = useQueryClient()
   const timeoutRef = useRef<number | null>(null)
+  const [showEditableInput, setShowEditableInput] = useState(false)
+  const [showLoader, setShowLoader] = useState(false)
 
   const { data: editableFields } = useQuery({
     queryKey: ["reporter", issueKey],
@@ -45,35 +47,72 @@ export function StoryPointsEstMenu({
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
+    const currentValue = val
 
     timeoutRef.current = window.setTimeout(() => {
-      mutation.mutate({ storyPointsEstimate: val } as Issue)
+      setShowEditableInput(false)
+      setShowLoader(false)
+      mutation.mutate({ storyPointsEstimate: currentValue } as Issue)
     }, 2000)
   }
 
   return (
-    <Group position="apart" grow>
+    <Group position="apart">
       <Text color="dimmed">Story Points Estimate</Text>
-      {storyPointsEstimate !== undefined &&
+      {!showEditableInput && storyPointsEstimate !== undefined && (
+        <Group position="right">
+          {showLoader && <Loader size="sm" />}
+          <Chip
+            p="10"
+            variant="outline"
+            onClick={() => setShowEditableInput(true)}
+          >
+            {storyPointsEstimate}
+          </Chip>
+        </Group>
+      )}
+      {showEditableInput &&
+        storyPointsEstimate !== undefined &&
         editableFields &&
         editableFields.includes("Story point estimate") && (
-          <NumberInput
-            min={0}
-            defaultValue={storyPointsEstimate}
-            onChange={(val) => {
-              handleStoryPointsEstimateChange(val)
-            }}
-          />
+          <Group position="right">
+            {showLoader && <Loader size="sm" />}
+            <Box w={70}>
+              <NumberInput
+                min={0}
+                defaultValue={storyPointsEstimate}
+                onChange={(val) => {
+                  handleStoryPointsEstimateChange(val)
+                  setShowLoader(true)
+                }}
+                onBlur={() => setShowEditableInput(false)}
+              />
+            </Box>
+          </Group>
         )}
       {storyPointsEstimate === undefined &&
         editableFields &&
         !editableFields.includes("Story point estimate") && (
-          <NumberInput min={0} defaultValue={0} disabled />
+          <NumberInput width={100} min={0} defaultValue={0} disabled />
         )}
-      {storyPointsEstimate === undefined &&
+      {showEditableInput &&
+        storyPointsEstimate === undefined &&
         editableFields &&
         editableFields.includes("Story point estimate") && (
-          <NumberInput min={0} defaultValue={0} />
+          <Group position="right">
+            {showLoader && <Loader size="sm" />}
+            <Box w={70}>
+              <NumberInput
+                min={0}
+                defaultValue={0}
+                onChange={(val) => {
+                  handleStoryPointsEstimateChange(val)
+                  setShowLoader(true)
+                }}
+                onBlur={() => setShowEditableInput(false)}
+              />
+            </Box>
+          </Group>
         )}
     </Group>
   )

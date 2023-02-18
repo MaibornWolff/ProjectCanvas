@@ -21,15 +21,15 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
   const selectedProject = useCanvasStore((state) => state.selectedProject)
   const queryClient = useQueryClient()
 
-  const { data: reporter } = useQuery({
-    queryKey: ["reporter", issueKey],
+  const { data: issueReporter } = useQuery({
+    queryKey: ["issueReporter", issueKey],
     queryFn: () => getIssueReporter(issueKey),
     enabled: !!issueKey,
   })
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", selectedProject?.key],
     queryFn: () => getAssignableUsersByProject(selectedProject?.key!),
-    enabled: !!reporter && !!selectedProject && !!selectedProject.key,
+    enabled: !!issueReporter && !!selectedProject && !!selectedProject.key,
   })
 
   const mutation = useMutation({
@@ -45,7 +45,7 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
         message: `The reporter for issue ${issueKey} has been modified!`,
         color: "green",
       })
-      queryClient.invalidateQueries({ queryKey: ["reporter"] })
+      queryClient.invalidateQueries({ queryKey: ["issueReporter"] })
     },
   })
 
@@ -75,36 +75,32 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
   return (
     <Group position="apart">
       <Text color="dimmed">Reporter</Text>
-      {reporter &&
-      reporter.displayName &&
-      reporter.avatarUrls &&
-      displayedReporters &&
-      assignableUsers ? (
-        <Menu>
-          <Menu.Target>
-            <UnstyledButton>
-              <Group spacing="xs" position="apart">
-                <Avatar
-                  src={reporter.avatarUrls["24x24"]}
-                  size="sm"
-                  radius="xl"
-                  ml={4}
-                  mr={4}
-                />
-                <Text size="sm">{reporter.displayName}</Text>
-                <IconChevronDown size={18} stroke={1.5} />
-              </Group>
-            </UnstyledButton>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <ScrollArea style={{ height: 200 }} type="auto">
-              {displayedReporters}
-            </ScrollArea>
-          </Menu.Dropdown>
-        </Menu>
-      ) : (
-        <Text color="dimmed">None</Text>
-      )}
+      {issueReporter &&
+        issueReporter.displayName &&
+        issueReporter.avatarUrls && (
+          <Menu>
+            <Menu.Target>
+              <UnstyledButton>
+                <Group spacing="xs" position="apart">
+                  <Avatar
+                    src={issueReporter.avatarUrls["24x24"]}
+                    size="sm"
+                    radius="xl"
+                    ml={4}
+                    mr={4}
+                  />
+                  <Text size="sm">{issueReporter.displayName}</Text>
+                  <IconChevronDown size={18} stroke={1.5} />
+                </Group>
+              </UnstyledButton>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <ScrollArea style={{ height: 200 }} type="auto">
+                {displayedReporters}
+              </ScrollArea>
+            </Menu.Dropdown>
+          </Menu>
+        )}
     </Group>
   )
 }
