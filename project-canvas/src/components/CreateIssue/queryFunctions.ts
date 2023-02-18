@@ -29,6 +29,15 @@ export const createNewIssue = (issue: Issue): Promise<string> =>
     .then((issueKey) => issueKey.json())
     .catch((err) => err)
 
+export const editIssue = (issue: Issue, issueIdOrKey: string): Promise<void> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/editIssue`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ issue, issueIdOrKey }),
+  })
+    .then(() => {})
+    .catch((err) => err)
+
 export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> =>
   fetch(
     `${
@@ -76,6 +85,7 @@ export const getIssueTypesWithFieldsMap = (): Promise<Map<string, string[]>> =>
       return map
     })
     .catch((err) => err)
+
 export const setStatus = (
   issueKey: string,
   targetStatus: string
@@ -85,3 +95,12 @@ export const setStatus = (
       import.meta.env.VITE_EXTENDER
     }/setStatus?issueKey=${issueKey}&targetStatus=${targetStatus} `
   ).then(() => {})
+
+export const getIssueReporter = (issueIdOrKey: string): Promise<User> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/issueReporter?issueIdOrKey=${issueIdOrKey}`
+  )
+    .then((reporter) => reporter.json())
+    .catch((err) => err)

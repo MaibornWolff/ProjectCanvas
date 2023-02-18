@@ -250,6 +250,27 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
+  async getIssueReporter(issueIdOrKey: string): Promise<User> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}?fields=reporter`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const user = await response.json()
+          resolve(user.fields.reporter as User)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the current user: ${error}`))
+        )
+    })
+  }
+
   async getBoardIds(project: string): Promise<number[]> {
     const response = await fetch(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/board?projectKeyOrId=${project}`,
@@ -622,14 +643,14 @@ class JiraCloudProvider implements ProviderApi {
       labels,
       priority,
     }: Issue,
-    issueKey: string
-  ): Promise<string> {
+    issueIdOrKey: string
+  ): Promise<void> {
     const offsetStartDate = this.offsetDate(startDate)
     const offsetDueDate = this.offsetDate(dueDate)
 
     return new Promise((resolve, reject) => {
       fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueKey}`,
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}`,
         {
           method: "PUT",
           headers: {
@@ -704,8 +725,7 @@ class JiraCloudProvider implements ProviderApi {
       )
         .then(async (data) => {
           if (data.status === 204) {
-            const createdIssue = await data.json()
-            resolve(JSON.stringify(createdIssue.key))
+            resolve()
           }
           if (data.status === 400) {
             reject(new Error(await data.json()))
