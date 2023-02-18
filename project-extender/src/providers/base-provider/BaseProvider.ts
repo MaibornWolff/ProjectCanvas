@@ -47,7 +47,6 @@ export interface ProviderApi {
   ): Promise<void>
   editIssue(issue: Issue, issueIdOrKey: string): Promise<void>
   createIssue(issue: Issue): Promise<string>
-  editIssue(issue: Issue, issueIdOrKey: string): Promise<void>
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]>
   getLabels(): Promise<string[]>
   getPriorities(): Promise<Priority[]>
