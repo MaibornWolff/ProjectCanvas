@@ -105,7 +105,7 @@ export function AssigneeMenu({
             </UnstyledButton>
           </Menu.Target>
           <Menu.Dropdown>
-            <ScrollArea style={{ height: 200 }}>
+            <ScrollArea style={{ height: 200 }} type="auto">
               {displayedAssignees}
             </ScrollArea>
           </Menu.Dropdown>
