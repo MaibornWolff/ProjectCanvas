@@ -264,7 +264,9 @@ server.put<{
     .then(() => {
       reply.status(200).send()
     })
-    .catch((error) => reply.status(400).send(error))
+    .catch((error) => {
+      reply.status(400).send(error)
+    })
 })
 
 server.get<{

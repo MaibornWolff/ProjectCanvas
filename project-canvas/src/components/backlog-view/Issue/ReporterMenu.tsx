@@ -1,14 +1,25 @@
-import { Text, Group, Menu, Image, UnstyledButton } from "@mantine/core"
+import {
+  Text,
+  Group,
+  Menu,
+  Avatar,
+  UnstyledButton,
+  ScrollArea,
+} from "@mantine/core"
+import { showNotification } from "@mantine/notifications"
 import { IconChevronDown } from "@tabler/icons"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { Issue } from "project-extender"
 import { useCanvasStore } from "../../../lib/Store"
 import {
+  editIssue,
   getAssignableUsersByProject,
   getIssueReporter,
 } from "../../CreateIssue/queryFunctions"
 
 export function ReporterMenu({ issueKey }: { issueKey: string }) {
   const selectedProject = useCanvasStore((state) => state.selectedProject)
+  const queryClient = useQueryClient()
 
   const { data: reporter } = useQuery({
     queryKey: ["reporter", issueKey],
@@ -21,11 +32,36 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
     enabled: !!reporter && !!selectedProject && !!selectedProject.key,
   })
 
+  const mutation = useMutation({
+    mutationFn: (issue: Issue) => editIssue(issue, issueKey),
+    onError: () => {
+      showNotification({
+        message: `The issue couldn't be modified! 😢`,
+        color: "red",
+      })
+    },
+    onSuccess: () => {
+      showNotification({
+        message: `The reporter for issue ${issueKey} has been modified!`,
+        color: "green",
+      })
+      queryClient.invalidateQueries({ queryKey: ["reporter"] })
+    },
+  })
+
   const displayedReporters = assignableUsers ? (
     assignableUsers.map((user) => (
       <Menu.Item
-        icon={<Image src={user.avatarUrls["24x24"]} width={18} height={18} />}
-        onClick={() => {}}
+        icon={
+          <Avatar
+            src={user.avatarUrls["24x24"]}
+            size="sm"
+            radius="xl"
+            ml={4}
+            mr={4}
+          />
+        }
+        onClick={() => mutation.mutate({ reporter: user.accountId } as Issue)}
         key={user.accountId}
       >
         {user.displayName}
@@ -48,17 +84,23 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
           <Menu.Target>
             <UnstyledButton>
               <Group spacing="xs" position="apart">
-                <Image
+                <Avatar
                   src={reporter.avatarUrls["24x24"]}
-                  width={22}
-                  height={22}
+                  size="sm"
+                  radius="xl"
+                  ml={4}
+                  mr={4}
                 />
                 <Text size="sm">{reporter.displayName}</Text>
                 <IconChevronDown size={18} stroke={1.5} />
               </Group>
             </UnstyledButton>
           </Menu.Target>
-          <Menu.Dropdown>{displayedReporters}</Menu.Dropdown>
+          <Menu.Dropdown>
+            <ScrollArea style={{ height: 200 }} type="auto">
+              {displayedReporters}
+            </ScrollArea>
+          </Menu.Dropdown>
         </Menu>
       ) : (
         <Text color="dimmed">None</Text>

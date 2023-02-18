@@ -1,7 +1,14 @@
-import { Text, Group, Menu, Image, UnstyledButton } from "@mantine/core"
+import {
+  Text,
+  Group,
+  Menu,
+  Avatar,
+  UnstyledButton,
+  ScrollArea,
+} from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { IconChevronDown } from "@tabler/icons"
-import { useQuery, useMutation } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useCanvasStore } from "../../../lib/Store"
 import {
@@ -17,6 +24,7 @@ export function AssigneeMenu({
   issueKey: string
 }) {
   const selectedProject = useCanvasStore((state) => state.selectedProject)
+  const queryClient = useQueryClient()
 
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", selectedProject?.key],
@@ -37,14 +45,25 @@ export function AssigneeMenu({
         message: `The assignee for issue ${issueKey} has been modified!`,
         color: "green",
       })
+      queryClient.invalidateQueries({ queryKey: ["issues"] })
     },
   })
 
   const displayedAssignees = assignableUsers ? (
     assignableUsers.map((user) => (
       <Menu.Item
-        icon={<Image src={user.avatarUrls["24x24"]} width={18} height={18} />}
-        onClick={() => mutation.mutate({ reporter: user.accountId } as Issue)}
+        icon={
+          <Avatar
+            src={user.avatarUrls["24x24"]}
+            size="sm"
+            radius="xl"
+            ml={4}
+            mr={4}
+          />
+        }
+        onClick={() =>
+          mutation.mutate({ assignee: { id: user.accountId } } as Issue)
+        }
         key={user.accountId}
       >
         {user.displayName}
@@ -58,26 +77,38 @@ export function AssigneeMenu({
   return (
     <Group position="apart">
       <Text color="dimmed">Assignee</Text>
-      {assignee &&
-      assignee.displayName &&
-      assignee.avatarUrls &&
-      displayedAssignees &&
-      assignableUsers ? (
+      {displayedAssignees && assignableUsers ? (
         <Menu>
           <Menu.Target>
             <UnstyledButton>
-              <Group spacing="xs" position="apart">
-                <Image
-                  src={assignee.avatarUrls["24x24"]}
-                  width={22}
-                  height={22}
-                />
-                <Text size="sm">{assignee.displayName}</Text>
-                <IconChevronDown size={18} stroke={1.5} />
-              </Group>
+              {assignee && assignee.displayName && assignee.avatarUrls ? (
+                <Group spacing="xs" position="apart">
+                  <Avatar
+                    src={assignee.avatarUrls["24x24"]}
+                    size="sm"
+                    radius="xl"
+                    ml={4}
+                    mr={4}
+                  />
+                  <Text size="sm">{assignee.displayName}</Text>
+                  <IconChevronDown size={18} stroke={1.5} />
+                </Group>
+              ) : (
+                <Group spacing="xs" position="apart">
+                  <Avatar radius="xl" />
+                  <Text size="sm" color="dimmed">
+                    Unassigned
+                  </Text>
+                  <IconChevronDown size={18} stroke={1.5} />
+                </Group>
+              )}
             </UnstyledButton>
           </Menu.Target>
-          <Menu.Dropdown>{displayedAssignees}</Menu.Dropdown>
+          <Menu.Dropdown>
+            <ScrollArea style={{ height: 200 }}>
+              {displayedAssignees}
+            </ScrollArea>
+          </Menu.Dropdown>
         </Menu>
       ) : (
         <Text color="dimmed">None</Text>

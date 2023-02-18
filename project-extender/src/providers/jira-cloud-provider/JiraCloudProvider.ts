@@ -680,9 +680,10 @@ class JiraCloudProvider implements ProviderApi {
                 },
               }),
               ...(priority && priority.id && { priority }),
-              ...(assignee && {
-                assignee,
-              }),
+              ...(assignee &&
+                assignee.id && {
+                  assignee,
+                }),
               ...(description && {
                 description: {
                   type: "doc",
@@ -716,9 +717,6 @@ class JiraCloudProvider implements ProviderApi {
                 [this.customFields.get("Story point estimate")!]:
                   storyPointsEstimate,
               }),
-              // ...(files && {
-              //   [this.customFields.get("Attachment")!]: files,
-              // }),
             },
           }),
         }
@@ -728,7 +726,11 @@ class JiraCloudProvider implements ProviderApi {
             resolve()
           }
           if (data.status === 400) {
-            reject(new Error(await data.json()))
+            reject(
+              new Error(
+                "400 Error: consult the atlassian rest api v3 under Edit issue for information"
+              )
+            )
           }
           if (data.status === 401) {
             reject(new Error("User not authenticated"))
@@ -746,7 +748,7 @@ class JiraCloudProvider implements ProviderApi {
             )
           }
         })
-        .catch((error) => {
+        .catch(async (error) => {
           reject(new Error(`Error creating issue: ${error}`))
         })
     })
