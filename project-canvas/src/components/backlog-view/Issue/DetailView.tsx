@@ -24,6 +24,7 @@ import { Description } from "./Description"
 import { IssueIcon } from "./IssueIcon"
 import { ReporterMenu } from "./ReporterMenu"
 import { Labels } from "./Labels"
+import { IssueSprint } from "./IssueSprint"
 
 export function DetailView({
   issueKey,
@@ -34,13 +35,13 @@ export function DetailView({
   labels,
   assignee,
   description,
-  sprintId,
   subtasks,
   created,
   updated,
   comment,
   type,
   projectId,
+  sprint,
 }: Issue) {
   const [defaultdescription, setdefaultdescription] = useState(description)
   const [showInputEle, setShowInputEle] = useState(false)
@@ -205,27 +206,18 @@ export function DetailView({
               </Accordion.Control>
               <Accordion.Panel>
                 <Stack>
-                  {assignee ? (
-                    <AssigneeMenu
-                      assignee={assignee as Issue["assignee"]}
-                      issueKey={issueKey}
-                    />
-                  ) : (
-                    <Group grow>
-                      <Text color="dimmed">None</Text>
-                    </Group>
-                  )}
+                  <AssigneeMenu
+                    assignee={assignee as Issue["assignee"]}
+                    issueKey={issueKey}
+                  />
+
                   <Group grow>
                     <Text color="dimmed">Labels</Text>
                     <Labels labels={labels} issueKey={issueKey} />
                   </Group>
                   <Group grow>
                     <Text color="dimmed">Sprint</Text>
-                    {sprintId ? (
-                      <Text>{sprintId}</Text>
-                    ) : (
-                      <Text color="dimmed">None</Text>
-                    )}
+                    <IssueSprint sprint={sprint} issueKey={issueKey} />
                   </Group>
                   <Group grow>
                     <Text color="dimmed">Story Points Estimate</Text>

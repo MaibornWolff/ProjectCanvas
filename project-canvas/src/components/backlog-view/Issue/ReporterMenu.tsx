@@ -73,7 +73,7 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
     </Menu.Item>
   )
   return (
-    <Group position="apart">
+    <Group grow>
       <Text color="dimmed">Reporter</Text>
       {reporter &&
       reporter.displayName &&
@@ -83,13 +83,11 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
         <Menu>
           <Menu.Target>
             <UnstyledButton>
-              <Group spacing="xs" position="apart">
+              <Group>
                 <Avatar
                   src={reporter.avatarUrls["24x24"]}
                   size="sm"
                   radius="xl"
-                  ml={4}
-                  mr={4}
                 />
                 <Text size="sm">{reporter.displayName}</Text>
                 <IconChevronDown size={18} stroke={1.5} />

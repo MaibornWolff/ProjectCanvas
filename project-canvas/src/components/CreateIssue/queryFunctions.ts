@@ -38,6 +38,15 @@ export const editIssue = (issue: Issue, issueIdOrKey: string): Promise<void> =>
     .then(() => {})
     .catch((err) => err)
 
+export const moveIssueToBacklog = (issueIdOrKey: string): Promise<void> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToBacklog`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ issueIdOrKey }),
+  })
+    .then(() => {})
+    .catch((err) => err)
+
 export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> =>
   fetch(
     `${

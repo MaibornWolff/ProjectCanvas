@@ -9,6 +9,7 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core"
+import { useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
@@ -30,6 +31,7 @@ export function IssueCard({
 }: Issue & { index: number }) {
   let storyPointsColor: string
   const [opened, setOpened] = useState(false)
+  const queryClient = useQueryClient()
 
   switch (status) {
     case "To Do":
@@ -88,7 +90,10 @@ export function IssueCard({
                 </Text>
                 <Modal
                   opened={opened}
-                  onClose={() => setOpened(false)}
+                  onClose={() => {
+                    setOpened(false)
+                    queryClient.invalidateQueries({ queryKey: ["issues"] })
+                  }}
                   size="85%"
                   withCloseButton={false}
                 >

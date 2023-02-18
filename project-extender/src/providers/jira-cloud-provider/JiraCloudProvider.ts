@@ -383,6 +383,7 @@ class JiraCloudProvider implements ProviderApi {
         updated: element.fields.updated,
         comment: element.fields.comment,
         projectId: element.fields.project.id,
+        sprint: element.fields.sprint,
       }))
     )
 
@@ -531,7 +532,7 @@ class JiraCloudProvider implements ProviderApi {
     projectId,
     reporter,
     assignee,
-    sprintId,
+    sprint,
     storyPointsEstimate,
     description,
     status,
@@ -589,9 +590,10 @@ class JiraCloudProvider implements ProviderApi {
               ...(offsetDueDate && {
                 [this.customFields.get("Due date")!]: offsetDueDate,
               }),
-              ...(sprintId && {
-                [this.customFields.get("Sprint")!]: sprintId,
-              }),
+              ...(sprint &&
+                sprint.id && {
+                  [this.customFields.get("Sprint")!]: sprint.id,
+                }),
               ...(storyPointsEstimate && {
                 [this.customFields.get("Story point estimate")!]:
                   storyPointsEstimate,
@@ -634,7 +636,7 @@ class JiraCloudProvider implements ProviderApi {
       projectId,
       reporter,
       assignee,
-      sprintId,
+      sprint,
       storyPointsEstimate,
       description,
       epic,
@@ -710,8 +712,8 @@ class JiraCloudProvider implements ProviderApi {
               ...(offsetDueDate && {
                 [this.customFields.get("Due date")!]: offsetDueDate,
               }),
-              ...(sprintId && {
-                [this.customFields.get("Sprint")!]: sprintId,
+              ...(sprint && {
+                [this.customFields.get("Sprint")!]: sprint.id,
               }),
               ...(storyPointsEstimate && {
                 [this.customFields.get("Story point estimate")!]:

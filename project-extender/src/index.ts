@@ -211,10 +211,10 @@ server.post<{
 })
 
 server.post<{
-  Body: { issue: string }
+  Body: { issueIdOrKey: string }
 }>("/moveIssueToBacklog", (request, reply) => {
   issueProvider
-    .moveIssueToBacklog(request.body.issue)
+    .moveIssueToBacklog(request.body.issueIdOrKey)
     .then(() => {
       reply.status(200).send()
     })
