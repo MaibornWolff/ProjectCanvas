@@ -1,4 +1,5 @@
 import { useState, useEffect, ChangeEvent } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import {
   Text,
   Group,
@@ -11,14 +12,12 @@ import {
   Textarea,
   Box,
 } from "@mantine/core"
-import { showNotification } from "@mantine/notifications"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import {
-  addCommentToIssue,
-  deleteIssueComment,
-  editIssueComment,
-} from "../../CreateIssue/queryFunctions"
+  addCommentMutation,
+  deleteCommentMutation,
+  editCommentMutation,
+} from "./commentSectionHelper"
 
 export function CommentSection({
   issueKey,
@@ -27,7 +26,6 @@ export function CommentSection({
   issueKey: string
   comment: Issue["comment"]
 }) {
-  const queryClient = useQueryClient()
   const [addCommentInputText, setAddCommentInputText] = useState("")
   const [editCommentInputText, setEditCommentInputText] = useState<
     Record<string, string>
@@ -37,69 +35,14 @@ export function CommentSection({
     Record<string, boolean>
   >({})
   const [showLoader, setShowLoader] = useState(false)
+  const queryClient = useQueryClient()
+  const addCommentMutationLocal = addCommentMutation(queryClient)
+  const editCommentMutationLocal = editCommentMutation(queryClient)
+  const deleteCommentMutationLocal = deleteCommentMutation(queryClient)
 
   useEffect(() => {
     setShowLoader(false)
   }, [comment])
-
-  const addCommentMutation = useMutation({
-    mutationFn: (commentText: string) =>
-      addCommentToIssue(issueKey, commentText),
-    onError: () => {
-      showNotification({
-        message: `The issue couldn't be modified! 😢`,
-        color: "red",
-      })
-    },
-    onSuccess: () => {
-      showNotification({
-        message: `A new comment has been posted under issue ${issueKey}!`,
-        color: "green",
-      })
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
-      setAddCommentInputText("")
-    },
-  })
-
-  const editCommentMutation = useMutation({
-    mutationFn: ({
-      commentId,
-      commentText,
-    }: {
-      commentId: string
-      commentText: string
-    }) => editIssueComment(issueKey, commentId, commentText),
-    onError: () => {
-      showNotification({
-        message: `The comment couldn't be edited! 😢`,
-        color: "red",
-      })
-    },
-    onSuccess: () => {
-      showNotification({
-        message: `Comment edited successfully!`,
-        color: "green",
-      })
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
-    },
-  })
-
-  const deleteCommentMutation = useMutation({
-    mutationFn: (commentId: string) => deleteIssueComment(issueKey, commentId),
-    onError: () => {
-      showNotification({
-        message: `The comment couldn't be deleted! 😢`,
-        color: "red",
-      })
-    },
-    onSuccess: () => {
-      showNotification({
-        message: `The comment has been deleted!`,
-        color: "green",
-      })
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
-    },
-  })
 
   const handleAddCommentInputChange = (
     event: ChangeEvent<HTMLTextAreaElement>
@@ -150,7 +93,10 @@ export function CommentSection({
           <Group>
             <Button
               onClick={() => {
-                addCommentMutation.mutate(addCommentInputText)
+                addCommentMutationLocal.mutate({
+                  issueKey,
+                  commentText: addCommentInputText,
+                })
                 setShowLoader(true)
                 setShowEditableInputAdd(false)
               }}
@@ -168,7 +114,6 @@ export function CommentSection({
           </Group>
         </Stack>
       )}
-
       {comment.comments.map((commentBody) => (
         <Paper key={commentBody.id}>
           <Group>
@@ -218,7 +163,10 @@ export function CommentSection({
                       color="dimmed"
                       fz="xs"
                       onClick={() => {
-                        deleteCommentMutation.mutate(commentBody.id)
+                        deleteCommentMutationLocal.mutate({
+                          issueKey,
+                          commentId: commentBody.id,
+                        })
                         setShowLoader(true)
                       }}
                     >
@@ -240,16 +188,11 @@ export function CommentSection({
                     <Button
                       size="xs"
                       onClick={() => {
-                        editCommentMutation.mutate({
+                        editCommentMutationLocal.mutate({
+                          issueKey,
                           commentId: commentBody.id,
                           commentText: editCommentInputText[commentBody.id],
                         })
-                        if (editCommentMutation.isSuccess) {
-                          setEditCommentInputText({
-                            ...editCommentInputText,
-                            [commentBody.id]: "",
-                          })
-                        }
                         setShowLoader(true)
                         setEditableComments({
                           ...editableComments,
