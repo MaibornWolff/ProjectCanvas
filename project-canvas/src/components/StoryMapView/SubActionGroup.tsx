@@ -1,6 +1,6 @@
 import { Stack } from "@mantine/core"
 import { StrictModeDroppable } from "../common/StrictModeDroppable"
-import { AddCard } from "./Cards/AddCard"
+import { AddCard } from "./Cards/Add/AddCard"
 import { SubActionCard } from "./Cards/SubActionCard"
 import { getRndInteger } from "./helpers/utils"
 import { SubAction } from "./types"
@@ -8,13 +8,13 @@ import { SubAction } from "./types"
 export function SubActionGroup({
   subActions,
   subActionGroupId,
-  editSubAction,
+  updateSubAction,
   addSubAction,
 }: {
   subActions: SubAction[]
   subActionGroupId: string
   addSubAction: (actionId: string, subAction: SubAction) => void
-  editSubAction: ({ id, title }: SubAction) => void
+  updateSubAction: ({ id, title }: SubAction) => void
 }) {
   return (
     <StrictModeDroppable key={subActionGroupId} droppableId={subActionGroupId}>
@@ -25,7 +25,7 @@ export function SubActionGroup({
               key={subAction.id}
               id={subAction.id}
               index={index}
-              editSubAction={editSubAction}
+              updateSubAction={updateSubAction}
             >
               {subAction.title}
             </SubActionCard>

@@ -8,13 +8,13 @@ export function SubActionCard({
   id,
   index,
   children,
-  editSubAction,
+  updateSubAction,
   ...props
 }: {
   id: string
   index: number
   children: string
-  editSubAction: ({ id, title }: SubAction) => void
+  updateSubAction: ({ id, title }: SubAction) => void
 } & PaperProps) {
   const [edit, toggleEdit] = useToggle()
   const [title, setTitle] = useState(children)
@@ -29,7 +29,7 @@ export function SubActionCard({
           placeholder="Title"
           onChange={(event) => {
             setTitle(event.currentTarget.value)
-            editSubAction({ id, title: event.currentTarget.value })
+            updateSubAction({ id, title: event.currentTarget.value })
           }}
           variant="unstyled"
           value={title}

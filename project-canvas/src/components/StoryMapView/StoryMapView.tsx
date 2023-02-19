@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Accordion, Group, Title } from "@mantine/core"
+import { Accordion, Group } from "@mantine/core"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useImmer } from "use-immer"
 import { AddLevel } from "./AddLevel"
+import { AddCase } from "./Cards/Add/AddCase"
 import { CaseColumn } from "./CaseColumn"
 import { CaseSubActionLevel } from "./CaseSubActionLevel"
 import { onDragEnd } from "./helpers/draggingHelpers"
@@ -88,16 +89,16 @@ export function StoryMapView() {
       ],
     },
   ])
-  const updateCase = (caseId: string, actions: Action[]) => {
+
+  const addCase = (caseColumn: Case) => {
     setCases((draft) => {
-      const caseColumn = draft.find((c) => c.id === caseId)
-      if (caseColumn) caseColumn.actions = actions
+      draft.push(caseColumn)
     })
   }
-  const editCase = ({ id, title }: Case) => {
+  const updateCase = ({ id, ...rest }: Partial<Case>) => {
     setCases((draft) => {
-      const caseColumn = draft.find((c) => c.id === id)
-      if (caseColumn) caseColumn.title = title
+      let caseColumn = draft.find((c) => c.id === id)
+      if (caseColumn) caseColumn = { ...caseColumn, ...rest }
     })
   }
 
@@ -106,21 +107,10 @@ export function StoryMapView() {
       draft.find((c) => c.id === caseId)?.actions.push(action)
     })
   }
-
-  const editAction = ({ id, title }: Action) => {
+  const updateAction = ({ id, ...rest }: Partial<Action>) => {
     setCases((draft) => {
-      const caseAction = getAllActions(draft).find(
-        (_action) => _action.id === id
-      )
-      if (caseAction) caseAction.title = title
-    })
-  }
-  const updateAction = ({ id, subActionGroups }: Action) => {
-    setCases((draft) => {
-      const caseAction = getAllActions(draft).find(
-        (_action) => _action.id === id
-      )
-      if (caseAction) caseAction.subActionGroups = subActionGroups
+      let caseAction = getAllActions(draft).find((_action) => _action.id === id)
+      if (caseAction) caseAction = { ...caseAction, ...rest }
     })
   }
 
@@ -132,12 +122,12 @@ export function StoryMapView() {
       if (caseAction) caseAction.subActions.push(subAction)
     })
   }
-  const editSubAction = ({ id, title }: SubAction) => {
+  const updateSubAction = ({ id, ...rest }: Partial<SubAction>) => {
     setCases((draft) => {
-      const subAction = getAllSubActions(draft).find(
+      let subAction = getAllSubActions(draft).find(
         (_subAction) => _subAction.id === id
       )
-      if (subAction) subAction.title = title
+      if (subAction) subAction = { ...subAction, ...rest }
     })
   }
   return (
@@ -146,12 +136,22 @@ export function StoryMapView() {
         {cases.map((caseColumn) => (
           <CaseColumn
             key={caseColumn.title}
+            caseColumn={caseColumn}
             levels={levels}
+            updateCase={updateCase}
             addAction={addAction}
-            editAction={editAction}
-            {...caseColumn}
+            updateAction={updateAction}
           />
         ))}
+        <AddCase
+          onClick={() =>
+            addCase({
+              id: `a-${getRndInteger()}`,
+              title: "New Case",
+              actions: [],
+            })
+          }
+        />
       </Group>
       <Accordion
         chevronPosition="left"
@@ -168,32 +168,14 @@ export function StoryMapView() {
                   filteredCases={getFilteredCasesForLevel(cases, level)}
                   levelId={level.id}
                   addSubAction={addSubAction}
-                  editSubAction={editSubAction}
+                  updateSubAction={updateSubAction}
                 />
               </Group>
             </Accordion.Panel>
           </Accordion.Item>
         ))}
       </Accordion>
-      <AddLevel
-        onClick={() => {
-          const levelId = `level-${getRndInteger()}`
-          setLevels((draft) => {
-            draft.push({ id: levelId, title: "New Level" })
-          })
-          setCases((draft) => {
-            getAllActions(draft)
-              .map((action) => action.subActionGroups)
-              .forEach((subActionGroup) =>
-                subActionGroup.push({
-                  id: `sg-${getRndInteger()}`,
-                  levelId,
-                  subActions: [],
-                })
-              )
-          })
-        }}
-      />
+      <AddLevel setCases={setCases} setLevels={setLevels} />
     </DragDropContext>
   )
 }

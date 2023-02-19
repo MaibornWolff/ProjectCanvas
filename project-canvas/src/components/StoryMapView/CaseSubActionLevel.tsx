@@ -7,12 +7,12 @@ export function CaseSubActionLevel({
   filteredCases,
   levelId,
   addSubAction,
-  editSubAction,
+  updateSubAction,
 }: {
   filteredCases: Case[]
   levelId: string
   addSubAction: (actionId: string, subAction: SubAction) => void
-  editSubAction: ({ id, title }: SubAction) => void
+  updateSubAction: ({ id, title }: SubAction) => void
 }) {
   return (
     <Group align="start">
@@ -26,7 +26,7 @@ export function CaseSubActionLevel({
                 subActionGroupId={subActionGroupId}
                 subActions={subActions}
                 addSubAction={addSubAction}
-                editSubAction={editSubAction}
+                updateSubAction={updateSubAction}
               />
             ))}
 
