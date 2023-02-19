@@ -870,6 +870,184 @@ class JiraCloudProvider implements ProviderApi {
         )
     })
   }
+
+  async addCommentToIssue(
+    issueIdOrKey: string,
+    commentText: string
+  ): Promise<void> {
+    const bodyData = `{
+      "body": {
+      "content": [
+          {
+            "content": [
+              {
+                "text": "${commentText.replace(/\n/g, " ")}",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      }}`
+
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: bodyData,
+        }
+      )
+        .then(async (data) => {
+          if (data.status === 201) {
+            resolve()
+          }
+          if (data.status === 400) {
+            reject(new Error("Invalid api request"))
+          }
+          if (data.status === 401) {
+            reject(new Error("User not authenticated"))
+          }
+          if (data.status === 404) {
+            reject(
+              new Error(
+                "The issue  was not found or the user does not have the necessary permissions"
+              )
+            )
+          }
+        })
+        .catch(async (error) => {
+          reject(
+            new Error(
+              `Error adding a comment to the issue ${issueIdOrKey}: ${error}`
+            )
+          )
+        })
+    })
+  }
+
+  async editIssueComment(
+    issueIdOrKey: string,
+    commentId: string,
+    commentText: string
+  ): Promise<void> {
+    const bodyData = `{
+      "body": {
+      "content": [
+          {
+            "content": [
+              {
+                "text": "${commentText.replace(/\n/g, " ")}",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      }}`
+
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment/${commentId}`,
+        {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: bodyData,
+        }
+      )
+        .then(async (data) => {
+          if (data.status === 200) {
+            resolve()
+          }
+          if (data.status === 400) {
+            reject(
+              new Error(
+                "The user does not have permission to edit the comment or the request is invalid"
+              )
+            )
+          }
+          if (data.status === 401) {
+            reject(new Error("User not authenticated"))
+          }
+          if (data.status === 404) {
+            reject(
+              new Error(
+                "The issue  was not found or the user does not have the necessary permissions"
+              )
+            )
+          }
+        })
+        .catch(async (error) => {
+          reject(
+            new Error(
+              `Error editing the comment in issue ${issueIdOrKey}: ${error}`
+            )
+          )
+        })
+    })
+  }
+
+  deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (data) => {
+          if (data.status === 204) {
+            resolve()
+          }
+          if (data.status === 400) {
+            reject(
+              new Error(
+                "The user does not have permission to delete the comment"
+              )
+            )
+          }
+          if (data.status === 401) {
+            reject(new Error("User not authenticated"))
+          }
+          if (data.status === 404) {
+            reject(
+              new Error(
+                "The issue  was not found or the user does not have the necessary permissions"
+              )
+            )
+          }
+          if (data.status === 405) {
+            reject(
+              new Error("An anonymous call has been made to the operation")
+            )
+          }
+        })
+        .catch(async (error) => {
+          reject(
+            new Error(
+              `Error editing the comment in issue ${issueIdOrKey}: ${error}`
+            )
+          )
+        })
+    })
+  }
 }
 export class JiraCloudProviderCreator extends ProviderCreator {
   public factoryMethod(): ProviderApi {

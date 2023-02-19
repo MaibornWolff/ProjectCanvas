@@ -52,15 +52,7 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
   const displayedReporters = assignableUsers ? (
     assignableUsers.map((user) => (
       <Menu.Item
-        icon={
-          <Avatar
-            src={user.avatarUrls["24x24"]}
-            size="sm"
-            radius="xl"
-            ml={4}
-            mr={4}
-          />
-        }
+        icon={<Avatar src={user.avatarUrls["24x24"]} size="sm" radius="xl" />}
         onClick={() => mutation.mutate({ reporter: user.accountId } as Issue)}
         key={user.accountId}
       >
@@ -74,7 +66,9 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
   )
   return (
     <Group position="apart">
-      <Text color="dimmed">Reporter</Text>
+      <Text fz="sm" color="dimmed">
+        Reporter
+      </Text>
       {issueReporter &&
         issueReporter.displayName &&
         issueReporter.avatarUrls && (
@@ -86,8 +80,6 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
                     src={issueReporter.avatarUrls["24x24"]}
                     size="sm"
                     radius="xl"
-                    ml={4}
-                    mr={4}
                   />
                   <Text size="sm">{issueReporter.displayName}</Text>
                   <IconChevronDown size={18} stroke={1.5} />

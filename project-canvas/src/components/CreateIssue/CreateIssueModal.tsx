@@ -228,6 +228,7 @@ export function CreateIssueModal({
           />
           <Textarea
             label="Description"
+            autosize
             {...form.getInputProps("description")}
           />
           <Select
@@ -261,7 +262,7 @@ export function CreateIssueModal({
                 ?.includes("Priority")
             }
             data={
-              priorities
+              priorities && priorities instanceof Array
                 ? priorities.map((priority) => ({
                     image: priority.iconUrl,
                     value: priority.id,

@@ -54,6 +54,13 @@ export interface ProviderApi {
   setTransition(issueIdOrKey: string, targetStatus: string): Promise<void>
   getEditableIssueFields(issueIdOrKey: string): Promise<string[]>
   getIssueReporter(issueIdOrKey: string): Promise<User>
+  addCommentToIssue(issueIdOrKey: string, commentText: string): Promise<void>
+  editIssueComment(
+    issueIdOrKey: string,
+    commentId: string,
+    commentText: string
+  ): Promise<void>
+  deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void>
 }
 
 export abstract class ProviderCreator {

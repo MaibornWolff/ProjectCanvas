@@ -17,6 +17,8 @@ export function StoryPointsEstMenu({
 }) {
   const queryClient = useQueryClient()
   const timeoutRef = useRef<number | null>(null)
+  const [localStoryPtsEstimate, setLocalStoryPtsEstimate] =
+    useState(storyPointsEstimate)
   const [showEditableInput, setShowEditableInput] = useState(false)
   const [showLoader, setShowLoader] = useState(false)
 
@@ -25,7 +27,7 @@ export function StoryPointsEstMenu({
   }, [storyPointsEstimate])
 
   const { data: editableFields } = useQuery({
-    queryKey: ["reporter", issueKey],
+    queryKey: ["editableFields", issueKey],
     queryFn: () => getEditableIssueFields(issueKey),
     enabled: !!issueKey,
   })
@@ -61,16 +63,14 @@ export function StoryPointsEstMenu({
 
   return (
     <Group position="apart">
-      <Text color="dimmed">Story Points Estimate</Text>
+      <Text color="dimmed" fz="sm">
+        Story Points Estimate
+      </Text>
       {!showEditableInput && storyPointsEstimate !== undefined && (
         <Group position="right">
           {showLoader && <Loader size="sm" />}
-          <Chip
-            p="10"
-            variant="outline"
-            onClick={() => setShowEditableInput(true)}
-          >
-            {storyPointsEstimate}
+          <Chip onClick={() => setShowEditableInput(true)}>
+            {localStoryPtsEstimate}
           </Chip>
         </Group>
       )}
@@ -80,11 +80,12 @@ export function StoryPointsEstMenu({
         editableFields.includes("Story point estimate") && (
           <Group position="right">
             {showLoader && <Loader size="sm" />}
-            <Box w={70}>
+            <Box w={60}>
               <NumberInput
                 min={0}
-                defaultValue={storyPointsEstimate}
+                defaultValue={localStoryPtsEstimate}
                 onChange={(val) => {
+                  setLocalStoryPtsEstimate(val!)
                   handleStoryPointsEstimateChange(val)
                   setShowLoader(true)
                 }}
@@ -109,6 +110,7 @@ export function StoryPointsEstMenu({
                 min={0}
                 defaultValue={0}
                 onChange={(val) => {
+                  setLocalStoryPtsEstimate(val!)
                   handleStoryPointsEstimateChange(val)
                   setShowLoader(true)
                 }}

@@ -1,10 +1,8 @@
 import {
   Accordion,
-  Avatar,
   Box,
   Breadcrumbs,
   Button,
-  Grid,
   Group,
   Menu,
   Paper,
@@ -30,6 +28,7 @@ import { IssueIcon } from "./IssueIcon"
 import { ReporterMenu } from "./ReporterMenu"
 import { StoryPointsEstMenu } from "./StoryPointsEstMenu"
 import { Labels } from "./Labels"
+import { CommentSection } from "./CommentSection"
 
 export function DetailView({
   issueKey,
@@ -85,8 +84,8 @@ export function DetailView({
     },
   })
   return (
-    <Paper p={10}>
-      <Breadcrumbs mb="50px">
+    <Paper p="xs">
+      <Breadcrumbs mb="20px">
         {epic !== undefined ? (
           <Group>
             <IssueIcon type="Epic" />
@@ -99,194 +98,168 @@ export function DetailView({
           <IssueIcon type={type} /> {issueKey}
         </Group>
       </Breadcrumbs>
-      <Grid>
-        <ScrollArea.Autosize
-          className="right-panel"
-          maxHeight="70vh"
-          w="60%"
-          p="sm"
-          sx={{ minWidth: "260px" }}
-        >
-          <Title order={2} mb={30}>
-            {summary}
-          </Title>
-          <Text color="dimmed" mb="sm">
-            Description
-          </Text>
-          <Description
-            showInputEle={showInputEle}
-            handleChange={(e) => setdefaultdescription(e.target.value)}
-            handleBlur={() => setShowInputEle(false)}
-            handleDoubleClick={() => setShowInputEle(true)}
-            value={defaultdescription}
-          />
-
-          <Text color="dimmed" mb="sm">
-            Child Issues
-          </Text>
-          {subtasks.length !== 0 ? (
-            <Paper mb={30} withBorder>
-              <Stack spacing="xs">
-                {subtasks.map((subtask) => (
-                  <Paper
-                    withBorder
-                    key={subtask.id}
-                    p={5}
-                    sx={(theme) => ({ display: "flex", gap: theme.spacing.md })}
-                  >
-                    <ThemeIcon size="sm" mt={2}>
-                      <IconBinaryTree2 />
-                    </ThemeIcon>
-                    <Text size="md" w="90%">
-                      <Text size="sm" color="blue" span mr="md">
-                        {subtask.key}
-                      </Text>
-                      {subtask.fields.summary}{" "}
-                    </Text>
-                  </Paper>
-                ))}
-              </Stack>
-            </Paper>
-          ) : (
-            <Text color="dimmed" mb="xl" fs="italic">
-              Add child Issue
+      <Group>
+        <Stack sx={{ flex: 13 }}>
+          <Title order={1}>{summary}</Title>
+          <ScrollArea.Autosize
+            maxHeight="70vh"
+            p="xs"
+            sx={{ minWidth: "260px" }}
+          >
+            <Text color="dimmed" mb="sm">
+              Description
             </Text>
-          )}
-          <Stack mb={10}>
-            <Text color="dimmed">Comments</Text>
-            {comment.comments.map((commentBody) => (
-              <Paper
-                radius="lg"
-                shadow="sm"
-                withBorder
-                sx={{ minHeight: "10px" }}
-              >
-                <Stack key={commentBody.id} p={10}>
-                  <Group>
-                    <Avatar
-                      src={commentBody.author.avatarUrls["48x48"]}
-                      radius="xl"
-                    />
-                    <Stack spacing="xs">
-                      <Group>
-                        <Text fw={600} color="dimmed" mt={20}>
-                          {commentBody.author.displayName}
+            <Description
+              showInputEle={showInputEle}
+              handleChange={(e) => setdefaultdescription(e.target.value)}
+              handleBlur={() => setShowInputEle(false)}
+              handleDoubleClick={() => setShowInputEle(true)}
+              value={defaultdescription}
+            />
+
+            <Text color="dimmed" mb="sm">
+              Child Issues
+            </Text>
+            {subtasks.length !== 0 ? (
+              <Paper mb={30} withBorder>
+                <Stack spacing="xs">
+                  {subtasks.map((subtask) => (
+                    <Paper
+                      withBorder
+                      key={subtask.id}
+                      p={5}
+                      sx={(theme) => ({
+                        display: "flex",
+                        gap: theme.spacing.md,
+                      })}
+                    >
+                      <ThemeIcon size="sm" mt={2}>
+                        <IconBinaryTree2 />
+                      </ThemeIcon>
+                      <Text size="md" w="90%">
+                        <Text size="sm" color="blue" span mr="md">
+                          {subtask.key}
                         </Text>
-                        <Text color="dimmed" mt={20} size="xs">
-                          {new Intl.DateTimeFormat("en-GB", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          }).format(new Date(commentBody.created))}
-                        </Text>
-                      </Group>
-                      <Text> {commentBody.body}</Text>
-                    </Stack>
-                  </Group>
+                        {subtask.fields.summary}{" "}
+                      </Text>
+                    </Paper>
+                  ))}
                 </Stack>
               </Paper>
-            ))}
-          </Stack>
-        </ScrollArea.Autosize>
-        <Box w="40%" p={10}>
-          <Menu shadow="md" width={150} position="bottom-start">
-            <Menu.Target>
-              <Button
-                w={150}
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  flexDirection: "row",
-                }}
-                mb="md"
-              >
-                {defaultStatus}
-                <ThemeIcon bg="transparent" ml="50px">
-                  <IconCaretDown />
-                </ThemeIcon>
-              </Button>
-            </Menu.Target>
+            ) : (
+              <Text color="dimmed" mb="xl" fs="italic">
+                Add child Issue
+              </Text>
+            )}
+            <CommentSection issueKey={issueKey} comment={comment} />
+          </ScrollArea.Autosize>
+        </Stack>
+        <ScrollArea.Autosize
+          maxHeight="70vh"
+          p="xs"
+          sx={{ minWidth: "260px", flex: 11 }}
+        >
+          <Box p={10}>
+            <Menu shadow="md" width={150} position="bottom-start">
+              <Menu.Target>
+                <Button
+                  w={150}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    flexDirection: "row",
+                  }}
+                  mb="md"
+                >
+                  {defaultStatus}
+                  <ThemeIcon bg="transparent" ml="50px">
+                    <IconCaretDown />
+                  </ThemeIcon>
+                </Button>
+              </Menu.Target>
 
-            <Menu.Dropdown>
-              {issueTypes &&
-                issueTypes
-                  .find((issueType) => issueType.name === type)
-                  ?.statuses?.map((issueStatus) => (
-                    <Menu.Item
-                      onClick={() => {
-                        mutation.mutate(issueStatus.name)
-                        setDefaultStatus(issueStatus.name)
-                      }}
-                    >
-                      {issueStatus.name}
-                    </Menu.Item>
-                  ))}
-            </Menu.Dropdown>
-          </Menu>
-          <Accordion variant="contained" defaultValue="Details" mb={20}>
-            <Accordion.Item value="Details">
-              <Accordion.Control sx={{ textAlign: "left" }}>
-                Details
-              </Accordion.Control>
-              <Accordion.Panel>
-                <Stack>
-                  {assignee ? (
-                    <AssigneeMenu
-                      assignee={assignee as Issue["assignee"]}
-                      issueKey={issueKey}
-                    />
-                  ) : (
-                    <Group grow>
-                      <Text color="dimmed">None</Text>
-                    </Group>
-                  )}
-                  <Group grow>
-                    <Text color="dimmed">Labels</Text>
-                    <Labels
-                      setLabels={setdefaultlabels}
-                      showLabelsInput={showLabelsInput}
-                      handleBlur={() => {
-                        setshowLabelsInput(false)
-                        mutationLalbels.mutate({
-                          labels: defaultlabels,
-                        } as Issue)
-                      }}
-                      handleDoubleClick={() => setshowLabelsInput(true)}
-                      labels={defaultlabels}
-                    />
-                  </Group>
-                  <Group grow>
-                    <Text color="dimmed">Sprint</Text>
-                    {sprintId ? (
-                      <Text>{sprintId}</Text>
+              <Menu.Dropdown>
+                {issueTypes &&
+                  issueTypes
+                    .find((issueType) => issueType.name === type)
+                    ?.statuses?.map((issueStatus) => (
+                      <Menu.Item
+                        onClick={() => {
+                          mutation.mutate(issueStatus.name)
+                          setDefaultStatus(issueStatus.name)
+                        }}
+                      >
+                        {issueStatus.name}
+                      </Menu.Item>
+                    ))}
+              </Menu.Dropdown>
+            </Menu>
+            <Accordion variant="contained" defaultValue="Details" mb={20}>
+              <Accordion.Item value="Details">
+                <Accordion.Control sx={{ textAlign: "left" }}>
+                  Details
+                </Accordion.Control>
+                <Accordion.Panel>
+                  <Stack>
+                    {assignee ? (
+                      <AssigneeMenu
+                        assignee={assignee as Issue["assignee"]}
+                        issueKey={issueKey}
+                      />
                     ) : (
-                      <Text color="dimmed">None</Text>
+                      <Group grow>
+                        <Text color="dimmed">None</Text>
+                      </Group>
                     )}
-                  </Group>
-                  <StoryPointsEstMenu
-                    issueKey={issueKey}
-                    storyPointsEstimate={storyPointsEstimate}
-                  />
-                  <ReporterMenu issueKey={issueKey} />
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
-          <Text size="xs" color="dimmed">
-            Created at{" "}
-            {new Intl.DateTimeFormat("en-GB", {
-              dateStyle: "full",
-              timeStyle: "short",
-            }).format(new Date(created))}
-          </Text>
-          <Text size="xs" color="dimmed">
-            Updated at{" "}
-            {new Intl.DateTimeFormat("en-GB", {
-              dateStyle: "full",
-              timeStyle: "short",
-            }).format(new Date(updated))}
-          </Text>
-        </Box>
-      </Grid>
+                    <Group grow>
+                      <Text color="dimmed">Labels</Text>
+                      <Labels
+                        setLabels={setdefaultlabels}
+                        showLabelsInput={showLabelsInput}
+                        handleBlur={() => {
+                          setshowLabelsInput(false)
+                          mutationLalbels.mutate({
+                            labels: defaultlabels,
+                          } as Issue)
+                        }}
+                        handleDoubleClick={() => setshowLabelsInput(true)}
+                        labels={defaultlabels}
+                      />
+                    </Group>
+                    <Group grow>
+                      <Text color="dimmed">Sprint</Text>
+                      {sprintId ? (
+                        <Text>{sprintId}</Text>
+                      ) : (
+                        <Text color="dimmed">None</Text>
+                      )}
+                    </Group>
+                    <StoryPointsEstMenu
+                      issueKey={issueKey}
+                      storyPointsEstimate={storyPointsEstimate}
+                    />
+                    <ReporterMenu issueKey={issueKey} />
+                  </Stack>
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
+            <Text size="xs" color="dimmed">
+              Created at{" "}
+              {new Intl.DateTimeFormat("en-GB", {
+                dateStyle: "full",
+                timeStyle: "short",
+              }).format(new Date(created))}
+            </Text>
+            <Text size="xs" color="dimmed">
+              Updated at{" "}
+              {new Intl.DateTimeFormat("en-GB", {
+                dateStyle: "full",
+                timeStyle: "short",
+              }).format(new Date(updated))}
+            </Text>
+          </Box>
+        </ScrollArea.Autosize>
+      </Group>
     </Paper>
   )
 }

@@ -52,15 +52,7 @@ export function AssigneeMenu({
   const displayedAssignees = assignableUsers ? (
     assignableUsers.map((user) => (
       <Menu.Item
-        icon={
-          <Avatar
-            src={user.avatarUrls["24x24"]}
-            size="sm"
-            radius="xl"
-            ml={4}
-            mr={4}
-          />
-        }
+        icon={<Avatar src={user.avatarUrls["24x24"]} size="sm" radius="xl" />}
         onClick={() =>
           mutation.mutate({ assignee: { id: user.accountId } } as Issue)
         }
@@ -76,7 +68,9 @@ export function AssigneeMenu({
   )
   return (
     <Group position="apart">
-      <Text color="dimmed">Assignee</Text>
+      <Text fz="sm" color="dimmed">
+        Assignee
+      </Text>
       {displayedAssignees && assignableUsers ? (
         <Menu>
           <Menu.Target>
@@ -87,8 +81,6 @@ export function AssigneeMenu({
                     src={assignee.avatarUrls["24x24"]}
                     size="sm"
                     radius="xl"
-                    ml={4}
-                    mr={4}
                   />
                   <Text size="sm">{assignee.displayName}</Text>
                   <IconChevronDown size={18} stroke={1.5} />

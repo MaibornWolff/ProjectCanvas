@@ -337,3 +337,54 @@ server.get<{
     })
     .catch((error) => reply.status(400).send(error))
 })
+
+server.post<{
+  Body: {
+    issueIdOrKey: string
+    commentText: string
+  }
+}>("/addCommentToIssue", (request, reply) => {
+  issueProvider
+    .addCommentToIssue(request.body.issueIdOrKey, request.body.commentText)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.put<{
+  Body: {
+    issueIdOrKey: string
+    commentId: string
+    commentText: string
+  }
+}>("/editIssueComment", (request, reply) => {
+  issueProvider
+    .editIssueComment(
+      request.body.issueIdOrKey,
+      request.body.commentId,
+      request.body.commentText
+    )
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => {
+      reply.status(400).send(error)
+    })
+})
+
+server.delete<{
+  Body: {
+    issueIdOrKey: string
+    commentId: string
+  }
+}>("/deleteIssueComment", (request, reply) => {
+  issueProvider
+    .deleteIssueComment(request.body.issueIdOrKey, request.body.commentId)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => {
+      reply.status(400).send(error)
+    })
+})
