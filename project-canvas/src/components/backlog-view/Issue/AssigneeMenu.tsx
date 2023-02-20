@@ -105,7 +105,7 @@ export function AssigneeMenu({
     </Menu.Item>
   )
   return (
-    <Group position="apart">
+    <Group grow>
       <Text fz="sm" color="dimmed">
         Assignee
       </Text>

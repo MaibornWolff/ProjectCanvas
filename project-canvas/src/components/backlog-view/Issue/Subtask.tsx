@@ -31,7 +31,7 @@ export function Subtask(props: {
       <ThemeIcon size="sm" sx={{ flex: 2 }}>
         <IconBinaryTree2 />
       </ThemeIcon>
-      <Text size="sm" color="blue" span sx={{ flex: 15 }}>
+      <Text size="sm" color="blue" span sx={{ flex: 15 }} lineClamp={1}>
         {props.subtaskKey}
       </Text>
       <Box sx={{ flex: 60 }}>

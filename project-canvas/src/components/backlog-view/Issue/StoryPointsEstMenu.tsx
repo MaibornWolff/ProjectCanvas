@@ -62,24 +62,23 @@ export function StoryPointsEstMenu({
   }
 
   return (
-    <Group position="apart">
+    <Group grow>
       <Text color="dimmed" fz="sm">
         Story Points Estimate
       </Text>
       {!showEditableInput && storyPointsEstimate !== undefined && (
-        <Group position="right">
-          {showLoader && <Loader size="sm" />}
+        <Group>
           <Chip onClick={() => setShowEditableInput(true)}>
             {localStoryPtsEstimate}
           </Chip>
+          {showLoader && <Loader size="sm" />}
         </Group>
       )}
       {showEditableInput &&
         storyPointsEstimate !== undefined &&
         editableFields &&
         editableFields.includes("Story point estimate") && (
-          <Group position="right">
-            {showLoader && <Loader size="sm" />}
+          <Group>
             <Box w={60}>
               <NumberInput
                 min={0}
@@ -92,6 +91,7 @@ export function StoryPointsEstMenu({
                 onBlur={() => setShowEditableInput(false)}
               />
             </Box>
+            {showLoader && <Loader size="sm" />}
           </Group>
         )}
       {storyPointsEstimate === undefined &&
@@ -104,7 +104,6 @@ export function StoryPointsEstMenu({
         editableFields &&
         editableFields.includes("Story point estimate") && (
           <Group position="right">
-            {showLoader && <Loader size="sm" />}
             <Box w={70}>
               <NumberInput
                 min={0}
@@ -117,6 +116,7 @@ export function StoryPointsEstMenu({
                 onBlur={() => setShowEditableInput(false)}
               />
             </Box>
+            {showLoader && <Loader size="sm" />}
           </Group>
         )}
     </Group>

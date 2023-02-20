@@ -154,13 +154,13 @@ export function DetailView({
                       assignee={assignee as Issue["assignee"]}
                       issueKey={issueKey}
                     />
-                    <Group position="apart">
+                    <Group grow>
                       <Text fz="sm" color="dimmed">
                         Labels
                       </Text>
                       <Labels labels={labels} issueKey={issueKey} />
                     </Group>
-                    <Group position="apart">
+                    <Group grow>
                       <Text fz="sm" color="dimmed">
                         Sprint
                       </Text>

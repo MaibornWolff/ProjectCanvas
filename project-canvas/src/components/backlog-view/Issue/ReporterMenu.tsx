@@ -103,7 +103,7 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
     </Menu.Item>
   )
   return (
-    <Group position="apart">
+    <Group grow>
       <Text fz="sm" color="dimmed">
         Reporter
       </Text>
