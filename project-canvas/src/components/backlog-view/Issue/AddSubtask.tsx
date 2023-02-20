@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TextInput, Group, ActionIcon, Button } from "@mantine/core"
+import { showNotification } from "@mantine/notifications"
 import { IconPlus } from "@tabler/icons"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
@@ -12,6 +13,10 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
   const mutationSubtask = useMutation({
     mutationFn: () => createSubtask(props.issueKey, summary, props.projectId),
     onSuccess(createdSubtask: { id: string; key: string }) {
+      showNotification({
+        message: `issue  ${createdSubtask.key} has been created!`,
+        color: "green",
+      })
       queryClient.invalidateQueries({ queryKey: ["issues"] })
     },
   })
