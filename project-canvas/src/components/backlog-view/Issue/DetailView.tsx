@@ -9,7 +9,6 @@ import {
   ScrollArea,
   Stack,
   Text,
-  ThemeIcon,
   Title,
 } from "@mantine/core"
 import { IconCaretDown } from "@tabler/icons"
@@ -63,7 +62,7 @@ export function DetailView({
 
   return (
     <Paper p="xs">
-      <Breadcrumbs mb="20px">
+      <Breadcrumbs mb="md">
         {epic !== undefined ? (
           <Group>
             <IssueIcon type="Epic" />
@@ -83,19 +82,17 @@ export function DetailView({
           </Title>
           <ScrollArea.Autosize
             maxHeight="70vh"
-            p="xs"
+            mr="xs"
             sx={{ minWidth: "260px" }}
           >
             <Text color="dimmed" mb="sm">
               Description
             </Text>
             <Description issueKey={issueKey} description={description} />
-
             <Text color="dimmed" mb="sm">
               Child Issues
             </Text>
-
-            <Paper mb={30}>
+            <Paper mb="lg" mr="sm">
               <Stack spacing="xs">
                 {subtasks.map((subtask) => (
                   <Subtask
@@ -112,25 +109,21 @@ export function DetailView({
         </Stack>
         <ScrollArea.Autosize
           maxHeight="70vh"
-          p="xs"
-          sx={{ minWidth: "260px", flex: 11 }}
+          sx={{ minWidth: "260px", flex: 10 }}
         >
-          <Box p={10}>
-            <Menu shadow="md" width={150} position="bottom-start">
+          <Box>
+            <Menu shadow="md" position="bottom-start">
               <Menu.Target>
                 <Button
-                  w={150}
                   sx={{
                     display: "flex",
                     justifyContent: "flex-start",
                     flexDirection: "row",
                   }}
                   mb="md"
+                  rightIcon={<IconCaretDown />}
                 >
                   {defaultStatus}
-                  <ThemeIcon bg="transparent" ml="50px">
-                    <IconCaretDown />
-                  </ThemeIcon>
                 </Button>
               </Menu.Target>
 
@@ -157,22 +150,20 @@ export function DetailView({
                 </Accordion.Control>
                 <Accordion.Panel>
                   <Stack>
-                    {assignee ? (
-                      <AssigneeMenu
-                        assignee={assignee as Issue["assignee"]}
-                        issueKey={issueKey}
-                      />
-                    ) : (
-                      <Group grow>
-                        <Text color="dimmed">None</Text>
-                      </Group>
-                    )}
-                    <Group grow>
-                      <Text color="dimmed">Labels</Text>
+                    <AssigneeMenu
+                      assignee={assignee as Issue["assignee"]}
+                      issueKey={issueKey}
+                    />
+                    <Group position="apart">
+                      <Text fz="sm" color="dimmed">
+                        Labels
+                      </Text>
                       <Labels labels={labels} issueKey={issueKey} />
                     </Group>
-                    <Group grow>
-                      <Text color="dimmed">Sprint</Text>
+                    <Group position="apart">
+                      <Text fz="sm" color="dimmed">
+                        Sprint
+                      </Text>
                       <IssueSprint sprint={sprint} issueKey={issueKey} />
                     </Group>
                     <StoryPointsEstMenu
@@ -185,14 +176,14 @@ export function DetailView({
               </Accordion.Item>
             </Accordion>
             <Text size="xs" color="dimmed">
-              Created at{" "}
+              Created{" "}
               {new Intl.DateTimeFormat("en-GB", {
                 dateStyle: "full",
                 timeStyle: "short",
               }).format(new Date(created))}
             </Text>
             <Text size="xs" color="dimmed">
-              Updated at{" "}
+              Updated{" "}
               {new Intl.DateTimeFormat("en-GB", {
                 dateStyle: "full",
                 timeStyle: "short",

@@ -5,16 +5,52 @@ import {
   Avatar,
   UnstyledButton,
   ScrollArea,
+  createStyles,
 } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { IconChevronDown } from "@tabler/icons"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
+import { useState } from "react"
 import { useCanvasStore } from "../../../lib/Store"
 import {
   editIssue,
   getAssignableUsersByProject,
 } from "../../CreateIssue/queryFunctions"
+
+const useStyles = createStyles(
+  (theme, { isOpened }: { isOpened: boolean }) => ({
+    control: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      borderRadius: theme.radius.md,
+      padding: "3px",
+      border: `1px solid ${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[6]
+          : theme.colors.gray[2]
+      }`,
+      transition: "background-color 150ms ease",
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[isOpened ? 5 : 6]
+          : theme.white[isOpened ? 5 : 6],
+
+      "&:hover": {
+        backgroundColor:
+          theme.colorScheme === "dark"
+            ? theme.colors.dark[5]
+            : theme.colors.gray[0],
+      },
+    },
+
+    icon: {
+      transition: "transform 150ms ease",
+      transform: isOpened ? "rotate(180deg)" : "rotate(0deg)",
+    },
+  })
+)
 
 export function AssigneeMenu({
   assignee,
@@ -25,6 +61,8 @@ export function AssigneeMenu({
 }) {
   const selectedProject = useCanvasStore((state) => state.selectedProject)
   const queryClient = useQueryClient()
+  const [opened, setOpened] = useState(false)
+  const { classes } = useStyles({ isOpened: opened })
 
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", selectedProject?.key],
@@ -72,18 +110,22 @@ export function AssigneeMenu({
         Assignee
       </Text>
       {displayedAssignees && assignableUsers ? (
-        <Menu>
+        <Menu onOpen={() => setOpened(true)} onClose={() => setOpened(false)}>
           <Menu.Target>
-            <UnstyledButton>
+            <UnstyledButton className={classes.control}>
               {assignee && assignee.displayName && assignee.avatarUrls ? (
-                <Group>
+                <Group spacing="xs" position="apart">
                   <Avatar
                     src={assignee.avatarUrls["24x24"]}
                     size="sm"
                     radius="xl"
                   />
                   <Text size="sm">{assignee.displayName}</Text>
-                  <IconChevronDown size={18} stroke={1.5} />
+                  <IconChevronDown
+                    size={18}
+                    stroke={1.5}
+                    className={classes.icon}
+                  />
                 </Group>
               ) : (
                 <Group spacing="xs" position="apart">
@@ -91,7 +133,11 @@ export function AssigneeMenu({
                   <Text size="sm" color="dimmed">
                     Unassigned
                   </Text>
-                  <IconChevronDown size={18} stroke={1.5} />
+                  <IconChevronDown
+                    size={18}
+                    stroke={1.5}
+                    className={classes.icon}
+                  />
                 </Group>
               )}
             </UnstyledButton>
