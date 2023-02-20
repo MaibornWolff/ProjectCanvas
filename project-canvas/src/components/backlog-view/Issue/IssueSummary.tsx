@@ -1,4 +1,4 @@
-import { TextInput, Title } from "@mantine/core"
+import { Text, Textarea } from "@mantine/core"
 import { Issue } from "project-extender"
 import { useState } from "react"
 import { showNotification } from "@mantine/notifications"
@@ -18,16 +18,17 @@ export function IssueSummary(props: { summary: string; issueKey: string }) {
       })
     },
     onSuccess: () => {
-      showNotification({
-        message: `Summary of issue ${props.issueKey} has been modified!`,
-        color: "green",
-      })
+      if (defaultsummary !== props.summary)
+        showNotification({
+          message: `Summary of issue ${props.issueKey} has been modified!`,
+          color: "green",
+        })
     },
   })
   return (
-    <span>
+    <Text>
       {showSummaryInput ? (
-        <TextInput
+        <Textarea
           value={defaultsummary}
           onChange={(e) => setdefaultsummary(e.target.value)}
           onBlur={() => {
@@ -43,16 +44,17 @@ export function IssueSummary(props: { summary: string; issueKey: string }) {
               } as Issue)
             }
           }}
-          variant="unstyled"
-          size="xl"
-          mb={30}
-          required
+          autosize
+          sx={{
+            textarea: {
+              fontSize: "inherit",
+              fontWeight: "inherit",
+            },
+          }}
         />
       ) : (
-        <Title order={2} mb={30} onClick={() => setshowSummaryInput(true)}>
-          {defaultsummary}
-        </Title>
+        <Text onClick={() => setshowSummaryInput(true)}>{defaultsummary}</Text>
       )}
-    </span>
+    </Text>
   )
 }

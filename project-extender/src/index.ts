@@ -337,3 +337,21 @@ server.get<{
     })
     .catch((error) => reply.status(400).send(error))
 })
+server.post<{
+  Body: {
+    parentIssueKey: string
+    projectId: string
+    summary: string
+  }
+}>("/createSubtask", (request, reply) => {
+  issueProvider
+    .createSubtask(
+      request.body.parentIssueKey,
+      request.body.projectId,
+      request.body.summary
+    )
+    .then((createdSubtask) => {
+      reply.status(200).send(createdSubtask)
+    })
+    .catch(() => reply.status(400).send())
+})

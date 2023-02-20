@@ -12,8 +12,9 @@ import {
   Stack,
   Text,
   ThemeIcon,
+  Title,
 } from "@mantine/core"
-import { IconBinaryTree2, IconCaretDown } from "@tabler/icons"
+import { IconCaretDown } from "@tabler/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
@@ -25,6 +26,8 @@ import { ReporterMenu } from "./ReporterMenu"
 import { Labels } from "./Labels"
 import { IssueSprint } from "./IssueSprint"
 import { IssueSummary } from "./IssueSummary"
+import { Subtask } from "./Subtask"
+import { AddSubtask } from "./AddSubtask"
 
 export function DetailView({
   issueKey,
@@ -81,8 +84,9 @@ export function DetailView({
           p="sm"
           sx={{ minWidth: "260px" }}
         >
-          <IssueSummary summary={summary} issueKey={issueKey} />
-
+          <Title order={2} mb={30}>
+            <IssueSummary summary={summary} issueKey={issueKey} />
+          </Title>
           <Text color="dimmed" mb="sm">
             Description
           </Text>
@@ -91,34 +95,20 @@ export function DetailView({
           <Text color="dimmed" mb="sm">
             Child Issues
           </Text>
-          {subtasks.length !== 0 ? (
-            <Paper mb={30} withBorder>
-              <Stack spacing="xs">
-                {subtasks.map((subtask) => (
-                  <Paper
-                    withBorder
-                    key={subtask.id}
-                    p={5}
-                    sx={(theme) => ({ display: "flex", gap: theme.spacing.md })}
-                  >
-                    <ThemeIcon size="sm" mt={2}>
-                      <IconBinaryTree2 />
-                    </ThemeIcon>
-                    <Text size="md" w="90%">
-                      <Text size="sm" color="blue" span mr="md">
-                        {subtask.key}
-                      </Text>
-                      {subtask.fields.summary}{" "}
-                    </Text>
-                  </Paper>
-                ))}
-              </Stack>
-            </Paper>
-          ) : (
-            <Text color="dimmed" mb="xl" fs="italic">
-              Add child Issue
-            </Text>
-          )}
+
+          <Paper mb={30}>
+            <Stack spacing="xs">
+              {subtasks.map((subtask) => (
+                <Subtask
+                  subtaskKey={subtask.key}
+                  id={subtask.id}
+                  fields={subtask.fields}
+                />
+              ))}
+              <AddSubtask issueKey={issueKey} projectId={projectId} />
+            </Stack>
+          </Paper>
+
           <Stack mb={10}>
             <Text color="dimmed">Comments</Text>
             {comment.comments.map((commentBody) => (
@@ -180,8 +170,8 @@ export function DetailView({
                   ?.statuses?.map((issueStatus) => (
                     <Menu.Item
                       onClick={() => {
-                        mutationStatus.mutate(issueStatus.name)
                         setDefaultStatus(issueStatus.name)
+                        mutationStatus.mutate(issueStatus.name)
                       }}
                     >
                       {issueStatus.name}

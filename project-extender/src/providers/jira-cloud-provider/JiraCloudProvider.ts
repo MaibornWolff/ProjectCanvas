@@ -870,6 +870,45 @@ class JiraCloudProvider implements ProviderApi {
         )
     })
   }
+
+  createSubtask(
+    parentIssueKey: string,
+    projectId: string,
+    subtaskSummary: string
+  ): Promise<{ id: string; key: string }> {
+    return new Promise((resolve) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/issue/`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fields: {
+              summary: subtaskSummary,
+              issuetype: {
+                name: "Subtask",
+              },
+              parent: {
+                key: parentIssueKey,
+              },
+              project: {
+                id: projectId,
+              },
+            },
+          }),
+        }
+      ).then(async (data) => {
+        if (data.status === 201) {
+          const createdSubtask: { id: string; key: string } = await data.json()
+          resolve(createdSubtask)
+        }
+      })
+    })
+  }
 }
 export class JiraCloudProviderCreator extends ProviderCreator {
   public factoryMethod(): ProviderApi {
