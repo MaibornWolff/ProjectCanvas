@@ -113,7 +113,7 @@ export function DetailView({
         <ScrollArea.Autosize
           maxHeight="70vh"
           p="xs"
-          sx={{ minWidth: "260px", flex: 11 }}
+          sx={{ minWidth: "260px", flex: 8 }}
         >
           <Box p={10}>
             <Menu shadow="md" width={150} position="bottom-start">
