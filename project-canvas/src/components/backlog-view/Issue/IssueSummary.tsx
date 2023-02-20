@@ -53,7 +53,9 @@ export function IssueSummary(props: { summary: string; issueKey: string }) {
           }}
         />
       ) : (
-        <Text onClick={() => setshowSummaryInput(true)}>{defaultsummary}</Text>
+        <Text lineClamp={1} onClick={() => setshowSummaryInput(true)}>
+          {defaultsummary}
+        </Text>
       )}
     </Text>
   )

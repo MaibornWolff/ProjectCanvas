@@ -1,4 +1,4 @@
-import { Text, ThemeIcon, Group } from "@mantine/core"
+import { Text, ThemeIcon, Group, Box } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { IconBinaryTree2, IconTrash } from "@tabler/icons"
 import { useQueryClient } from "@tanstack/react-query"
@@ -28,22 +28,25 @@ export function Subtask(props: {
         },
       })}
     >
-      <ThemeIcon size="sm">
+      <ThemeIcon size="sm" sx={{ flex: 2 }}>
         <IconBinaryTree2 />
       </ThemeIcon>
-      <Text size="sm" color="blue" span>
+      <Text size="sm" color="blue" span sx={{ flex: 15 }}>
         {props.subtaskKey}
       </Text>
-      <IssueSummary
-        summary={props.fields.summary}
-        issueKey={props.subtaskKey}
-      />
+      <Box sx={{ flex: 60 }}>
+        <IssueSummary
+          summary={props.fields.summary}
+          issueKey={props.subtaskKey}
+        />
+      </Box>
       <ThemeIcon
         variant="outline"
         size="sm"
         color="gray"
         ml="auto"
         sx={{
+          flex: 2,
           ":hover": { color: "red", borderColor: "red", cursor: "pointer" },
         }}
         onClick={() => {
