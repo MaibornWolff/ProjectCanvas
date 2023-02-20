@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { TextInput, Group, ActionIcon, Button } from "@mantine/core"
+import { TextInput, Group, ActionIcon, Button, Box } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { IconPlus } from "@tabler/icons"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -24,20 +24,23 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
   return (
     <Group>
       <TextInput
+        rightSection={
+          <Box>
+            <Button fullWidth>
+              <IconPlus
+                onClick={() => {
+                  mutationSubtask.mutate()
+                  setSummary("")
+                }}
+              />
+            </Button>
+          </Box>
+        }
+        mr="sm"
         placeholder="Add Subtask"
-        sx={{ flex: 8 }}
+        sx={{ flex: 10 }}
         onChange={(e) => setSummary(e.target.value)}
       />
-      <Button
-        p={0}
-        sx={{ flex: 1 }}
-        onClick={() => {
-          mutationSubtask.mutate()
-          setSummary("")
-        }}
-      >
-        <IconPlus />
-      </Button>
     </Group>
   )
 }

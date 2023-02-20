@@ -41,8 +41,8 @@ export function Subtask(props: {
       <ThemeIcon
         variant="outline"
         size="sm"
-        mt={2}
         color="gray"
+        ml="auto"
         sx={{
           ":hover": { color: "red", borderColor: "red", cursor: "pointer" },
         }}
