@@ -385,6 +385,7 @@ class JiraCloudProvider implements ProviderApi {
         updated: element.fields.updated,
         comment: element.fields.comment,
         projectId: element.fields.project.id,
+        sprint: element.fields.sprint,
       }))
     )
 
@@ -533,7 +534,7 @@ class JiraCloudProvider implements ProviderApi {
     projectId,
     reporter,
     assignee,
-    sprintId,
+    sprint,
     storyPointsEstimate,
     description,
     status,
@@ -591,9 +592,10 @@ class JiraCloudProvider implements ProviderApi {
               ...(offsetDueDate && {
                 [this.customFields.get("Due date")!]: offsetDueDate,
               }),
-              ...(sprintId && {
-                [this.customFields.get("Sprint")!]: sprintId,
-              }),
+              ...(sprint &&
+                sprint.id && {
+                  [this.customFields.get("Sprint")!]: sprint.id,
+                }),
               ...(storyPointsEstimate && {
                 [this.customFields.get("Story point estimate")!]:
                   storyPointsEstimate,
@@ -636,7 +638,7 @@ class JiraCloudProvider implements ProviderApi {
       projectId,
       reporter,
       assignee,
-      sprintId,
+      sprint,
       storyPointsEstimate,
       description,
       epic,
@@ -712,8 +714,8 @@ class JiraCloudProvider implements ProviderApi {
               ...(offsetDueDate && {
                 [this.customFields.get("Due date")!]: offsetDueDate,
               }),
-              ...(sprintId && {
-                [this.customFields.get("Sprint")!]: sprintId,
+              ...(sprint && {
+                [this.customFields.get("Sprint")!]: sprint.id,
               }),
               ...(storyPointsEstimate && {
                 [this.customFields.get("Story point estimate")!]:
@@ -1046,6 +1048,45 @@ class JiraCloudProvider implements ProviderApi {
             )
           )
         })
+    })
+  }
+
+  createSubtask(
+    parentIssueKey: string,
+    projectId: string,
+    subtaskSummary: string
+  ): Promise<{ id: string; key: string }> {
+    return new Promise((resolve) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/issue/`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fields: {
+              summary: subtaskSummary,
+              issuetype: {
+                name: "Subtask",
+              },
+              parent: {
+                key: parentIssueKey,
+              },
+              project: {
+                id: projectId,
+              },
+            },
+          }),
+        }
+      ).then(async (data) => {
+        if (data.status === 201) {
+          const createdSubtask: { id: string; key: string } = await data.json()
+          resolve(createdSubtask)
+        }
+      })
     })
   }
 }

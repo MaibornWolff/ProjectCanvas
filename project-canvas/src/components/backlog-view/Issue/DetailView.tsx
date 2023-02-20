@@ -12,23 +12,22 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core"
-import { showNotification } from "@mantine/notifications"
-import { IconBinaryTree2, IconCaretDown } from "@tabler/icons"
+import { IconCaretDown } from "@tabler/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
 import { AssigneeMenu } from "./AssigneeMenu"
-import {
-  editIssue,
-  getIssueTypes,
-  setStatus,
-} from "../../CreateIssue/queryFunctions"
+import { getIssueTypes, setStatus } from "../../CreateIssue/queryFunctions"
 import { Description } from "./Description"
 import { IssueIcon } from "./IssueIcon"
 import { ReporterMenu } from "./ReporterMenu"
 import { StoryPointsEstMenu } from "./StoryPointsEstMenu"
 import { Labels } from "./Labels"
+import { IssueSummary } from "./IssueSummary"
+import { AddSubtask } from "./AddSubtask"
 import { CommentSection } from "./CommentSection"
+import { IssueSprint } from "./IssueSprint"
+import { Subtask } from "./Subtask"
 
 export function DetailView({
   issueKey,
@@ -39,17 +38,14 @@ export function DetailView({
   labels,
   assignee,
   description,
-  sprintId,
   subtasks,
   created,
   updated,
   comment,
   type,
   projectId,
+  sprint,
 }: Issue) {
-  const [defaultdescription, setdefaultdescription] = useState(description)
-  const [showInputEle, setShowInputEle] = useState(false)
-
   const { data: issueTypes } = useQuery({
     queryKey: ["issueTypes", projectId],
     queryFn: () => getIssueTypes(projectId),
@@ -58,31 +54,13 @@ export function DetailView({
   const queryClient = useQueryClient()
 
   const [defaultStatus, setDefaultStatus] = useState(status)
-  const mutation = useMutation({
+  const mutationStatus = useMutation({
     mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] })
     },
   })
-  const [defaultlabels, setdefaultlabels] = useState(labels)
-  const [showLabelsInput, setshowLabelsInput] = useState(false)
 
-  const mutationLalbels = useMutation({
-    mutationFn: (issue: Issue) => editIssue(issue, issueKey),
-    onError: () => {
-      showNotification({
-        message: `error occured while modifing the Labels 😢`,
-        color: "red",
-      })
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
-      showNotification({
-        message: `Labels for issue ${issueKey} has been modified!`,
-        color: "green",
-      })
-    },
-  })
   return (
     <Paper p="xs">
       <Breadcrumbs mb="20px">
@@ -100,7 +78,9 @@ export function DetailView({
       </Breadcrumbs>
       <Group>
         <Stack sx={{ flex: 13 }}>
-          <Title order={1}>{summary}</Title>
+          <Title order={1}>
+            <IssueSummary summary={summary} issueKey={issueKey} />
+          </Title>
           <ScrollArea.Autosize
             maxHeight="70vh"
             p="xs"
@@ -109,48 +89,24 @@ export function DetailView({
             <Text color="dimmed" mb="sm">
               Description
             </Text>
-            <Description
-              showInputEle={showInputEle}
-              handleChange={(e) => setdefaultdescription(e.target.value)}
-              handleBlur={() => setShowInputEle(false)}
-              handleDoubleClick={() => setShowInputEle(true)}
-              value={defaultdescription}
-            />
+            <Description issueKey={issueKey} description={description} />
 
             <Text color="dimmed" mb="sm">
               Child Issues
             </Text>
-            {subtasks.length !== 0 ? (
-              <Paper mb={30} withBorder>
-                <Stack spacing="xs">
-                  {subtasks.map((subtask) => (
-                    <Paper
-                      withBorder
-                      key={subtask.id}
-                      p={5}
-                      sx={(theme) => ({
-                        display: "flex",
-                        gap: theme.spacing.md,
-                      })}
-                    >
-                      <ThemeIcon size="sm" mt={2}>
-                        <IconBinaryTree2 />
-                      </ThemeIcon>
-                      <Text size="md" w="90%">
-                        <Text size="sm" color="blue" span mr="md">
-                          {subtask.key}
-                        </Text>
-                        {subtask.fields.summary}{" "}
-                      </Text>
-                    </Paper>
-                  ))}
-                </Stack>
-              </Paper>
-            ) : (
-              <Text color="dimmed" mb="xl" fs="italic">
-                Add child Issue
-              </Text>
-            )}
+
+            <Paper mb={30}>
+              <Stack spacing="xs">
+                {subtasks.map((subtask) => (
+                  <Subtask
+                    subtaskKey={subtask.key}
+                    id={subtask.id}
+                    fields={subtask.fields}
+                  />
+                ))}
+                <AddSubtask issueKey={issueKey} projectId={projectId} />
+              </Stack>
+            </Paper>
             <CommentSection issueKey={issueKey} comment={comment} />
           </ScrollArea.Autosize>
         </Stack>
@@ -185,7 +141,7 @@ export function DetailView({
                     ?.statuses?.map((issueStatus) => (
                       <Menu.Item
                         onClick={() => {
-                          mutation.mutate(issueStatus.name)
+                          mutationStatus.mutate(issueStatus.name)
                           setDefaultStatus(issueStatus.name)
                         }}
                       >
@@ -213,26 +169,11 @@ export function DetailView({
                     )}
                     <Group grow>
                       <Text color="dimmed">Labels</Text>
-                      <Labels
-                        setLabels={setdefaultlabels}
-                        showLabelsInput={showLabelsInput}
-                        handleBlur={() => {
-                          setshowLabelsInput(false)
-                          mutationLalbels.mutate({
-                            labels: defaultlabels,
-                          } as Issue)
-                        }}
-                        handleDoubleClick={() => setshowLabelsInput(true)}
-                        labels={defaultlabels}
-                      />
+                      <Labels labels={labels} issueKey={issueKey} />
                     </Group>
                     <Group grow>
                       <Text color="dimmed">Sprint</Text>
-                      {sprintId ? (
-                        <Text>{sprintId}</Text>
-                      ) : (
-                        <Text color="dimmed">None</Text>
-                      )}
+                      <IssueSprint sprint={sprint} issueKey={issueKey} />
                     </Group>
                     <StoryPointsEstMenu
                       issueKey={issueKey}

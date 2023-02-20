@@ -38,6 +38,15 @@ export const editIssue = (issue: Issue, issueIdOrKey: string): Promise<void> =>
     .then(() => {})
     .catch((err) => err)
 
+export const moveIssueToBacklog = (issueIdOrKey: string): Promise<void> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToBacklog`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ issueIdOrKey }),
+  })
+    .then(() => {})
+    .catch((err) => err)
+
 export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> =>
   fetch(
     `${
@@ -152,3 +161,24 @@ export const deleteIssueComment = (
   })
     .then(() => {})
     .catch((err) => err)
+
+export const createSubtask = (
+  parentIssueKey: string,
+  summary: string,
+  projectId: string
+): Promise<{ id: string; key: string }> =>
+  new Promise((resolve) => {
+    fetch(
+      `${
+        import.meta.env.VITE_EXTENDER
+      }/createSubtask?parentIssueKey=${parentIssueKey}&summary=${summary}&projectId=${projectId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ parentIssueKey, summary, projectId }),
+      }
+    ).then(async (createdSubtask) => {
+      const jsonSubtask = await createdSubtask.json()
+      resolve(jsonSubtask)
+    })
+  })

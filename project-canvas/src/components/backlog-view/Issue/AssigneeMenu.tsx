@@ -76,7 +76,7 @@ export function AssigneeMenu({
           <Menu.Target>
             <UnstyledButton>
               {assignee && assignee.displayName && assignee.avatarUrls ? (
-                <Group spacing="xs" position="apart">
+                <Group>
                   <Avatar
                     src={assignee.avatarUrls["24x24"]}
                     size="sm"

@@ -18,6 +18,11 @@ interface LoginOptions {
 }
 
 export interface ProviderApi {
+  createSubtask(
+    parentIssueKey: string,
+    projectId: string,
+    summary: string
+  ): Promise<{ id: string; key: string }>
   login(loginOptions: LoginOptions): Promise<void>
   isLoggedIn(): Promise<void>
   logout(): Promise<void>

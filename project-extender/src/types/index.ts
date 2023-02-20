@@ -46,7 +46,7 @@ export interface Issue {
   rank: string
   reporter: string
   attachement: string
-  sprintId: string
+  sprint: Sprint | undefined
   projectId: string
   subtasks: {
     id: string
