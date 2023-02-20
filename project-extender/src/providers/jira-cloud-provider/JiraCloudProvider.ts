@@ -1051,6 +1051,51 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
+  deleteSubtask(subtaskKey: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/issue/${subtaskKey}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (data) => {
+          if (data.status === 204) {
+            resolve()
+          }
+          if (data.status === 400) {
+            reject(
+              new Error("The user does not have permission to delete the issue")
+            )
+          }
+          if (data.status === 401) {
+            reject(new Error("User not authenticated"))
+          }
+          if (data.status === 404) {
+            reject(
+              new Error(
+                "The issue  was not found or the user does not have the necessary permissions"
+              )
+            )
+          }
+          if (data.status === 405) {
+            reject(
+              new Error("An anonymous call has been made to the operation")
+            )
+          }
+        })
+        .catch(async (error) => {
+          reject(
+            new Error(`Error deleting the  subtask ${subtaskKey}: ${error}`)
+          )
+        })
+    })
+  }
+
   createSubtask(
     parentIssueKey: string,
     projectId: string,

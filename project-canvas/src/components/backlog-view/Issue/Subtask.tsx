@@ -1,5 +1,8 @@
 import { Text, ThemeIcon, Grid } from "@mantine/core"
-import { IconBinaryTree2 } from "@tabler/icons"
+import { showNotification } from "@mantine/notifications"
+import { IconBinaryTree2, IconTrash } from "@tabler/icons"
+import { useQueryClient } from "@tanstack/react-query"
+import { deleteIssueSubtask } from "../../CreateIssue/queryFunctions"
 import { IssueSummary } from "./IssueSummary"
 
 export function Subtask(props: {
@@ -9,6 +12,8 @@ export function Subtask(props: {
     summary: string
   }
 }) {
+  const queryClient = useQueryClient()
+
   return (
     <Grid
       columns={100}
@@ -26,7 +31,6 @@ export function Subtask(props: {
         },
       })}
     >
-      {" "}
       <Grid.Col span={5}>
         <ThemeIcon size="sm" mt={2}>
           <IconBinaryTree2 />
@@ -37,11 +41,33 @@ export function Subtask(props: {
           {props.subtaskKey}
         </Text>
       </Grid.Col>
-      <Grid.Col span={70}>
+      <Grid.Col span={75}>
         <IssueSummary
           summary={props.fields.summary}
           issueKey={props.subtaskKey}
         />
+      </Grid.Col>
+      <Grid.Col span={5}>
+        <ThemeIcon
+          variant="outline"
+          size="sm"
+          mt={2}
+          color="gray"
+          sx={{
+            ":hover": { color: "red", borderColor: "red", cursor: "pointer" },
+          }}
+          onClick={() => {
+            deleteIssueSubtask(props.subtaskKey).then(() => {
+              showNotification({
+                message: `subtask ${props.subtaskKey} has been deleted!`,
+                color: "red",
+              })
+              queryClient.invalidateQueries({ queryKey: ["issues"] })
+            })
+          }}
+        >
+          <IconTrash />
+        </ThemeIcon>
       </Grid.Col>
     </Grid>
   )

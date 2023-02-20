@@ -388,7 +388,20 @@ server.delete<{
       reply.status(400).send(error)
     })
 })
-
+server.delete<{
+  Body: {
+    subtaskIssue: string
+  }
+}>("/deleteSubtask", (request, reply) => {
+  issueProvider
+    .deleteSubtask(request.body.subtaskIssue)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => {
+      reply.status(400).send(error)
+    })
+})
 server.post<{
   Body: {
     parentIssueKey: string

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Grid, TextInput, Button, ThemeIcon } from "@mantine/core"
+import { showNotification } from "@mantine/notifications"
 import { IconPlus } from "@tabler/icons"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
@@ -13,6 +14,11 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
     mutationFn: () => createSubtask(props.issueKey, summary, props.projectId),
     onSuccess(createdSubtask: { id: string; key: string }) {
       // console.log(createdSubtask);
+
+      showNotification({
+        message: `issue  ${createdSubtask.key} has been created!`,
+        color: "green",
+      })
       queryClient.invalidateQueries({ queryKey: ["issues"] })
     },
   })
@@ -34,9 +40,8 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
             }}
             onClick={() => {
               mutationSubtask.mutate()
-              setSummary("")
             }}
-            type="submit"
+            type="reset"
           >
             <IconPlus />
           </Button>
