@@ -76,7 +76,7 @@ export interface JiraIssue {
         }
       ]
     }
-    sprint: JiraSprint | undefined
+    sprint?: JiraSprint
   }
 }
 

@@ -18,10 +18,11 @@ export function IssueSprint(props: {
   const [showSprintInput, setshowSprintInput] = useState(false)
 
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
-
+  const currentBoardId = boardIds[0]
   const { data: sprints } = useQuery({
     queryKey: ["sprints"],
-    queryFn: () => getSprints(boardIds![0]),
+    queryFn: () => getSprints(currentBoardId),
+    enabled: !!currentBoardId,
   })
 
   const mutationSprint = useMutation({

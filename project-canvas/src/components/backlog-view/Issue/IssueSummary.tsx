@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query"
 import { editIssue } from "../../CreateIssue/queryFunctions"
 
 export function IssueSummary(props: { summary: string; issueKey: string }) {
-  const [defaultsummary, setdefaultsummary] = useState(props.summary)
+  const [defaultSummary, setdefaultSummary] = useState(props.summary)
   const [showSummaryInput, setshowSummaryInput] = useState(false)
 
   const mutationSummary = useMutation({
@@ -18,7 +18,7 @@ export function IssueSummary(props: { summary: string; issueKey: string }) {
       })
     },
     onSuccess: () => {
-      if (defaultsummary !== props.summary)
+      if (defaultSummary !== props.summary)
         showNotification({
           message: `Summary of issue ${props.issueKey} has been modified!`,
           color: "green",
@@ -29,10 +29,10 @@ export function IssueSummary(props: { summary: string; issueKey: string }) {
     <Text>
       {showSummaryInput ? (
         <Textarea
-          value={defaultsummary}
-          onChange={(e) => setdefaultsummary(e.target.value)}
+          value={defaultSummary}
+          onChange={(e) => setdefaultSummary(e.target.value)}
           onBlur={() => {
-            if (defaultsummary === "")
+            if (defaultSummary === "")
               showNotification({
                 message: `Summary of an issue cannot be empty`,
                 color: "red",
@@ -40,7 +40,7 @@ export function IssueSummary(props: { summary: string; issueKey: string }) {
             else {
               setshowSummaryInput(false)
               mutationSummary.mutate({
-                summary: defaultsummary,
+                summary: defaultSummary,
               } as Issue)
             }
           }}
@@ -54,7 +54,7 @@ export function IssueSummary(props: { summary: string; issueKey: string }) {
         />
       ) : (
         <Text lineClamp={1} onClick={() => setshowSummaryInput(true)}>
-          {defaultsummary}
+          {defaultSummary}
         </Text>
       )}
     </Text>

@@ -17,12 +17,10 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
   const queryClient = useQueryClient()
 
   const [summary, setSummary] = useState("")
-  const [showLoader, setShowLoader] = useState(false)
 
   const mutationSubtask = useMutation({
     mutationFn: () => createSubtask(props.issueKey, summary, props.projectId),
     onSuccess(createdSubtask: { id: string; key: string }) {
-      setShowLoader(false)
       setSummary("")
       showNotification({
         message: `issue  ${createdSubtask.key} has been created!`,
@@ -40,8 +38,12 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
             <Button fullWidth>
               <IconPlus
                 onClick={() => {
-                  mutationSubtask.mutate()
-                  setShowLoader(true)
+                  if (summary === "")
+                    showNotification({
+                      message: `summary of an issue cannot be empty `,
+                      color: "red",
+                    })
+                  else mutationSubtask.mutate()
                 }}
               />
             </Button>
@@ -53,7 +55,7 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
         onChange={(e) => setSummary(e.target.value)}
         value={summary}
       />
-      {showLoader && <Loader size="sm" />}
+      {mutationSubtask.isLoading && <Loader size="sm" />}
     </Group>
   )
 }

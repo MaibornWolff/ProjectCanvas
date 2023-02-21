@@ -5,15 +5,21 @@ import { Issue } from "project-extender"
 import { useState } from "react"
 import { editIssue, getLabels } from "../../CreateIssue/queryFunctions"
 
-export function Labels(props: { labels: string[]; issueKey: string }) {
-  const [defaultlabels, setdefaultlabels] = useState(props.labels)
+export function Labels({
+  labels,
+  issueKey,
+}: {
+  labels: string[]
+  issueKey: string
+}) {
+  const [defaultLabels, setdefaultLabels] = useState(labels)
   const [showLabelsInput, setshowLabelsInput] = useState(false)
   const { data: allLabels } = useQuery({
     queryKey: ["labels"],
     queryFn: () => getLabels(),
   })
   const mutationLalbels = useMutation({
-    mutationFn: (issue: Issue) => editIssue(issue, props.issueKey),
+    mutationFn: (issue: Issue) => editIssue(issue, issueKey),
     onError: () => {
       showNotification({
         message: `error occured while modifing the Labels 😢`,
@@ -22,7 +28,7 @@ export function Labels(props: { labels: string[]; issueKey: string }) {
     },
     onSuccess: () => {
       showNotification({
-        message: `Labels for issue ${props.issueKey} has been modified!`,
+        message: `Labels for issue ${issueKey} has been modified!`,
         color: "green",
       })
     },
@@ -35,21 +41,21 @@ export function Labels(props: { labels: string[]; issueKey: string }) {
           nothingFound="No Options"
           searchable
           clearable
-          defaultValue={defaultlabels}
+          defaultValue={defaultLabels}
           data={allLabels!}
           onBlur={() => {
             setshowLabelsInput(false)
             mutationLalbels.mutate({
-              labels: defaultlabels,
+              labels: defaultLabels,
             } as Issue)
           }}
-          onChange={(value) => setdefaultlabels(value)}
+          onChange={(value) => setdefaultLabels(value)}
         />
       ) : (
         <Box onClick={() => setshowLabelsInput(true)}>
-          {defaultlabels.length !== 0 ? (
+          {defaultLabels.length !== 0 ? (
             <Group>
-              {defaultlabels.map((label) => (
+              {defaultLabels.map((label) => (
                 <Badge color="yellow">{label}</Badge>
               ))}
             </Group>
