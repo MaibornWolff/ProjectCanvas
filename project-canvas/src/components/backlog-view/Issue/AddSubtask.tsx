@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { TextInput, Group, ActionIcon, Button, Box } from "@mantine/core"
+import {
+  TextInput,
+  Group,
+  ActionIcon,
+  Button,
+  Box,
+  Loader,
+} from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { IconPlus } from "@tabler/icons"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -10,9 +17,13 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
   const queryClient = useQueryClient()
 
   const [summary, setSummary] = useState("")
+  const [showLoader, setShowLoader] = useState(false)
+
   const mutationSubtask = useMutation({
     mutationFn: () => createSubtask(props.issueKey, summary, props.projectId),
     onSuccess(createdSubtask: { id: string; key: string }) {
+      setShowLoader(false)
+      setSummary("")
       showNotification({
         message: `issue  ${createdSubtask.key} has been created!`,
         color: "green",
@@ -30,7 +41,7 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
               <IconPlus
                 onClick={() => {
                   mutationSubtask.mutate()
-                  setSummary("")
+                  setShowLoader(true)
                 }}
               />
             </Button>
@@ -40,7 +51,9 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
         placeholder="Add Subtask"
         sx={{ flex: 10 }}
         onChange={(e) => setSummary(e.target.value)}
+        value={summary}
       />
+      {showLoader && <Loader size="sm" />}
     </Group>
   )
 }

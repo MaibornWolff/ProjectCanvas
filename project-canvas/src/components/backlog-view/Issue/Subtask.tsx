@@ -1,7 +1,8 @@
-import { Text, ThemeIcon, Group, Box } from "@mantine/core"
+import { Text, ThemeIcon, Group, Box, Loader } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { IconBinaryTree2, IconTrash } from "@tabler/icons"
 import { useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
 import { deleteIssueSubtask } from "../../CreateIssue/queryFunctions"
 import { IssueSummary } from "./IssueSummary"
 
@@ -13,6 +14,7 @@ export function Subtask(props: {
   }
 }) {
   const queryClient = useQueryClient()
+  const [showLoader, setShowLoader] = useState(false)
 
   return (
     <Group
@@ -40,6 +42,7 @@ export function Subtask(props: {
           issueKey={props.subtaskKey}
         />
       </Box>
+      {showLoader && <Loader size="sm" />}
       <ThemeIcon
         variant="outline"
         size="sm"
@@ -50,7 +53,10 @@ export function Subtask(props: {
           ":hover": { color: "red", borderColor: "red", cursor: "pointer" },
         }}
         onClick={() => {
+          setShowLoader(true)
           deleteIssueSubtask(props.subtaskKey).then(() => {
+            setShowLoader(false)
+
             showNotification({
               message: `subtask ${props.subtaskKey} has been deleted!`,
               color: "red",
