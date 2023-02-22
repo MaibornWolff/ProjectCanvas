@@ -1,4 +1,4 @@
-import { Text, Group, Select, Loader } from "@mantine/core"
+import { Text, Group, Select, Loader, Badge } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Issue } from "project-extender"
@@ -51,10 +51,10 @@ export function ChangeEpic({
           <IssueIcon type="Epic" />
 
           <div>
-            <Text size="sm" lineClamp={1}>
+            <Badge size="sm" color="violet">
               {label}
-            </Text>
-            <Text size="xs" opacity={0.65} lineClamp={1}>
+            </Badge>
+            <Text size="xs" opacity={0.65}>
               {description}
             </Text>
           </div>
@@ -88,7 +88,6 @@ export function ChangeEpic({
             mutationEpic.mutate(value!)
             setshowEpicInput(false)
           }}
-          color="purple"
           w="300px"
         />
       ) : (
