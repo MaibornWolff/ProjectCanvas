@@ -1,4 +1,4 @@
-import { Text, Group, Select } from "@mantine/core"
+import { Text, Group, Select, Loader } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Issue } from "project-extender"
@@ -66,6 +66,7 @@ export function ChangeEpic({
   return (
     <Group>
       <IssueIcon type="Epic" />
+      {mutationEpic.isLoading && <Loader size="sm" />}
       {showEpicInput ? (
         <Select
           placeholder=""
@@ -92,7 +93,12 @@ export function ChangeEpic({
         />
       ) : (
         <Group>
-          <Text onClick={() => setshowEpicInput(true)}>
+          <Text
+            onClick={() => setshowEpicInput(true)}
+            sx={{
+              ":hover": { textDecoration: "underline", cursor: "pointer" },
+            }}
+          >
             {selectedEpic || "Add Epic"}
           </Text>
         </Group>
