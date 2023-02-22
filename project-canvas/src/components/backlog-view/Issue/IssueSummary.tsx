@@ -5,12 +5,18 @@ import { showNotification } from "@mantine/notifications"
 import { useMutation } from "@tanstack/react-query"
 import { editIssue } from "../../CreateIssue/queryFunctions"
 
-export function IssueSummary(props: { summary: string; issueKey: string }) {
-  const [defaultSummary, setdefaultSummary] = useState(props.summary)
+export function IssueSummary({
+  summary,
+  issueKey,
+}: {
+  summary: string
+  issueKey: string
+}) {
+  const [defaultSummary, setdefaultSummary] = useState(summary)
   const [showSummaryInput, setshowSummaryInput] = useState(false)
 
   const mutationSummary = useMutation({
-    mutationFn: (issue: Issue) => editIssue(issue, props.issueKey),
+    mutationFn: (issue: Issue) => editIssue(issue, issueKey),
     onError: () => {
       showNotification({
         message: `error occured while modifing the summary 😢`,
@@ -18,9 +24,9 @@ export function IssueSummary(props: { summary: string; issueKey: string }) {
       })
     },
     onSuccess: () => {
-      if (defaultSummary !== props.summary)
+      if (defaultSummary !== summary)
         showNotification({
-          message: `Summary of issue ${props.issueKey} has been modified!`,
+          message: `Summary of issue ${issueKey} has been modified!`,
           color: "green",
         })
     },

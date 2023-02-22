@@ -99,7 +99,7 @@ export function ChangeEpic({
               ":hover": { textDecoration: "underline", cursor: "pointer" },
             }}
           >
-            {selectedEpic || "Add Epic"}
+            {selectedEpic || <Text color="dimmed">Add Epic</Text>}
           </Text>
         </Group>
       )}
