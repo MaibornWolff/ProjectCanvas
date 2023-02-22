@@ -668,7 +668,7 @@ class JiraCloudProvider implements ProviderApi {
                 summary,
               }),
               ...(epic && {
-                summparent: { key: epic },
+                parent: { key: epic },
               }),
               ...(type && {
                 issuetype: { id: type },

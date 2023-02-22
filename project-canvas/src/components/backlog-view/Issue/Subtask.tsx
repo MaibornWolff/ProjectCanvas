@@ -55,13 +55,13 @@ export function Subtask(props: {
         onClick={() => {
           setShowLoader(true)
           deleteIssueSubtask(props.subtaskKey).then(() => {
-            setShowLoader(false)
-
             showNotification({
               message: `subtask ${props.subtaskKey} has been deleted!`,
               color: "red",
             })
-            queryClient.invalidateQueries({ queryKey: ["issues"] })
+            queryClient
+              .invalidateQueries({ queryKey: ["issues"] })
+              .then(() => setShowLoader(false))
           })
         }}
       >

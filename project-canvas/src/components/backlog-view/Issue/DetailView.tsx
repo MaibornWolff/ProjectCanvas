@@ -27,6 +27,7 @@ import { AddSubtask } from "./AddSubtask"
 import { CommentSection } from "./CommentSection"
 import { IssueSprint } from "./IssueSprint"
 import { Subtask } from "./Subtask"
+import { ChangeEpic } from "./ChangeEpic"
 
 export function DetailView({
   issueKey,
@@ -63,14 +64,8 @@ export function DetailView({
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
-        {epic !== undefined ? (
-          <Group>
-            <IssueIcon type="Epic" />
-            {epic}
-          </Group>
-        ) : (
-          <Text tt="uppercase">Add Epic</Text>
-        )}
+        <ChangeEpic projectId={projectId} issueKey={issueKey} epic={epic} />
+
         <Group>
           <IssueIcon type={type} /> {issueKey}
         </Group>
