@@ -1,5 +1,6 @@
 import { DraggableLocation, DropResult } from "react-beautiful-dnd"
-import { Case, Action } from "../types"
+import { Case, SubActionGroup } from "../types"
+import { getAllSubActionGroups } from "./utils"
 
 const reorder = <T>(list: T[], startIndex: number, endIndex: number) => {
   const result = Array.from(list)
@@ -24,14 +25,14 @@ const move = <T>(
   return { newSource: sourceClone, newDestination: destClone }
 }
 
-const isAction = (caseId: string) => caseId.match(/^a/g)
+const isActionList = (caseId: string) => caseId.match(/^a/g)
 const isSubAction = (actionId: string) => actionId.match(/^s/g)
 
 export const onDragEnd = (
   result: DropResult,
   cases: Case[],
-  updateCase: (caseColumn: string, actions: Action[]) => void,
-  updateCaseAction: (action: Action) => void
+  updateCase: (caseColumn: Partial<Case>) => void,
+  updateSubActionGroup: (subActionGroup: Partial<SubActionGroup>) => void
 ) => {
   const { source, destination } = result
 
@@ -40,11 +41,12 @@ export const onDragEnd = (
     return
   }
 
-  if (isAction(source.droppableId) && isAction(destination.droppableId)) {
-    const caseColumnSource = cases.find((c) => c.title === source.droppableId)
-    const caseColumnDest = cases.find(
-      (c) => c.title === destination.droppableId
-    )
+  if (
+    isActionList(source.droppableId) &&
+    isActionList(destination.droppableId)
+  ) {
+    const caseColumnSource = cases.find((c) => c.id === source.droppableId)
+    const caseColumnDest = cases.find((c) => c.id === destination.droppableId)
     if (!caseColumnSource || !caseColumnDest) return
 
     if (source.droppableId === destination.droppableId) {
@@ -53,7 +55,8 @@ export const onDragEnd = (
         source.index,
         destination.index
       )
-      updateCase(caseColumnSource.title, items)
+
+      updateCase({ id: caseColumnSource.id, actions: items })
     }
 
     if (source.droppableId !== destination.droppableId) {
@@ -64,51 +67,48 @@ export const onDragEnd = (
         destination
       )
 
-      updateCase(caseColumnSource.title, newSource)
-      updateCase(caseColumnDest.title, newDestination)
+      updateCase({ id: caseColumnSource.id, actions: newSource })
+      updateCase({ id: caseColumnDest.id, actions: newDestination })
     }
   }
 
   if (isSubAction(source.droppableId) && isSubAction(destination.droppableId)) {
-    const caseActionSource = cases
-      .map((c) => c.actions)
-      .flat()
-      .find((a) => a.id === source.droppableId)
+    const subActionGroupSource = getAllSubActionGroups(cases).find(
+      (_subActionGroup) => _subActionGroup.id === source.droppableId
+    )
+    const subActionGroupDest = getAllSubActionGroups(cases).find(
+      (_subActionGroup) => _subActionGroup.id === destination.droppableId
+    )
 
-    const caseActionDest = cases
-      .map((c) => c.actions)
-      .flat()
-      .find((a) => a.id === destination.droppableId)
-
-    if (!caseActionSource || !caseActionDest) return
+    if (!subActionGroupSource || !subActionGroupDest) return
 
     if (source.droppableId === destination.droppableId) {
       const items = reorder(
-        caseActionSource!.subActions,
+        subActionGroupSource!.subActions,
         source.index,
         destination.index
       )
 
-      updateCaseAction({
-        ...caseActionSource,
+      updateSubActionGroup({
+        ...subActionGroupSource,
         subActions: items,
       })
     }
 
     if (source.droppableId !== destination.droppableId) {
       const { newSource, newDestination } = move(
-        caseActionSource!.subActions,
-        caseActionDest!.subActions,
+        subActionGroupSource!.subActions,
+        subActionGroupDest!.subActions,
         source,
         destination
       )
 
-      updateCaseAction({
-        ...caseActionSource,
+      updateSubActionGroup({
+        ...subActionGroupSource,
         subActions: newSource,
       })
-      updateCaseAction({
-        ...caseActionDest,
+      updateSubActionGroup({
+        ...subActionGroupDest,
         subActions: newDestination,
       })
     }

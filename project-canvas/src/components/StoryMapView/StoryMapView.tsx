@@ -14,7 +14,13 @@ import {
   getAllSubActions,
   getRndInteger,
 } from "./helpers/utils"
-import { Action, Case, SubAction, SubActionLevel } from "./types"
+import {
+  Action,
+  Case,
+  SubAction,
+  SubActionGroup,
+  SubActionLevel,
+} from "./types"
 
 export function StoryMapView() {
   const [levels, setLevels] = useImmer<SubActionLevel[]>([
@@ -82,7 +88,7 @@ export function StoryMapView() {
             {
               id: "sg-6",
               levelId: "level-2",
-              subActions: [{ id: "ss-3", title: "sub-action21" }],
+              subActions: [{ id: "ss-6", title: "sub-action31" }],
             },
           ],
         },
@@ -95,10 +101,11 @@ export function StoryMapView() {
       draft.push(caseColumn)
     })
   }
-  const updateCase = ({ id, ...rest }: Partial<Case>) => {
+  const updateCase = ({ id, actions, title }: Partial<Case>) => {
     setCases((draft) => {
-      let caseColumn = draft.find((c) => c.id === id)
-      if (caseColumn) caseColumn = { ...caseColumn, ...rest }
+      const caseColumn = draft.find((c) => c.id === id)
+      if (caseColumn && actions) caseColumn.actions = actions
+      if (caseColumn && title) caseColumn.title = title
     })
   }
 
@@ -107,31 +114,54 @@ export function StoryMapView() {
       draft.find((c) => c.id === caseId)?.actions.push(action)
     })
   }
-  const updateAction = ({ id, ...rest }: Partial<Action>) => {
+  const updateAction = ({ id, title, subActionGroups }: Partial<Action>) => {
     setCases((draft) => {
-      let caseAction = getAllActions(draft).find((_action) => _action.id === id)
-      if (caseAction) caseAction = { ...caseAction, ...rest }
+      const caseAction = getAllActions(draft).find(
+        (_action) => _action.id === id
+      )
+      if (caseAction && title) caseAction.title = title
+      if (caseAction && subActionGroups)
+        caseAction.subActionGroups = subActionGroups
     })
   }
 
   const addSubAction = (subActionGroupId: string, subAction: SubAction) => {
     setCases((draft) => {
-      const caseAction = getAllSubActionGroups(draft).find(
+      const subActionGroup = getAllSubActionGroups(draft).find(
         (_subActionGroup) => _subActionGroup.id === subActionGroupId
       )
-      if (caseAction) caseAction.subActions.push(subAction)
+      if (subActionGroup) subActionGroup.subActions.push(subAction)
     })
   }
-  const updateSubAction = ({ id, ...rest }: Partial<SubAction>) => {
+  const updateSubAction = ({ id, title }: Partial<SubAction>) => {
     setCases((draft) => {
-      let subAction = getAllSubActions(draft).find(
+      const subAction = getAllSubActions(draft).find(
         (_subAction) => _subAction.id === id
       )
-      if (subAction) subAction = { ...subAction, ...rest }
+      if (subAction && title) subAction.title = title
     })
   }
+
+  const updateSubActionGroup = ({
+    id,
+    levelId,
+    subActions,
+  }: Partial<SubActionGroup>) => {
+    setCases((draft) => {
+      const subActionGroup = getAllSubActionGroups(draft).find(
+        (_subActionGroup) => _subActionGroup.id === id
+      )
+      if (subActionGroup && levelId) subActionGroup.levelId = levelId
+      if (subActionGroup && subActions) subActionGroup.subActions = subActions
+    })
+  }
+
   return (
-    <DragDropContext onDragEnd={(dropResult) => {}}>
+    <DragDropContext
+      onDragEnd={(dropResult) => {
+        onDragEnd(dropResult, cases, updateCase, updateSubActionGroup)
+      }}
+    >
       <Group align="start">
         {cases.map((caseColumn) => (
           <CaseColumn
