@@ -10,8 +10,12 @@ import {
   Stack,
   Text,
   Title,
+  Image,
+  Card,
+  HoverCard,
+  ActionIcon,
 } from "@mantine/core"
-import { IconCaretDown } from "@tabler/icons"
+import { IconCaretDown, IconTrash, IconCloudDownload } from "@tabler/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
@@ -61,6 +65,19 @@ export function DetailView({
     },
   })
 
+  const dummyAttachmwnts: { url: string; imageUrl: string }[] = [
+    {
+      url: "gamecube",
+      imageUrl:
+        "https://upload.wikimedia.org/wikipedia/commons/a/ae/Gamecube-console.jpg",
+    },
+    {
+      url: "wii",
+      imageUrl:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Wii-console.jpg/600px-Wii-console.jpg",
+    },
+  ]
+
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
@@ -100,6 +117,65 @@ export function DetailView({
               </Stack>
             </Paper>
             <CommentSection issueKey={issueKey} comment={comment} />
+
+            <Text color="dimmed" mb="sm">
+              Attachments
+            </Text>
+            <Group spacing="xs">
+              {dummyAttachmwnts.map(
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                (item: { url: string; imageUrl: string }) => (
+                  <Card
+                    shadow="sm"
+                    p="xl"
+                    radius="md"
+                    component="a"
+                    href="https://mantine.dev/"
+                    withBorder
+                  >
+                    <Card.Section>
+                      <HoverCard shadow="md" position="top-end">
+                        <HoverCard.Target>
+                          <Image
+                            src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
+                            height={160}
+                            alt="Norway"
+                          />
+                        </HoverCard.Target>
+                        <HoverCard.Dropdown p={0}>
+                          <Group spacing={0}>
+                            <ActionIcon
+                              size="lg"
+                              radius="xs"
+                              variant="outline"
+                              onClick={() => {}}
+                            >
+                              <IconCloudDownload />
+                            </ActionIcon>
+                            <ActionIcon
+                              size="lg"
+                              radius="xs"
+                              variant="outline"
+                              onClick={() => {}}
+                            >
+                              <IconTrash />
+                            </ActionIcon>
+                          </Group>
+                        </HoverCard.Dropdown>
+                      </HoverCard>
+                    </Card.Section>
+                    <Card.Section p="xs">
+                      <Text size="xs" color="dimmed">
+                        Filename
+                      </Text>
+                      <Text size="xs" color="dimmed">
+                        Creation Date
+                      </Text>
+                    </Card.Section>
+                  </Card>
+                )
+              )}
+            </Group>
           </ScrollArea.Autosize>
         </Stack>
         <ScrollArea.Autosize
