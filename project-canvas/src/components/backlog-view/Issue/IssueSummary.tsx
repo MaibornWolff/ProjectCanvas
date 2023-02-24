@@ -19,14 +19,14 @@ export function IssueSummary({
     mutationFn: (issue: Issue) => editIssue(issue, issueKey),
     onError: () => {
       showNotification({
-        message: `error occured while modifing the summary 😢`,
+        message: `An error occured while modifing the summary 😢`,
         color: "red",
       })
     },
     onSuccess: () => {
       if (defaultSummary !== summary)
         showNotification({
-          message: `Summary of issue ${issueKey} has been modified!`,
+          message: `The summary of issue ${issueKey} has been modified!`,
           color: "green",
         })
     },
@@ -40,7 +40,7 @@ export function IssueSummary({
           onBlur={() => {
             if (defaultSummary === "")
               showNotification({
-                message: `Summary of an issue cannot be empty`,
+                message: `The summary of an issue cannot be empty`,
                 color: "red",
               })
             else {

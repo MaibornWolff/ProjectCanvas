@@ -8,7 +8,7 @@ import {
   getEditableIssueFields,
 } from "../../CreateIssue/queryFunctions"
 
-export function StoryPointsEstMenu({
+export function StoryPointsEstimateMenu({
   issueKey,
   storyPointsEstimate,
 }: {
@@ -36,7 +36,7 @@ export function StoryPointsEstMenu({
     mutationFn: (issue: Issue) => editIssue(issue, issueKey),
     onError: () => {
       showNotification({
-        message: `The issue couldn't be modified! 😢`,
+        message: `The story point estimate for issue ${issueKey} couldn't be modified! 😢`,
         color: "red",
       })
     },

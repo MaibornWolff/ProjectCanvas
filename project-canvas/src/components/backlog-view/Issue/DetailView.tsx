@@ -20,7 +20,7 @@ import { getIssueTypes, setStatus } from "../../CreateIssue/queryFunctions"
 import { Description } from "./Description"
 import { IssueIcon } from "./IssueIcon"
 import { ReporterMenu } from "./ReporterMenu"
-import { StoryPointsEstMenu } from "./StoryPointsEstMenu"
+import { StoryPointsEstimateMenu } from "./StoryPointsEstimateMenu"
 import { Labels } from "./Labels"
 import { IssueSummary } from "./IssueSummary"
 import { AddSubtask } from "./AddSubtask"
@@ -109,15 +109,7 @@ export function DetailView({
           <Box>
             <Menu shadow="md" position="bottom-start">
               <Menu.Target>
-                <Button
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    flexDirection: "row",
-                  }}
-                  mb="md"
-                  rightIcon={<IconCaretDown />}
-                >
+                <Button mb="md" rightIcon={<IconCaretDown />}>
                   {defaultStatus}
                 </Button>
               </Menu.Target>
@@ -161,7 +153,7 @@ export function DetailView({
                       </Text>
                       <IssueSprint sprint={sprint} issueKey={issueKey} />
                     </Group>
-                    <StoryPointsEstMenu
+                    <StoryPointsEstimateMenu
                       issueKey={issueKey}
                       storyPointsEstimate={storyPointsEstimate}
                     />

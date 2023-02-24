@@ -22,7 +22,7 @@ export function Labels({
     mutationFn: (issue: Issue) => editIssue(issue, issueKey),
     onError: () => {
       showNotification({
-        message: `error occured while modifing the Labels 😢`,
+        message: `An error occured while modifing the Labels 😢`,
         color: "red",
       })
     },

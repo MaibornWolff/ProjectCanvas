@@ -26,7 +26,7 @@ export function ChangeEpic({
       editIssue({ epic: epicKey } as Issue, issueKey),
     onError: () => {
       showNotification({
-        message: `error occured while modifing the Epic 😢`,
+        message: `An error occured while modifing the Epic 😢`,
         color: "red",
       })
     },

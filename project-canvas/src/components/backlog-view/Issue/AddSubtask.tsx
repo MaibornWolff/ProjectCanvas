@@ -23,7 +23,7 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
     onSuccess(createdSubtask: { id: string; key: string }) {
       setSummary("")
       showNotification({
-        message: `issue  ${createdSubtask.key} has been created!`,
+        message: `The issue  ${createdSubtask.key} has been created!`,
         color: "green",
       })
       queryClient.invalidateQueries({ queryKey: ["issues"] })
@@ -40,7 +40,7 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
                 onClick={() => {
                   if (summary === "")
                     showNotification({
-                      message: `summary of an issue cannot be empty `,
+                      message: `The summary of an issue cannot be empty!`,
                       color: "red",
                     })
                   else mutationSubtask.mutate()

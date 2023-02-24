@@ -29,13 +29,13 @@ export function IssueSprint(props: {
     mutationFn: (issue: Issue) => editIssue(issue, props.issueKey),
     onError: () => {
       showNotification({
-        message: `error occured while modifing the sprint 😢`,
+        message: `An error occured while modifing the sprint 😢`,
         color: "red",
       })
     },
     onSuccess: () => {
       showNotification({
-        message: `sprint for issue ${props.issueKey} has been modified!`,
+        message: `The sprint for issue ${props.issueKey} has been modified!`,
         color: "green",
       })
     },
@@ -44,13 +44,13 @@ export function IssueSprint(props: {
     mutationFn: () => moveIssueToBacklog(props.issueKey),
     onError: () => {
       showNotification({
-        message: `error occured while modifing the sprint 😢`,
+        message: `An error occured while modifing the sprint 😢`,
         color: "red",
       })
     },
     onSuccess: () => {
       showNotification({
-        message: `sprint for issue ${props.issueKey} has been modified!`,
+        message: `The sprint for issue ${props.issueKey} has been modified!`,
         color: "green",
       })
     },

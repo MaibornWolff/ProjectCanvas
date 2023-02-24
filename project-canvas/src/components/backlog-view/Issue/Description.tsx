@@ -14,7 +14,7 @@ export function Description(props: { issueKey: string; description: string }) {
     mutationFn: (issue: Issue) => editIssue(issue, props.issueKey),
     onError: () => {
       showNotification({
-        message: `error occured while modifing the Description 😢`,
+        message: `An error occured while modifing the Description 😢`,
         color: "red",
       })
     },
