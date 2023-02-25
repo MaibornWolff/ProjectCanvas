@@ -15,9 +15,14 @@ export function CaseSubActionLevel({
   updateSubAction: ({ id, title }: SubAction) => void
 }) {
   return (
-    <Group align="start">
+    <Group align="start" noWrap>
       {filteredCases.map((caseColumn) => (
-        <Group key={`${caseColumn.id}-${levelId}`} align="start" spacing={0}>
+        <Group
+          key={`${caseColumn.id}-${levelId}`}
+          align="start"
+          noWrap
+          spacing={0}
+        >
           {caseColumn.actions
             .map((_action) => _action.subActionGroups)
             .flat()

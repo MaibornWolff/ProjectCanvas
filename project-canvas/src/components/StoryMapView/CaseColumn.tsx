@@ -26,6 +26,7 @@ export function CaseColumn({
         {(provided) => (
           <Group
             spacing={0}
+            noWrap
             ref={provided.innerRef}
             {...provided.droppableProps}
           >

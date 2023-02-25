@@ -162,7 +162,7 @@ export function StoryMapView() {
         onDragEnd(dropResult, cases, updateCase, updateSubActionGroup)
       }}
     >
-      <Group align="start">
+      <Group align="start" noWrap>
         {cases.map((caseColumn) => (
           <CaseColumn
             key={caseColumn.title}
