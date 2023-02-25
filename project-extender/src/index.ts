@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import cors from "@fastify/cors"
 import fastifyEnv from "@fastify/env"
 import fastify from "fastify"
@@ -419,4 +420,38 @@ server.post<{
       reply.status(200).send(createdSubtask)
     })
     .catch(() => reply.status(400).send())
+})
+server.get<{
+  Body: {
+    parentIssueKey: string
+    projectId: string
+    summary: string
+  }
+}>("/createSubtask", (request, reply) => {
+  issueProvider
+    .createSubtask(
+      request.body.parentIssueKey,
+      request.body.projectId,
+      request.body.summary
+    )
+    .then((createdSubtask) => {
+      reply.status(200).send(createdSubtask)
+    })
+    .catch(() => reply.status(400).send())
+})
+server.get<{
+  Querystring: { id: string }
+}>("/attachmentThumbnail", async (request, reply) => {
+  await issueProvider
+    .getAttachmentThumbnail(request.query.id)
+    .then((blob: Blob) => {
+      const r = reply.headers({ "Content-type": `${blob.type}` }).status(200)
+      r.send(blob).then(
+        () => {},
+        (err) => console.log(err)
+      )
+    })
+    .catch((error) => {
+      reply.status(400).send(error)
+    })
 })

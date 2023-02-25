@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Issue, Sprint } from "project-extender"
 
 export const getSprints = (boardId: number): Promise<Sprint[]> =>
@@ -23,3 +24,11 @@ export const getBacklogIssues = (
   )
     .then((issues) => issues.json())
     .catch((err) => err)
+
+export const getAttachmentThumbnail = (id: string): Promise<Blob> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/attachmentThumbnail?id=${id}`)
+    .then(async (res) => res.blob())
+    .catch((err) => {
+      console.log("error here!")
+      return err
+    })

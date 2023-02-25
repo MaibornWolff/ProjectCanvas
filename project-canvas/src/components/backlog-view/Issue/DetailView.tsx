@@ -10,7 +10,6 @@ import {
   Stack,
   Text,
   Title,
-  Image,
   Card,
   HoverCard,
   ActionIcon,
@@ -32,6 +31,7 @@ import { CommentSection } from "./CommentSection"
 import { IssueSprint } from "./IssueSprint"
 import { Subtask } from "./Subtask"
 import { ChangeEpic } from "./ChangeEpic"
+import { Thumbnail } from "./Thumbnail"
 
 export function DetailView({
   issueKey,
@@ -136,11 +136,7 @@ export function DetailView({
                     <Card.Section>
                       <HoverCard shadow="md" position="top-end">
                         <HoverCard.Target>
-                          <Image
-                            src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
-                            height={160}
-                            alt="Norway"
-                          />
+                          <Thumbnail thumb="10025" />
                         </HoverCard.Target>
                         <HoverCard.Dropdown p={0}>
                           <Group spacing={0}>

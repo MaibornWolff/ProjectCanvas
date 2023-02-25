@@ -115,3 +115,8 @@ export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
   minute: "2-digit",
   hour12: false,
 })
+
+export interface Thumbnail {
+  url: string
+  accessToken: string
+}

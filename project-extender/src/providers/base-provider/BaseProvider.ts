@@ -67,6 +67,7 @@ export interface ProviderApi {
     commentText: string
   ): Promise<void>
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void>
+  getAttachmentThumbnail(id: string): Promise<Blob>
 }
 
 export abstract class ProviderCreator {
