@@ -9,7 +9,7 @@ import {
   Priority,
   Project,
   Sprint,
-  Thumbnail,
+  Resource,
   User,
 } from "../../types"
 import {
@@ -473,11 +473,15 @@ class JiraServerProvider implements ProviderApi {
     throw new Error("Method not implemented.")
   }
 
-  getAttachmentThumbnail(id: string): Promise<Thumbnail> {
+  getAttachmentThumbnail(id: string): Promise<Resource> {
     throw new Error("Method not implemented.")
   }
 
   deleteAttachment(id: string): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
+
+  downloadAttachment(id: string): Promise<Resource> {
     throw new Error("Method not implemented.")
   }
 }

@@ -11,7 +11,7 @@ import {
   IssueType,
   User,
   Priority,
-  Thumbnail,
+  Resource,
 } from "../../types"
 import {
   JiraIssue,
@@ -1138,7 +1138,7 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
-  getAttachmentThumbnail(id: string): Promise<Thumbnail> {
+  getAttachmentThumbnail(id: string): Promise<Resource> {
     return new Promise((resolve) => {
       const url = `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/attachment/thumbnail/${id}`
       const authorization = `Bearer ${this.accessToken}`
@@ -1174,6 +1174,14 @@ class JiraCloudProvider implements ProviderApi {
           }
         })
         .catch((err) => reject(new Error(`Error: ${err}`)))
+    })
+  }
+
+  downloadAttachment(id: string): Promise<Resource> {
+    return new Promise((resolve) => {
+      const url = `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/attachment/content/${id}`
+      const authorization = `Bearer ${this.accessToken}`
+      resolve({ url, authorization })
     })
   }
 }

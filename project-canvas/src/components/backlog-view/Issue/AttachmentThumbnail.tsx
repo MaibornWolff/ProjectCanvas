@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Image } from "@mantine/core"
 import { useEffect, useState } from "react"
 import { getAttachmentThumbnail } from "../helpers/queryFetchers"

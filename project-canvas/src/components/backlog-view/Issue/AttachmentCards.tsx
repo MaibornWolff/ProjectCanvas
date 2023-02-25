@@ -1,20 +1,14 @@
 import { Text, ActionIcon, Card, Group, HoverCard } from "@mantine/core"
-import { IconCloudDownload, IconTrash } from "@tabler/icons"
+import { IconTrash } from "@tabler/icons"
 import { useEffect, useState } from "react"
+import { Attachment } from "project-extender"
 import { deleteAttachment } from "../helpers/queryFetchers"
-import { Thumbnail } from "./Thumbnail"
-
-interface Attachment {
-  self: string
-  id: string
-  filename: string
-  created: string
-  mimeType: string
-  content: string
-}
+import { Thumbnail } from "./AttachmentThumbnail"
+import { AttachmentDownloadBtn } from "./AttachmentDownloadBtn"
 
 export function AttachmentCard(props: { attachments: Attachment[] }) {
   const [action, setAction] = useState<boolean>(false)
+
   const performDelete = (attachmentId: string): void => {
     deleteAttachment(attachmentId)
       .then(() => {
@@ -52,14 +46,7 @@ export function AttachmentCard(props: { attachments: Attachment[] }) {
             </Card.Section>
             <HoverCard.Dropdown p={0}>
               <Group spacing={0}>
-                <ActionIcon
-                  size="lg"
-                  radius="xs"
-                  variant="outline"
-                  onClick={() => {}}
-                >
-                  <IconCloudDownload />
-                </ActionIcon>
+                <AttachmentDownloadBtn attachment={attach} />
                 <ActionIcon
                   size="lg"
                   radius="xs"

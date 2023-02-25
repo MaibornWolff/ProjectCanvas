@@ -5,7 +5,7 @@ import {
   Priority,
   Project,
   Sprint,
-  Thumbnail,
+  Resource,
   User,
 } from "../../types"
 
@@ -75,8 +75,9 @@ export interface ProviderApi {
     commentText: string
   ): Promise<void>
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void>
-  getAttachmentThumbnail(id: string): Promise<Thumbnail>
+  getAttachmentThumbnail(id: string): Promise<Resource>
   deleteAttachment(id: string): Promise<void>
+  downloadAttachment(id: string): Promise<Resource>
 }
 
 export abstract class ProviderCreator {
