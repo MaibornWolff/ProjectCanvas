@@ -9,5 +9,5 @@ export function Thumbnail(props: { attachmentId: string }) {
     getAttachmentThumbnail(props.attachmentId).then((s) => setUrl(s))
   }, [])
 
-  return <Image src={url} withPlaceholder />
+  return <Image src={url} alt={`Item #${props.attachmentId}`} withPlaceholder />
 }

@@ -1,4 +1,11 @@
-import { Text, ActionIcon, Card, Group, HoverCard, Grid } from "@mantine/core"
+import {
+  Text,
+  ActionIcon,
+  Card,
+  Group,
+  HoverCard,
+  Container,
+} from "@mantine/core"
 import { IconCloudDownload, IconTrash } from "@tabler/icons"
 import { Thumbnail } from "./Thumbnail"
 
@@ -13,7 +20,7 @@ interface Attachment {
 
 export function AttachmentCard(props: { attachments: Attachment[] }) {
   return (
-    <Grid gutter="lg" columns={1} align="flex-start" grow>
+    <Group>
       {props.attachments.map((attach) => (
         <Card
           key={attach.id}
@@ -52,15 +59,17 @@ export function AttachmentCard(props: { attachments: Attachment[] }) {
             </HoverCard>
           </Card.Section>
           <Card.Section p="xs">
-            <Text size="xs" color="dimmed" truncate>
-              {attach.filename}
-            </Text>
-            <Text size="xs" color="dimmed" truncate>
-              {attach.created}
-            </Text>
+            <Container size={200}>
+              <Text size="xs" color="dimmed" truncate>
+                {attach.filename}
+              </Text>
+              <Text size="xs" color="dimmed" truncate>
+                {attach.created}
+              </Text>
+            </Container>
           </Card.Section>
         </Card>
       ))}
-    </Grid>
+    </Group>
   )
 }

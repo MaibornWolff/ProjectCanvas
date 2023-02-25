@@ -28,7 +28,7 @@ import { CommentSection } from "./CommentSection"
 import { IssueSprint } from "./IssueSprint"
 import { Subtask } from "./Subtask"
 import { ChangeEpic } from "./ChangeEpic"
-import { AttachmentCard } from "./AttachmentCard"
+import { AttachmentCard } from "./AttachmentCards"
 
 export function DetailView({
   issueKey,
