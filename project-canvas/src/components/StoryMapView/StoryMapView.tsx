@@ -1,5 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Accordion, Group } from "@mantine/core"
+import {
+  Accordion,
+  ActionIcon,
+  Affix,
+  Box,
+  Button,
+  Group,
+  Stack,
+  Text,
+} from "@mantine/core"
+import { IconMinus, IconPlus } from "@tabler/icons"
+import { useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useImmer } from "use-immer"
 import { AddLevel } from "./AddLevel"
@@ -21,8 +32,10 @@ import {
   SubActionGroup,
   SubActionLevel,
 } from "./types"
+import { Zoom } from "./Zoom"
 
 export function StoryMapView() {
+  const [zoomValue, setZoomValue] = useState(1)
   const [levels, setLevels] = useImmer<SubActionLevel[]>([
     { id: "level-1", title: "level-1" },
     { id: "level-2", title: "level-2" },
@@ -162,50 +175,53 @@ export function StoryMapView() {
         onDragEnd(dropResult, cases, updateCase, updateSubActionGroup)
       }}
     >
-      <Group align="start" noWrap>
-        {cases.map((caseColumn) => (
-          <CaseColumn
-            key={caseColumn.title}
-            caseColumn={caseColumn}
-            levels={levels}
-            updateCase={updateCase}
-            addAction={addAction}
-            updateAction={updateAction}
+      <Zoom zoomValue={zoomValue} setZoomValue={setZoomValue} />
+      <Box sx={{ zoom: zoomValue }}>
+        <Group align="start" noWrap>
+          {cases.map((caseColumn) => (
+            <CaseColumn
+              key={caseColumn.title}
+              caseColumn={caseColumn}
+              levels={levels}
+              updateCase={updateCase}
+              addAction={addAction}
+              updateAction={updateAction}
+            />
+          ))}
+          <AddCase
+            onClick={() =>
+              addCase({
+                id: `a-${getRndInteger()}`,
+                title: "New Case",
+                actions: [],
+              })
+            }
           />
-        ))}
-        <AddCase
-          onClick={() =>
-            addCase({
-              id: `a-${getRndInteger()}`,
-              title: "New Case",
-              actions: [],
-            })
-          }
-        />
-      </Group>
-      <Accordion
-        chevronPosition="left"
-        styles={{ content: { padding: 0 } }}
-        defaultValue={levels.map((level) => level.id)}
-        multiple
-      >
-        {levels.map((level) => (
-          <Accordion.Item key={level.id} value={level.id}>
-            <Accordion.Control>{level.title}</Accordion.Control>
-            <Accordion.Panel>
-              <Group align="start">
-                <CaseSubActionLevel
-                  filteredCases={getFilteredCasesForLevel(cases, level)}
-                  levelId={level.id}
-                  addSubAction={addSubAction}
-                  updateSubAction={updateSubAction}
-                />
-              </Group>
-            </Accordion.Panel>
-          </Accordion.Item>
-        ))}
-      </Accordion>
-      <AddLevel setCases={setCases} setLevels={setLevels} />
+        </Group>
+        <Accordion
+          chevronPosition="left"
+          styles={{ content: { padding: 0 } }}
+          defaultValue={levels.map((level) => level.id)}
+          multiple
+        >
+          {levels.map((level) => (
+            <Accordion.Item key={level.id} value={level.id}>
+              <Accordion.Control>{level.title}</Accordion.Control>
+              <Accordion.Panel>
+                <Group align="start">
+                  <CaseSubActionLevel
+                    filteredCases={getFilteredCasesForLevel(cases, level)}
+                    levelId={level.id}
+                    addSubAction={addSubAction}
+                    updateSubAction={updateSubAction}
+                  />
+                </Group>
+              </Accordion.Panel>
+            </Accordion.Item>
+          ))}
+        </Accordion>
+        <AddLevel setCases={setCases} setLevels={setLevels} />
+      </Box>
     </DragDropContext>
   )
 }
