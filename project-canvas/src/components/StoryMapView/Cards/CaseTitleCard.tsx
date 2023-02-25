@@ -1,6 +1,17 @@
-import { Paper, Title } from "@mantine/core"
+import { Paper, TextInput, Title } from "@mantine/core"
+import { useState } from "react"
+import { Case } from "../types"
 
-export function CaseTitleCard({ title }: { title: string }) {
+export function CaseTitleCard({
+  caseColumn,
+  updateCase,
+}: {
+  caseColumn: Case
+  updateCase: (caseColumn: Partial<Case>) => void
+}) {
+  const [edit, toggleEdit] = useState(false)
+  const [title, setTitle] = useState(caseColumn.title)
+
   return (
     <Paper
       sx={(theme) => ({
@@ -15,7 +26,22 @@ export function CaseTitleCard({ title }: { title: string }) {
       p="md"
       shadow="md"
     >
-      <Title size="1.6em">{title}</Title>
+      {edit && title !== "" ? (
+        <Title onClick={() => toggleEdit(!edit)}>{title}</Title>
+      ) : (
+        <TextInput
+          onBlur={() => toggleEdit(!edit)}
+          placeholder="Title"
+          onChange={(event) => {
+            setTitle(event.currentTarget.value)
+            updateCase({ id: caseColumn.id, title: event.currentTarget.value })
+          }}
+          variant="unstyled"
+          value={title}
+          autoFocus
+          styles={{ input: { textAlign: "center", fontSize: "16px" } }}
+        />
+      )}
     </Paper>
   )
 }

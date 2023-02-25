@@ -1,4 +1,5 @@
 import { Paper, PaperProps, useMantineTheme } from "@mantine/core"
+import { ReactElement } from "react"
 import { Draggable } from "react-beautiful-dnd"
 
 export type ItemType = "action" | "subAction"
@@ -7,14 +8,12 @@ export function ItemCard({
   id,
   index,
   children,
-  editItem,
   itemType = "subAction",
   ...props
 }: {
   id: string
   index: number
-  children: string
-  editItem: () => void
+  children: ReactElement
   itemType?: ItemType
 } & PaperProps) {
   const theme = useMantineTheme()
@@ -40,7 +39,6 @@ export function ItemCard({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           {...props}
-          onClick={editItem}
         >
           {children}
         </Paper>

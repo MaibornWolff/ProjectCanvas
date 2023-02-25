@@ -1,51 +1,56 @@
 import { Group, Stack } from "@mantine/core"
 import { StrictModeDroppable } from "../common/StrictModeDroppable"
 import { ActionCard } from "./Cards/ActionCard"
-import { AddSubActionCard } from "./Cards/AddSubActionCard"
+import { AddCard } from "./Cards/Add/AddCard"
 import { CaseTitleCard } from "./Cards/CaseTitleCard"
 import { getRndInteger } from "./helpers/utils"
-import { Case, Action } from "./types"
+import { Action, Case, SubActionLevel } from "./types"
 
 export function CaseColumn({
-  id: caseId,
-  title,
-  actions,
+  caseColumn,
+  levels,
+  updateCase,
   addAction,
-  editAction,
-}: Case & {
-  addAction: (caseId: string, action: Action) => void
-  editAction: ({ id, title }: Action) => void
+  updateAction,
+}: {
+  caseColumn: Case
+  levels: SubActionLevel[]
+  updateCase: (caseColumn: Partial<Case>) => void
+  addAction: (id: string, action: Action) => void
+  updateAction: ({ id, title }: Action) => void
 }) {
   return (
     <Stack>
-      <CaseTitleCard title={title} />
-
-      <StrictModeDroppable droppableId={caseId} direction="horizontal">
+      <CaseTitleCard caseColumn={caseColumn} updateCase={updateCase} />
+      <StrictModeDroppable droppableId={caseColumn.id} direction="horizontal">
         {(provided) => (
           <Group
-            bg="gray.2"
             spacing={0}
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {actions.map((action, index) => (
+            {caseColumn.actions.map((action, index) => (
               <ActionCard
                 key={action.id}
                 id={action.id}
                 index={index}
-                editAction={editAction}
+                updateAction={updateAction}
               >
                 {action.title}
               </ActionCard>
             ))}
-            <AddSubActionCard
-              id={`action-add-${caseId}`}
-              index={actions.length}
+            <AddCard
+              id={`action-add-${caseColumn.id}`}
+              index={caseColumn.actions.length}
               onClick={() =>
-                addAction(caseId, {
+                addAction(caseColumn.id, {
                   id: `s-${getRndInteger()}`,
                   title: "New Action",
-                  subActions: [],
+                  subActionGroups: levels.map((level) => ({
+                    id: `sg-${getRndInteger()}`,
+                    levelId: level.id,
+                    subActions: [],
+                  })),
                 })
               }
             />
