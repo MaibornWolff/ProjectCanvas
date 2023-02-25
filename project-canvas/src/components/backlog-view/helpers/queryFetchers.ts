@@ -28,7 +28,4 @@ export const getBacklogIssues = (
 export const getAttachmentThumbnail = (id: string): Promise<Blob> =>
   fetch(`${import.meta.env.VITE_EXTENDER}/attachmentThumbnail?id=${id}`)
     .then(async (res) => res.blob())
-    .catch((err) => {
-      console.log("error here!")
-      return err
-    })
+    .catch((err) => err)

@@ -1137,12 +1137,12 @@ class JiraCloudProvider implements ProviderApi {
   }
 
   getAttachmentThumbnail(id: string): Promise<Blob> {
-    console.log(
+    /*     console.log(
       `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/attachment/thumbnail/${id}`
     )
-
+ */
     return new Promise((resolve, reject) => {
-      console.log(this.accessToken)
+      /*       console.log(this.accessToken) */
       fetch(
         `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/attachment/thumbnail/${id}?redirect=true`,
         {

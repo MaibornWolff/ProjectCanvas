@@ -10,11 +10,8 @@ export function Thumbnail(props: { thumb: string }) {
   const [url, setUrl] = useState<string>(placeholder)
   useEffect(() => {
     getAttachmentThumbnail(props.thumb)
-      .then((b: Blob) => {
-        console.log(b)
-        console.log(URL.createObjectURL(b))
-        setUrl(URL.createObjectURL(b))
-      })
+      .then((b) => webkitURL.createObjectURL(b))
+      .then((s) => setUrl(s))
       .catch((e: Error) => e)
   }, [])
 

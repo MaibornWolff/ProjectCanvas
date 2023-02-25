@@ -445,11 +445,7 @@ server.get<{
   await issueProvider
     .getAttachmentThumbnail(request.query.id)
     .then((blob: Blob) => {
-      const r = reply.headers({ "Content-type": `${blob.type}` }).status(200)
-      r.send(blob).then(
-        () => {},
-        (err) => console.log(err)
-      )
+      reply.status(200).send(blob)
     })
     .catch((error) => {
       reply.status(400).send(error)
