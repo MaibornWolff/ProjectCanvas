@@ -41,3 +41,8 @@ export const getAttachmentThumbnail = (id: string): Promise<string> =>
         .catch((err) => err)
     )
     .catch((err) => err)
+
+export const deleteAttachment = (attachmentId: string): Promise<void> =>
+  fetch(
+    `${import.meta.env.VITE_EXTENDER}/deleteAttachment?id=${attachmentId}`
+  ).catch((err) => err)

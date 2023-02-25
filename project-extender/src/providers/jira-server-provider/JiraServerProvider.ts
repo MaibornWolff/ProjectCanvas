@@ -476,6 +476,10 @@ class JiraServerProvider implements ProviderApi {
   getAttachmentThumbnail(id: string): Promise<Thumbnail> {
     throw new Error("Method not implemented.")
   }
+
+  deleteAttachment(id: string): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
 }
 
 export class JiraServerProviderCreator extends ProviderCreator {
