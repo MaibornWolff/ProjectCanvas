@@ -444,8 +444,8 @@ server.get<{
 }>("/attachmentThumbnail", async (request, reply) => {
   await issueProvider
     .getAttachmentThumbnail(request.query.id)
-    .then((blob: Blob) => {
-      reply.status(200).send(blob)
+    .then((b) => {
+      reply.status(200).send(b)
     })
     .catch((error) => {
       reply.status(400).send(error)

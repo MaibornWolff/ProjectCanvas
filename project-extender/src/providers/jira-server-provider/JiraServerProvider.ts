@@ -9,6 +9,7 @@ import {
   Priority,
   Project,
   Sprint,
+  Thumbnail,
   User,
 } from "../../types"
 import {
@@ -472,7 +473,7 @@ class JiraServerProvider implements ProviderApi {
     throw new Error("Method not implemented.")
   }
 
-  getAttachmentThumbnail(id: string): Promise<Blob> {
+  getAttachmentThumbnail(id: string): Promise<Thumbnail> {
     throw new Error("Method not implemented.")
   }
 }

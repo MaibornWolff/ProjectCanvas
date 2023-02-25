@@ -10,11 +10,8 @@ import {
   Stack,
   Text,
   Title,
-  Card,
-  HoverCard,
-  ActionIcon,
 } from "@mantine/core"
-import { IconCaretDown, IconTrash, IconCloudDownload } from "@tabler/icons"
+import { IconCaretDown } from "@tabler/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
@@ -31,7 +28,7 @@ import { CommentSection } from "./CommentSection"
 import { IssueSprint } from "./IssueSprint"
 import { Subtask } from "./Subtask"
 import { ChangeEpic } from "./ChangeEpic"
-import { Thumbnail } from "./Thumbnail"
+import { AttachmentCard } from "./AttachmentCard"
 
 export function DetailView({
   issueKey,
@@ -49,6 +46,7 @@ export function DetailView({
   type,
   projectId,
   sprint,
+  attachment,
 }: Issue) {
   const { data: issueTypes } = useQuery({
     queryKey: ["issueTypes", projectId],
@@ -64,19 +62,6 @@ export function DetailView({
       queryClient.invalidateQueries({ queryKey: ["issues"] })
     },
   })
-
-  const dummyAttachmwnts: { url: string; imageUrl: string }[] = [
-    {
-      url: "gamecube",
-      imageUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/a/ae/Gamecube-console.jpg",
-    },
-    {
-      url: "wii",
-      imageUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Wii-console.jpg/600px-Wii-console.jpg",
-    },
-  ]
 
   return (
     <Paper p="xs">
@@ -116,62 +101,14 @@ export function DetailView({
                 <AddSubtask issueKey={issueKey} projectId={projectId} />
               </Stack>
             </Paper>
-            <CommentSection issueKey={issueKey} comment={comment} />
-
             <Text color="dimmed" mb="sm">
               Attachments
             </Text>
-            <Group spacing="xs">
-              {dummyAttachmwnts.map(
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                (item: { url: string; imageUrl: string }) => (
-                  <Card
-                    shadow="sm"
-                    p="xl"
-                    radius="md"
-                    component="a"
-                    href="https://mantine.dev/"
-                    withBorder
-                  >
-                    <Card.Section>
-                      <HoverCard shadow="md" position="top-end">
-                        <HoverCard.Target>
-                          <Thumbnail thumb="10025" />
-                        </HoverCard.Target>
-                        <HoverCard.Dropdown p={0}>
-                          <Group spacing={0}>
-                            <ActionIcon
-                              size="lg"
-                              radius="xs"
-                              variant="outline"
-                              onClick={() => {}}
-                            >
-                              <IconCloudDownload />
-                            </ActionIcon>
-                            <ActionIcon
-                              size="lg"
-                              radius="xs"
-                              variant="outline"
-                              onClick={() => {}}
-                            >
-                              <IconTrash />
-                            </ActionIcon>
-                          </Group>
-                        </HoverCard.Dropdown>
-                      </HoverCard>
-                    </Card.Section>
-                    <Card.Section p="xs">
-                      <Text size="xs" color="dimmed">
-                        Filename
-                      </Text>
-                      <Text size="xs" color="dimmed">
-                        Creation Date
-                      </Text>
-                    </Card.Section>
-                  </Card>
-                )
-              )}
-            </Group>
+            <Paper mb="lg" mr="sm">
+              {attachment && <AttachmentCard attachments={attachment} />}
+            </Paper>
+
+            <CommentSection issueKey={issueKey} comment={comment} />
           </ScrollArea.Autosize>
         </Stack>
         <ScrollArea.Autosize

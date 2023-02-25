@@ -11,6 +11,7 @@ import {
   IssueType,
   User,
   Priority,
+  Thumbnail,
 } from "../../types"
 import {
   JiraIssue,
@@ -387,6 +388,7 @@ class JiraCloudProvider implements ProviderApi {
         comment: element.fields.comment,
         projectId: element.fields.project.id,
         sprint: element.fields.sprint,
+        attachment: element.fields.attachment,
       }))
     )
 
@@ -1136,66 +1138,11 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
-  getAttachmentThumbnail(id: string): Promise<Blob> {
-    /*     console.log(
-      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/attachment/thumbnail/${id}`
-    )
- */
-    return new Promise((resolve, reject) => {
-      /*       console.log(this.accessToken) */
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/attachment/thumbnail/${id}?redirect=true`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
-        .then(async (data) => {
-          switch (data.status) {
-            case 200:
-              resolve(data.blob())
-              break
-            case 303:
-              resolve(data.blob())
-              break
-            case 400:
-              reject(
-                new Error(
-                  `Error: Request is invalid for thumbnail with id: ${id}`
-                )
-              )
-              break
-            case 401:
-              reject(
-                new Error(
-                  `Error: Authentication credentials are incorrect for thumbnail with id: ${id}`
-                )
-              )
-              break
-            case 404:
-              reject(
-                new Error(
-                  `Error: The attachment is not found || the attachments are disabled in the Jira settings ||
-                  fallbackToDefault is false and the request thumbnail cannot be downloaded for thumbnail with id: ${id}`
-                )
-              )
-              break
-            default:
-              reject(
-                new Error(`Error: Unknown error for thumbnail with id: ${id}`)
-              )
-          }
-        })
-        .catch(async (error) => {
-          reject(
-            new Error(
-              `Error when retrieving thumbnail with id: ${id}: ${error}`
-            )
-          )
-        })
+  getAttachmentThumbnail(id: string): Promise<Thumbnail> {
+    return new Promise((resolve) => {
+      const url = `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/attachment/thumbnail/${id}`
+      const authorization = `Bearer ${this.accessToken}`
+      resolve({ url, authorization })
     })
   }
 }
