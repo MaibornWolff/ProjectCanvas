@@ -20,7 +20,7 @@ interface Attachment {
 
 export function AttachmentCard(props: { attachments: Attachment[] }) {
   return (
-    <Group>
+    <Group spacing="xs" grow>
       {props.attachments.map((attach) => (
         <Card
           key={attach.id}
