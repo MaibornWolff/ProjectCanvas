@@ -3,9 +3,11 @@ import { useEffect, useState } from "react"
 import { getAttachmentThumbnail } from "../helpers/queryFetchers"
 
 export function Thumbnail(props: { attachmentId: string }) {
-  const [url, setUrl] = useState<string>("")
+  const [url, setUrl] = useState<string | undefined>(undefined)
   useEffect(() => {
-    getAttachmentThumbnail(props.attachmentId).then((s) => setUrl(s))
+    if (!url) {
+      getAttachmentThumbnail(props.attachmentId).then((s) => setUrl(s))
+    }
   }, [])
 
   return <Image src={url} alt={`Item #${props.attachmentId}`} withPlaceholder />

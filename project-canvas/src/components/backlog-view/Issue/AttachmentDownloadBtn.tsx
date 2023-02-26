@@ -5,14 +5,16 @@ import { useEffect, useState } from "react"
 import { downloadAttachment as getAttachmentDownloadLink } from "../helpers/queryFetchers"
 
 export function AttachmentDownloadBtn(props: { attachment: Attachment }) {
-  const [link, setLink] = useState<string>("")
+  const [link, setLink] = useState<string | undefined>(undefined)
 
   useEffect(() => {
-    getAttachmentDownloadLink(props.attachment.id).then((s) => setLink(s))
+    if (!link) {
+      getAttachmentDownloadLink(props.attachment.id).then((s) => setLink(s))
+    }
   }, [])
 
   return (
-    <a download={props.attachment.filename} href={link}>
+    <a download={link ? props.attachment.filename : undefined} href={link}>
       <ActionIcon size="lg" radius="xs" variant="outline">
         <IconCloudDownload />
       </ActionIcon>
