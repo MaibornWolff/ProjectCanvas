@@ -11,13 +11,20 @@ export function AttachmentDownloadBtn(props: { attachment: Attachment }) {
     if (!link) {
       getAttachmentDownloadLink(props.attachment.id).then((s) => setLink(s))
     }
-  }, [])
+  }, [link])
 
   return (
-    <a download={link ? props.attachment.filename : undefined} href={link}>
-      <ActionIcon size="lg" radius="xs" variant="outline">
-        <IconCloudDownload />
-      </ActionIcon>
-    </a>
+    <ActionIcon
+      color="dark"
+      size="lg"
+      radius="xs"
+      variant="outline"
+      disabled={link === undefined}
+      loading={link === undefined}
+    >
+      <a download={props.attachment.filename} href={link}>
+        <IconCloudDownload color="black" />
+      </a>
+    </ActionIcon>
   )
 }

@@ -28,7 +28,8 @@ import { CommentSection } from "./CommentSection"
 import { IssueSprint } from "./IssueSprint"
 import { Subtask } from "./Subtask"
 import { ChangeEpic } from "./ChangeEpic"
-import { AttachmentCard } from "./AttachmentCards"
+import { AttachmentCards } from "./AttachmentCards"
+import { AttachmentUploadBtn } from "./AttachmentUploadBtn"
 
 export function DetailView({
   issueKey,
@@ -101,11 +102,14 @@ export function DetailView({
                 <AddSubtask issueKey={issueKey} projectId={projectId} />
               </Stack>
             </Paper>
-            <Text color="dimmed" mb="sm">
-              Attachments
-            </Text>
+            <Group position="apart" align="flex-start" spacing="xs">
+              <Text color="dimmed" mb="sm">
+                Attachments
+              </Text>
+              <AttachmentUploadBtn />
+            </Group>
             <Paper mb="lg" mr="sm">
-              {attachment && <AttachmentCard attachments={attachment} />}
+              {attachment && <AttachmentCards attachments={attachment} />}
             </Paper>
 
             <CommentSection issueKey={issueKey} comment={comment} />

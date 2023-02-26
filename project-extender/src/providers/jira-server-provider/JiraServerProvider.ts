@@ -484,6 +484,10 @@ class JiraServerProvider implements ProviderApi {
   downloadAttachment(id: string): Promise<Resource> {
     throw new Error("Method not implemented.")
   }
+
+  uploadAttachments(issueIdOrKey: string): Promise<Resource> {
+    throw new Error("Method not implemented.")
+  }
 }
 
 export class JiraServerProviderCreator extends ProviderCreator {

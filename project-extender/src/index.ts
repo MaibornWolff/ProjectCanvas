@@ -453,6 +453,18 @@ server.get<{
 })
 server.get<{
   Querystring: { id: string }
+}>("/downloadAttachment", async (request, reply) => {
+  await issueProvider
+    .downloadAttachment(request.query.id)
+    .then((data) => {
+      reply.status(200).send(data)
+    })
+    .catch((error) => {
+      reply.status(400).send(error)
+    })
+})
+server.get<{
+  Querystring: { id: string }
 }>("/deleteAttachment", async (request, reply) => {
   await issueProvider
     .deleteAttachment(request.query.id)

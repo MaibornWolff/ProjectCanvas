@@ -78,6 +78,7 @@ export interface ProviderApi {
   getAttachmentThumbnail(id: string): Promise<Resource>
   deleteAttachment(id: string): Promise<void>
   downloadAttachment(id: string): Promise<Resource>
+  uploadAttachments(issueIdOrKey: string): Promise<Resource>
 }
 
 export abstract class ProviderCreator {
