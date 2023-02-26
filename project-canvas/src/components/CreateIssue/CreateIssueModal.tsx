@@ -228,6 +228,7 @@ export function CreateIssueModal({
           />
           <Textarea
             label="Description"
+            autosize
             {...form.getInputProps("description")}
           />
           <Select
@@ -261,7 +262,7 @@ export function CreateIssueModal({
                 ?.includes("Priority")
             }
             data={
-              priorities
+              priorities && priorities instanceof Array
                 ? priorities.map((priority) => ({
                     image: priority.iconUrl,
                     value: priority.id,
@@ -329,6 +330,7 @@ export function CreateIssueModal({
             min={0}
             label="Story Point Estimate"
             defaultValue={null}
+            precision={3}
             disabled={
               issueTypesWithFieldsMap &&
               issueTypesWithFieldsMap.size > 0 &&

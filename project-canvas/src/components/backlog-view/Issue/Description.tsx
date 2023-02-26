@@ -1,25 +1,51 @@
 import { Textarea, Text } from "@mantine/core"
-import { ChangeEventHandler, FocusEventHandler, MouseEventHandler } from "react"
+import { showNotification } from "@mantine/notifications"
+import { useMutation } from "@tanstack/react-query"
+import { Issue } from "project-extender"
+import { useState } from "react"
+import { editIssue } from "../../CreateIssue/queryFunctions"
 
-export function Description(props: {
-  showInputEle: boolean
-  handleChange: ChangeEventHandler<HTMLTextAreaElement> | undefined
-  handleBlur: FocusEventHandler<HTMLTextAreaElement> | undefined
-  handleDoubleClick: MouseEventHandler<HTMLSpanElement> | undefined
-  value: string
-}) {
+export function Description(props: { issueKey: string; description: string }) {
+  const [defaultdescription, setdefaultdescription] = useState(
+    props.description
+  )
+  const [showDescriptionInput, setshowDescriptionInput] = useState(false)
+  const mutationDescription = useMutation({
+    mutationFn: (issue: Issue) => editIssue(issue, props.issueKey),
+    onError: () => {
+      showNotification({
+        message: `An error occured while modifing the Description 😢`,
+        color: "red",
+      })
+    },
+    onSuccess: () => {
+      showNotification({
+        message: `Description of issue ${props.issueKey} has been modified!`,
+        color: "green",
+      })
+    },
+  })
   return (
     <span>
-      {props.showInputEle ? (
+      {showDescriptionInput ? (
         <Textarea
-          value={props.value}
-          onChange={props.handleChange}
-          onBlur={props.handleBlur}
+          value={defaultdescription}
+          onChange={(e) => setdefaultdescription(e.target.value)}
+          onBlur={() => {
+            setshowDescriptionInput(false)
+            mutationDescription.mutate({
+              description: defaultdescription,
+            } as Issue)
+          }}
           autosize
+          minRows={4}
+          mb="xl"
         />
       ) : (
-        <Text onClick={props.handleDoubleClick} mb="xl">
-          {props.value !== null ? props.value : "Add Description"}
+        <Text onClick={() => setshowDescriptionInput(true)} mb="xl">
+          {defaultdescription !== null && defaultdescription !== ""
+            ? defaultdescription
+            : "Add Description"}
         </Text>
       )}
     </span>

@@ -211,10 +211,10 @@ server.post<{
 })
 
 server.post<{
-  Body: { issue: string }
+  Body: { issueIdOrKey: string }
 }>("/moveIssueToBacklog", (request, reply) => {
   issueProvider
-    .moveIssueToBacklog(request.body.issue)
+    .moveIssueToBacklog(request.body.issueIdOrKey)
     .then(() => {
       reply.status(200).send()
     })
@@ -253,6 +253,22 @@ server.post<{
     .catch((error) => reply.status(400).send(error))
 })
 
+server.put<{
+  Body: {
+    issue: Issue
+    issueIdOrKey: string
+  }
+}>("/editIssue", (request, reply) => {
+  issueProvider
+    .editIssue(request.body.issue, request.body.issueIdOrKey)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => {
+      reply.status(400).send(error)
+    })
+})
+
 server.get<{
   Querystring: { projectIdOrKey: string }
 }>("/epicsByProject", (request, reply) => {
@@ -289,4 +305,118 @@ server.get("/issueTypesWithFieldsMap", async (_, reply) => {
       reply.status(200).send(mapResponse)
     })
     .catch((error) => reply.status(400).send(error))
+})
+server.get<{
+  Querystring: { issueKey: string; targetStatus: string }
+}>("/setStatus", (request, reply) => {
+  issueProvider
+    .setTransition(request.query.issueKey, request.query.targetStatus)
+    .then(() => {
+      reply.status(200).send()
+    })
+})
+
+server.get<{
+  Querystring: { issueIdOrKey: string }
+}>("/editableIssueFields", async (request, reply) => {
+  await issueProvider
+    .getEditableIssueFields(request.query.issueIdOrKey)
+    .then((fields) => {
+      reply.status(200).send(fields)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.get<{
+  Querystring: { issueIdOrKey: string }
+}>("/issueReporter", async (request, reply) => {
+  await issueProvider
+    .getIssueReporter(request.query.issueIdOrKey)
+    .then((reporter) => {
+      reply.status(200).send(reporter)
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.post<{
+  Body: {
+    issueIdOrKey: string
+    commentText: string
+  }
+}>("/addCommentToIssue", (request, reply) => {
+  issueProvider
+    .addCommentToIssue(request.body.issueIdOrKey, request.body.commentText)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
+})
+
+server.put<{
+  Body: {
+    issueIdOrKey: string
+    commentId: string
+    commentText: string
+  }
+}>("/editIssueComment", (request, reply) => {
+  issueProvider
+    .editIssueComment(
+      request.body.issueIdOrKey,
+      request.body.commentId,
+      request.body.commentText
+    )
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => {
+      reply.status(400).send(error)
+    })
+})
+
+server.delete<{
+  Body: {
+    issueIdOrKey: string
+    commentId: string
+  }
+}>("/deleteIssueComment", (request, reply) => {
+  issueProvider
+    .deleteIssueComment(request.body.issueIdOrKey, request.body.commentId)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => {
+      reply.status(400).send(error)
+    })
+})
+server.delete<{
+  Body: {
+    subtaskIssue: string
+  }
+}>("/deleteSubtask", (request, reply) => {
+  issueProvider
+    .deleteSubtask(request.body.subtaskIssue)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => {
+      reply.status(400).send(error)
+    })
+})
+server.post<{
+  Body: {
+    parentIssueKey: string
+    projectId: string
+    summary: string
+  }
+}>("/createSubtask", (request, reply) => {
+  issueProvider
+    .createSubtask(
+      request.body.parentIssueKey,
+      request.body.projectId,
+      request.body.summary
+    )
+    .then((createdSubtask) => {
+      reply.status(200).send(createdSubtask)
+    })
+    .catch(() => reply.status(400).send())
 })

@@ -29,6 +29,24 @@ export const createNewIssue = (issue: Issue): Promise<string> =>
     .then((issueKey) => issueKey.json())
     .catch((err) => err)
 
+export const editIssue = (issue: Issue, issueIdOrKey: string): Promise<void> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/editIssue`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ issue, issueIdOrKey }),
+  })
+    .then(() => {})
+    .catch((err) => err)
+
+export const moveIssueToBacklog = (issueIdOrKey: string): Promise<void> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToBacklog`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ issueIdOrKey }),
+  })
+    .then(() => {})
+    .catch((err) => err)
+
 export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> =>
   fetch(
     `${
@@ -75,4 +93,100 @@ export const getIssueTypesWithFieldsMap = (): Promise<Map<string, string[]>> =>
       Object.entries(resp).forEach(([key, value]) => map.set(key, value))
       return map
     })
+    .catch((err) => err)
+
+export const setStatus = (
+  issueKey: string,
+  targetStatus: string
+): Promise<void> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/setStatus?issueKey=${issueKey}&targetStatus=${targetStatus} `
+  ).then(() => {})
+
+export const getIssueReporter = (issueIdOrKey: string): Promise<User> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/issueReporter?issueIdOrKey=${issueIdOrKey}`
+  )
+    .then((reporter) => reporter.json())
+    .catch((err) => err)
+
+export const getEditableIssueFields = (
+  issueIdOrKey: string
+): Promise<string[]> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/editableIssueFields?issueIdOrKey=${issueIdOrKey}`
+  )
+    .then((fields) => fields.json())
+    .catch((err) => err)
+
+export const addCommentToIssue = (
+  issueIdOrKey: string,
+  commentText: string
+): Promise<void> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/addCommentToIssue`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ issueIdOrKey, commentText }),
+  })
+    .then(() => {})
+    .catch((err) => err)
+
+export const editIssueComment = (
+  issueIdOrKey: string,
+  commentId: string,
+  commentText: string
+): Promise<void> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/editIssueComment`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ issueIdOrKey, commentId, commentText }),
+  })
+    .then(() => {})
+    .catch((err) => err)
+
+export const deleteIssueComment = (
+  issueIdOrKey: string,
+  commentId: string
+): Promise<void> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/deleteIssueComment`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ issueIdOrKey, commentId }),
+  })
+    .then(() => {})
+    .catch((err) => err)
+
+export const createSubtask = (
+  parentIssueKey: string,
+  summary: string,
+  projectId: string
+): Promise<{ id: string; key: string }> =>
+  new Promise((resolve) => {
+    fetch(
+      `${
+        import.meta.env.VITE_EXTENDER
+      }/createSubtask?parentIssueKey=${parentIssueKey}&summary=${summary}&projectId=${projectId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ parentIssueKey, summary, projectId }),
+      }
+    ).then(async (createdSubtask) => {
+      const jsonSubtask = await createdSubtask.json()
+      resolve(jsonSubtask)
+    })
+  })
+export const deleteIssueSubtask = (subtaskIssue: string): Promise<void> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/deleteSubtask`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ subtaskIssue }),
+  })
+    .then(() => {})
     .catch((err) => err)

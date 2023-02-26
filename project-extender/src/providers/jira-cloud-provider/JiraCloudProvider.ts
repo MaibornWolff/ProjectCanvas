@@ -182,6 +182,30 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
+  async getEditableIssueFields(issueIdOrKey: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/editmeta`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const metadata = await response.json()
+          const fieldKeys = Object.keys(metadata.fields).map(
+            (fieldKey) => this.reversedCustomFields.get(fieldKey)!
+          )
+          resolve(fieldKeys)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the issue types map: ${error}`))
+        )
+    })
+  }
+
   async getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
     return new Promise((resolve, reject) => {
       fetch(
@@ -221,6 +245,27 @@ class JiraCloudProvider implements ProviderApi {
         .then(async (response) => {
           const user: User = await response.json()
           resolve(user as User)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the current user: ${error}`))
+        )
+    })
+  }
+
+  async getIssueReporter(issueIdOrKey: string): Promise<User> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}?fields=reporter`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (response) => {
+          const user = await response.json()
+          resolve(user.fields.reporter as User)
         })
         .catch((error) =>
           reject(new Error(`Error in fetching the current user: ${error}`))
@@ -339,6 +384,8 @@ class JiraCloudProvider implements ProviderApi {
         created: element.fields.created,
         updated: element.fields.updated,
         comment: element.fields.comment,
+        projectId: element.fields.project.id,
+        sprint: element.fields.sprint,
       }))
     )
 
@@ -487,7 +534,7 @@ class JiraCloudProvider implements ProviderApi {
     projectId,
     reporter,
     assignee,
-    sprintId,
+    sprint,
     storyPointsEstimate,
     description,
     status,
@@ -545,9 +592,10 @@ class JiraCloudProvider implements ProviderApi {
               ...(offsetDueDate && {
                 [this.customFields.get("Due date")!]: offsetDueDate,
               }),
-              ...(sprintId && {
-                [this.customFields.get("Sprint")!]: sprintId,
-              }),
+              ...(sprint &&
+                sprint.id && {
+                  [this.customFields.get("Sprint")!]: sprint.id,
+                }),
               ...(storyPointsEstimate && {
                 [this.customFields.get("Story point estimate")!]:
                   storyPointsEstimate,
@@ -578,6 +626,133 @@ class JiraCloudProvider implements ProviderApi {
           }
         })
         .catch((error) => {
+          reject(new Error(`Error creating issue: ${error}`))
+        })
+    })
+  }
+
+  async editIssue(
+    {
+      summary,
+      type,
+      projectId,
+      reporter,
+      assignee,
+      sprint,
+      storyPointsEstimate,
+      description,
+      epic,
+      startDate,
+      dueDate,
+      labels,
+      priority,
+    }: Issue,
+    issueIdOrKey: string
+  ): Promise<void> {
+    const offsetStartDate = this.offsetDate(startDate)
+    const offsetDueDate = this.offsetDate(dueDate)
+
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}`,
+        {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fields: {
+              ...(summary && {
+                summary,
+              }),
+              ...(epic && {
+                parent: { key: epic },
+              }),
+              ...(type && {
+                issuetype: { id: type },
+              }),
+              ...(projectId && {
+                project: {
+                  id: projectId,
+                },
+              }),
+              ...(reporter && {
+                reporter: {
+                  id: reporter,
+                },
+              }),
+              ...(priority && priority.id && { priority }),
+              ...(assignee &&
+                assignee.id && {
+                  assignee,
+                }),
+              ...(description && {
+                description: {
+                  type: "doc",
+                  version: 1,
+                  content: [
+                    {
+                      type: "paragraph",
+                      content: [
+                        {
+                          text: description,
+                          type: "text",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              }),
+              ...(labels && {
+                labels,
+              }),
+              ...(offsetStartDate && {
+                [this.customFields.get("Start date")!]: offsetStartDate,
+              }),
+              ...(offsetDueDate && {
+                [this.customFields.get("Due date")!]: offsetDueDate,
+              }),
+              ...(sprint && {
+                [this.customFields.get("Sprint")!]: sprint.id,
+              }),
+              ...(storyPointsEstimate && {
+                [this.customFields.get("Story point estimate")!]:
+                  storyPointsEstimate,
+              }),
+            },
+          }),
+        }
+      )
+        .then(async (data) => {
+          if (data.status === 204) {
+            resolve()
+          }
+          if (data.status === 400) {
+            reject(
+              new Error(
+                "400 Error: consult the atlassian rest api v3 under Edit issue for information"
+              )
+            )
+          }
+          if (data.status === 401) {
+            reject(new Error("User not authenticated"))
+          }
+          if (data.status === 403) {
+            reject(
+              new Error("The user does not have the necessary permissions")
+            )
+          }
+          if (data.status === 404) {
+            reject(
+              new Error(
+                "The issue was not found or the user does not have the necessary permissions"
+              )
+            )
+          }
+        })
+        .catch(async (error) => {
           reject(new Error(`Error creating issue: ${error}`))
         })
     })
@@ -695,6 +870,268 @@ class JiraCloudProvider implements ProviderApi {
         .catch((error) =>
           reject(new Error(`Error in fetching the labels: ${error}`))
         )
+    })
+  }
+
+  async addCommentToIssue(
+    issueIdOrKey: string,
+    commentText: string
+  ): Promise<void> {
+    const bodyData = `{
+      "body": {
+      "content": [
+          {
+            "content": [
+              {
+                "text": "${commentText.replace(/\n/g, " ")}",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      }}`
+
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: bodyData,
+        }
+      )
+        .then(async (data) => {
+          if (data.status === 201) {
+            resolve()
+          }
+          if (data.status === 400) {
+            reject(new Error("Invalid api request"))
+          }
+          if (data.status === 401) {
+            reject(new Error("User not authenticated"))
+          }
+          if (data.status === 404) {
+            reject(
+              new Error(
+                "The issue  was not found or the user does not have the necessary permissions"
+              )
+            )
+          }
+        })
+        .catch(async (error) => {
+          reject(
+            new Error(
+              `Error adding a comment to the issue ${issueIdOrKey}: ${error}`
+            )
+          )
+        })
+    })
+  }
+
+  async editIssueComment(
+    issueIdOrKey: string,
+    commentId: string,
+    commentText: string
+  ): Promise<void> {
+    const bodyData = `{
+      "body": {
+      "content": [
+          {
+            "content": [
+              {
+                "text": "${commentText.replace(/\n/g, " ")}",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      }}`
+
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment/${commentId}`,
+        {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: bodyData,
+        }
+      )
+        .then(async (data) => {
+          if (data.status === 200) {
+            resolve()
+          }
+          if (data.status === 400) {
+            reject(
+              new Error(
+                "The user does not have permission to edit the comment or the request is invalid"
+              )
+            )
+          }
+          if (data.status === 401) {
+            reject(new Error("User not authenticated"))
+          }
+          if (data.status === 404) {
+            reject(
+              new Error(
+                "The issue  was not found or the user does not have the necessary permissions"
+              )
+            )
+          }
+        })
+        .catch(async (error) => {
+          reject(
+            new Error(
+              `Error editing the comment in issue ${issueIdOrKey}: ${error}`
+            )
+          )
+        })
+    })
+  }
+
+  deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (data) => {
+          if (data.status === 204) {
+            resolve()
+          }
+          if (data.status === 400) {
+            reject(
+              new Error(
+                "The user does not have permission to delete the comment"
+              )
+            )
+          }
+          if (data.status === 401) {
+            reject(new Error("User not authenticated"))
+          }
+          if (data.status === 404) {
+            reject(
+              new Error(
+                "The issue  was not found or the user does not have the necessary permissions"
+              )
+            )
+          }
+          if (data.status === 405) {
+            reject(
+              new Error("An anonymous call has been made to the operation")
+            )
+          }
+        })
+        .catch(async (error) => {
+          reject(
+            new Error(
+              `Error editing the comment in issue ${issueIdOrKey}: ${error}`
+            )
+          )
+        })
+    })
+  }
+
+  deleteSubtask(subtaskKey: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/issue/${subtaskKey}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then(async (data) => {
+          if (data.status === 204) {
+            resolve()
+          }
+          if (data.status === 400) {
+            reject(
+              new Error("The user does not have permission to delete the issue")
+            )
+          }
+          if (data.status === 401) {
+            reject(new Error("User not authenticated"))
+          }
+          if (data.status === 404) {
+            reject(
+              new Error(
+                "The issue  was not found or the user does not have the necessary permissions"
+              )
+            )
+          }
+          if (data.status === 405) {
+            reject(
+              new Error("An anonymous call has been made to the operation")
+            )
+          }
+        })
+        .catch(async (error) => {
+          reject(
+            new Error(`Error deleting the  subtask ${subtaskKey}: ${error}`)
+          )
+        })
+    })
+  }
+
+  createSubtask(
+    parentIssueKey: string,
+    projectId: string,
+    subtaskSummary: string
+  ): Promise<{ id: string; key: string }> {
+    return new Promise((resolve) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/issue/`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fields: {
+              summary: subtaskSummary,
+              issuetype: {
+                name: "Subtask",
+              },
+              parent: {
+                key: parentIssueKey,
+              },
+              project: {
+                id: projectId,
+              },
+            },
+          }),
+        }
+      ).then(async (data) => {
+        if (data.status === 201) {
+          const createdSubtask: { id: string; key: string } = await data.json()
+          resolve(createdSubtask)
+        }
+      })
     })
   }
 }
