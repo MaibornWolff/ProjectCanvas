@@ -1185,11 +1185,10 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
-  uploadAttachments(issueIdOrKey: string): Promise<Resource> {
+  uploadAttachments(id: string): Promise<Resource> {
     return new Promise((resolve) => {
-      const url = `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/attachments`
-      const authorization = `Bearer ${this.accessToken},
-         'X-Atlassian-Token': 'no-check'`
+      const url = `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${id}/attachments`
+      const authorization = `Bearer ${this.accessToken}`
       resolve({ url, authorization })
     })
   }

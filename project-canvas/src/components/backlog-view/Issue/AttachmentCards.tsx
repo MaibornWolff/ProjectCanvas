@@ -14,8 +14,11 @@ import { Thumbnail } from "./AttachmentThumbnail"
 import { AttachmentDownloadBtn } from "./AttachmentDownloadBtn"
 
 export function AttachmentCards(props: { attachments: Attachment[] }) {
-  const [action, setAction] = useState<boolean>(false)
+  const [valid, setValid] = useState<boolean>(true)
 
+  const invalidate = (): void => {
+    setValid(!valid)
+  }
   const performDelete = (attachmentId: string): void => {
     deleteAttachment(attachmentId)
       .then(() => {
@@ -23,18 +26,18 @@ export function AttachmentCards(props: { attachments: Attachment[] }) {
         if (match) {
           const idx = props.attachments.indexOf(match)
           props.attachments.splice(idx, 1)
+          invalidate()
         }
-        setAction(!action)
       })
       .catch(() => {})
   }
 
-  useEffect(() => {}, [action])
+  useEffect(() => {}, [valid])
 
   return (
     <SimpleGrid cols={6} spacing="xs" verticalSpacing="xs">
       {props.attachments.map((attach: Attachment) => (
-        <HoverCard shadow="md" position="bottom-end">
+        <HoverCard key={attach.id} shadow="md" position="bottom-end">
           <Card key={attach.id} shadow="sm" p="xl" radius="md" withBorder>
             <Card.Section>
               <HoverCard.Target>

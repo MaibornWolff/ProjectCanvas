@@ -1,18 +1,40 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-shadow */
-import { useState } from "react"
-import { FileButton, ActionIcon } from "@mantine/core"
+import { FileButton, Group, Button } from "@mantine/core"
 import { IconPlus } from "@tabler/icons"
+import { Attachment } from "project-extender"
+import { addAttachments } from "../helpers/queryFetchers"
 
-export function AttachmentUploadBtn({ ...props }) {
-  const [files, setFiles] = useState<File[]>([])
+export function AttachmentUploadBtn(props: {
+  id: string
+  addAttachment: (a: Attachment) => void
+}) {
+  const performUpload = async (f: File): Promise<void> => {
+    if (f) {
+      const form = new FormData()
+      form.append("file", f, f.name)
+      await addAttachments(props.id, form)
+        .then((attach) => {
+          props.addAttachment(attach)
+        })
+        .catch((err) => err)
+    }
+  }
+
   return (
-    <FileButton onChange={setFiles} accept="*" multiple>
-      {(props) => (
-        <ActionIcon {...props}>
-          <IconPlus color="black" />
-        </ActionIcon>
-      )}
-    </FileButton>
+    <Group position="center">
+      <FileButton onChange={performUpload} accept="*/*">
+        {(properties) => (
+          <Button
+            {...properties}
+            variant="subtle"
+            color="dark"
+            radius="xs"
+            size="xs"
+            compact
+          >
+            <IconPlus color="black" />
+          </Button>
+        )}
+      </FileButton>
+    </Group>
   )
 }
