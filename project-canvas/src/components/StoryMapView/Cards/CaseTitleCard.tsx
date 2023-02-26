@@ -1,13 +1,16 @@
-import { Paper, TextInput, Title } from "@mantine/core"
+import { ActionIcon, Paper, TextInput, Title } from "@mantine/core"
+import { IconTrash } from "@tabler/icons"
 import { useState } from "react"
 import { Case } from "../types"
 
 export function CaseTitleCard({
   caseColumn,
   updateCase,
+  deleteCase,
 }: {
   caseColumn: Case
   updateCase: (caseColumn: Partial<Case>) => void
+  deleteCase: (caseId: string) => void
 }) {
   const [edit, toggleEdit] = useState(false)
   const [title, setTitle] = useState(caseColumn.title)
@@ -16,11 +19,12 @@ export function CaseTitleCard({
     <Paper
       sx={(theme) => ({
         height: "5em",
+        width: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: theme.colors.primaryBlue[0],
-        width: "100%",
+        position: "relative",
       })}
       radius="sm"
       p="md"
@@ -42,6 +46,15 @@ export function CaseTitleCard({
           styles={{ input: { textAlign: "center", fontSize: "16px" } }}
         />
       )}
+      <ActionIcon
+        sx={{ position: "absolute", top: 2, right: 2 }}
+        color="primaryBlue"
+        size="sm"
+        variant="transparent"
+        onClick={() => deleteCase(caseColumn.id)}
+      >
+        <IconTrash />
+      </ActionIcon>
     </Paper>
   )
 }

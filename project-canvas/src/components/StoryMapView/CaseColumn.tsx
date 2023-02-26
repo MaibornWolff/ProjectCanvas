@@ -10,18 +10,24 @@ export function CaseColumn({
   caseColumn,
   levels,
   updateCase,
+  deleteCase,
   addAction,
   updateAction,
 }: {
   caseColumn: Case
   levels: SubActionLevel[]
   updateCase: (caseColumn: Partial<Case>) => void
+  deleteCase: (caseId: string) => void
   addAction: (id: string, action: Action) => void
   updateAction: ({ id, title }: Action) => void
 }) {
   return (
     <Stack>
-      <CaseTitleCard caseColumn={caseColumn} updateCase={updateCase} />
+      <CaseTitleCard
+        caseColumn={caseColumn}
+        updateCase={updateCase}
+        deleteCase={deleteCase}
+      />
       <StrictModeDroppable droppableId={caseColumn.id} direction="horizontal">
         {(provided) => (
           <Group

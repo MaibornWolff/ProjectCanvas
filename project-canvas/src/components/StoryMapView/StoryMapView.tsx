@@ -108,6 +108,12 @@ export function StoryMapView() {
       draft.push(caseColumn)
     })
   }
+  const deleteCase = (caseId: string) => {
+    setCases((draft) => {
+      const caseColumnIndex = draft.findIndex((c) => c.id === caseId)
+      draft.splice(caseColumnIndex)
+    })
+  }
   const updateCase = ({ id, actions, title }: Partial<Case>) => {
     setCases((draft) => {
       const caseColumn = draft.find((c) => c.id === id)
@@ -178,6 +184,7 @@ export function StoryMapView() {
               caseColumn={caseColumn}
               levels={levels}
               updateCase={updateCase}
+              deleteCase={deleteCase}
               addAction={addAction}
               updateAction={updateAction}
             />
