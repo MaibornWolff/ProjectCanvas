@@ -1,28 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  Accordion,
-  ActionIcon,
-  Affix,
-  Box,
-  Button,
-  Group,
-  Stack,
-  Text,
-} from "@mantine/core"
-import { IconMinus, IconPlus } from "@tabler/icons"
+import { Accordion, Affix, Box, Center, Group, ThemeIcon } from "@mantine/core"
+import { useHover } from "@mantine/hooks"
+import { IconTrash } from "@tabler/icons"
 import { useState } from "react"
-import { DragDropContext } from "react-beautiful-dnd"
+import { DragDropContext, Draggable } from "react-beautiful-dnd"
 import { useImmer } from "use-immer"
+import { StrictModeDroppable } from "../common/StrictModeDroppable"
 import { AddLevel } from "./AddLevel"
 import { AddCase } from "./Cards/Add/AddCase"
 import { CaseColumn } from "./CaseColumn"
 import { CaseSubActionLevel } from "./CaseSubActionLevel"
+import { DeleteDropzone } from "./DeleteDropzone"
 import { onDragEnd } from "./helpers/draggingHelpers"
 import {
   getAllActions,
   getAllSubActionGroups,
-  getFilteredCasesForLevel,
   getAllSubActions,
+  getFilteredCasesForLevel,
   getRndInteger,
 } from "./helpers/utils"
 import {
@@ -168,13 +162,13 @@ export function StoryMapView() {
       if (subActionGroup && subActions) subActionGroup.subActions = subActions
     })
   }
-
   return (
     <DragDropContext
       onDragEnd={(dropResult) => {
         onDragEnd(dropResult, cases, updateCase, updateSubActionGroup)
       }}
     >
+      <DeleteDropzone />
       <Zoom zoomValue={zoomValue} setZoomValue={setZoomValue} />
       <Box sx={{ zoom: zoomValue }}>
         <Group align="start" noWrap>
