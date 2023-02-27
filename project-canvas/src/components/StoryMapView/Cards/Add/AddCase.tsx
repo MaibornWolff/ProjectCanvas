@@ -5,8 +5,8 @@ export function AddCase({ onClick }: { onClick: () => void }) {
   return (
     <Paper
       sx={{
-        height: "5em",
-        aspectRatio: "16/9",
+        height: "6.5em",
+        aspectRatio: "16/8",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

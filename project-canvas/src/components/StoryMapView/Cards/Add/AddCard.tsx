@@ -18,8 +18,8 @@ export function AddCard({
       {(provided) => (
         <Paper
           sx={{
-            height: "5em",
-            aspectRatio: "16/9",
+            height: "6.5em",
+            aspectRatio: "16/8",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

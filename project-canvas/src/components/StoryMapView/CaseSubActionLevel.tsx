@@ -39,7 +39,8 @@ export function CaseSubActionLevel({
           <StrictModeDroppable key="add" droppableId="add" isDropDisabled>
             {(provided) => (
               <Stack
-                w="162px"
+                sx={{ height: "6.5em", aspectRatio: "16/8" }}
+                m="sm"
                 ref={provided.innerRef}
                 {...provided.droppableProps}
               >

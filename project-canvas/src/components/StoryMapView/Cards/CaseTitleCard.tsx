@@ -18,7 +18,7 @@ export function CaseTitleCard({
   return (
     <Paper
       sx={(theme) => ({
-        height: "5em",
+        height: "6.5em",
         width: "100%",
         display: "flex",
         alignItems: "center",
@@ -28,27 +28,26 @@ export function CaseTitleCard({
       })}
       radius="sm"
       p="md"
-      shadow="md"
     >
       {edit && title !== "" ? (
         <Title onClick={() => toggleEdit(!edit)}>{title}</Title>
       ) : (
         <TextInput
-          onBlur={() => toggleEdit(!edit)}
           placeholder="Title"
-          onChange={(event) => {
+          onBlur={(event) => {
             setTitle(event.currentTarget.value)
             updateCase({ id: caseColumn.id, title: event.currentTarget.value })
+            toggleEdit(!edit)
           }}
           variant="unstyled"
-          value={title}
+          defaultValue={title}
           autoFocus
           styles={{ input: { textAlign: "center", fontSize: "16px" } }}
         />
       )}
       <ActionIcon
         sx={{ position: "absolute", top: 2, right: 2 }}
-        color="primaryBlue"
+        color="red"
         size="sm"
         variant="transparent"
         onClick={() => deleteCase(caseColumn.id)}
