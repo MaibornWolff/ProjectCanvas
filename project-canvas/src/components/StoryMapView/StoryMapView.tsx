@@ -1,11 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Accordion, Affix, Box, Center, Group, ThemeIcon } from "@mantine/core"
-import { useHover } from "@mantine/hooks"
-import { IconTrash } from "@tabler/icons"
+import { Accordion, Box, Group } from "@mantine/core"
 import { useState } from "react"
-import { DragDropContext, Draggable } from "react-beautiful-dnd"
+import { DragDropContext } from "react-beautiful-dnd"
 import { useImmer } from "use-immer"
-import { StrictModeDroppable } from "../common/StrictModeDroppable"
 import { AddLevel } from "./AddLevel"
 import { AddCase } from "./Cards/Add/AddCase"
 import { CaseColumn } from "./CaseColumn"
@@ -19,6 +15,7 @@ import {
   getFilteredCasesForLevel,
   getRndInteger,
 } from "./helpers/utils"
+import { LevelControl } from "./LevelControl"
 import {
   Action,
   Case,
@@ -111,7 +108,7 @@ export function StoryMapView() {
   const deleteCase = (caseId: string) => {
     setCases((draft) => {
       const caseColumnIndex = draft.findIndex((c) => c.id === caseId)
-      draft.splice(caseColumnIndex)
+      draft.splice(caseColumnIndex, 1)
     })
   }
   const updateCase = ({ id, actions, title }: Partial<Case>) => {
@@ -168,6 +165,7 @@ export function StoryMapView() {
       if (subActionGroup && subActions) subActionGroup.subActions = subActions
     })
   }
+
   return (
     <DragDropContext
       onDragEnd={(dropResult) => {
@@ -207,7 +205,7 @@ export function StoryMapView() {
         >
           {levels.map((level) => (
             <Accordion.Item key={level.id} value={level.id}>
-              <Accordion.Control>{level.title}</Accordion.Control>
+              <LevelControl level={level} setLevels={setLevels} />
               <Accordion.Panel>
                 <Group align="start">
                   <CaseSubActionLevel

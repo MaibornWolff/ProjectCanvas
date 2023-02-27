@@ -1,4 +1,5 @@
 import { Button } from "@mantine/core"
+import { IconPlus } from "@tabler/icons"
 import { Updater } from "use-immer"
 import { getAllActions, getRndInteger } from "./helpers/utils"
 import { Case, SubActionLevel } from "./types"
@@ -12,6 +13,7 @@ export function AddLevel({
 }) {
   return (
     <Button
+      leftIcon={<IconPlus />}
       onClick={() => {
         const levelId = `level-${getRndInteger()}`
         setLevels((draft) => {
@@ -29,6 +31,11 @@ export function AddLevel({
             )
         })
       }}
+      variant="outline"
+      color="dark"
+      my="lg"
+      fullWidth
+      size="xl"
     >
       Add Level
     </Button>
