@@ -12,32 +12,30 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { Dispatch, SetStateAction } from "react"
 import { useCanvasStore } from "../../lib/Store"
-import { AssigneeSelect } from "./Fields/AssigneeSelect"
-import { AttachementFileInput } from "./Fields/AttachementFileInput"
-import { DiscriptionInput } from "./Fields/DescriptionInput"
-import { DueDatePicker } from "./Fields/DueDatePicker"
-import { EpicSelect } from "./Fields/EpicSelect"
-import { IssueTypeSelect } from "./Fields/IssueTypeSelect"
-import { LabelsSelect } from "./Fields/LabelsSelect"
-import { PrioritySelect } from "./Fields/PrioritySelect"
-import { ProjectSelect } from "./Fields/ProjectSelect"
-import { ReporterSelect } from "./Fields/ReporterSelect"
-import { SprintSelect } from "./Fields/SprintSelect"
-import { StartDatePicker } from "./Fields/StartDatePicker"
-import { StatusSelect } from "./Fields/StatusSelect"
-import { StoryPointsEstimateInput } from "./Fields/StoryPointsEstimateInput"
-import { SummaryInput } from "./Fields/SummaryInput"
+import {
+  ProjectSelect,
+  IssueTypeSelect,
+  StatusSelect,
+  SummaryInput,
+  DiscriptionInput,
+  AssigneeSelect,
+  PrioritySelect,
+  SprintSelect,
+  EpicSelect,
+  StoryPointsEstimateInput,
+  ReporterSelect,
+  StartDatePicker,
+  DueDatePicker,
+  LabelsSelect,
+  AttachementFileInput,
+} from "./Fields"
+
 import {
   createNewIssue,
   getAssignableUsersByProject,
-  getBoardIds,
   getCurrentUser,
-  getEpicsByProject,
   getIssueTypes,
   getIssueTypesWithFieldsMap,
-  getLabels,
-  getPriorities,
-  getSprints,
 } from "./queryFunctions"
 
 export function CreateIssueModal({
@@ -49,7 +47,6 @@ export function CreateIssueModal({
 }) {
   const queryClient = useQueryClient()
   const theme = useMantineTheme()
-
   const projects = useCanvasStore((state) => state.projects)
   const selectedProject = useCanvasStore((state) => state.selectedProject)
 
@@ -70,50 +67,30 @@ export function CreateIssueModal({
       priority: { id: "" },
     } as Issue,
   })
+
   const { data: issueTypes, isLoading } = useQuery({
     queryKey: ["issueTypes", form.getInputProps("projectId").value],
     queryFn: () => getIssueTypes(form.getInputProps("projectId").value!),
     enabled: !!projects && !!form.getInputProps("projectId").value,
   })
+
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", form.getInputProps("projectId").value],
     queryFn: () =>
       getAssignableUsersByProject(form.getInputProps("projectId").value!),
     enabled: !!projects && !!form.getInputProps("projectId").value,
   })
-  const { data: boardIds } = useQuery({
-    queryKey: ["boards", form.getInputProps("projectId").value],
-    queryFn: () => getBoardIds(form.getInputProps("projectId").value!),
-    enabled: !!projects && !!form.getInputProps("projectId").value,
-  })
-  const { data: sprints } = useQuery({
-    queryKey: ["sprints"],
-    // TODO: fetch when boards are fetched (iterate over all boards) or select a specific one
-    queryFn: () => getSprints(boardIds![0]),
-    enabled: !!projects && !!boardIds && !!boardIds[0],
-  })
-  const { data: epics } = useQuery({
-    queryKey: ["epics", form.getInputProps("projectId").value],
-    queryFn: () => getEpicsByProject(form.getInputProps("projectId").value!),
-    enabled: !!projects && !!form.getInputProps("projectId").value,
-  })
-  const { data: labels } = useQuery({
-    queryKey: ["labels"],
-    queryFn: () => getLabels(),
-  })
-  const { data: priorities } = useQuery({
-    queryKey: ["priorities"],
-    queryFn: () => getPriorities(),
-  })
+
   const { data: issueTypesWithFieldsMap } = useQuery({
     queryKey: ["issueTypesWithFieldsMap"],
     queryFn: () => getIssueTypesWithFieldsMap(),
   })
+
   const mutation = useMutation({
     mutationFn: (issue: Issue) => createNewIssue(issue),
     onError: () => {
       showNotification({
-        message: `The issue couldn't be created! 😢`,
+        message: "The issue couldn't be created! 😢",
         color: "red",
       })
     },
@@ -127,6 +104,7 @@ export function CreateIssueModal({
       form.reset()
     },
   })
+
   return (
     <Modal
       opened={opened}
@@ -174,22 +152,21 @@ export function CreateIssueModal({
           />
           <PrioritySelect
             form={form}
-            priorities={priorities}
             issueTypesWithFieldsMap={issueTypesWithFieldsMap}
             isLoading={isLoading}
           />
           <SprintSelect
             form={form}
-            sprints={sprints}
             issueTypes={issueTypes}
             issueTypesWithFieldsMap={issueTypesWithFieldsMap}
+            enabled={!!projects}
             isLoading={isLoading}
           />
           <EpicSelect
             form={form}
-            epics={epics}
             issueTypes={issueTypes}
             issueTypesWithFieldsMap={issueTypesWithFieldsMap}
+            enabled={!!projects}
             isLoading={isLoading}
           />
           <StoryPointsEstimateInput
@@ -211,7 +188,7 @@ export function CreateIssueModal({
             form={form}
             issueTypesWithFieldsMap={issueTypesWithFieldsMap}
           />
-          <LabelsSelect form={form} labels={labels} />
+          <LabelsSelect form={form} />
           <AttachementFileInput form={form} />
           <Group position="right">
             <Button

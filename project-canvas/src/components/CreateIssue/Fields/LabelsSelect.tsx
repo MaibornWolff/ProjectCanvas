@@ -1,14 +1,15 @@
 import { MultiSelect } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
+import { useQuery } from "@tanstack/react-query"
 import { Issue } from "project-extender"
+import { getLabels } from "../queryFunctions"
 
-export function LabelsSelect({
-  form,
-  labels,
-}: {
-  form: UseFormReturnType<Issue>
-  labels?: string[]
-}) {
+export function LabelsSelect({ form }: { form: UseFormReturnType<Issue> }) {
+  const { data: labels } = useQuery({
+    queryKey: ["labels"],
+    queryFn: () => getLabels(),
+  })
+
   return (
     <MultiSelect
       label="Labels"

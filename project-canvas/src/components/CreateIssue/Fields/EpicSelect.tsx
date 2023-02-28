@@ -1,21 +1,29 @@
 import { Select } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
+import { useQuery } from "@tanstack/react-query"
 import { Issue, IssueType } from "project-extender"
+import { getEpicsByProject } from "../queryFunctions"
 
 export function EpicSelect({
   form,
-  epics,
+  enabled,
   issueTypes,
   issueTypesWithFieldsMap,
   isLoading,
 }: {
   form: UseFormReturnType<Issue>
-  epics?: Issue[]
+  enabled: boolean
   issueTypes?: IssueType[]
   issueTypesWithFieldsMap?: Map<string, string[]>
 
   isLoading: boolean
 }) {
+  const { data: epics } = useQuery({
+    queryKey: ["epics", form.getInputProps("projectId").value],
+    queryFn: () => getEpicsByProject(form.getInputProps("projectId").value!),
+    enabled: enabled && !!form.getInputProps("projectId").value,
+  })
+
   return (
     <Select
       label="Epic"

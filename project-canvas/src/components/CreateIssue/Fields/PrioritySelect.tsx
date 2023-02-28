@@ -1,19 +1,24 @@
 import { Select } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
-import { Issue, Priority } from "project-extender"
+import { useQuery } from "@tanstack/react-query"
+import { Issue } from "project-extender"
+import { getPriorities } from "../queryFunctions"
 import { SelectItem } from "../SelectItem"
 
 export function PrioritySelect({
   form,
-  priorities,
   issueTypesWithFieldsMap,
   isLoading,
 }: {
   form: UseFormReturnType<Issue>
-  priorities?: Priority[]
   issueTypesWithFieldsMap?: Map<string, string[]>
   isLoading: boolean
 }) {
+  const { data: priorities } = useQuery({
+    queryKey: ["priorities"],
+    queryFn: () => getPriorities(),
+  })
+
   const isDisabled =
     issueTypesWithFieldsMap &&
     issueTypesWithFieldsMap.size > 0 &&
