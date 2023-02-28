@@ -3,7 +3,7 @@ import { showNotification } from "@mantine/notifications"
 import { useMutation } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
-import { editIssue } from "../../CreateIssue/queryFunctions"
+import { editIssue } from "../helpers/queryFunctions"
 
 export function Description(props: { issueKey: string; description: string }) {
   const [defaultdescription, setdefaultdescription] = useState(

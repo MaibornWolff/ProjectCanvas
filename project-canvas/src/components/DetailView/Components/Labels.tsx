@@ -3,7 +3,8 @@ import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
-import { editIssue, getLabels } from "../../CreateIssue/queryFunctions"
+import { getLabels } from "../../CreateIssue/queryFunctions"
+import { editIssue } from "../helpers/queryFunctions"
 
 export function Labels({
   labels,

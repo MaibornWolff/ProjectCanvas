@@ -5,10 +5,10 @@ import { Issue, Sprint } from "project-extender"
 import { useState } from "react"
 import { useCanvasStore } from "../../../lib/Store"
 import {
-  editIssue,
   getSprints,
   moveIssueToBacklog,
 } from "../../CreateIssue/queryFunctions"
+import { editIssue } from "../helpers/queryFunctions"
 
 export function IssueSprint(props: {
   sprint: Sprint | undefined

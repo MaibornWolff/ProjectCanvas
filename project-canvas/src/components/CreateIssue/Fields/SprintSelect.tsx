@@ -1,20 +1,34 @@
 import { Select } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
-import { Issue, IssueType, Sprint } from "project-extender"
+import { useQuery } from "@tanstack/react-query"
+import { Issue, IssueType } from "project-extender"
+import { getBoardIds, getSprints } from "../queryFunctions"
 
 export function SprintSelect({
   form,
-  sprints,
   issueTypes,
   issueTypesWithFieldsMap,
+  enabled,
   isLoading,
 }: {
   form: UseFormReturnType<Issue>
-  sprints?: Sprint[]
   issueTypes?: IssueType[]
   issueTypesWithFieldsMap?: Map<string, string[]>
+  enabled: boolean
   isLoading: boolean
 }) {
+  const { data: boardIds } = useQuery({
+    queryKey: ["boards", form.getInputProps("projectId").value],
+    queryFn: () => getBoardIds(form.getInputProps("projectId").value!),
+    enabled: enabled && !!form.getInputProps("projectId").value,
+  })
+  const { data: sprints } = useQuery({
+    queryKey: ["sprints"],
+    // TODO: fetch when boards are fetched (iterate over all boards) or select a specific one
+    queryFn: () => getSprints(boardIds![0]),
+    enabled: enabled && !!boardIds && !!boardIds[0],
+  })
+
   const isDisabled =
     issueTypesWithFieldsMap &&
     issueTypesWithFieldsMap.size > 0 &&
