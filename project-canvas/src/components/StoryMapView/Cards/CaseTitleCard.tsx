@@ -1,7 +1,7 @@
 import { ActionIcon, Paper, TextInput, Title } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
 import { useState } from "react"
-import { Case } from "../types"
+import { Case } from "../Types"
 
 export function CaseTitleCard({
   caseColumn,

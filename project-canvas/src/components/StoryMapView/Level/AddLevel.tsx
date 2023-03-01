@@ -1,8 +1,8 @@
 import { Button } from "@mantine/core"
 import { IconPlus } from "@tabler/icons"
 import { Updater } from "use-immer"
-import { getAllActions, getRndInteger } from "./helpers/utils"
-import { Case, SubActionLevel } from "./types"
+import { getAllActions, getRndInteger } from "../helpers/utils"
+import { Case, SubActionLevel } from "../Types"
 
 export function AddLevel({
   setLevels,

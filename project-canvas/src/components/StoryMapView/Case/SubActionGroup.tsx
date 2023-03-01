@@ -1,9 +1,9 @@
 import { Stack } from "@mantine/core"
-import { StrictModeDroppable } from "../common/StrictModeDroppable"
-import { AddCard } from "./Cards/Add/AddCard"
-import { SubActionCard } from "./Cards/SubActionCard"
-import { getRndInteger } from "./helpers/utils"
-import { SubAction } from "./types"
+import { StrictModeDroppable } from "../../common/StrictModeDroppable"
+import { AddCard } from "../Cards/Add/AddCard"
+import { SubActionCard } from "../Cards/SubActionCard"
+import { getRndInteger } from "../helpers/utils"
+import { SubAction } from "../Types"
 
 export function SubActionGroup({
   subActions,

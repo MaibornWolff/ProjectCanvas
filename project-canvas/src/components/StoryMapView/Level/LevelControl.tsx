@@ -2,7 +2,7 @@ import { Accordion, ActionIcon, Group, TextInput } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
 import { useState } from "react"
 import { Updater } from "use-immer"
-import { SubActionLevel } from "./types"
+import { SubActionLevel } from "../Types"
 
 export function LevelControl({
   level,

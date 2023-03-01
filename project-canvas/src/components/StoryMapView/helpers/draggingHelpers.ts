@@ -1,5 +1,5 @@
 import { DraggableLocation, DropResult } from "react-beautiful-dnd"
-import { Case, SubActionGroup } from "../types"
+import { Case, SubActionGroup } from "../Types"
 import { getAllSubActionGroups } from "./utils"
 
 const reorder = <T>(list: T[], startIndex: number, endIndex: number) => {

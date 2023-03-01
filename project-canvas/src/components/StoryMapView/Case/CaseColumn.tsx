@@ -1,10 +1,10 @@
 import { Group, Stack } from "@mantine/core"
-import { StrictModeDroppable } from "../common/StrictModeDroppable"
-import { ActionCard } from "./Cards/ActionCard"
-import { AddCard } from "./Cards/Add/AddCard"
-import { CaseTitleCard } from "./Cards/CaseTitleCard"
-import { getRndInteger } from "./helpers/utils"
-import { Action, Case, SubActionLevel } from "./types"
+import { StrictModeDroppable } from "../../common/StrictModeDroppable"
+import { ActionCard } from "../Cards/ActionCard"
+import { AddCard } from "../Cards/Add/AddCard"
+import { CaseTitleCard } from "../Cards/CaseTitleCard"
+import { getRndInteger } from "../helpers/utils"
+import { Action, Case, SubActionLevel } from "../Types"
 
 export function CaseColumn({
   caseColumn,

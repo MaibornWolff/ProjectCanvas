@@ -1,7 +1,7 @@
 import { PaperProps, Text, TextInput } from "@mantine/core"
 import { useToggle } from "@mantine/hooks"
 import { useState } from "react"
-import { SubAction } from "../types"
+import { SubAction } from "../Types"
 import { ItemCard } from "./ItemCard"
 
 export function SubActionCard({

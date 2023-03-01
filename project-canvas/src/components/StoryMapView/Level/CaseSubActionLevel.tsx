@@ -1,7 +1,7 @@
 import { Group, Stack } from "@mantine/core"
-import { StrictModeDroppable } from "../common/StrictModeDroppable"
-import { SubActionGroup } from "./SubActionGroup"
-import { Case, SubAction } from "./types"
+import { StrictModeDroppable } from "../../common/StrictModeDroppable"
+import { SubActionGroup } from "../Case/SubActionGroup"
+import { Case, SubAction } from "../Types"
 
 export function CaseSubActionLevel({
   filteredCases,

@@ -2,11 +2,11 @@ import { Accordion, Box, Group } from "@mantine/core"
 import { useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useImmer } from "use-immer"
-import { AddLevel } from "./AddLevel"
+import { AddLevel } from "./Level/AddLevel"
 import { AddCase } from "./Cards/Add/AddCase"
-import { CaseColumn } from "./CaseColumn"
-import { CaseSubActionLevel } from "./CaseSubActionLevel"
-import { DeleteDropzone } from "./DeleteDropzone"
+import { CaseColumn } from "./Case/CaseColumn"
+import { CaseSubActionLevel } from "./Level/CaseSubActionLevel"
+import { DeleteDropzone } from "./Components/DeleteDropzone"
 import { onDragEnd } from "./helpers/draggingHelpers"
 import {
   getAllActions,
@@ -15,15 +15,15 @@ import {
   getFilteredCasesForLevel,
   getRndInteger,
 } from "./helpers/utils"
-import { LevelControl } from "./LevelControl"
+import { LevelControl } from "./Level/LevelControl"
 import {
   Action,
   Case,
   SubAction,
   SubActionGroup,
   SubActionLevel,
-} from "./types"
-import { Zoom } from "./Zoom"
+} from "./Types"
+import { Zoom } from "./Components/Zoom"
 
 export function StoryMapView() {
   const [zoomValue, setZoomValue] = useState(1)

@@ -1,6 +1,6 @@
 import { Affix, Center, ThemeIcon, Group } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
-import { StrictModeDroppable } from "../common/StrictModeDroppable"
+import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 
 export function DeleteDropzone() {
   return (

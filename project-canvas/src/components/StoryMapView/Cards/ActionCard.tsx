@@ -1,6 +1,6 @@
 import { PaperProps, Text, TextInput } from "@mantine/core"
 import { useState } from "react"
-import { Action } from "../types"
+import { Action } from "../Types"
 import { ItemCard } from "./ItemCard"
 
 export function ActionCard({
