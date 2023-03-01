@@ -1,7 +1,8 @@
-import { ActionIcon, Paper, TextInput, Title } from "@mantine/core"
+import { ActionIcon, TextInput, Title } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
 import { useState } from "react"
 import { Case } from "../Types"
+import { BaseCard } from "./BaseCard"
 
 export function CaseTitleCard({
   caseColumn,
@@ -16,20 +17,17 @@ export function CaseTitleCard({
   const [title, setTitle] = useState(caseColumn.title)
 
   return (
-    <Paper
+    <BaseCard
       sx={(theme) => ({
-        height: "6.5em",
         width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
         backgroundColor: theme.colors.primaryBlue[0],
         position: "relative",
       })}
       radius="sm"
+      m={undefined}
       p="md"
     >
-      {edit && title !== "" ? (
+      {!edit && title !== "" ? (
         <Title onClick={() => toggleEdit(!edit)}>{title}</Title>
       ) : (
         <TextInput
@@ -54,6 +52,6 @@ export function CaseTitleCard({
       >
         <IconTrash />
       </ActionIcon>
-    </Paper>
+    </BaseCard>
   )
 }

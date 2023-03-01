@@ -1,25 +1,24 @@
-import { Paper } from "@mantine/core"
 import { IconPlus } from "@tabler/icons"
+import { MouseEventHandler } from "react"
+import { BaseCard } from "../BaseCard"
 
-export function AddCase({ onClick }: { onClick: () => void }) {
+export function AddCase({
+  onClick,
+}: {
+  onClick: MouseEventHandler<HTMLDivElement>
+}) {
   return (
-    <Paper
+    <BaseCard
       sx={{
-        height: "6.5em",
-        aspectRatio: "16/8",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
         background: "transparent",
         border: "2px dashed lightgray",
         color: "gray",
-        cursor: "pointer",
       }}
-      radius="sm"
-      p="md"
+      shadow={undefined}
+      m={undefined}
       onClick={onClick}
     >
       <IconPlus />
-    </Paper>
+    </BaseCard>
   )
 }
