@@ -17,7 +17,7 @@ export function SubActionGroup({
   updateSubAction: ({ id, title }: SubAction) => void
 }) {
   return (
-    <StrictModeDroppable droppableId={subActionGroupId}>
+    <StrictModeDroppable droppableId={subActionGroupId} type="subAction">
       {(provided) => (
         <Stack spacing={0} ref={provided.innerRef} {...provided.droppableProps}>
           {subActions.map((subAction, index) => (

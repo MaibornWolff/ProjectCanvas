@@ -28,7 +28,11 @@ export function CaseColumn({
         updateCase={updateCase}
         deleteCase={deleteCase}
       />
-      <StrictModeDroppable droppableId={caseColumn.id} direction="horizontal">
+      <StrictModeDroppable
+        droppableId={caseColumn.id}
+        direction="horizontal"
+        type="action"
+      >
         {(provided) => (
           <Group
             spacing={0}
@@ -46,25 +50,25 @@ export function CaseColumn({
                 {action.title}
               </ActionCard>
             ))}
-            <AddCard
-              id={`action-add-${caseColumn.id}`}
-              index={caseColumn.actions.length}
-              onClick={() =>
-                addAction(caseColumn.id, {
-                  id: `s-${getRndInteger()}`,
-                  title: "New Action",
-                  subActionGroups: levels.map((level) => ({
-                    id: `sg-${getRndInteger()}`,
-                    levelId: level.id,
-                    subActions: [],
-                  })),
-                })
-              }
-            />
             {provided.placeholder}
           </Group>
         )}
       </StrictModeDroppable>
+      <AddCard
+        id={`action-add-${caseColumn.id}`}
+        index={caseColumn.actions.length}
+        onClick={() =>
+          addAction(caseColumn.id, {
+            id: `s-${getRndInteger()}`,
+            title: "New Action",
+            subActionGroups: levels.map((level) => ({
+              id: `sg-${getRndInteger()}`,
+              levelId: level.id,
+              subActions: [],
+            })),
+          })
+        }
+      />
     </Stack>
   )
 }
