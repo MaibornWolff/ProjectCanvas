@@ -106,3 +106,12 @@ export const getEditableIssueFields = (
   )
     .then((fields) => fields.json())
     .catch((err) => err)
+
+export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/epicsByProject?projectIdOrKey=${projectIdOrKey}`
+  )
+    .then((epics) => epics.json())
+    .catch((err) => err)
