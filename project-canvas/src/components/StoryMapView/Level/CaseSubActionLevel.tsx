@@ -1,5 +1,4 @@
 import { Group } from "@mantine/core"
-import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 import { BaseCard } from "../Cards/BaseCard"
 import { SubActionGroup } from "../Case/SubActionGroup"
 import { Case, SubAction } from "../Types"
@@ -36,19 +35,10 @@ export function CaseSubActionLevel({
                 updateSubAction={updateSubAction}
               />
             ))}
-
-          <StrictModeDroppable key="add" droppableId="add" isDropDisabled>
-            {(provided) => (
-              <BaseCard
-                sx={{ cursor: "default", background: "transparent" }}
-                shadow={undefined}
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                {provided.placeholder}
-              </BaseCard>
-            )}
-          </StrictModeDroppable>
+          <BaseCard
+            sx={{ cursor: "default", background: "transparent" }}
+            shadow={undefined}
+          />
         </Group>
       ))}
     </Group>
