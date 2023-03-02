@@ -9,17 +9,6 @@ export const getIssueTypes = (projectIdOrKey: string): Promise<IssueType[]> =>
     .then((issueTypes) => issueTypes.json())
     .catch((err) => err)
 
-export const getAssignableUsersByProject = (
-  projectIdOrKey: string
-): Promise<User[]> =>
-  fetch(
-    `${
-      import.meta.env.VITE_EXTENDER
-    }/assignableUsersByProject?projectIdOrKey=${projectIdOrKey}`
-  )
-    .then((users) => users.json())
-    .catch((err) => err)
-
 export const createNewIssue = (issue: Issue): Promise<string> =>
   fetch(`${import.meta.env.VITE_EXTENDER}/createIssue`, {
     method: "POST",
@@ -27,15 +16,6 @@ export const createNewIssue = (issue: Issue): Promise<string> =>
     body: JSON.stringify({ issue }),
   })
     .then((issueKey) => issueKey.json())
-    .catch((err) => err)
-
-export const editIssue = (issue: Issue, issueIdOrKey: string): Promise<void> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/editIssue`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ issue, issueIdOrKey }),
-  })
-    .then(() => {})
     .catch((err) => err)
 
 export const moveIssueToBacklog = (issueIdOrKey: string): Promise<void> =>
@@ -47,13 +27,15 @@ export const moveIssueToBacklog = (issueIdOrKey: string): Promise<void> =>
     .then(() => {})
     .catch((err) => err)
 
-export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> =>
+export const getAssignableUsersByProject = (
+  projectIdOrKey: string
+): Promise<User[]> =>
   fetch(
     `${
       import.meta.env.VITE_EXTENDER
-    }/epicsByProject?projectIdOrKey=${projectIdOrKey}`
+    }/assignableUsersByProject?projectIdOrKey=${projectIdOrKey}`
   )
-    .then((epics) => epics.json())
+    .then((users) => users.json())
     .catch((err) => err)
 
 export const getBoardIds = (projectIdOrKey: string): Promise<number[]> =>
@@ -125,68 +107,11 @@ export const getEditableIssueFields = (
     .then((fields) => fields.json())
     .catch((err) => err)
 
-export const addCommentToIssue = (
-  issueIdOrKey: string,
-  commentText: string
-): Promise<void> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/addCommentToIssue`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ issueIdOrKey, commentText }),
-  })
-    .then(() => {})
-    .catch((err) => err)
-
-export const editIssueComment = (
-  issueIdOrKey: string,
-  commentId: string,
-  commentText: string
-): Promise<void> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/editIssueComment`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ issueIdOrKey, commentId, commentText }),
-  })
-    .then(() => {})
-    .catch((err) => err)
-
-export const deleteIssueComment = (
-  issueIdOrKey: string,
-  commentId: string
-): Promise<void> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/deleteIssueComment`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ issueIdOrKey, commentId }),
-  })
-    .then(() => {})
-    .catch((err) => err)
-
-export const createSubtask = (
-  parentIssueKey: string,
-  summary: string,
-  projectId: string
-): Promise<{ id: string; key: string }> =>
-  new Promise((resolve) => {
-    fetch(
-      `${
-        import.meta.env.VITE_EXTENDER
-      }/createSubtask?parentIssueKey=${parentIssueKey}&summary=${summary}&projectId=${projectId}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ parentIssueKey, summary, projectId }),
-      }
-    ).then(async (createdSubtask) => {
-      const jsonSubtask = await createdSubtask.json()
-      resolve(jsonSubtask)
-    })
-  })
-export const deleteIssueSubtask = (subtaskIssue: string): Promise<void> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/deleteSubtask`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ subtaskIssue }),
-  })
-    .then(() => {})
+export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/epicsByProject?projectIdOrKey=${projectIdOrKey}`
+  )
+    .then((epics) => epics.json())
     .catch((err) => err)

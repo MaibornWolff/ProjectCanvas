@@ -1,22 +1,19 @@
 import {
-  Text,
+  Avatar,
+  createStyles,
   Group,
   Menu,
-  Avatar,
-  UnstyledButton,
   ScrollArea,
-  createStyles,
+  Text,
+  UnstyledButton,
 } from "@mantine/core"
-import { showNotification } from "@mantine/notifications"
 import { IconChevronDown } from "@tabler/icons"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
-import { useCanvasStore } from "../../../lib/Store"
-import {
-  editIssue,
-  getAssignableUsersByProject,
-} from "../../CreateIssue/queryFunctions"
+import { useCanvasStore } from "../../../../lib/Store"
+import { editIssueMutation } from "./queries"
+import { getAssignableUsersByProject } from "./queryFunctions"
 
 const useStyles = createStyles(
   (theme, { isOpened }: { isOpened: boolean }) => ({
@@ -70,29 +67,14 @@ export function AssigneeMenu({
     enabled: !!assignee && !!selectedProject && !!selectedProject.key,
   })
 
-  const mutation = useMutation({
-    mutationFn: (issue: Issue) => editIssue(issue, issueKey),
-    onError: () => {
-      showNotification({
-        message: `The issue couldn't be modified! 😢`,
-        color: "red",
-      })
-    },
-    onSuccess: () => {
-      showNotification({
-        message: `The assignee for issue ${issueKey} has been modified!`,
-        color: "green",
-      })
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
-    },
-  })
+  const editIssue = editIssueMutation(queryClient, issueKey)
 
   const displayedAssignees = assignableUsers ? (
     assignableUsers.map((user) => (
       <Menu.Item
         icon={<Avatar src={user.avatarUrls["24x24"]} size="sm" radius="xl" />}
         onClick={() =>
-          mutation.mutate({ assignee: { id: user.accountId } } as Issue)
+          editIssue.mutate({ assignee: { id: user.accountId } } as Issue)
         }
         key={user.accountId}
       >

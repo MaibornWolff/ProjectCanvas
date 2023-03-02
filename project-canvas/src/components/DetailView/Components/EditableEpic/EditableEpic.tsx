@@ -1,12 +1,14 @@
-import { Text, Group, Select, Loader, Badge } from "@mantine/core"
+import { Group, Loader, Select, Text } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Issue } from "project-extender"
-import { forwardRef, useState } from "react"
-import { editIssue, getEpicsByProject } from "../../CreateIssue/queryFunctions"
-import { IssueIcon } from "./IssueIcon"
+import { useState } from "react"
+import { editIssue } from "../../helpers/queryFunctions"
+import { IssueIcon } from "../../../backlog-view/Issue/IssueIcon"
+import { getEpicsByProject } from "./queryFunctions"
+import { SelectItem } from "./SelectItem"
 
-export function ChangeEpic({
+export function EditableEpic({
   projectId,
   issueKey,
   epic,
@@ -37,31 +39,6 @@ export function ChangeEpic({
       })
     },
   })
-
-  interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
-    image: string
-    label: string
-    description: string
-  }
-  // eslint-disable-next-line react/no-unstable-nested-components
-  const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
-    ({ label, description, ...others }: ItemProps, ref) => (
-      <div ref={ref} {...others}>
-        <Group noWrap>
-          <IssueIcon type="Epic" />
-
-          <div>
-            <Badge size="sm" color="violet">
-              {label}
-            </Badge>
-            <Text size="xs" opacity={0.65}>
-              {description}
-            </Text>
-          </div>
-        </Group>
-      </div>
-    )
-  )
 
   return (
     <Group>

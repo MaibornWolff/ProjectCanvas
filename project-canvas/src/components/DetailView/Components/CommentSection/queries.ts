@@ -2,9 +2,9 @@ import { showNotification } from "@mantine/notifications"
 import { QueryClient, useMutation } from "@tanstack/react-query"
 import {
   addCommentToIssue,
-  deleteIssueComment,
   editIssueComment,
-} from "../../CreateIssue/queryFunctions"
+  deleteIssueComment,
+} from "./queryFunctions"
 
 export const addCommentMutation = (queryClient: QueryClient) =>
   useMutation({

@@ -13,7 +13,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
-import { DetailView } from "./DetailView"
+import { DetailView } from "../../DetailView/DetailView"
 import { IssueIcon } from "./IssueIcon"
 
 export function IssueCard({

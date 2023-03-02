@@ -17,7 +17,7 @@ import {
   addCommentMutation,
   deleteCommentMutation,
   editCommentMutation,
-} from "./commentSectionHelper"
+} from "./queries"
 
 export function CommentSection({
   issueKey,

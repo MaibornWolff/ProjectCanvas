@@ -15,19 +15,19 @@ import { IconCaretDown } from "@tabler/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
-import { AssigneeMenu } from "./AssigneeMenu"
-import { getIssueTypes, setStatus } from "../../CreateIssue/queryFunctions"
-import { Description } from "./Description"
-import { IssueIcon } from "./IssueIcon"
-import { ReporterMenu } from "./ReporterMenu"
-import { StoryPointsEstimateMenu } from "./StoryPointsEstimateMenu"
-import { Labels } from "./Labels"
-import { IssueSummary } from "./IssueSummary"
-import { AddSubtask } from "./AddSubtask"
-import { CommentSection } from "./CommentSection"
-import { IssueSprint } from "./IssueSprint"
-import { Subtask } from "./Subtask"
-import { ChangeEpic } from "./ChangeEpic"
+import { getIssueTypes, setStatus } from "../CreateIssue/queryFunctions"
+import { AddSubtask } from "./Components/AddSubtask"
+import { AssigneeMenu } from "./Components/AssigneeMenu"
+import { EditableEpic } from "./Components/EditableEpic"
+import { CommentSection } from "./Components/CommentSection"
+import { Description } from "./Components/Description"
+import { IssueIcon } from "../backlog-view/Issue/IssueIcon"
+import { IssueSprint } from "./Components/IssueSprint"
+import { IssueSummary } from "./Components/IssueSummary"
+import { Labels } from "./Components/Labels"
+import { ReporterMenu } from "./Components/ReporterMenu"
+import { StoryPointsEstimateMenu } from "./Components/StoryPointsEstimateMenu"
+import { Subtask } from "./Components/SubTask/Subtask"
 
 export function DetailView({
   issueKey,
@@ -64,7 +64,7 @@ export function DetailView({
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
-        <ChangeEpic projectId={projectId} issueKey={issueKey} epic={epic} />
+        <EditableEpic projectId={projectId} issueKey={issueKey} epic={epic} />
 
         <Group>
           <IssueIcon type={type} /> {issueKey}

@@ -14,10 +14,10 @@ import { Issue } from "project-extender"
 import { useState } from "react"
 import { useCanvasStore } from "../../../lib/Store"
 import {
-  editIssue,
   getAssignableUsersByProject,
   getIssueReporter,
 } from "../../CreateIssue/queryFunctions"
+import { editIssue } from "../helpers/queryFunctions"
 
 const useStyles = createStyles(
   (theme, { isOpened }: { isOpened: boolean }) => ({

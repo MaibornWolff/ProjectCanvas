@@ -1,12 +1,14 @@
-import { Text, ThemeIcon, Group, Box, Loader } from "@mantine/core"
-import { showNotification } from "@mantine/notifications"
+import { Box, Group, Loader, Text, ThemeIcon } from "@mantine/core"
 import { IconBinaryTree2, IconTrash } from "@tabler/icons"
 import { useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
-import { deleteIssueSubtask } from "../../CreateIssue/queryFunctions"
-import { IssueSummary } from "./IssueSummary"
+import { IssueSummary } from "../IssueSummary"
+import { deleteSubtaskMutation } from "./queries"
 
-export function Subtask(props: {
+export function Subtask({
+  id,
+  subtaskKey,
+  fields,
+}: {
   id: string
   subtaskKey: string
   fields: {
@@ -14,12 +16,11 @@ export function Subtask(props: {
   }
 }) {
   const queryClient = useQueryClient()
-  const [showLoader, setShowLoader] = useState(false)
-
+  const deleteSubtask = deleteSubtaskMutation(queryClient)
   return (
     <Group
       align="center"
-      key={props.id}
+      key={id}
       sx={(theme) => ({
         borderRadius: theme.radius.sm,
         transition: "background-color .8s ease-out",
@@ -34,15 +35,12 @@ export function Subtask(props: {
         <IconBinaryTree2 />
       </ThemeIcon>
       <Text size="sm" color="blue" span sx={{ flex: 15 }} lineClamp={1}>
-        {props.subtaskKey}
+        {subtaskKey}
       </Text>
       <Box sx={{ flex: 60 }}>
-        <IssueSummary
-          summary={props.fields.summary}
-          issueKey={props.subtaskKey}
-        />
+        <IssueSummary summary={fields.summary} issueKey={subtaskKey} />
       </Box>
-      {showLoader && <Loader size="sm" />}
+      {deleteSubtask.isLoading && <Loader size="sm" />}
       <ThemeIcon
         variant="outline"
         size="sm"
@@ -53,16 +51,7 @@ export function Subtask(props: {
           ":hover": { color: "red", borderColor: "red", cursor: "pointer" },
         }}
         onClick={() => {
-          setShowLoader(true)
-          deleteIssueSubtask(props.subtaskKey).then(() => {
-            showNotification({
-              message: `subtask ${props.subtaskKey} has been deleted!`,
-              color: "red",
-            })
-            queryClient
-              .invalidateQueries({ queryKey: ["issues"] })
-              .then(() => setShowLoader(false))
-          })
+          deleteSubtask.mutate(subtaskKey)
         }}
       >
         <IconTrash />

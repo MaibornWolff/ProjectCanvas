@@ -1,34 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  TextInput,
-  Group,
-  ActionIcon,
-  Button,
-  Box,
-  Loader,
-} from "@mantine/core"
+import { Box, Button, Group, Loader, TextInput } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { IconPlus } from "@tabler/icons"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
-import { createSubtask } from "../../CreateIssue/queryFunctions"
+import { createSubtaskMutation } from "./queries"
 
-export function AddSubtask(props: { issueKey: string; projectId: string }) {
+export function AddSubtask({
+  issueKey,
+  projectId,
+}: {
+  issueKey: string
+  projectId: string
+}) {
   const queryClient = useQueryClient()
 
   const [summary, setSummary] = useState("")
 
-  const mutationSubtask = useMutation({
-    mutationFn: () => createSubtask(props.issueKey, summary, props.projectId),
-    onSuccess(createdSubtask: { id: string; key: string }) {
-      setSummary("")
-      showNotification({
-        message: `The issue  ${createdSubtask.key} has been created!`,
-        color: "green",
-      })
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
-    },
-  })
+  const createSubstask = createSubtaskMutation(
+    issueKey,
+    summary,
+    projectId,
+    queryClient,
+    () => setSummary("")
+  )
 
   return (
     <Group>
@@ -43,7 +38,7 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
                       message: `The summary of an issue cannot be empty!`,
                       color: "red",
                     })
-                  else mutationSubtask.mutate()
+                  else createSubstask.mutate()
                 }}
               />
             </Button>
@@ -55,7 +50,7 @@ export function AddSubtask(props: { issueKey: string; projectId: string }) {
         onChange={(e) => setSummary(e.target.value)}
         value={summary}
       />
-      {mutationSubtask.isLoading && <Loader size="sm" />}
+      {createSubstask.isLoading && <Loader size="sm" />}
     </Group>
   )
 }
