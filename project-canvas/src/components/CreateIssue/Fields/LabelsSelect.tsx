@@ -15,7 +15,7 @@ export function LabelsSelect({ form }: { form: UseFormReturnType<Issue> }) {
       label="Labels"
       placeholder="Choose labels"
       nothingFound="No Options"
-      data={labels}
+      data={labels ?? []}
       searchable
       clearable
       {...form.getInputProps("labels")}
