@@ -1,7 +1,8 @@
-import { Paper, PaperProps } from "@mantine/core"
+import { PaperProps } from "@mantine/core"
 import { IconPlus } from "@tabler/icons"
 import { MouseEventHandler } from "react"
 import { Draggable } from "react-beautiful-dnd"
+import { BaseCard } from "../BaseCard"
 
 export function AddCard({
   id,
@@ -16,21 +17,13 @@ export function AddCard({
   return (
     <Draggable draggableId={id} index={index} isDragDisabled>
       {(provided) => (
-        <Paper
+        <BaseCard
           sx={{
-            height: "5em",
-            aspectRatio: "16/9",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
             background: "transparent",
             border: "2px dashed lightgray",
             color: "gray",
-            cursor: "pointer",
           }}
-          radius="sm"
-          m="sm"
-          p="md"
+          shadow={undefined}
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
@@ -38,7 +31,7 @@ export function AddCard({
           onClick={onClick}
         >
           <IconPlus />
-        </Paper>
+        </BaseCard>
       )}
     </Draggable>
   )

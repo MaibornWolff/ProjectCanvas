@@ -1,9 +1,9 @@
 import { Stack } from "@mantine/core"
-import { StrictModeDroppable } from "../common/StrictModeDroppable"
-import { AddCard } from "./Cards/Add/AddCard"
-import { SubActionCard } from "./Cards/SubActionCard"
-import { getRndInteger } from "./helpers/utils"
-import { SubAction } from "./types"
+import { StrictModeDroppable } from "../../common/StrictModeDroppable"
+import { AddCard } from "../Cards/Add/AddCard"
+import { SubActionCard } from "../Cards/SubActionCard"
+import { getRndInteger } from "../helpers/utils"
+import { SubAction } from "../Types"
 
 export function SubActionGroup({
   subActions,
@@ -17,7 +17,7 @@ export function SubActionGroup({
   updateSubAction: ({ id, title }: SubAction) => void
 }) {
   return (
-    <StrictModeDroppable droppableId={subActionGroupId}>
+    <StrictModeDroppable droppableId={subActionGroupId} type="subAction">
       {(provided) => (
         <Stack spacing={0} ref={provided.innerRef} {...provided.droppableProps}>
           {subActions.map((subAction, index) => (

@@ -1,7 +1,7 @@
-import { Group, Stack } from "@mantine/core"
-import { StrictModeDroppable } from "../common/StrictModeDroppable"
-import { SubActionGroup } from "./SubActionGroup"
-import { Case, SubAction } from "./types"
+import { Group } from "@mantine/core"
+import { BaseCard } from "../Cards/BaseCard"
+import { SubActionGroup } from "../Case/SubActionGroup"
+import { Case, SubAction } from "../Types"
 
 export function CaseSubActionLevel({
   filteredCases,
@@ -15,9 +15,14 @@ export function CaseSubActionLevel({
   updateSubAction: ({ id, title }: SubAction) => void
 }) {
   return (
-    <Group align="start">
+    <Group align="start" noWrap>
       {filteredCases.map((caseColumn) => (
-        <Group key={`${caseColumn.id}-${levelId}`} align="start" spacing={0}>
+        <Group
+          key={`${caseColumn.id}-${levelId}`}
+          align="start"
+          noWrap
+          spacing={0}
+        >
           {caseColumn.actions
             .map((_action) => _action.subActionGroups)
             .flat()
@@ -30,18 +35,10 @@ export function CaseSubActionLevel({
                 updateSubAction={updateSubAction}
               />
             ))}
-
-          <StrictModeDroppable key="add" droppableId="add" isDropDisabled>
-            {(provided) => (
-              <Stack
-                w="162px"
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                {provided.placeholder}
-              </Stack>
-            )}
-          </StrictModeDroppable>
+          <BaseCard
+            sx={{ cursor: "default", background: "transparent" }}
+            shadow={undefined}
+          />
         </Group>
       ))}
     </Group>
