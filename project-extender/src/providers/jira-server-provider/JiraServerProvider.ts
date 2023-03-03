@@ -9,6 +9,7 @@ import {
   Priority,
   Project,
   Sprint,
+  Resource,
   User,
 } from "../../types"
 import {
@@ -425,6 +426,66 @@ class JiraServerProvider implements ProviderApi {
   }
 
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
+    throw new Error("Method not implemented.")
+  }
+
+  deleteSubtask(subtaskKey: string): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
+
+  createSubtask(
+    parentIssueKey: string,
+    projectId: string,
+    summary: string
+  ): Promise<{ id: string; key: string }> {
+    throw new Error("Method not implemented.")
+  }
+
+  editIssue(issue: Issue, issueIdOrKey: string): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
+
+  setTransition(issueIdOrKey: string, targetStatus: string): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
+
+  getEditableIssueFields(issueIdOrKey: string): Promise<string[]> {
+    throw new Error("Method not implemented.")
+  }
+
+  getIssueReporter(issueIdOrKey: string): Promise<User> {
+    throw new Error("Method not implemented.")
+  }
+
+  addCommentToIssue(issueIdOrKey: string, commentText: string): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
+
+  editIssueComment(
+    issueIdOrKey: string,
+    commentId: string,
+    commentText: string
+  ): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
+
+  deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
+
+  getAttachmentThumbnail(id: string): Promise<Resource> {
+    throw new Error("Method not implemented.")
+  }
+
+  deleteAttachment(id: string): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
+
+  downloadAttachment(id: string): Promise<Resource> {
+    throw new Error("Method not implemented.")
+  }
+
+  uploadAttachments(issueIdOrKey: string): Promise<Resource> {
     throw new Error("Method not implemented.")
   }
 }

@@ -80,6 +80,13 @@ export interface Issue {
   startDate: Date
   dueDate: Date
   priority: Priority
+  attachment?: {
+    id: string
+    filename: string
+    created: string
+    mimeType: string
+    content: string
+  }[]
 }
 
 interface IssueStatus {
@@ -115,3 +122,16 @@ export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
   minute: "2-digit",
   hour12: false,
 })
+
+export interface Resource {
+  url: string
+  authorization: string
+}
+
+export interface Attachment {
+  id: string
+  filename: string
+  created: string
+  mimeType: string
+  content: string
+}

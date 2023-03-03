@@ -77,6 +77,14 @@ export interface JiraIssue {
       ]
     }
     sprint?: JiraSprint
+    attachment?: {
+      self: string
+      id: string
+      filename: string
+      created: string
+      mimeType: string
+      content: string
+    }[]
   }
 }
 

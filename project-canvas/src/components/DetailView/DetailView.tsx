@@ -28,6 +28,7 @@ import { Labels } from "./Components/Labels"
 import { ReporterMenu } from "./Components/ReporterMenu"
 import { StoryPointsEstimateMenu } from "./Components/StoryPointsEstimateMenu"
 import { Subtask } from "./Components/SubTask/Subtask"
+import { Attachments } from "../backlog-view/Issue/attachments/Attachments"
 
 export function DetailView({
   issueKey,
@@ -45,6 +46,7 @@ export function DetailView({
   type,
   projectId,
   sprint,
+  attachment,
 }: Issue) {
   const { data: issueTypes } = useQuery({
     queryKey: ["issueTypes", projectId],
@@ -99,6 +101,7 @@ export function DetailView({
                 <AddSubtask issueKey={issueKey} projectId={projectId} />
               </Stack>
             </Paper>
+            <Attachments issueKey={issueKey} attachments={attachment} />
             <CommentSection issueKey={issueKey} comment={comment} />
           </ScrollArea.Autosize>
         </Stack>
