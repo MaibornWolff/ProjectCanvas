@@ -1,8 +1,11 @@
 import {
   Avatar,
   Badge,
+  Box,
+  Button,
   Center,
   Group,
+  Menu,
   Modal,
   Paper,
   Stack,
@@ -13,6 +16,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
+import { DeleteIssue } from "../../DetailView/Components/DeleteIssue"
 import { DetailView } from "../../DetailView/DetailView"
 import { IssueIcon } from "./IssueIcon"
 
@@ -55,6 +59,19 @@ export function IssueCard({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
+          <Box>
+            <Menu shadow="md">
+              <Menu.Target>
+                <Button>...</Button>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Item component="a">
+                  <DeleteIssue issueKey={issueKey} closeModal={() => {}} />
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          </Box>
           <Group
             sx={(theme) => ({
               borderRadius: theme.radius.sm,
@@ -107,6 +124,7 @@ export function IssueCard({
                     labels={labels}
                     assignee={assignee}
                     projectId={projectId}
+                    closeModal={() => setOpened(false)}
                     {...props}
                   />
                 </Modal>
