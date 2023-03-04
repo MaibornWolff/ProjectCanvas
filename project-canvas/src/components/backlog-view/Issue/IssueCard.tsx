@@ -1,8 +1,8 @@
 import {
+  ActionIcon,
   Avatar,
   Badge,
   Box,
-  Button,
   Center,
   Group,
   Menu,
@@ -12,6 +12,7 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core"
+import { IconMenu2 } from "@tabler/icons"
 import { useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
@@ -35,6 +36,7 @@ export function IssueCard({
 }: Issue & { index: number }) {
   let storyPointsColor: string
   const [opened, setOpened] = useState(false)
+  const [issueMenuOpened, setIssueMenuOpened] = useState(false)
   const queryClient = useQueryClient()
 
   switch (status) {
@@ -59,15 +61,30 @@ export function IssueCard({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <Box>
-            <Menu shadow="md">
+          <Box sx={{ position: "absolute", bottom: 2, right: 7 }}>
+            <Menu
+              shadow="md"
+              opened={issueMenuOpened}
+              onOpen={() => setIssueMenuOpened(true)}
+              onChange={setIssueMenuOpened}
+              closeOnItemClick={false}
+            >
               <Menu.Target>
-                <Button>...</Button>
+                <ActionIcon>
+                  <IconMenu2 />
+                </ActionIcon>
               </Menu.Target>
 
               <Menu.Dropdown>
                 <Menu.Item component="a">
-                  <DeleteIssue issueKey={issueKey} closeModal={() => {}} />
+                  <Box>
+                    <DeleteIssue
+                      issueKey={issueKey}
+                      closeModal={() => {
+                        setIssueMenuOpened(false)
+                      }}
+                    />
+                  </Box>
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>

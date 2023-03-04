@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Center,
   Divider,
@@ -188,10 +189,12 @@ export function BacklogView() {
             }}
           >
             {searchedissuesWrappers.get("Backlog") && (
-              <DraggableIssuesWrapper
-                id="Backlog"
-                issues={searchedissuesWrappers.get("Backlog")!.issues}
-              />
+              <Box mr="sm">
+                <DraggableIssuesWrapper
+                  id="Backlog"
+                  issues={searchedissuesWrappers.get("Backlog")!.issues}
+                />
+              </Box>
             )}
             <Button
               mt="xs"
