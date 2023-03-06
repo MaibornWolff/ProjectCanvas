@@ -1,26 +1,38 @@
 import { PaperProps, Text, TextInput } from "@mantine/core"
-import { useToggle } from "@mantine/hooks"
+import { useHover, useToggle } from "@mantine/hooks"
 import { useState } from "react"
 import { SubAction } from "../Types"
 import { DraggableBaseCard } from "./Base/DraggableBaseCard"
+import { DeleteButton } from "./DeleteButton"
 
 export function SubActionCard({
   id,
   index,
-  children,
+  subAction,
   updateSubAction,
+  deleteSubAction,
   ...props
 }: {
   id: string
   index: number
-  children: string
+  subAction: SubAction
   updateSubAction: ({ id, title }: SubAction) => void
+  deleteSubAction: (subActionId: string) => void
 } & PaperProps) {
   const [edit, toggleEdit] = useToggle()
-  const [title, setTitle] = useState(children)
+  const [title, setTitle] = useState(subAction.title)
+  const { hovered, ref } = useHover()
 
   return (
-    <DraggableBaseCard id={id} index={index} m="sm" bg="white" {...props}>
+    <DraggableBaseCard
+      id={id}
+      index={index}
+      m="sm"
+      bg="white"
+      pos="relative"
+      ref={ref}
+      {...props}
+    >
       {edit && title !== "" ? (
         <Text onClick={() => toggleEdit()}>{title}</Text>
       ) : (
@@ -37,6 +49,10 @@ export function SubActionCard({
           styles={{ input: { textAlign: "center", fontSize: "16px" } }}
         />
       )}
+      <DeleteButton
+        mounted={hovered}
+        onClick={() => deleteSubAction(subAction.id)}
+      />
     </DraggableBaseCard>
   )
 }

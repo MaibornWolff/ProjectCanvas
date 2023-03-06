@@ -1,21 +1,29 @@
 import { Stack } from "@mantine/core"
+import { Updater } from "use-immer"
 import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 import { AddCard } from "../Cards/Add/AddCard"
 import { SubActionCard } from "../Cards/SubActionCard"
+import {
+  addSubActionFn,
+  deleteSubActionFn,
+  updateSubActionFn,
+} from "../helpers/updaterFunctions"
 import { getRndInteger } from "../helpers/utils"
-import { SubAction } from "../Types"
+import { Case, SubAction } from "../Types"
 
 export function SubActionGroup({
   subActions,
   subActionGroupId,
-  updateSubAction,
-  addSubAction,
+  setCases,
 }: {
   subActions: SubAction[]
   subActionGroupId: string
-  addSubAction: (actionId: string, subAction: SubAction) => void
-  updateSubAction: ({ id, title }: SubAction) => void
+  setCases: Updater<Case[]>
 }) {
+  const addSubAction = addSubActionFn(setCases)
+  const updateSubAction = updateSubActionFn(setCases)
+  const deleteSubAction = deleteSubActionFn(setCases)
+
   return (
     <StrictModeDroppable droppableId={subActionGroupId} type="subAction">
       {(provided) => (
@@ -25,10 +33,10 @@ export function SubActionGroup({
               key={subAction.id}
               id={subAction.id}
               index={index}
+              subAction={subAction}
               updateSubAction={updateSubAction}
-            >
-              {subAction.title}
-            </SubActionCard>
+              deleteSubAction={deleteSubAction}
+            />
           ))}
           <AddCard
             id={`subAction-add-${subActionGroupId}`}

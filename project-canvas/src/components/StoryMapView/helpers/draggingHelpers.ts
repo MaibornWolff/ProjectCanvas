@@ -1,36 +1,6 @@
-import { DraggableLocation, DropResult } from "react-beautiful-dnd"
+import { DropResult } from "react-beautiful-dnd"
 import { Case, SubActionGroup } from "../Types"
-import { getAllSubActionGroups } from "./utils"
-
-const reorder = <T>(list: T[], startIndex: number, endIndex: number) => {
-  const result = Array.from(list)
-  const [removed] = result.splice(startIndex, 1)
-  result.splice(endIndex, 0, removed)
-
-  return result
-}
-
-const move = <T>(
-  source: T[],
-  destination: T[],
-  droppableSource: DraggableLocation,
-  droppableDestination: DraggableLocation
-) => {
-  const sourceClone = Array.from(source)
-  const destClone = Array.from(destination)
-  const [removed] = sourceClone.splice(droppableSource.index, 1)
-
-  destClone.splice(droppableDestination.index, 0, removed)
-
-  return { newSource: sourceClone, newDestination: destClone }
-}
-
-const remove = <T>(list: T[], index: number) => {
-  const result = Array.from(list)
-  result.splice(index, 1)
-
-  return result
-}
+import { getAllSubActionGroups, move, remove, reorder } from "./utils"
 
 const CASE_PREFIX = "a"
 const ACTION_PREFIX = "s"

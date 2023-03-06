@@ -1,6 +1,5 @@
 import { Accordion, Group } from "@mantine/core"
 import { Updater } from "use-immer"
-import { addSubActionFn, updateSubActionFn } from "../helpers/updaterFunctions"
 import { getFilteredCasesForLevel } from "../helpers/utils"
 import { Case, SubActionLevel } from "../Types"
 import { CaseSubActionLevel } from "./CaseSubActionLevel"
@@ -17,8 +16,6 @@ export function LevelAccordion({
   levels: SubActionLevel[]
   setLevels: Updater<SubActionLevel[]>
 }) {
-  const addSubAction = addSubActionFn(setCases)
-  const updateSubAction = updateSubActionFn(setCases)
   return (
     <Accordion
       chevronPosition="left"
@@ -34,8 +31,7 @@ export function LevelAccordion({
               <CaseSubActionLevel
                 filteredCases={getFilteredCasesForLevel(cases, level)}
                 levelId={level.id}
-                addSubAction={addSubAction}
-                updateSubAction={updateSubAction}
+                setCases={setCases}
               />
             </Group>
           </Accordion.Panel>

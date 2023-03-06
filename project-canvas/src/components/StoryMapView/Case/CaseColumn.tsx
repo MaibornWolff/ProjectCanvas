@@ -1,26 +1,34 @@
 import { Group, Stack } from "@mantine/core"
+import { Updater } from "use-immer"
 import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 import { ActionCard } from "../Cards/ActionCard"
 import { AddCard } from "../Cards/Add/AddCard"
 import { CaseTitleCard } from "../Cards/CaseTitleCard"
+import {
+  addActionFn,
+  deleteActionFn,
+  deleteCaseFn,
+  updateActionFn,
+  updateCaseFn,
+} from "../helpers/updaterFunctions"
 import { getRndInteger } from "../helpers/utils"
-import { Action, Case, SubActionLevel } from "../Types"
+import { Case, SubActionLevel } from "../Types"
 
 export function CaseColumn({
   caseColumn,
   levels,
-  updateCase,
-  deleteCase,
-  addAction,
-  updateAction,
+  setCases,
 }: {
   caseColumn: Case
   levels: SubActionLevel[]
-  updateCase: (caseColumn: Partial<Case>) => void
-  deleteCase: (caseId: string) => void
-  addAction: (id: string, action: Action) => void
-  updateAction: ({ id, title }: Action) => void
+  setCases: Updater<Case[]>
 }) {
+  const updateCase = updateCaseFn(setCases)
+  const deleteCase = deleteCaseFn(setCases)
+  const addAction = addActionFn(setCases)
+  const updateAction = updateActionFn(setCases)
+  const deleteAction = deleteActionFn(setCases)
+
   return (
     <Stack>
       <CaseTitleCard
@@ -45,10 +53,10 @@ export function CaseColumn({
                 key={action.id}
                 id={action.id}
                 index={index}
+                action={action}
                 updateAction={updateAction}
-              >
-                {action.title}
-              </ActionCard>
+                deleteAction={deleteAction}
+              />
             ))}
             <AddCard
               id={`action-add-${caseColumn.id}`}
