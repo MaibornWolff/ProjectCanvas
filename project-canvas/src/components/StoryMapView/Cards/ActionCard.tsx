@@ -3,7 +3,7 @@ import { useHover } from "@mantine/hooks"
 import { useState } from "react"
 import { Action } from "../Types"
 import { DraggableBaseCard } from "./Base/DraggableBaseCard"
-import { DeleteButton } from "./DeleteButton"
+import { DeleteButton } from "../Components/DeleteButton"
 
 export function ActionCard({
   id,

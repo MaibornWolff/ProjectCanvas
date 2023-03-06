@@ -3,7 +3,7 @@ import { useHover, useToggle } from "@mantine/hooks"
 import { useState } from "react"
 import { SubAction } from "../Types"
 import { DraggableBaseCard } from "./Base/DraggableBaseCard"
-import { DeleteButton } from "./DeleteButton"
+import { DeleteButton } from "../Components/DeleteButton"
 
 export function SubActionCard({
   id,

@@ -3,7 +3,7 @@ import { useHover } from "@mantine/hooks"
 import { useState } from "react"
 import { Case } from "../Types"
 import { BaseCard } from "./Base/BaseCard"
-import { DeleteButton } from "./DeleteButton"
+import { DeleteButton } from "../Components/DeleteButton"
 
 export function CaseTitleCard({
   caseColumn,
