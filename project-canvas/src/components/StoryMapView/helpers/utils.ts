@@ -31,3 +31,33 @@ export const getFilteredCasesForLevel = (
       })
     )
   })
+
+export const reorder = <T>(list: T[], startIndex: number, endIndex: number) => {
+  const result = Array.from(list)
+  const [removed] = result.splice(startIndex, 1)
+  result.splice(endIndex, 0, removed)
+
+  return result
+}
+
+export const move = <T>(
+  source: T[],
+  destination: T[],
+  droppableSource: { index: number },
+  droppableDestination: { index: number }
+) => {
+  const sourceClone = Array.from(source)
+  const destClone = Array.from(destination)
+  const [removed] = sourceClone.splice(droppableSource.index, 1)
+
+  destClone.splice(droppableDestination.index, 0, removed)
+
+  return { newSource: sourceClone, newDestination: destClone }
+}
+
+export const remove = <T>(list: T[], index: number) => {
+  const result = Array.from(list)
+  result.splice(index, 1)
+
+  return result
+}

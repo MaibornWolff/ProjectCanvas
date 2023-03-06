@@ -1,13 +1,7 @@
 import { Group } from "@mantine/core"
 import { Updater } from "use-immer"
 import { AddCase } from "../Cards/Add/AddCase"
-import {
-  addActionFn,
-  addCaseFn,
-  deleteCaseFn,
-  updateActionFn,
-  updateCaseFn,
-} from "../helpers/updaterFunctions"
+import { addCaseFn } from "../helpers/updaterFunctions"
 import { getRndInteger } from "../helpers/utils"
 import { Case, SubActionLevel } from "../Types"
 import { CaseColumn } from "./CaseColumn"
@@ -22,11 +16,6 @@ export function CaseColumns({
   levels: SubActionLevel[]
 }) {
   const addCase = addCaseFn(setCases)
-  const updateCase = updateCaseFn(setCases)
-  const deleteCase = deleteCaseFn(setCases)
-  const addAction = addActionFn(setCases)
-  const updateAction = updateActionFn(setCases)
-
   return (
     <Group align="start" noWrap>
       {cases.map((caseColumn) => (
@@ -34,10 +23,7 @@ export function CaseColumns({
           key={caseColumn.title}
           caseColumn={caseColumn}
           levels={levels}
-          updateCase={updateCase}
-          deleteCase={deleteCase}
-          addAction={addAction}
-          updateAction={updateAction}
+          setCases={setCases}
         />
       ))}
       <AddCase

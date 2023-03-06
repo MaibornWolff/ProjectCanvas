@@ -1,6 +1,11 @@
 import { Updater } from "use-immer"
 import { Action, Case, SubAction, SubActionGroup } from "../Types"
-import { getAllActions, getAllSubActionGroups, getAllSubActions } from "./utils"
+import {
+  getAllActions,
+  getAllSubActionGroups,
+  getAllSubActions,
+  remove,
+} from "./utils"
 
 // Case
 
@@ -49,7 +54,28 @@ export const updateActionFn =
     })
   }
 
+export const deleteActionFn = (setCases: Updater<Case[]>) => (id: string) => {
+  setCases((draft) => {
+    const caseAction = getAllActions(draft).find((_action) => _action.id === id)
+
+    if (caseAction) {
+      const caseOfAction = draft.find((_case) =>
+        _case.actions.includes(caseAction)
+      )
+
+      if (caseOfAction)
+        caseOfAction.actions = remove<Action>(
+          caseOfAction.actions,
+          caseOfAction.actions.findIndex(
+            (action) => action.id === caseAction.id
+          )
+        )
+    }
+  })
+}
+
 // SubAction
+
 export const addSubActionFn =
   (setCases: Updater<Case[]>) =>
   (subActionGroupId: string, subAction: SubAction) => {
@@ -60,6 +86,7 @@ export const addSubActionFn =
       if (subActionGroup) subActionGroup.subActions.push(subAction)
     })
   }
+
 export const updateSubActionFn =
   (setCases: Updater<Case[]>) =>
   ({ id, title }: Partial<SubAction>) => {
@@ -68,6 +95,29 @@ export const updateSubActionFn =
         (_subAction) => _subAction.id === id
       )
       if (subAction && title) subAction.title = title
+    })
+  }
+
+export const deleteSubActionFn =
+  (setCases: Updater<Case[]>) => (id: string) => {
+    setCases((draft) => {
+      const caseSubAction = getAllSubActions(draft).find(
+        (_subAction) => _subAction.id === id
+      )
+
+      if (caseSubAction) {
+        const subActionGroup = getAllSubActionGroups(draft).find(
+          (_actionGroup) => _actionGroup.subActions.includes(caseSubAction)
+        )
+
+        if (subActionGroup)
+          subActionGroup.subActions = remove<SubAction>(
+            subActionGroup.subActions,
+            subActionGroup.subActions.findIndex(
+              (_subAction) => _subAction.id === caseSubAction.id
+            )
+          )
+      }
     })
   }
 
