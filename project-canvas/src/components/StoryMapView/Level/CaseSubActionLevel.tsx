@@ -1,5 +1,5 @@
 import { Group } from "@mantine/core"
-import { BaseCard } from "../Cards/BaseCard"
+import { BaseCard } from "../Cards/Base/BaseCard"
 import { SubActionGroup } from "../Case/SubActionGroup"
 import { Case, SubAction } from "../Types"
 

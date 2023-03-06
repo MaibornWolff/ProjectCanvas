@@ -2,7 +2,7 @@ import { ActionIcon, TextInput, Title } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
 import { useState } from "react"
 import { Case } from "../Types"
-import { BaseCard } from "./BaseCard"
+import { BaseCard } from "./Base/BaseCard"
 
 export function CaseTitleCard({
   caseColumn,

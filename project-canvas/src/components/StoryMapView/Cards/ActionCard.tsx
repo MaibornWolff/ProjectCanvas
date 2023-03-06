@@ -1,7 +1,7 @@
 import { PaperProps, Text, TextInput } from "@mantine/core"
 import { useState } from "react"
 import { Action } from "../Types"
-import { ItemCard } from "./ItemCard"
+import { DraggableBaseCard } from "./Base/DraggableBaseCard"
 
 export function ActionCard({
   id,
@@ -18,7 +18,13 @@ export function ActionCard({
   const [edit, toggleEdit] = useState(false)
   const [title, setTitle] = useState(children)
   return (
-    <ItemCard id={id} index={index} itemType="action" m="sm" {...props}>
+    <DraggableBaseCard
+      id={id}
+      index={index}
+      m="sm"
+      bg="primaryGreen.0"
+      {...props}
+    >
       {edit && title !== "" ? (
         <Text onClick={() => toggleEdit(!edit)}>{title}</Text>
       ) : (
@@ -34,6 +40,6 @@ export function ActionCard({
           styles={{ input: { textAlign: "center", fontSize: "16px" } }}
         />
       )}
-    </ItemCard>
+    </DraggableBaseCard>
   )
 }
