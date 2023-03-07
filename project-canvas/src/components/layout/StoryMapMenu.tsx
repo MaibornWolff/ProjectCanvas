@@ -1,11 +1,19 @@
 import { Anchor, Menu } from "@mantine/core"
-import { IconChevronDown, IconMap } from "@tabler/icons"
+import {
+  IconChevronDown,
+  IconLayoutDashboard,
+  IconMap,
+  IconTrash,
+} from "@tabler/icons"
 import { useNavigate } from "react-router-dom"
 import { useStoryMapStore } from "../StoryMapView/StoryMapStore"
 
 export function StoryMapMenu() {
   const navigate = useNavigate()
   const storyMaps = useStoryMapStore((state) => state.storyMaps)
+  const deleteAllStoryMaps = useStoryMapStore(
+    (state) => state.deleteAllStoryMaps
+  )
   return (
     <Menu trigger="hover">
       <Menu.Target>
@@ -32,9 +40,19 @@ export function StoryMapMenu() {
           </Menu.Item>
         ))}
 
-        <Menu.Divider />
-        <Menu.Item onClick={() => navigate("/storymapview")}>
-          View all Story Maps
+        {storyMaps?.length > 0 && <Menu.Divider />}
+        <Menu.Item
+          icon={<IconLayoutDashboard size={14} />}
+          onClick={() => navigate("/storymapview")}
+        >
+          View All Story Maps
+        </Menu.Item>
+        <Menu.Item
+          color="red"
+          icon={<IconTrash size={14} />}
+          onClick={deleteAllStoryMaps}
+        >
+          Delete All Story Maps
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>

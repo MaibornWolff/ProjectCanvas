@@ -1,5 +1,6 @@
 import { IconPlus } from "@tabler/icons"
 import { BaseCard } from "./Cards/Base/BaseCard"
+import { getRndInteger } from "./helpers/utils"
 import { useStoryMapStore } from "./StoryMapStore"
 
 export function AddStoryMapCard() {
@@ -14,7 +15,12 @@ export function AddStoryMapCard() {
         color: "gray",
       }}
       shadow={undefined}
-      onClick={() => addStoryMap({ id: "3", name: "new" })}
+      onClick={() =>
+        addStoryMap({
+          id: `story-map-${getRndInteger()}`,
+          name: "New Story Map",
+        })
+      }
     >
       <IconPlus />
     </BaseCard>
