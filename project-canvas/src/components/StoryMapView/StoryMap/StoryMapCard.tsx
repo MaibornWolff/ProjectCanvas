@@ -1,11 +1,11 @@
 import { useHover } from "@mantine/hooks"
 import { useNavigate } from "react-router-dom"
-import { BaseCard } from "./Cards/Base/BaseCard"
-import { DeleteButton } from "./Components/DeleteButton"
-import { useStoryMapStore } from "./StoryMapStore"
-import { StoryMap } from "./Types"
+import { BaseCard } from "../Cards/Base/BaseCard"
+import { DeleteButton } from "../Components/DeleteButton"
+import { useStoryMapStore } from "../StoryMapStore"
+import { StoryMap } from "../Types"
 
-export function StoryMapCard({ storyMap }: { storyMap: StoryMap }) {
+export function StoryMapCard({ name, id }: StoryMap) {
   const navigate = useNavigate()
   const deleteStoryMap = useStoryMapStore((state) => state.deleteStoryMap)
   const { ref, hovered } = useHover()
@@ -17,13 +17,13 @@ export function StoryMapCard({ storyMap }: { storyMap: StoryMap }) {
         position: "relative",
       }}
       ref={ref}
-      onClick={() => navigate(storyMap.id)}
+      onClick={() => navigate(id)}
     >
-      {storyMap.name}
+      {name}
       <DeleteButton
         onClick={(event) => {
           event.stopPropagation()
-          deleteStoryMap(storyMap.id)
+          deleteStoryMap(id)
         }}
         mounted={hovered}
       />

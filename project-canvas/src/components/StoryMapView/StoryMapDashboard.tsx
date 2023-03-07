@@ -1,6 +1,6 @@
 import { Center, Group, Stack, Text, Title } from "@mantine/core"
-import { AddStoryMapCard } from "./AddStoryMapCard"
-import { StoryMapCard } from "./StoryMapCard"
+import { AddStoryMapCard } from "./StoryMap/AddStoryMapCard"
+import { StoryMapCard } from "./StoryMap/StoryMapCard"
 import { useStoryMapStore } from "./StoryMapStore"
 
 export function StoryMapDashboard() {
@@ -15,7 +15,7 @@ export function StoryMapDashboard() {
         </Stack>
         <Group maw="70vw" position="center">
           {storyMaps.map((storyMap) => (
-            <StoryMapCard key={storyMap.id} storyMap={storyMap} />
+            <StoryMapCard key={storyMap.id} {...storyMap} />
           ))}
           <AddStoryMapCard />
         </Group>

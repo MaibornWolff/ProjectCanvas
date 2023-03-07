@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import { remove } from "./helpers/utils"
+import { removeWithId } from "./helpers/utils"
 
 import { StoryMap } from "./Types"
 
@@ -18,11 +18,7 @@ export const useStoryMapStore = create<StoryMapStore>()(
       addStoryMap: (storyMap: StoryMap) =>
         set({ storyMaps: [...get().storyMaps, storyMap] }),
       deleteStoryMap: (storyMapId: string) => {
-        const newStoryMaps = remove(
-          get().storyMaps,
-          get().storyMaps.findIndex((storyMap) => storyMap.id === storyMapId)
-        )
-        set({ storyMaps: newStoryMaps })
+        set({ storyMaps: removeWithId(get().storyMaps || [], storyMapId) })
       },
       deleteAllStoryMaps: () => set({ storyMaps: [] }),
     }),

@@ -61,3 +61,14 @@ export const remove = <T>(list: T[], index: number) => {
 
   return result
 }
+
+export const removeWithId = <T extends { id: string }>(
+  list: T[],
+  id: string
+) => {
+  const index = list.findIndex((item) => item.id === id)
+  const result = Array.from(list)
+  result.splice(index, 1)
+
+  return result
+}

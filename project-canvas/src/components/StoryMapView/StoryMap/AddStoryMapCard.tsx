@@ -1,7 +1,7 @@
 import { IconPlus } from "@tabler/icons"
-import { BaseCard } from "./Cards/Base/BaseCard"
-import { getRndInteger } from "./helpers/utils"
-import { useStoryMapStore } from "./StoryMapStore"
+import { BaseCard } from "../Cards/Base/BaseCard"
+import { getRndInteger } from "../helpers/utils"
+import { useStoryMapStore } from "../StoryMapStore"
 
 export function AddStoryMapCard() {
   const addStoryMap = useStoryMapStore((state) => state.addStoryMap)
