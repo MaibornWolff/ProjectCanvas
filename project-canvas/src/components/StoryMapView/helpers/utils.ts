@@ -1,6 +1,13 @@
 import produce from "immer"
 import { Case, SubActionLevel } from "../Types"
 
+export const STORY_MAP_PREFIX = "sm"
+export const CASE_PREFIX = "c"
+export const ACTION_PREFIX = "a"
+export const SUB_ACTION_GROUP_PREFIX = "sag"
+export const SUB_ACTION_PREFIX = "sa"
+export const LEVEL_PREFIX = "lvl"
+
 export const getRndInteger = (min = 0, max = 100000) =>
   Math.floor(Math.random() * (max - min)) + min
 

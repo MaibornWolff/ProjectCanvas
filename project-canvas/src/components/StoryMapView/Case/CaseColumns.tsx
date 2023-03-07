@@ -1,6 +1,6 @@
 import { Group } from "@mantine/core"
 import { AddCase } from "../Cards/Add/AddCase"
-import { getRndInteger } from "../helpers/utils"
+import { CASE_PREFIX, getRndInteger } from "../helpers/utils"
 import { useStoryMapStore } from "../StoryMapStore"
 import { Case, SubActionLevel } from "../Types"
 import { CaseColumn } from "./CaseColumn"
@@ -25,7 +25,7 @@ export function CaseColumns({
       <AddCase
         onClick={() =>
           addCase({
-            id: `a-${getRndInteger()}`,
+            id: `${CASE_PREFIX}-${getRndInteger()}`,
             title: "New Case",
             actions: [],
           })

@@ -6,10 +6,19 @@ import {
   getAllActions,
   getAllSubActionGroups,
   getAllSubActions,
+  getRndInteger,
   removeWithId,
+  SUB_ACTION_GROUP_PREFIX,
 } from "./helpers/utils"
 
-import { Action, Case, StoryMap, SubAction, SubActionGroup } from "./Types"
+import {
+  Action,
+  Case,
+  StoryMap,
+  SubAction,
+  SubActionGroup,
+  SubActionLevel,
+} from "./Types"
 
 export interface StoryMapStore {
   storyMaps: StoryMap[]
@@ -26,15 +35,16 @@ export interface StoryMapStore {
   updateAction: (action: Partial<Action>) => void
   deleteAction: (actionId: string) => void
   // SubActionGroups
+  addSubActionGroups: (levelId: string) => void
   updateSubActionGroup: (subActionGroup: Partial<SubActionGroup>) => void
   // SubActions
   addSubAction: (subActionGroupId: string, subAction: SubAction) => void
   updateSubAction: (subAction: Partial<SubAction>) => void
   deleteSubAction: (subActionId: string) => void
-  // // Levels
-  // addLevel: (level: SubAction) => void
-  // updateLevel: (level: Partial<SubActionLevel>) => void
-  // deleteLevel: (levelId: string) => void
+  // Levels
+  addLevel: (storyMapId: string, level: SubAction) => void
+  updateLevel: (storyMapId: string, level: Partial<SubActionLevel>) => void
+  deleteLevel: (storyMapId: string, levelId: string) => void
 }
 
 export const useStoryMapStore = create<StoryMapStore>()(
@@ -141,6 +151,16 @@ export const useStoryMapStore = create<StoryMapStore>()(
           }
         }),
       // SubActionGroup
+      addSubActionGroups: (levelId) =>
+        set((state) => {
+          getAllActions(state.storyMaps[0].cases).forEach((action) =>
+            action.subActionGroups.push({
+              id: `${SUB_ACTION_GROUP_PREFIX}-${getRndInteger()}`,
+              levelId,
+              subActions: [],
+            })
+          )
+        }),
       updateSubActionGroup: ({ id, subActions, levelId }) =>
         set((state) => {
           const subActionGroup = getAllSubActionGroups(
@@ -151,6 +171,28 @@ export const useStoryMapStore = create<StoryMapStore>()(
             subActionGroup.subActions = subActions
         }),
       // Levels
+      addLevel: (storyMapId, level) =>
+        set((state) => {
+          state.storyMaps
+            .find((_storyMap) => _storyMap.id === storyMapId)
+            ?.levels.push(level)
+        }),
+      updateLevel: (storyMapId, { id, title }) =>
+        set((state) => {
+          const level = state.storyMaps
+            .find((_storyMap) => _storyMap.id === storyMapId)
+            ?.levels.find((_level) => _level.id === id)
+          if (level && title) level.title = title
+        }),
+      deleteLevel: (storyMapId, levelId) => {
+        set((state) => {
+          const storyMap = state.storyMaps.find(
+            (_storyMap) => _storyMap.id === storyMapId
+          )
+          if (storyMap)
+            storyMap.levels = removeWithId(storyMap.levels || [], levelId)
+        })
+      },
     })),
     {
       name: "story-map-storage",

@@ -3,7 +3,11 @@ import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 import { ActionCard } from "../Cards/ActionCard"
 import { AddCard } from "../Cards/Add/AddCard"
 import { CaseTitleCard } from "../Cards/CaseTitleCard"
-import { getRndInteger } from "../helpers/utils"
+import {
+  ACTION_PREFIX,
+  getRndInteger,
+  SUB_ACTION_GROUP_PREFIX,
+} from "../helpers/utils"
 import { useStoryMapStore } from "../StoryMapStore"
 import { Case, SubActionLevel } from "../Types"
 
@@ -54,10 +58,10 @@ export function CaseColumn({
               index={caseColumn.actions.length}
               onClick={() =>
                 addAction(caseColumn.id, {
-                  id: `s-${getRndInteger()}`,
+                  id: `${ACTION_PREFIX}-${getRndInteger()}`,
                   title: "New Action",
                   subActionGroups: levels.map((level) => ({
-                    id: `sg-${getRndInteger()}`,
+                    id: `${SUB_ACTION_GROUP_PREFIX}-${getRndInteger()}`,
                     levelId: level.id,
                     subActions: [],
                   })),

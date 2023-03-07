@@ -1,35 +1,20 @@
 import { Button } from "@mantine/core"
 import { IconPlus } from "@tabler/icons"
-import { Updater } from "use-immer"
-import { getAllActions, getRndInteger } from "../helpers/utils"
-import { Case, SubActionLevel } from "../Types"
+import { getRndInteger, LEVEL_PREFIX } from "../helpers/utils"
+import { useStoryMapStore } from "../StoryMapStore"
 
-export function AddLevel({
-  setLevels,
-  setCases,
-}: {
-  setLevels: Updater<SubActionLevel[]>
-  setCases: Updater<Case[]>
-}) {
+export function AddLevel({ storyMapId }: { storyMapId: string }) {
+  const addLevel = useStoryMapStore((state) => state.addLevel)
+  const addSubActionGroups = useStoryMapStore(
+    (state) => state.addSubActionGroups
+  )
   return (
     <Button
       leftIcon={<IconPlus />}
       onClick={() => {
-        const levelId = `level-${getRndInteger()}`
-        setLevels((draft) => {
-          draft.push({ id: levelId, title: "New Level" })
-        })
-        setCases((draft) => {
-          getAllActions(draft)
-            .map((action) => action.subActionGroups)
-            .forEach((subActionGroup) =>
-              subActionGroup.push({
-                id: `sg-${getRndInteger()}`,
-                levelId,
-                subActions: [],
-              })
-            )
-        })
+        const levelId = `${LEVEL_PREFIX}-${getRndInteger()}`
+        addLevel(storyMapId, { id: levelId, title: "New Level" })
+        addSubActionGroups(levelId)
       }}
       variant="outline"
       color="dark"

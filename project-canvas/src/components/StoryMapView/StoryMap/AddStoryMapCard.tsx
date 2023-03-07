@@ -1,6 +1,6 @@
 import { IconPlus } from "@tabler/icons"
 import { BaseCard } from "../Cards/Base/BaseCard"
-import { getRndInteger } from "../helpers/utils"
+import { getRndInteger, STORY_MAP_PREFIX } from "../helpers/utils"
 import { useStoryMapStore } from "../StoryMapStore"
 
 export function AddStoryMapCard() {
@@ -17,9 +17,10 @@ export function AddStoryMapCard() {
       shadow={undefined}
       onClick={() =>
         addStoryMap({
-          id: `story-map-${getRndInteger()}`,
+          id: `${STORY_MAP_PREFIX}-${getRndInteger()}`,
           name: "New Story Map",
           cases: [],
+          levels: [],
         })
       }
     >

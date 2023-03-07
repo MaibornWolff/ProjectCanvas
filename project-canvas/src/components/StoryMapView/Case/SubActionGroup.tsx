@@ -2,7 +2,7 @@ import { Stack } from "@mantine/core"
 import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 import { AddCard } from "../Cards/Add/AddCard"
 import { SubActionCard } from "../Cards/SubActionCard"
-import { getRndInteger } from "../helpers/utils"
+import { getRndInteger, SUB_ACTION_PREFIX } from "../helpers/utils"
 import { useStoryMapStore } from "../StoryMapStore"
 import { SubAction } from "../Types"
 
@@ -36,7 +36,7 @@ export function SubActionGroup({
             index={subActions.length}
             onClick={() =>
               addSubAction(subActionGroupId, {
-                id: `ss-${getRndInteger()}`,
+                id: `${SUB_ACTION_PREFIX}-${getRndInteger()}`,
                 title: "New SubAction",
               })
             }
