@@ -1,19 +1,10 @@
 import { Center, Group, Stack, Text, Title } from "@mantine/core"
-import { useState } from "react"
 import { AddStoryMapCard } from "./AddStoryMapCard"
 import { StoryMapCard } from "./StoryMapCard"
+import { useStoryMapStore } from "./StoryMapStore"
 
 export function StoryMapDashboard() {
-  const [storyMaps, setStoryMaps] = useState<{ id: string; name: string }[]>([
-    {
-      id: "0",
-      name: "first story map",
-    },
-    {
-      id: "1",
-      name: "second story map",
-    },
-  ])
+  const storyMaps = useStoryMapStore((state) => state.storyMaps)
 
   return (
     <Center h="100%">
@@ -26,7 +17,7 @@ export function StoryMapDashboard() {
           {storyMaps.map((storyMap) => (
             <StoryMapCard key={storyMap.id} storyMap={storyMap} />
           ))}
-          <AddStoryMapCard setStoryMaps={setStoryMaps} />
+          <AddStoryMapCard />
         </Group>
         <Stack align="center">
           <Text size="sm" c="dimmed">

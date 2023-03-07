@@ -1,19 +1,9 @@
 import { IconPlus } from "@tabler/icons"
-import { Dispatch, SetStateAction } from "react"
 import { BaseCard } from "./Cards/Base/BaseCard"
+import { useStoryMapStore } from "./StoryMapStore"
 
-export function AddStoryMapCard({
-  setStoryMaps,
-}: {
-  setStoryMaps: Dispatch<
-    SetStateAction<
-      {
-        id: string
-        name: string
-      }[]
-    >
-  >
-}) {
+export function AddStoryMapCard() {
+  const addStoryMap = useStoryMapStore((state) => state.addStoryMap)
   return (
     <BaseCard
       sx={{
@@ -24,12 +14,7 @@ export function AddStoryMapCard({
         color: "gray",
       }}
       shadow={undefined}
-      onClick={() =>
-        setStoryMaps((prevStoryMaps) => [
-          ...prevStoryMaps,
-          { id: "3", name: "new" },
-        ])
-      }
+      onClick={() => addStoryMap({ id: "3", name: "new" })}
     >
       <IconPlus />
     </BaseCard>

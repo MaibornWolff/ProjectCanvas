@@ -1,3 +1,8 @@
+export interface StoryMap {
+  id: string
+  name: string
+}
+
 export interface SubAction {
   id: string
   title: string
