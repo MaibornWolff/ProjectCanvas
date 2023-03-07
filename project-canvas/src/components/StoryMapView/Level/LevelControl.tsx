@@ -21,7 +21,10 @@ export function LevelControl({
           placeholder="Title"
           {...(edit ? { readOnly: false } : { readOnly: true })}
           onBlur={(event) => {
-            updateLevel(storyMapId, { title: event.currentTarget.value })
+            updateLevel(storyMapId, {
+              id: level.id,
+              title: event.currentTarget.value,
+            })
             toggleEdit(false)
           }}
           onClick={(event) => {

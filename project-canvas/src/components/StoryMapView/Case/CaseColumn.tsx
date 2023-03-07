@@ -12,9 +12,11 @@ import { useStoryMapStore } from "../StoryMapStore"
 import { Case, SubActionLevel } from "../Types"
 
 export function CaseColumn({
+  storyMapId,
   caseColumn,
   levels,
 }: {
+  storyMapId: string
   caseColumn: Case
   levels: SubActionLevel[]
 }) {
@@ -27,6 +29,7 @@ export function CaseColumn({
   return (
     <Stack>
       <CaseTitleCard
+        storyMapId={storyMapId}
         caseColumn={caseColumn}
         updateCase={updateCase}
         deleteCase={deleteCase}
@@ -49,6 +52,7 @@ export function CaseColumn({
                 id={action.id}
                 index={index}
                 action={action}
+                storyMapId={storyMapId}
                 updateAction={updateAction}
                 deleteAction={deleteAction}
               />
@@ -57,7 +61,7 @@ export function CaseColumn({
               id={`action-add-${caseColumn.id}`}
               index={caseColumn.actions.length}
               onClick={() =>
-                addAction(caseColumn.id, {
+                addAction(storyMapId, caseColumn.id, {
                   id: `${ACTION_PREFIX}-${getRndInteger()}`,
                   title: "New Action",
                   subActionGroups: levels.map((level) => ({

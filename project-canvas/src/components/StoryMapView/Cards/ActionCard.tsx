@@ -9,6 +9,7 @@ export function ActionCard({
   id,
   index,
   action,
+  storyMapId,
   updateAction,
   deleteAction,
   ...props
@@ -16,8 +17,9 @@ export function ActionCard({
   id: string
   index: number
   action: Action
-  updateAction: ({ id, title }: Action) => void
-  deleteAction: (actionId: string) => void
+  storyMapId: string
+  updateAction: (storyMapId: string, { id, title }: Action) => void
+  deleteAction: (storyMapId: string, actionId: string) => void
 } & PaperProps) {
   const [edit, toggleEdit] = useState(false)
   const [title, setTitle] = useState(action.title)
@@ -40,7 +42,10 @@ export function ActionCard({
           onBlur={() => toggleEdit(!edit)}
           onChange={(event) => {
             setTitle(event.currentTarget.value)
-            updateAction({ id, title: event.currentTarget.value } as Action)
+            updateAction(storyMapId, {
+              id,
+              title: event.currentTarget.value,
+            } as Action)
           }}
           variant="unstyled"
           value={title}
@@ -48,7 +53,10 @@ export function ActionCard({
           styles={{ input: { textAlign: "center", fontSize: "16px" } }}
         />
       )}
-      <DeleteButton mounted={hovered} onClick={() => deleteAction(action.id)} />
+      <DeleteButton
+        mounted={hovered}
+        onClick={() => deleteAction(storyMapId, action.id)}
+      />
     </DraggableBaseCard>
   )
 }

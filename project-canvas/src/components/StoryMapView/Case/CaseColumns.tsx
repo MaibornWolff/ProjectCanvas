@@ -6,9 +6,11 @@ import { Case, SubActionLevel } from "../Types"
 import { CaseColumn } from "./CaseColumn"
 
 export function CaseColumns({
+  storyMapId,
   cases,
   levels,
 }: {
+  storyMapId: string
   cases: Case[]
   levels: SubActionLevel[]
 }) {
@@ -18,13 +20,14 @@ export function CaseColumns({
       {cases.map((caseColumn) => (
         <CaseColumn
           key={caseColumn.title}
+          storyMapId={storyMapId}
           caseColumn={caseColumn}
           levels={levels}
         />
       ))}
       <AddCase
         onClick={() =>
-          addCase({
+          addCase(storyMapId, {
             id: `${CASE_PREFIX}-${getRndInteger()}`,
             title: "New Case",
             actions: [],

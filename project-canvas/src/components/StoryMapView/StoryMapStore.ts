@@ -27,20 +27,27 @@ export interface StoryMapStore {
   deleteStoryMap: (storyMapId: string) => void
   deleteAllStoryMaps: () => void
   // Cases
-  addCase: (caseColumn: Case) => void
-  updateCase: (caseColumn: Partial<Case>) => void
-  deleteCase: (caseId: string) => void
+  addCase: (storyMapId: string, caseColumn: Case) => void
+  updateCase: (storyMapId: string, caseColumn: Partial<Case>) => void
+  deleteCase: (storyMapId: string, caseId: string) => void
   // Actions
-  addAction: (caseId: string, action: Action) => void
-  updateAction: (action: Partial<Action>) => void
-  deleteAction: (actionId: string) => void
+  addAction: (storyMapId: string, caseId: string, action: Action) => void
+  updateAction: (storyMapId: string, action: Partial<Action>) => void
+  deleteAction: (storyMapId: string, actionId: string) => void
   // SubActionGroups
-  addSubActionGroups: (levelId: string) => void
-  updateSubActionGroup: (subActionGroup: Partial<SubActionGroup>) => void
+  addSubActionGroups: (storyMapId: string, levelId: string) => void
+  updateSubActionGroup: (
+    storyMapId: string,
+    subActionGroup: Partial<SubActionGroup>
+  ) => void
   // SubActions
-  addSubAction: (subActionGroupId: string, subAction: SubAction) => void
-  updateSubAction: (subAction: Partial<SubAction>) => void
-  deleteSubAction: (subActionId: string) => void
+  addSubAction: (
+    storyMapId: string,
+    subActionGroupId: string,
+    subAction: SubAction
+  ) => void
+  updateSubAction: (storyMapId: string, subAction: Partial<SubAction>) => void
+  deleteSubAction: (storyMapId: string, subActionId: string) => void
   // Levels
   addLevel: (storyMapId: string, level: SubAction) => void
   updateLevel: (storyMapId: string, level: Partial<SubActionLevel>) => void
@@ -49,7 +56,7 @@ export interface StoryMapStore {
 
 export const useStoryMapStore = create<StoryMapStore>()(
   persist(
-    immer((set, get) => ({
+    immer((set) => ({
       storyMaps: [],
       addStoryMap: (storyMap: StoryMap) =>
         set((state) => {
@@ -62,113 +69,152 @@ export const useStoryMapStore = create<StoryMapStore>()(
       },
       deleteAllStoryMaps: () => set({ storyMaps: [] }),
       // Cases
-      addCase: (caseColumn) =>
+      addCase: (storyMapId, caseColumn) =>
         set((state) => {
-          state.storyMaps[0].cases.push(caseColumn)
+          state.storyMaps
+            .find((storyMap) => storyMap.id === storyMapId)
+            ?.cases.push(caseColumn)
         }),
-      updateCase: ({ id, title, actions }) =>
-        set(() => {
-          const caseColumn = get().storyMaps[0].cases.find((c) => c.id === id)
+      updateCase: (storyMapId, { id, title, actions }) =>
+        set((state) => {
+          const caseColumn = state.storyMaps
+            .find((storyMap) => storyMap.id === storyMapId)
+            ?.cases.find((c) => c.id === id)
           if (caseColumn) {
             if (id) caseColumn.id = id
             if (title) caseColumn.title = title
             if (actions) caseColumn.actions = actions
           }
         }),
-      deleteCase: (caseId) =>
+      deleteCase: (storyMapId, caseId) =>
         set((state) => {
-          state.storyMaps[0].cases = removeWithId(
-            state.storyMaps[0].cases,
-            caseId
+          const storyMap = state.storyMaps.find(
+            (_storyMap) => _storyMap.id === storyMapId
           )
+          if (storyMap)
+            storyMap.cases = removeWithId(storyMap.cases || [], caseId)
         }),
       // Actions
-      addAction: (caseId, action) =>
+      addAction: (storyMapId, caseId, action) =>
         set((state) => {
-          state.storyMaps[0].cases
-            .find((c) => c.id === caseId)
-            ?.actions.push(action)
-        }),
-      updateAction: ({ id, title, subActionGroups }) =>
-        set((state) => {
-          const caseAction = getAllActions(state.storyMaps[0].cases).find(
-            (_action) => _action.id === id
+          const storyMap = state.storyMaps.find(
+            (_storyMap) => _storyMap.id === storyMapId
           )
-          if (caseAction && title) caseAction.title = title
-          if (caseAction && subActionGroups)
-            caseAction.subActionGroups = subActionGroups
+          storyMap?.cases.find((c) => c.id === caseId)?.actions.push(action)
         }),
-      deleteAction: (actionId) =>
+      updateAction: (storyMapId, { id, title, subActionGroups }) =>
         set((state) => {
-          const caseAction = getAllActions(state.storyMaps[0].cases).find(
-            (_action) => _action.id === actionId
+          const storyMap = state.storyMaps.find(
+            (_storyMap) => _storyMap.id === storyMapId
           )
-
-          if (caseAction) {
-            const caseOfAction = state.storyMaps[0].cases.find((_case) =>
-              _case.actions.includes(caseAction)
+          if (storyMap) {
+            const caseAction = getAllActions(storyMap.cases).find(
+              (_action) => _action.id === id
             )
-            if (caseOfAction)
-              caseOfAction.actions = removeWithId<Action>(
-                caseOfAction.actions,
-                caseAction.id
+            if (caseAction && title) caseAction.title = title
+            if (caseAction && subActionGroups)
+              caseAction.subActionGroups = subActionGroups
+          }
+        }),
+      deleteAction: (storyMapId, actionId) =>
+        set((state) => {
+          const storyMap = state.storyMaps.find(
+            (_storyMap) => _storyMap.id === storyMapId
+          )
+          if (storyMap) {
+            const caseAction = getAllActions(storyMap.cases).find(
+              (_action) => _action.id === actionId
+            )
+
+            if (caseAction) {
+              const caseOfAction = storyMap.cases.find((_case) =>
+                _case.actions.includes(caseAction)
               )
+              if (caseOfAction)
+                caseOfAction.actions = removeWithId<Action>(
+                  caseOfAction.actions,
+                  caseAction.id
+                )
+            }
           }
         }),
       // SubActions
-      addSubAction: (subActionGroupId, subAction) =>
+      addSubAction: (storyMapId, subActionGroupId, subAction) =>
         set((state) => {
-          const subActionGroup = getAllSubActionGroups(
-            state.storyMaps[0].cases
-          ).find((_subActionGroup) => _subActionGroup.id === subActionGroupId)
-          if (subActionGroup) subActionGroup.subActions.push(subAction)
-        }),
-      updateSubAction: ({ id, title }) =>
-        set((state) => {
-          const subAction = getAllSubActions(state.storyMaps[0].cases).find(
-            (_subAction) => _subAction.id === id
+          const storyMap = state.storyMaps.find(
+            (_storyMap) => _storyMap.id === storyMapId
           )
-          if (subAction && title) subAction.title = title
+          if (storyMap) {
+            const subActionGroup = getAllSubActionGroups(storyMap.cases).find(
+              (_subActionGroup) => _subActionGroup.id === subActionGroupId
+            )
+            if (subActionGroup) subActionGroup.subActions.push(subAction)
+          }
         }),
-      deleteSubAction: (subActionId) =>
+      updateSubAction: (storyMapId, { id, title }) =>
         set((state) => {
-          const caseSubAction = getAllSubActions(state.storyMaps[0].cases).find(
-            (_subAction) => _subAction.id === subActionId
+          const storyMap = state.storyMaps.find(
+            (_storyMap) => _storyMap.id === storyMapId
           )
-
-          if (caseSubAction) {
-            const subActionGroup = getAllSubActionGroups(
-              state.storyMaps[0].cases
-            ).find((_actionGroup) =>
-              _actionGroup.subActions.includes(caseSubAction)
+          if (storyMap) {
+            const subAction = getAllSubActions(storyMap.cases).find(
+              (_subAction) => _subAction.id === id
+            )
+            if (subAction && title) subAction.title = title
+          }
+        }),
+      deleteSubAction: (storyMapId, subActionId) =>
+        set((state) => {
+          const storyMap = state.storyMaps.find(
+            (_storyMap) => _storyMap.id === storyMapId
+          )
+          if (storyMap) {
+            const caseSubAction = getAllSubActions(storyMap.cases).find(
+              (_subAction) => _subAction.id === subActionId
             )
 
-            if (subActionGroup)
-              subActionGroup.subActions = removeWithId<SubAction>(
-                subActionGroup.subActions,
-                subActionId
+            if (caseSubAction) {
+              const subActionGroup = getAllSubActionGroups(storyMap.cases).find(
+                (_actionGroup) =>
+                  _actionGroup.subActions.includes(caseSubAction)
               )
+
+              if (subActionGroup)
+                subActionGroup.subActions = removeWithId<SubAction>(
+                  subActionGroup.subActions,
+                  subActionId
+                )
+            }
           }
         }),
       // SubActionGroup
-      addSubActionGroups: (levelId) =>
+      addSubActionGroups: (storyMapId, levelId) =>
         set((state) => {
-          getAllActions(state.storyMaps[0].cases).forEach((action) =>
-            action.subActionGroups.push({
-              id: `${SUB_ACTION_GROUP_PREFIX}-${getRndInteger()}`,
-              levelId,
-              subActions: [],
-            })
+          const storyMap = state.storyMaps.find(
+            (_storyMap) => _storyMap.id === storyMapId
           )
+          if (storyMap)
+            getAllActions(storyMap.cases).forEach((action) =>
+              action.subActionGroups.push({
+                id: `${SUB_ACTION_GROUP_PREFIX}-${getRndInteger()}`,
+                levelId,
+                subActions: [],
+              })
+            )
         }),
-      updateSubActionGroup: ({ id, subActions, levelId }) =>
+      updateSubActionGroup: (storyMapId, { id, subActions, levelId }) =>
         set((state) => {
-          const subActionGroup = getAllSubActionGroups(
-            state.storyMaps[0].cases
-          ).find((_subActionGroup) => _subActionGroup.id === id)
-          if (subActionGroup && levelId) subActionGroup.levelId = levelId
-          if (subActionGroup && subActions)
-            subActionGroup.subActions = subActions
+          const storyMap = state.storyMaps.find(
+            (_storyMap) => _storyMap.id === storyMapId
+          )
+          if (storyMap) {
+            const subActionGroup = getAllSubActionGroups(storyMap.cases).find(
+              (_subActionGroup) => _subActionGroup.id === id
+            )
+            if (subActionGroup && levelId) subActionGroup.levelId = levelId
+            if (subActionGroup && subActions)
+              subActionGroup.subActions = subActions
+          }
         }),
       // Levels
       addLevel: (storyMapId, level) =>
@@ -182,6 +228,7 @@ export const useStoryMapStore = create<StoryMapStore>()(
           const level = state.storyMaps
             .find((_storyMap) => _storyMap.id === storyMapId)
             ?.levels.find((_level) => _level.id === id)
+
           if (level && title) level.title = title
         }),
       deleteLevel: (storyMapId, levelId) => {

@@ -26,6 +26,7 @@ export function LevelAccordion({
           <Accordion.Panel>
             <Group align="start">
               <CaseSubActionLevel
+                storyMapId={storyMapId}
                 filteredCases={getFilteredCasesForLevel(cases, level)}
                 levelId={level.id}
               />

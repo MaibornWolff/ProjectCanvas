@@ -14,7 +14,7 @@ export function AddLevel({ storyMapId }: { storyMapId: string }) {
       onClick={() => {
         const levelId = `${LEVEL_PREFIX}-${getRndInteger()}`
         addLevel(storyMapId, { id: levelId, title: "New Level" })
-        addSubActionGroups(levelId)
+        addSubActionGroups(storyMapId, levelId)
       }}
       variant="outline"
       color="dark"

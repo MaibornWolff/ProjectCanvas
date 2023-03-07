@@ -7,9 +7,11 @@ import { useStoryMapStore } from "../StoryMapStore"
 import { SubAction } from "../Types"
 
 export function SubActionGroup({
+  storyMapId,
   subActions,
   subActionGroupId,
 }: {
+  storyMapId: string
   subActions: SubAction[]
   subActionGroupId: string
 }) {
@@ -27,6 +29,7 @@ export function SubActionGroup({
               id={subAction.id}
               index={index}
               subAction={subAction}
+              storyMapId={storyMapId}
               updateSubAction={updateSubAction}
               deleteSubAction={deleteSubAction}
             />
@@ -35,7 +38,7 @@ export function SubActionGroup({
             id={`subAction-add-${subActionGroupId}`}
             index={subActions.length}
             onClick={() =>
-              addSubAction(subActionGroupId, {
+              addSubAction(storyMapId, subActionGroupId, {
                 id: `${SUB_ACTION_PREFIX}-${getRndInteger()}`,
                 title: "New SubAction",
               })
