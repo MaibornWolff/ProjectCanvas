@@ -29,7 +29,9 @@ export function CaseTitleCard({
       ref={ref}
     >
       {!edit && title !== "" ? (
-        <Title onClick={() => toggleEdit(!edit)}>{title}</Title>
+        <Title order={2} onClick={() => toggleEdit(!edit)}>
+          {title}
+        </Title>
       ) : (
         <TextInput
           placeholder="Title"
