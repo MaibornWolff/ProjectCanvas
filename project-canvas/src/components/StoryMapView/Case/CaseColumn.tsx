@@ -7,11 +7,10 @@ import { CaseTitleCard } from "../Cards/CaseTitleCard"
 import {
   addActionFn,
   deleteActionFn,
-  deleteCaseFn,
   updateActionFn,
-  updateCaseFn,
 } from "../helpers/updaterFunctions"
 import { getRndInteger } from "../helpers/utils"
+import { useStoryMapStore } from "../StoryMapStore"
 import { Case, SubActionLevel } from "../Types"
 
 export function CaseColumn({
@@ -23,8 +22,8 @@ export function CaseColumn({
   levels: SubActionLevel[]
   setCases: Updater<Case[]>
 }) {
-  const updateCase = updateCaseFn(setCases)
-  const deleteCase = deleteCaseFn(setCases)
+  const updateCase = useStoryMapStore((state) => state.updateCase)
+  const deleteCase = useStoryMapStore((state) => state.deleteCase)
   const addAction = addActionFn(setCases)
   const updateAction = updateActionFn(setCases)
   const deleteAction = deleteActionFn(setCases)

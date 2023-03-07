@@ -19,6 +19,7 @@ export function AddStoryMapCard() {
         addStoryMap({
           id: `story-map-${getRndInteger()}`,
           name: "New Story Map",
+          cases: [],
         })
       }
     >

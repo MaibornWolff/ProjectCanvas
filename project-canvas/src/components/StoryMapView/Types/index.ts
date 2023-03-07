@@ -1,8 +1,3 @@
-export interface StoryMap {
-  id: string
-  name: string
-}
-
 export interface SubAction {
   id: string
   title: string
@@ -22,6 +17,12 @@ export interface Case {
   id: string
   title: string
   actions: Action[]
+}
+
+export interface StoryMap {
+  id: string
+  name: string
+  cases: Case[]
 }
 
 export interface SubActionLevel {

@@ -9,28 +9,28 @@ import {
 
 // Case
 
-export const addCaseFn = (setCases: Updater<Case[]>) => (caseColumn: Case) => {
-  setCases((draft) => {
-    draft.push(caseColumn)
-  })
-}
+// export const addCaseFn = (setCases: Updater<Case[]>) => (caseColumn: Case) => {
+//   setCases((draft) => {
+//     draft.push(caseColumn)
+//   })
+// }
 
-export const deleteCaseFn = (setCases: Updater<Case[]>) => (caseId: string) => {
-  setCases((draft) => {
-    const caseColumnIndex = draft.findIndex((c) => c.id === caseId)
-    draft.splice(caseColumnIndex, 1)
-  })
-}
+// export const deleteCaseFn = (setCases: Updater<Case[]>) => (caseId: string) => {
+//   setCases((draft) => {
+//     const caseColumnIndex = draft.findIndex((c) => c.id === caseId)
+//     draft.splice(caseColumnIndex, 1)
+//   })
+// }
 
-export const updateCaseFn =
-  (setCases: Updater<Case[]>) =>
-  ({ id, actions, title }: Partial<Case>) => {
-    setCases((draft) => {
-      const caseColumn = draft.find((c) => c.id === id)
-      if (caseColumn && actions) caseColumn.actions = actions
-      if (caseColumn && title) caseColumn.title = title
-    })
-  }
+// export const updateCaseFn =
+//   (setCases: Updater<Case[]>) =>
+//   ({ id, actions, title }: Partial<Case>) => {
+//     setCases((draft) => {
+//       const caseColumn = draft.find((c) => c.id === id)
+//       if (caseColumn && actions) caseColumn.actions = actions
+//       if (caseColumn && title) caseColumn.title = title
+//     })
+//   }
 
 // Action
 
