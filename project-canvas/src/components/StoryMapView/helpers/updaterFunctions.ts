@@ -1,6 +1,6 @@
 import { Updater } from "use-immer"
-import { Case, SubAction, SubActionGroup } from "../Types"
-import { getAllSubActionGroups, getAllSubActions, remove } from "./utils"
+import { Case, SubActionGroup } from "../Types"
+import { getAllSubActionGroups } from "./utils"
 
 // Case
 
@@ -71,50 +71,50 @@ import { getAllSubActionGroups, getAllSubActions, remove } from "./utils"
 
 // SubAction
 
-export const addSubActionFn =
-  (setCases: Updater<Case[]>) =>
-  (subActionGroupId: string, subAction: SubAction) => {
-    setCases((draft) => {
-      const subActionGroup = getAllSubActionGroups(draft).find(
-        (_subActionGroup) => _subActionGroup.id === subActionGroupId
-      )
-      if (subActionGroup) subActionGroup.subActions.push(subAction)
-    })
-  }
+// export const addSubActionFn =
+//   (setCases: Updater<Case[]>) =>
+//   (subActionGroupId: string, subAction: SubAction) => {
+//     setCases((draft) => {
+//       const subActionGroup = getAllSubActionGroups(draft).find(
+//         (_subActionGroup) => _subActionGroup.id === subActionGroupId
+//       )
+//       if (subActionGroup) subActionGroup.subActions.push(subAction)
+//     })
+//   }
 
-export const updateSubActionFn =
-  (setCases: Updater<Case[]>) =>
-  ({ id, title }: Partial<SubAction>) => {
-    setCases((draft) => {
-      const subAction = getAllSubActions(draft).find(
-        (_subAction) => _subAction.id === id
-      )
-      if (subAction && title) subAction.title = title
-    })
-  }
+// export const updateSubActionFn =
+//   (setCases: Updater<Case[]>) =>
+//   ({ id, title }: Partial<SubAction>) => {
+//     setCases((draft) => {
+//       const subAction = getAllSubActions(draft).find(
+//         (_subAction) => _subAction.id === id
+//       )
+//       if (subAction && title) subAction.title = title
+//     })
+//   }
 
-export const deleteSubActionFn =
-  (setCases: Updater<Case[]>) => (id: string) => {
-    setCases((draft) => {
-      const caseSubAction = getAllSubActions(draft).find(
-        (_subAction) => _subAction.id === id
-      )
+// export const deleteSubActionFn =
+//   (setCases: Updater<Case[]>) => (id: string) => {
+//     setCases((draft) => {
+//       const caseSubAction = getAllSubActions(draft).find(
+//         (_subAction) => _subAction.id === id
+//       )
 
-      if (caseSubAction) {
-        const subActionGroup = getAllSubActionGroups(draft).find(
-          (_actionGroup) => _actionGroup.subActions.includes(caseSubAction)
-        )
+//       if (caseSubAction) {
+//         const subActionGroup = getAllSubActionGroups(draft).find(
+//           (_actionGroup) => _actionGroup.subActions.includes(caseSubAction)
+//         )
 
-        if (subActionGroup)
-          subActionGroup.subActions = remove<SubAction>(
-            subActionGroup.subActions,
-            subActionGroup.subActions.findIndex(
-              (_subAction) => _subAction.id === caseSubAction.id
-            )
-          )
-      }
-    })
-  }
+//         if (subActionGroup)
+//           subActionGroup.subActions = remove<SubAction>(
+//             subActionGroup.subActions,
+//             subActionGroup.subActions.findIndex(
+//               (_subAction) => _subAction.id === caseSubAction.id
+//             )
+//           )
+//       }
+//     })
+//   }
 
 // SubActionGroup
 

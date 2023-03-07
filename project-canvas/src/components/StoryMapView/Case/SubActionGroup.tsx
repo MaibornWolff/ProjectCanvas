@@ -1,28 +1,21 @@
 import { Stack } from "@mantine/core"
-import { Updater } from "use-immer"
 import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 import { AddCard } from "../Cards/Add/AddCard"
 import { SubActionCard } from "../Cards/SubActionCard"
-import {
-  addSubActionFn,
-  deleteSubActionFn,
-  updateSubActionFn,
-} from "../helpers/updaterFunctions"
 import { getRndInteger } from "../helpers/utils"
-import { Case, SubAction } from "../Types"
+import { useStoryMapStore } from "../StoryMapStore"
+import { SubAction } from "../Types"
 
 export function SubActionGroup({
   subActions,
   subActionGroupId,
-  setCases,
 }: {
   subActions: SubAction[]
   subActionGroupId: string
-  setCases: Updater<Case[]>
 }) {
-  const addSubAction = addSubActionFn(setCases)
-  const updateSubAction = updateSubActionFn(setCases)
-  const deleteSubAction = deleteSubActionFn(setCases)
+  const addSubAction = useStoryMapStore((state) => state.addSubAction)
+  const updateSubAction = useStoryMapStore((state) => state.updateSubAction)
+  const deleteSubAction = useStoryMapStore((state) => state.deleteSubAction)
 
   return (
     <StrictModeDroppable droppableId={subActionGroupId} type="subAction">
