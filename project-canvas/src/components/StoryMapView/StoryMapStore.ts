@@ -24,6 +24,7 @@ export interface StoryMapStore {
   storyMaps: StoryMap[]
   // StoryMaps
   addStoryMap: (storyMap: StoryMap) => void
+  updateStoryMap: (storyMap: Partial<StoryMap>) => void
   deleteStoryMap: (storyMapId: string) => void
   deleteAllStoryMaps: () => void
   // Cases
@@ -58,11 +59,18 @@ export const useStoryMapStore = create<StoryMapStore>()(
   persist(
     immer((set) => ({
       storyMaps: [],
-      addStoryMap: (storyMap: StoryMap) =>
+      addStoryMap: (storyMap) =>
         set((state) => {
           state.storyMaps.push(storyMap)
         }),
-      deleteStoryMap: (storyMapId: string) => {
+      updateStoryMap: ({ id, name }) =>
+        set((state) => {
+          const storyMap = state.storyMaps.find(
+            (_storyMap) => _storyMap.id === id
+          )
+          if (storyMap && name) storyMap.name = name
+        }),
+      deleteStoryMap: (storyMapId) => {
         set((state) => {
           state.storyMaps = removeWithId(state.storyMaps || [], storyMapId)
         })
