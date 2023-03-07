@@ -1,17 +1,17 @@
 import { DropResult } from "react-beautiful-dnd"
 import { Case, SubActionGroup } from "../Types"
 import {
-  ACTION_PREFIX,
   CASE_PREFIX,
   getAllSubActionGroups,
   move,
   reorder,
+  SUB_ACTION_GROUP_PREFIX,
 } from "./utils"
 
 const isActionList = (caseId: string) =>
   caseId.match(new RegExp(`^${CASE_PREFIX}`, "g"))
 const isSubActionList = (actionId: string) =>
-  actionId.match(new RegExp(`^${ACTION_PREFIX}`, "g"))
+  actionId.match(new RegExp(`^${SUB_ACTION_GROUP_PREFIX}`, "g"))
 
 export const onDragEnd = (
   result: DropResult,
