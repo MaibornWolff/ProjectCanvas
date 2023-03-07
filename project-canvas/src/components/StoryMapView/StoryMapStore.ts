@@ -9,7 +9,7 @@ import {
   removeWithId,
 } from "./helpers/utils"
 
-import { Action, Case, StoryMap, SubAction } from "./Types"
+import { Action, Case, StoryMap, SubAction, SubActionGroup } from "./Types"
 
 export interface StoryMapStore {
   storyMaps: StoryMap[]
@@ -25,8 +25,8 @@ export interface StoryMapStore {
   addAction: (caseId: string, action: Action) => void
   updateAction: (action: Partial<Action>) => void
   deleteAction: (actionId: string) => void
-  // // SubActionGroups
-  // updateSubActionGroup: (subActionGroup: Partial<SubActionGroup>) => void
+  // SubActionGroups
+  updateSubActionGroup: (subActionGroup: Partial<SubActionGroup>) => void
   // SubActions
   addSubAction: (subActionGroupId: string, subAction: SubAction) => void
   updateSubAction: (subAction: Partial<SubAction>) => void
@@ -139,6 +139,16 @@ export const useStoryMapStore = create<StoryMapStore>()(
                 subActionId
               )
           }
+        }),
+      // SubActionGroup
+      updateSubActionGroup: ({ id, subActions, levelId }) =>
+        set((state) => {
+          const subActionGroup = getAllSubActionGroups(
+            state.storyMaps[0].cases
+          ).find((_subActionGroup) => _subActionGroup.id === id)
+          if (subActionGroup && levelId) subActionGroup.levelId = levelId
+          if (subActionGroup && subActions)
+            subActionGroup.subActions = subActions
         }),
       // Levels
     })),

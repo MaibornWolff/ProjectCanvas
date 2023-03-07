@@ -7,7 +7,6 @@ import { CaseColumns } from "./Case/CaseColumns"
 import { Zoom } from "./Components/Zoom"
 import { defaultStoryMap } from "./helpers/defaultStoryMap"
 import { onDragEnd } from "./helpers/draggingHelpers"
-import { updateSubActionGroupFn } from "./helpers/updaterFunctions"
 import { AddLevel } from "./Level/AddLevel"
 import { LevelAccordion } from "./Level/LevelAccordion"
 import { useStoryMapStore } from "./StoryMapStore"
@@ -26,7 +25,9 @@ export function StoryMapView() {
   const [, setCases] = useImmer<Case[]>(defaultStoryMap)
 
   const updateCase = useStoryMapStore((state) => state.updateCase)
-  const updateSubActionGroup = updateSubActionGroupFn(setCases)
+  const updateSubActionGroup = useStoryMapStore(
+    (state) => state.updateSubActionGroup
+  )
   return (
     <DragDropContext
       onDragEnd={(dropResult) => {
