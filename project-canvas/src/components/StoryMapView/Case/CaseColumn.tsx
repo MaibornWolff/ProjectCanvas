@@ -1,14 +1,8 @@
 import { Group, Stack } from "@mantine/core"
-import { Updater } from "use-immer"
 import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 import { ActionCard } from "../Cards/ActionCard"
 import { AddCard } from "../Cards/Add/AddCard"
 import { CaseTitleCard } from "../Cards/CaseTitleCard"
-import {
-  addActionFn,
-  deleteActionFn,
-  updateActionFn,
-} from "../helpers/updaterFunctions"
 import { getRndInteger } from "../helpers/utils"
 import { useStoryMapStore } from "../StoryMapStore"
 import { Case, SubActionLevel } from "../Types"
@@ -16,17 +10,15 @@ import { Case, SubActionLevel } from "../Types"
 export function CaseColumn({
   caseColumn,
   levels,
-  setCases,
 }: {
   caseColumn: Case
   levels: SubActionLevel[]
-  setCases: Updater<Case[]>
 }) {
   const updateCase = useStoryMapStore((state) => state.updateCase)
   const deleteCase = useStoryMapStore((state) => state.deleteCase)
-  const addAction = addActionFn(setCases)
-  const updateAction = updateActionFn(setCases)
-  const deleteAction = deleteActionFn(setCases)
+  const addAction = useStoryMapStore((state) => state.addAction)
+  const updateAction = useStoryMapStore((state) => state.updateAction)
+  const deleteAction = useStoryMapStore((state) => state.deleteAction)
 
   return (
     <Stack>

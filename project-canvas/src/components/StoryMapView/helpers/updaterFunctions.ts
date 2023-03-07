@@ -1,11 +1,6 @@
 import { Updater } from "use-immer"
-import { Action, Case, SubAction, SubActionGroup } from "../Types"
-import {
-  getAllActions,
-  getAllSubActionGroups,
-  getAllSubActions,
-  remove,
-} from "./utils"
+import { Case, SubAction, SubActionGroup } from "../Types"
+import { getAllSubActionGroups, getAllSubActions, remove } from "./utils"
 
 // Case
 
@@ -34,45 +29,45 @@ import {
 
 // Action
 
-export const addActionFn =
-  (setCases: Updater<Case[]>) => (caseId: string, action: Action) => {
-    setCases((draft) => {
-      draft.find((c) => c.id === caseId)?.actions.push(action)
-    })
-  }
+// export const addActionFn =
+//   (setCases: Updater<Case[]>) => (caseId: string, action: Action) => {
+//     setCases((draft) => {
+//       draft.find((c) => c.id === caseId)?.actions.push(action)
+//     })
+//   }
 
-export const updateActionFn =
-  (setCases: Updater<Case[]>) =>
-  ({ id, title, subActionGroups }: Partial<Action>) => {
-    setCases((draft) => {
-      const caseAction = getAllActions(draft).find(
-        (_action) => _action.id === id
-      )
-      if (caseAction && title) caseAction.title = title
-      if (caseAction && subActionGroups)
-        caseAction.subActionGroups = subActionGroups
-    })
-  }
+// export const updateActionFn =
+//   (setCases: Updater<Case[]>) =>
+//   ({ id, title, subActionGroups }: Partial<Action>) => {
+//     setCases((draft) => {
+//       const caseAction = getAllActions(draft).find(
+//         (_action) => _action.id === id
+//       )
+//       if (caseAction && title) caseAction.title = title
+//       if (caseAction && subActionGroups)
+//         caseAction.subActionGroups = subActionGroups
+//     })
+//   }
 
-export const deleteActionFn = (setCases: Updater<Case[]>) => (id: string) => {
-  setCases((draft) => {
-    const caseAction = getAllActions(draft).find((_action) => _action.id === id)
+// export const deleteActionFn = (setCases: Updater<Case[]>) => (id: string) => {
+//   setCases((draft) => {
+//     const caseAction = getAllActions(draft).find((_action) => _action.id === id)
 
-    if (caseAction) {
-      const caseOfAction = draft.find((_case) =>
-        _case.actions.includes(caseAction)
-      )
+//     if (caseAction) {
+//       const caseOfAction = draft.find((_case) =>
+//         _case.actions.includes(caseAction)
+//       )
 
-      if (caseOfAction)
-        caseOfAction.actions = remove<Action>(
-          caseOfAction.actions,
-          caseOfAction.actions.findIndex(
-            (action) => action.id === caseAction.id
-          )
-        )
-    }
-  })
-}
+//       if (caseOfAction)
+//         caseOfAction.actions = remove<Action>(
+//           caseOfAction.actions,
+//           caseOfAction.actions.findIndex(
+//             (action) => action.id === caseAction.id
+//           )
+//         )
+//     }
+//   })
+// }
 
 // SubAction
 

@@ -2,9 +2,9 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
-import { removeWithId } from "./helpers/utils"
+import { removeWithId, getAllActions } from "./helpers/utils"
 
-import { Case, StoryMap } from "./Types"
+import { Action, Case, StoryMap } from "./Types"
 
 export interface StoryMapStore {
   storyMaps: StoryMap[]
@@ -16,18 +16,22 @@ export interface StoryMapStore {
   addCase: (caseColumn: Case) => void
   updateCase: (caseColumn: Partial<Case>) => void
   deleteCase: (caseId: string) => void
-  // // Actions
-  // addAction: (action: Action) => void
-  // updateAction: (action: Partial<Action>) => void
-  // deleteAction: (caseId: string) => void
-  // // ActionGroups
-  // addSubActionGroup: (action: Action) => void
-  // updateSubActionGroup: (action: Partial<Action>) => void
-  // deleteSubActionGroup: (caseId: string) => void
+  // Actions
+  addAction: (caseId: string, action: Action) => void
+  updateAction: (action: Partial<Action>) => void
+  deleteAction: (actionId: string) => void
+  // // SubActionGroups
+  // addSubActionGroup: (subActionGroup: SubActionGroup) => void
+  // updateSubActionGroup: (subActionGroup: Partial<SubActionGroup>) => void
+  // deleteSubActionGroup: (subActionGroupId: string) => void
   // // SubActions
-  // addSubAction: (action: Action) => void
-  // updateSubAction: (action: Partial<Action>) => void
-  // deleteSubAction: (caseId: string) => void
+  // addSubAction: (subAction: SubAction) => void
+  // updateSubAction: (subAction: Partial<SubAction>) => void
+  // deleteSubAction: (subActionId: string) => void
+  // // Levels
+  // addLevel: (level: SubAction) => void
+  // updateLevel: (level: Partial<SubActionLevel>) => void
+  // deleteLevel: (levelId: string) => void
 }
 
 export const useStoryMapStore = create<StoryMapStore>()(
@@ -44,17 +48,10 @@ export const useStoryMapStore = create<StoryMapStore>()(
         })
       },
       deleteAllStoryMaps: () => set({ storyMaps: [] }),
-      // Case
+      // Cases
       addCase: (caseColumn) =>
         set((state) => {
           state.storyMaps[0].cases.push(caseColumn)
-        }),
-      deleteCase: (caseId) =>
-        set((state) => {
-          state.storyMaps[0].cases = removeWithId(
-            state.storyMaps[0].cases,
-            caseId
-          )
         }),
       updateCase: ({ id, title, actions }) =>
         set(() => {
@@ -65,7 +62,49 @@ export const useStoryMapStore = create<StoryMapStore>()(
             if (actions) caseColumn.actions = actions
           }
         }),
-      // Action
+      deleteCase: (caseId) =>
+        set((state) => {
+          state.storyMaps[0].cases = removeWithId(
+            state.storyMaps[0].cases,
+            caseId
+          )
+        }),
+      // Actions
+      addAction: (caseId, action) =>
+        set((state) => {
+          state.storyMaps[0].cases
+            .find((c) => c.id === caseId)
+            ?.actions.push(action)
+        }),
+      updateAction: ({ id, title, subActionGroups }) =>
+        set((state) => {
+          const caseAction = getAllActions(state.storyMaps[0].cases).find(
+            (_action) => _action.id === id
+          )
+          if (caseAction && title) caseAction.title = title
+          if (caseAction && subActionGroups)
+            caseAction.subActionGroups = subActionGroups
+        }),
+      deleteAction: (actionId) =>
+        set((state) => {
+          const caseAction = getAllActions(state.storyMaps[0].cases).find(
+            (_action) => _action.id === actionId
+          )
+
+          if (caseAction) {
+            const caseOfAction = state.storyMaps[0].cases.find((_case) =>
+              _case.actions.includes(caseAction)
+            )
+            if (caseOfAction)
+              caseOfAction.actions = removeWithId<Action>(
+                caseOfAction.actions,
+                caseAction.id
+              )
+          }
+        }),
+      // SubActionGroups
+      // SubActions
+      // Levels
     })),
     {
       name: "story-map-storage",

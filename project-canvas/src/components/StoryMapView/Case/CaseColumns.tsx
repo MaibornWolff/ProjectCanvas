@@ -1,5 +1,4 @@
 import { Group } from "@mantine/core"
-import { Updater } from "use-immer"
 import { AddCase } from "../Cards/Add/AddCase"
 import { getRndInteger } from "../helpers/utils"
 import { useStoryMapStore } from "../StoryMapStore"
@@ -8,11 +7,9 @@ import { CaseColumn } from "./CaseColumn"
 
 export function CaseColumns({
   cases,
-  setCases,
   levels,
 }: {
   cases: Case[]
-  setCases: Updater<Case[]>
   levels: SubActionLevel[]
 }) {
   const addCase = useStoryMapStore((state) => state.addCase)
@@ -23,7 +20,6 @@ export function CaseColumns({
           key={caseColumn.title}
           caseColumn={caseColumn}
           levels={levels}
-          setCases={setCases}
         />
       ))}
       <AddCase

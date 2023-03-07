@@ -37,11 +37,7 @@ export function StoryMapView() {
         <Stack spacing="xl">
           <Title>{storyMap.name}</Title>
           <Box sx={{ zoom: zoomValue }}>
-            <CaseColumns
-              cases={storyMap.cases}
-              setCases={setCases}
-              levels={levels}
-            />
+            <CaseColumns cases={storyMap.cases} levels={levels} />
             <LevelAccordion
               cases={storyMap.cases}
               setCases={setCases}
