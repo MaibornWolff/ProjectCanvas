@@ -1,4 +1,4 @@
-import { Box, Center, Stack, Text } from "@mantine/core"
+import { Center, Stack, Text } from "@mantine/core"
 import { Issue } from "project-extender"
 import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 import { IssueCard } from "../Issue/IssueCard"
@@ -20,9 +20,7 @@ export function DraggableIssuesWrapper({
             spacing="sm"
           >
             {issues.map((issue: Issue, index) => (
-              <Box sx={{ position: "relative" }}>
-                <IssueCard {...issue} key={issue.issueKey} index={index} />
-              </Box>
+              <IssueCard {...issue} key={issue.issueKey} index={index} />
             ))}
 
             {provided.placeholder}

@@ -57,6 +57,7 @@ export function IssueCard({
           ref={useMergedRef(provided.innerRef, ref)}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
+          sx={{ position: "relative" }}
         >
           <DeleteButton mounted={hovered} issueKey={issueKey} />
           <Group
