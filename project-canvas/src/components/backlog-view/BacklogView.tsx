@@ -218,6 +218,7 @@ export function BacklogView() {
             />
           </ScrollArea.Autosize>
           <Divider
+            mr="xs"
             size="xl"
             className="resize-handle"
             orientation="vertical"

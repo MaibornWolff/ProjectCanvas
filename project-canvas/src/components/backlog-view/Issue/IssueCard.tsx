@@ -1,25 +1,22 @@
 import {
-  ActionIcon,
   Avatar,
   Badge,
-  Box,
   Center,
   Group,
-  Menu,
   Modal,
   Paper,
   Stack,
   Text,
   Tooltip,
 } from "@mantine/core"
-import { IconMenu2 } from "@tabler/icons"
+import { useHover, useMergedRef } from "@mantine/hooks"
 import { useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
-import { DeleteIssue } from "../../DetailView/Components/DeleteIssue"
 import { DetailView } from "../../DetailView/DetailView"
 import { IssueIcon } from "./IssueIcon"
+import { DeleteButton } from "./DeleteButton"
 
 export function IssueCard({
   issueKey,
@@ -36,8 +33,8 @@ export function IssueCard({
 }: Issue & { index: number }) {
   let storyPointsColor: string
   const [opened, setOpened] = useState(false)
-  const [issueMenuOpened, setIssueMenuOpened] = useState(false)
   const queryClient = useQueryClient()
+  const { ref, hovered } = useHover()
 
   switch (status) {
     case "To Do":
@@ -57,38 +54,11 @@ export function IssueCard({
     <Draggable key={issueKey} draggableId={issueKey} index={index}>
       {(provided) => (
         <Paper
-          ref={provided.innerRef}
+          ref={useMergedRef(provided.innerRef, ref)}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <Box sx={{ position: "absolute", bottom: 2, right: 7 }}>
-            <Menu
-              shadow="md"
-              opened={issueMenuOpened}
-              onOpen={() => setIssueMenuOpened(true)}
-              onChange={setIssueMenuOpened}
-              closeOnItemClick={false}
-            >
-              <Menu.Target>
-                <ActionIcon>
-                  <IconMenu2 />
-                </ActionIcon>
-              </Menu.Target>
-
-              <Menu.Dropdown>
-                <Menu.Item component="a">
-                  <Box>
-                    <DeleteIssue
-                      issueKey={issueKey}
-                      closeModal={() => {
-                        setIssueMenuOpened(false)
-                      }}
-                    />
-                  </Box>
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          </Box>
+          <DeleteButton mounted={hovered} issueKey={issueKey} />
           <Group
             sx={(theme) => ({
               borderRadius: theme.radius.sm,

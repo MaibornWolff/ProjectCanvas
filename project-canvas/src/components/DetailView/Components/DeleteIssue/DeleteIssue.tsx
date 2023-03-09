@@ -1,7 +1,6 @@
-import { Button, Popover, Stack, Alert } from "@mantine/core"
-import { IconAlertCircle, IconTrash } from "@tabler/icons"
-import { useQueryClient } from "@tanstack/react-query"
-import { deleteIssueMutation } from "./queries"
+import { Button, Popover } from "@mantine/core"
+import { IconTrash } from "@tabler/icons"
+import { DeleteIssueAlert } from "./DeleteIssueAlert"
 
 export function DeleteIssue({
   issueKey,
@@ -10,9 +9,6 @@ export function DeleteIssue({
   issueKey: string
   closeModal: () => void
 }) {
-  const queryClient = useQueryClient()
-  const deleteIssue = deleteIssueMutation(queryClient)
-
   return (
     <Popover width="40vh" trapFocus position="bottom" withArrow shadow="md">
       <Popover.Target>
@@ -26,24 +22,7 @@ export function DeleteIssue({
             theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
         })}
       >
-        <Stack>
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            title="Attention!"
-            color="red"
-          >
-            If you delete this issue, all related subtasks will be deleted as
-            well!
-          </Alert>
-          <Button
-            onClick={() => {
-              closeModal()
-              deleteIssue.mutate(issueKey)
-            }}
-          >
-            Confirm
-          </Button>
-        </Stack>
+        <DeleteIssueAlert issueKey={issueKey} closeModal={closeModal} />
       </Popover.Dropdown>
     </Popover>
   )
