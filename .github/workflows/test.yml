@@ -13,4 +13,4 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Run tests
-        run: yarn test
+        run: yarn canvas:test
