@@ -12,6 +12,6 @@ jobs:
       - name: Install packages
         run: yarn install
       - name: build project extender
-        run: extender:build
+        run: yarn extender:build
       - name: TypeCheck
         run: yarn canvas:typecheck
