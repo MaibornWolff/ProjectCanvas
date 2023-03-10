@@ -12,6 +12,6 @@ jobs:
       - name: Install packages
         run: yarn install
       - name: Prettier
-        run: yarn run format
+        run: yarn --cwd project-canvas run format
       - name: EsLint
         run: yarn canvas:eslint
