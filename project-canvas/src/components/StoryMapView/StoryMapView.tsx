@@ -3,7 +3,6 @@ import { useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useImmer } from "use-immer"
 import { CaseColumns } from "./Case/CaseColumns"
-import { DeleteDropzone } from "./Components/DeleteDropzone"
 import { Zoom } from "./Components/Zoom"
 import { defaultStoryMap } from "./helpers/defaultStoryMap"
 import { onDragEnd } from "./helpers/draggingHelpers"
@@ -33,7 +32,6 @@ export function StoryMapView() {
         onDragEnd(dropResult, cases, updateCase, updateSubActionGroup)
       }}
     >
-      <DeleteDropzone />
       <Zoom zoomValue={zoomValue} setZoomValue={setZoomValue} />
       <Box sx={{ zoom: zoomValue }}>
         <CaseColumns cases={cases} setCases={setCases} levels={levels} />

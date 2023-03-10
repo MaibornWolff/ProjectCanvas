@@ -28,6 +28,7 @@ import { Labels } from "./Components/Labels"
 import { ReporterMenu } from "./Components/ReporterMenu"
 import { StoryPointsEstimateMenu } from "./Components/StoryPointsEstimateMenu"
 import { Subtask } from "./Components/SubTask/Subtask"
+import { DeleteIssue } from "./Components/DeleteIssue"
 import { Attachments } from "../backlog-view/Issue/attachments/Attachments"
 
 export function DetailView({
@@ -46,8 +47,9 @@ export function DetailView({
   type,
   projectId,
   sprint,
+  closeModal,
   attachment,
-}: Issue) {
+}: Issue & { closeModal: () => void }) {
   const { data: issueTypes } = useQuery({
     queryKey: ["issueTypes", projectId],
     queryFn: () => getIssueTypes(projectId),
@@ -112,29 +114,30 @@ export function DetailView({
           sx={{ minWidth: "260px", flex: 10 }}
         >
           <Box>
-            <Menu shadow="md" position="bottom-start">
-              <Menu.Target>
-                <Button mb="md" rightIcon={<IconCaretDown />}>
-                  {defaultStatus}
-                </Button>
-              </Menu.Target>
+            <Group position="apart" mb="sm">
+              <Menu shadow="md">
+                <Menu.Target>
+                  <Button rightIcon={<IconCaretDown />}>{defaultStatus}</Button>
+                </Menu.Target>
 
-              <Menu.Dropdown>
-                {issueTypes &&
-                  issueTypes
-                    .find((issueType) => issueType.name === type)
-                    ?.statuses?.map((issueStatus) => (
-                      <Menu.Item
-                        onClick={() => {
-                          statusMutation.mutate(issueStatus.name)
-                          setDefaultStatus(issueStatus.name)
-                        }}
-                      >
-                        {issueStatus.name}
-                      </Menu.Item>
-                    ))}
-              </Menu.Dropdown>
-            </Menu>
+                <Menu.Dropdown>
+                  {issueTypes &&
+                    issueTypes
+                      .find((issueType) => issueType.name === type)
+                      ?.statuses?.map((issueStatus) => (
+                        <Menu.Item
+                          onClick={() => {
+                            statusMutation.mutate(issueStatus.name)
+                            setDefaultStatus(issueStatus.name)
+                          }}
+                        >
+                          {issueStatus.name}
+                        </Menu.Item>
+                      ))}
+                </Menu.Dropdown>
+              </Menu>
+              <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
+            </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
               <Accordion.Item value="Details">
                 <Accordion.Control sx={{ textAlign: "left" }}>

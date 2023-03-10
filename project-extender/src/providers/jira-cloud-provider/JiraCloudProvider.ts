@@ -1054,10 +1054,10 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
-  deleteSubtask(subtaskKey: string): Promise<void> {
+  deleteIssue(issueIdOrKey: string): Promise<void> {
     return new Promise((resolve, reject) => {
       fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/issue/${subtaskKey}`,
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/issue/${issueIdOrKey}`,
         {
           method: "DELETE",
           headers: {
@@ -1072,11 +1072,18 @@ class JiraCloudProvider implements ProviderApi {
           }
           if (data.status === 400) {
             reject(
-              new Error("The user does not have permission to delete the issue")
+              new Error(
+                "The issue has subtasks and deleteSubtasks is not set to true"
+              )
             )
           }
           if (data.status === 401) {
             reject(new Error("User not authenticated"))
+          }
+          if (data.status === 403) {
+            reject(
+              new Error("The user does not have permission to delete the issue")
+            )
           }
           if (data.status === 404) {
             reject(
@@ -1093,7 +1100,7 @@ class JiraCloudProvider implements ProviderApi {
         })
         .catch(async (error) => {
           reject(
-            new Error(`Error deleting the  subtask ${subtaskKey}: ${error}`)
+            new Error(`Error deleting the  subtask ${issueIdOrKey}: ${error}`)
           )
         })
     })
