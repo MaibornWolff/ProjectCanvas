@@ -11,5 +11,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install packages
         run: yarn install
+      - name: build project extender
+        run: extender:build
       - name: TypeCheck
         run: yarn canvas:typecheck
