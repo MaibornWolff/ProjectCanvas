@@ -1,18 +1,17 @@
 import { Group } from "@mantine/core"
-import { BaseCard } from "../Cards/BaseCard"
+import { Updater } from "use-immer"
+import { BaseCard } from "../Cards/Base/BaseCard"
 import { SubActionGroup } from "../Case/SubActionGroup"
-import { Case, SubAction } from "../Types"
+import { Case } from "../Types"
 
 export function CaseSubActionLevel({
   filteredCases,
   levelId,
-  addSubAction,
-  updateSubAction,
+  setCases,
 }: {
   filteredCases: Case[]
   levelId: string
-  addSubAction: (actionId: string, subAction: SubAction) => void
-  updateSubAction: ({ id, title }: SubAction) => void
+  setCases: Updater<Case[]>
 }) {
   return (
     <Group align="start" noWrap>
@@ -31,8 +30,7 @@ export function CaseSubActionLevel({
                 key={subActionGroupId}
                 subActionGroupId={subActionGroupId}
                 subActions={subActions}
-                addSubAction={addSubAction}
-                updateSubAction={updateSubAction}
+                setCases={setCases}
               />
             ))}
           <BaseCard

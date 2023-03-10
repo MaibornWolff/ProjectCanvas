@@ -9,12 +9,14 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core"
+import { useHover, useMergedRef } from "@mantine/hooks"
 import { useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { DetailView } from "../../DetailView/DetailView"
 import { IssueIcon } from "./IssueIcon"
+import { DeleteButton } from "./DeleteButton"
 
 export function IssueCard({
   issueKey,
@@ -33,6 +35,7 @@ export function IssueCard({
   let storyPointsColor: string
   const [opened, setOpened] = useState(false)
   const queryClient = useQueryClient()
+  const { ref, hovered } = useHover()
 
   switch (status) {
     case "To Do":
@@ -52,10 +55,12 @@ export function IssueCard({
     <Draggable key={issueKey} draggableId={issueKey} index={index}>
       {(provided) => (
         <Paper
-          ref={provided.innerRef}
+          ref={useMergedRef(provided.innerRef, ref)}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
+          sx={{ position: "relative" }}
         >
+          <DeleteButton mounted={hovered} issueKey={issueKey} />
           <Group
             sx={(theme) => ({
               borderRadius: theme.radius.sm,
@@ -108,6 +113,7 @@ export function IssueCard({
                     labels={labels}
                     assignee={assignee}
                     projectId={projectId}
+                    closeModal={() => setOpened(false)}
                     attachment={attachment}
                     {...props}
                   />

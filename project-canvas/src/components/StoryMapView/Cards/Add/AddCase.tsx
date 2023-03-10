@@ -1,6 +1,6 @@
 import { IconPlus } from "@tabler/icons"
 import { MouseEventHandler } from "react"
-import { BaseCard } from "../BaseCard"
+import { BaseCard } from "../Base/BaseCard"
 
 export function AddCase({
   onClick,
