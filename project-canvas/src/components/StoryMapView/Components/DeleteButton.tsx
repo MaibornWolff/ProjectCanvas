@@ -1,12 +1,13 @@
 import { ActionIcon, Transition } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
+import { MouseEventHandler } from "react"
 
 export function DeleteButton({
   mounted,
   onClick,
 }: {
   mounted: boolean
-  onClick: () => void
+  onClick: MouseEventHandler<HTMLButtonElement>
 }) {
   return (
     <Transition

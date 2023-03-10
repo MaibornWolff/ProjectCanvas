@@ -1,28 +1,23 @@
 import { Stack } from "@mantine/core"
-import { Updater } from "use-immer"
 import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 import { AddCard } from "../Cards/Add/AddCard"
 import { SubActionCard } from "../Cards/SubActionCard"
-import {
-  addSubActionFn,
-  deleteSubActionFn,
-  updateSubActionFn,
-} from "../helpers/updaterFunctions"
-import { getRndInteger } from "../helpers/utils"
-import { Case, SubAction } from "../Types"
+import { getRndInteger, SUB_ACTION_PREFIX } from "../helpers/utils"
+import { useStoryMapStore } from "../StoryMapStore"
+import { SubAction } from "../Types"
 
 export function SubActionGroup({
+  storyMapId,
   subActions,
   subActionGroupId,
-  setCases,
 }: {
+  storyMapId: string
   subActions: SubAction[]
   subActionGroupId: string
-  setCases: Updater<Case[]>
 }) {
-  const addSubAction = addSubActionFn(setCases)
-  const updateSubAction = updateSubActionFn(setCases)
-  const deleteSubAction = deleteSubActionFn(setCases)
+  const addSubAction = useStoryMapStore((state) => state.addSubAction)
+  const updateSubAction = useStoryMapStore((state) => state.updateSubAction)
+  const deleteSubAction = useStoryMapStore((state) => state.deleteSubAction)
 
   return (
     <StrictModeDroppable droppableId={subActionGroupId} type="subAction">
@@ -34,6 +29,7 @@ export function SubActionGroup({
               id={subAction.id}
               index={index}
               subAction={subAction}
+              storyMapId={storyMapId}
               updateSubAction={updateSubAction}
               deleteSubAction={deleteSubAction}
             />
@@ -42,8 +38,8 @@ export function SubActionGroup({
             id={`subAction-add-${subActionGroupId}`}
             index={subActions.length}
             onClick={() =>
-              addSubAction(subActionGroupId, {
-                id: `ss-${getRndInteger()}`,
+              addSubAction(storyMapId, subActionGroupId, {
+                id: `${SUB_ACTION_PREFIX}-${getRndInteger()}`,
                 title: "New SubAction",
               })
             }

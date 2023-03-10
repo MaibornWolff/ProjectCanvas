@@ -1,6 +1,13 @@
 import produce from "immer"
 import { Case, SubActionLevel } from "../Types"
 
+export const STORY_MAP_PREFIX = "sm"
+export const CASE_PREFIX = "c"
+export const ACTION_PREFIX = "a"
+export const SUB_ACTION_GROUP_PREFIX = "sag"
+export const SUB_ACTION_PREFIX = "sa"
+export const LEVEL_PREFIX = "lvl"
+
 export const getRndInteger = (min = 0, max = 100000) =>
   Math.floor(Math.random() * (max - min)) + min
 
@@ -56,6 +63,17 @@ export const move = <T>(
 }
 
 export const remove = <T>(list: T[], index: number) => {
+  const result = Array.from(list)
+  result.splice(index, 1)
+
+  return result
+}
+
+export const removeWithId = <T extends { id: string }>(
+  list: T[],
+  id: string
+) => {
+  const index = list.findIndex((item) => item.id === id)
   const result = Array.from(list)
   result.splice(index, 1)
 

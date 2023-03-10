@@ -8,6 +8,7 @@ import { DeleteButton } from "../Components/DeleteButton"
 export function SubActionCard({
   id,
   index,
+  storyMapId,
   subAction,
   updateSubAction,
   deleteSubAction,
@@ -15,9 +16,10 @@ export function SubActionCard({
 }: {
   id: string
   index: number
+  storyMapId: string
   subAction: SubAction
-  updateSubAction: ({ id, title }: SubAction) => void
-  deleteSubAction: (subActionId: string) => void
+  updateSubAction: (storyMapId: string, { id, title }: SubAction) => void
+  deleteSubAction: (storyMapId: string, subActionId: string) => void
 } & PaperProps) {
   const [edit, toggleEdit] = useToggle()
   const [title, setTitle] = useState(subAction.title)
@@ -41,7 +43,10 @@ export function SubActionCard({
           placeholder="Title"
           onChange={(event) => {
             setTitle(event.currentTarget.value)
-            updateSubAction({ id, title: event.currentTarget.value })
+            updateSubAction(storyMapId, {
+              id,
+              title: event.currentTarget.value,
+            })
           }}
           variant="unstyled"
           value={title}
@@ -51,7 +56,7 @@ export function SubActionCard({
       )}
       <DeleteButton
         mounted={hovered}
-        onClick={() => deleteSubAction(subAction.id)}
+        onClick={() => deleteSubAction(storyMapId, subAction.id)}
       />
     </DraggableBaseCard>
   )

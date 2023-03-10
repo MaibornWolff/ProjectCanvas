@@ -6,13 +6,15 @@ import { BaseCard } from "./Base/BaseCard"
 import { DeleteButton } from "../Components/DeleteButton"
 
 export function CaseTitleCard({
+  storyMapId,
   caseColumn,
   updateCase,
   deleteCase,
 }: {
+  storyMapId: string
   caseColumn: Case
-  updateCase: (caseColumn: Partial<Case>) => void
-  deleteCase: (caseId: string) => void
+  updateCase: (storyMapId: string, caseColumn: Partial<Case>) => void
+  deleteCase: (storyMapId: string, caseId: string) => void
 }) {
   const [edit, toggleEdit] = useState(false)
   const [title, setTitle] = useState(caseColumn.title)
@@ -29,13 +31,18 @@ export function CaseTitleCard({
       ref={ref}
     >
       {!edit && title !== "" ? (
-        <Title onClick={() => toggleEdit(!edit)}>{title}</Title>
+        <Title order={2} onClick={() => toggleEdit(!edit)}>
+          {title}
+        </Title>
       ) : (
         <TextInput
           placeholder="Title"
           onBlur={(event) => {
             setTitle(event.currentTarget.value)
-            updateCase({ id: caseColumn.id, title: event.currentTarget.value })
+            updateCase(storyMapId, {
+              id: caseColumn.id,
+              title: event.currentTarget.value,
+            })
             toggleEdit(!edit)
           }}
           variant="unstyled"
@@ -46,7 +53,7 @@ export function CaseTitleCard({
       )}
       <DeleteButton
         mounted={hovered}
-        onClick={() => deleteCase(caseColumn.id)}
+        onClick={() => deleteCase(storyMapId, caseColumn.id)}
       />
     </BaseCard>
   )

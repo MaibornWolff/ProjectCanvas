@@ -1,18 +1,19 @@
 import { Accordion, ActionIcon, Group, TextInput } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
 import { useState } from "react"
-import { Updater } from "use-immer"
+import { useStoryMapStore } from "../StoryMapStore"
 import { SubActionLevel } from "../Types"
 
 export function LevelControl({
   level,
-  setLevels,
+  storyMapId,
 }: {
   level: SubActionLevel
-  setLevels: Updater<SubActionLevel[]>
+  storyMapId: string
 }) {
   const [edit, toggleEdit] = useState(true)
-
+  const updateLevel = useStoryMapStore((state) => state.updateLevel)
+  const deleteLevel = useStoryMapStore((state) => state.deleteLevel)
   return (
     <Accordion.Control>
       <Group>
@@ -20,10 +21,9 @@ export function LevelControl({
           placeholder="Title"
           {...(edit ? { readOnly: false } : { readOnly: true })}
           onBlur={(event) => {
-            setLevels((draft) => {
-              const lvl = draft.find((_level) => _level.id === level.id)
-              if (!lvl || !event.currentTarget.value) return
-              lvl.title = event.currentTarget.value
+            updateLevel(storyMapId, {
+              id: level.id,
+              title: event.currentTarget.value,
             })
             toggleEdit(false)
           }}
@@ -41,12 +41,7 @@ export function LevelControl({
           color="red"
           size="sm"
           onClick={() => {
-            setLevels((draft) => {
-              const levelIndex = draft.findIndex(
-                (_level) => _level.id === level.id
-              )
-              draft.splice(levelIndex, 1)
-            })
+            deleteLevel(storyMapId, level.id)
           }}
         >
           <IconTrash />

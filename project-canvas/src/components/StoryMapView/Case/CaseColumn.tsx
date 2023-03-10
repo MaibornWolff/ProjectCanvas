@@ -1,37 +1,35 @@
 import { Group, Stack } from "@mantine/core"
-import { Updater } from "use-immer"
 import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 import { ActionCard } from "../Cards/ActionCard"
 import { AddCard } from "../Cards/Add/AddCard"
 import { CaseTitleCard } from "../Cards/CaseTitleCard"
 import {
-  addActionFn,
-  deleteActionFn,
-  deleteCaseFn,
-  updateActionFn,
-  updateCaseFn,
-} from "../helpers/updaterFunctions"
-import { getRndInteger } from "../helpers/utils"
+  ACTION_PREFIX,
+  getRndInteger,
+  SUB_ACTION_GROUP_PREFIX,
+} from "../helpers/utils"
+import { useStoryMapStore } from "../StoryMapStore"
 import { Case, SubActionLevel } from "../Types"
 
 export function CaseColumn({
+  storyMapId,
   caseColumn,
   levels,
-  setCases,
 }: {
+  storyMapId: string
   caseColumn: Case
   levels: SubActionLevel[]
-  setCases: Updater<Case[]>
 }) {
-  const updateCase = updateCaseFn(setCases)
-  const deleteCase = deleteCaseFn(setCases)
-  const addAction = addActionFn(setCases)
-  const updateAction = updateActionFn(setCases)
-  const deleteAction = deleteActionFn(setCases)
+  const updateCase = useStoryMapStore((state) => state.updateCase)
+  const deleteCase = useStoryMapStore((state) => state.deleteCase)
+  const addAction = useStoryMapStore((state) => state.addAction)
+  const updateAction = useStoryMapStore((state) => state.updateAction)
+  const deleteAction = useStoryMapStore((state) => state.deleteAction)
 
   return (
     <Stack>
       <CaseTitleCard
+        storyMapId={storyMapId}
         caseColumn={caseColumn}
         updateCase={updateCase}
         deleteCase={deleteCase}
@@ -54,6 +52,7 @@ export function CaseColumn({
                 id={action.id}
                 index={index}
                 action={action}
+                storyMapId={storyMapId}
                 updateAction={updateAction}
                 deleteAction={deleteAction}
               />
@@ -62,11 +61,11 @@ export function CaseColumn({
               id={`action-add-${caseColumn.id}`}
               index={caseColumn.actions.length}
               onClick={() =>
-                addAction(caseColumn.id, {
-                  id: `s-${getRndInteger()}`,
+                addAction(storyMapId, caseColumn.id, {
+                  id: `${ACTION_PREFIX}-${getRndInteger()}`,
                   title: "New Action",
                   subActionGroups: levels.map((level) => ({
-                    id: `sg-${getRndInteger()}`,
+                    id: `${SUB_ACTION_GROUP_PREFIX}-${getRndInteger()}`,
                     levelId: level.id,
                     subActions: [],
                   })),

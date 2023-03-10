@@ -1,15 +1,17 @@
 import { DropResult } from "react-beautiful-dnd"
 import { Case, SubActionGroup } from "../Types"
-import { getAllSubActionGroups, move, remove, reorder } from "./utils"
-
-const CASE_PREFIX = "a"
-const ACTION_PREFIX = "s"
-const DELETE_COLUMN_NAME = "delete"
+import {
+  CASE_PREFIX,
+  getAllSubActionGroups,
+  move,
+  reorder,
+  SUB_ACTION_GROUP_PREFIX,
+} from "./utils"
 
 const isActionList = (caseId: string) =>
   caseId.match(new RegExp(`^${CASE_PREFIX}`, "g"))
 const isSubActionList = (actionId: string) =>
-  actionId.match(new RegExp(`^${ACTION_PREFIX}`, "g"))
+  actionId.match(new RegExp(`^${SUB_ACTION_GROUP_PREFIX}`, "g"))
 
 export const onDragEnd = (
   result: DropResult,
@@ -96,34 +98,6 @@ export const onDragEnd = (
       updateSubActionGroup({
         ...subActionGroupDest,
         subActions: newDestination,
-      })
-    }
-  }
-
-  if (destination.droppableId === DELETE_COLUMN_NAME) {
-    if (isActionList(source.droppableId)) {
-      const caseColumnSource = cases.find((c) => c.id === source.droppableId)
-
-      if (!caseColumnSource) return
-      const items = remove(caseColumnSource.actions, source.index)
-
-      updateCase({
-        ...caseColumnSource,
-        actions: items,
-      })
-    }
-
-    if (isSubActionList(source.droppableId)) {
-      const subActionGroupSource = getAllSubActionGroups(cases).find(
-        (_subActionGroup) => _subActionGroup.id === source.droppableId
-      )
-
-      if (!subActionGroupSource) return
-      const items = remove(subActionGroupSource.subActions, source.index)
-
-      updateSubActionGroup({
-        ...subActionGroupSource,
-        subActions: items,
       })
     }
   }
