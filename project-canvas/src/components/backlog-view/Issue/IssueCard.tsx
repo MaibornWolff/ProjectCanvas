@@ -29,6 +29,7 @@ export function IssueCard({
   assignee,
   index,
   projectId,
+  attachment,
   ...props
 }: Issue & { index: number }) {
   let storyPointsColor: string
@@ -113,6 +114,7 @@ export function IssueCard({
                     assignee={assignee}
                     projectId={projectId}
                     closeModal={() => setOpened(false)}
+                    attachment={attachment}
                     {...props}
                   />
                 </Modal>
