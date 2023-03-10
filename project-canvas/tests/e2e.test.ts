@@ -1,13 +1,14 @@
 import { expect, test } from "@playwright/test"
 import {ElectronApplication, Page, _electron as electron } from "playwright"
 
+
 test.describe("Check Man Page", async () => {
   let page: Page
   let electronApp: ElectronApplication
 
   // Set up the test before each test execution
   test.beforeEach(async () => {
-    electronApp = await electron.launch({ executablePath : './release/1.0.0/win-unpacked/resources/elevate.exe' });
+    electronApp = await electron.launch({executablePath: './release/1.0.0/mac-arm64/ProjectCanvas.app/Contents/MacOS/ProjectCanvas' });
 
     //const latestBuild = findLatestBuild("release/1.0.0")
     //const appInfo = parseElectronApp(latestBuild)
