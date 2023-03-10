@@ -13,7 +13,7 @@
     "release": "electron-builder --publish always",
     "format": "yarn prettier --write .",
     "lint": "eslint",
-    "test": "yarn playwright test"
+    "e2e": "npx playwright test tests/",
     "test": "jest"
   },
   "engines": {

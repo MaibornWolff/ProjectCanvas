@@ -1,19 +1,17 @@
 import { expect, test } from "@playwright/test"
-import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers"
-import { ElectronApplication, Page, _electron as electron } from "playwright"
+import {ElectronApplication, Page, _electron as electron } from "playwright"
 
 test.describe("Check Man Page", async () => {
-  let electronApp: ElectronApplication
   let page: Page
+  let electronApp: ElectronApplication
 
   // Set up the test before each test execution
   test.beforeEach(async () => {
-    const latestBuild = findLatestBuild("release/1.0.0")
-    const appInfo = parseElectronApp(latestBuild)
-    electronApp = await electron.launch({
-      args: [appInfo.main],
-      executablePath: appInfo.executable,
-    })
+    electronApp = await electron.launch({ executablePath : './release/1.0.0/win-unpacked/resources/elevate.exe' });
+
+    //const latestBuild = findLatestBuild("release/1.0.0")
+    //const appInfo = parseElectronApp(latestBuild)
+    
     let windowText
     while (!windowText) {
       // eslint-disable-next-line no-await-in-loop
