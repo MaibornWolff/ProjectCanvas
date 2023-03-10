@@ -1,49 +1,34 @@
 import { Group } from "@mantine/core"
-import { Updater } from "use-immer"
 import { AddCase } from "../Cards/Add/AddCase"
-import {
-  addActionFn,
-  addCaseFn,
-  deleteCaseFn,
-  updateActionFn,
-  updateCaseFn,
-} from "../helpers/updaterFunctions"
-import { getRndInteger } from "../helpers/utils"
+import { CASE_PREFIX, getRndInteger } from "../helpers/utils"
+import { useStoryMapStore } from "../StoryMapStore"
 import { Case, SubActionLevel } from "../Types"
 import { CaseColumn } from "./CaseColumn"
 
 export function CaseColumns({
+  storyMapId,
   cases,
-  setCases,
   levels,
 }: {
+  storyMapId: string
   cases: Case[]
-  setCases: Updater<Case[]>
   levels: SubActionLevel[]
 }) {
-  const addCase = addCaseFn(setCases)
-  const updateCase = updateCaseFn(setCases)
-  const deleteCase = deleteCaseFn(setCases)
-  const addAction = addActionFn(setCases)
-  const updateAction = updateActionFn(setCases)
-
+  const addCase = useStoryMapStore((state) => state.addCase)
   return (
     <Group align="start" noWrap>
       {cases.map((caseColumn) => (
         <CaseColumn
           key={caseColumn.title}
+          storyMapId={storyMapId}
           caseColumn={caseColumn}
           levels={levels}
-          updateCase={updateCase}
-          deleteCase={deleteCase}
-          addAction={addAction}
-          updateAction={updateAction}
         />
       ))}
       <AddCase
         onClick={() =>
-          addCase({
-            id: `a-${getRndInteger()}`,
+          addCase(storyMapId, {
+            id: `${CASE_PREFIX}-${getRndInteger()}`,
             title: "New Case",
             actions: [],
           })

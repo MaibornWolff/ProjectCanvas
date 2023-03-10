@@ -1,50 +1,61 @@
-import { Box } from "@mantine/core"
+import { Box, Stack, Title } from "@mantine/core"
 import { useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
-import { useImmer } from "use-immer"
+import { useParams } from "react-router-dom"
 import { CaseColumns } from "./Case/CaseColumns"
-import { DeleteDropzone } from "./Components/DeleteDropzone"
 import { Zoom } from "./Components/Zoom"
-import { defaultStoryMap } from "./helpers/defaultStoryMap"
 import { onDragEnd } from "./helpers/draggingHelpers"
-import {
-  updateCaseFn,
-  updateSubActionGroupFn,
-} from "./helpers/updaterFunctions"
 import { AddLevel } from "./Level/AddLevel"
 import { LevelAccordion } from "./Level/LevelAccordion"
-import { Case, SubActionLevel } from "./Types"
+import { useStoryMapStore } from "./StoryMapStore"
+import { Case } from "./Types"
 
 export function StoryMapView() {
+  const { storyMapId } = useParams()
+  const storyMaps = useStoryMapStore((state) => state.storyMaps)
+  const storyMap = storyMaps?.find((_storyMap) => _storyMap.id === storyMapId)
   const [zoomValue, setZoomValue] = useState(1)
 
-  const [levels, setLevels] = useImmer<SubActionLevel[]>([
-    { id: "level-1", title: "level-1" },
-    { id: "level-2", title: "level-2" },
-  ])
-  const [cases, setCases] = useImmer<Case[]>(defaultStoryMap)
+  const updateCase = useStoryMapStore((state) => state.updateCase)
+  const updateCaseFn = (caseColumn: Partial<Case>) =>
+    updateCase(storyMapId!, caseColumn)
 
-  const updateCase = updateCaseFn(setCases)
-  const updateSubActionGroup = updateSubActionGroupFn(setCases)
+  const updateSubActionGroup = useStoryMapStore(
+    (state) => state.updateSubActionGroup
+  )
+  const updateSubActionGroupFn = (caseColumn: Partial<Case>) =>
+    updateSubActionGroup(storyMapId!, caseColumn)
 
   return (
     <DragDropContext
       onDragEnd={(dropResult) => {
-        onDragEnd(dropResult, cases, updateCase, updateSubActionGroup)
+        onDragEnd(
+          dropResult,
+          storyMap!.cases,
+          updateCaseFn,
+          updateSubActionGroupFn
+        )
       }}
     >
-      <DeleteDropzone />
-      <Zoom zoomValue={zoomValue} setZoomValue={setZoomValue} />
-      <Box sx={{ zoom: zoomValue }}>
-        <CaseColumns cases={cases} setCases={setCases} levels={levels} />
-        <LevelAccordion
-          cases={cases}
-          setCases={setCases}
-          levels={levels}
-          setLevels={setLevels}
-        />
-        <AddLevel setCases={setCases} setLevels={setLevels} />
-      </Box>
+      {storyMapId && storyMap && (
+        <Stack spacing="xl">
+          <Title>{storyMap.name}</Title>
+          <Box sx={{ zoom: zoomValue }}>
+            <CaseColumns
+              storyMapId={storyMapId}
+              cases={storyMap.cases}
+              levels={storyMap.levels}
+            />
+            <LevelAccordion
+              storyMapId={storyMapId}
+              cases={storyMap.cases}
+              levels={storyMap.levels}
+            />
+            <AddLevel storyMapId={storyMapId} />
+          </Box>
+          <Zoom zoomValue={zoomValue} setZoomValue={setZoomValue} />
+        </Stack>
+      )}
     </DragDropContext>
   )
 }

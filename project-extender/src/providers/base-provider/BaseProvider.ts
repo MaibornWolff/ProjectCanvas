@@ -18,7 +18,7 @@ interface LoginOptions {
 }
 
 export interface ProviderApi {
-  deleteSubtask(subtaskKey: string): Promise<void>
+  deleteIssue(issueIdOrKey: string): Promise<void>
   createSubtask(
     parentIssueKey: string,
     projectId: string,

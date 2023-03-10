@@ -1,24 +1,40 @@
 import { PaperProps, Text, TextInput } from "@mantine/core"
+import { useHover } from "@mantine/hooks"
 import { useState } from "react"
 import { Action } from "../Types"
-import { ItemCard } from "./ItemCard"
+import { DraggableBaseCard } from "./Base/DraggableBaseCard"
+import { DeleteButton } from "../Components/DeleteButton"
 
 export function ActionCard({
   id,
   index,
-  children,
+  action,
+  storyMapId,
   updateAction,
+  deleteAction,
   ...props
 }: {
   id: string
   index: number
-  children: string
-  updateAction: ({ id, title }: Action) => void
+  action: Action
+  storyMapId: string
+  updateAction: (storyMapId: string, { id, title }: Action) => void
+  deleteAction: (storyMapId: string, actionId: string) => void
 } & PaperProps) {
   const [edit, toggleEdit] = useState(false)
-  const [title, setTitle] = useState(children)
+  const [title, setTitle] = useState(action.title)
+  const { hovered, ref } = useHover()
+
   return (
-    <ItemCard id={id} index={index} itemType="action" m="sm" {...props}>
+    <DraggableBaseCard
+      id={id}
+      index={index}
+      m="sm"
+      bg="primaryGreen.0"
+      pos="relative"
+      ref={ref}
+      {...props}
+    >
       {edit && title !== "" ? (
         <Text onClick={() => toggleEdit(!edit)}>{title}</Text>
       ) : (
@@ -26,7 +42,10 @@ export function ActionCard({
           onBlur={() => toggleEdit(!edit)}
           onChange={(event) => {
             setTitle(event.currentTarget.value)
-            updateAction({ id, title: event.currentTarget.value } as Action)
+            updateAction(storyMapId, {
+              id,
+              title: event.currentTarget.value,
+            } as Action)
           }}
           variant="unstyled"
           value={title}
@@ -34,6 +53,10 @@ export function ActionCard({
           styles={{ input: { textAlign: "center", fontSize: "16px" } }}
         />
       )}
-    </ItemCard>
+      <DeleteButton
+        mounted={hovered}
+        onClick={() => deleteAction(storyMapId, action.id)}
+      />
+    </DraggableBaseCard>
   )
 }

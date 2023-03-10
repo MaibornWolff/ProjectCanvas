@@ -390,11 +390,11 @@ server.delete<{
 })
 server.delete<{
   Body: {
-    subtaskIssue: string
+    issueIdOrKey: string
   }
-}>("/deleteSubtask", (request, reply) => {
+}>("/deleteIssue", (request, reply) => {
   issueProvider
-    .deleteSubtask(request.body.subtaskIssue)
+    .deleteIssue(request.body.issueIdOrKey)
     .then(() => {
       reply.status(200).send()
     })

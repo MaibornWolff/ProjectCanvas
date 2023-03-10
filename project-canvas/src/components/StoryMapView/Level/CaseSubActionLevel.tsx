@@ -1,18 +1,16 @@
 import { Group } from "@mantine/core"
-import { BaseCard } from "../Cards/BaseCard"
-import { SubActionGroup } from "../Case/SubActionGroup"
-import { Case, SubAction } from "../Types"
+import { BaseCard } from "../Cards/Base/BaseCard"
+import { SubActionGroup } from "./SubActionGroup"
+import { Case } from "../Types"
 
 export function CaseSubActionLevel({
+  storyMapId,
   filteredCases,
   levelId,
-  addSubAction,
-  updateSubAction,
 }: {
+  storyMapId: string
   filteredCases: Case[]
   levelId: string
-  addSubAction: (actionId: string, subAction: SubAction) => void
-  updateSubAction: ({ id, title }: SubAction) => void
 }) {
   return (
     <Group align="start" noWrap>
@@ -29,10 +27,9 @@ export function CaseSubActionLevel({
             .map(({ id: subActionGroupId, subActions }) => (
               <SubActionGroup
                 key={subActionGroupId}
+                storyMapId={storyMapId}
                 subActionGroupId={subActionGroupId}
                 subActions={subActions}
-                addSubAction={addSubAction}
-                updateSubAction={updateSubAction}
               />
             ))}
           <BaseCard

@@ -2,20 +2,23 @@ import { Stack } from "@mantine/core"
 import { StrictModeDroppable } from "../../common/StrictModeDroppable"
 import { AddCard } from "../Cards/Add/AddCard"
 import { SubActionCard } from "../Cards/SubActionCard"
-import { getRndInteger } from "../helpers/utils"
+import { getRndInteger, SUB_ACTION_PREFIX } from "../helpers/utils"
+import { useStoryMapStore } from "../StoryMapStore"
 import { SubAction } from "../Types"
 
 export function SubActionGroup({
+  storyMapId,
   subActions,
   subActionGroupId,
-  updateSubAction,
-  addSubAction,
 }: {
+  storyMapId: string
   subActions: SubAction[]
   subActionGroupId: string
-  addSubAction: (actionId: string, subAction: SubAction) => void
-  updateSubAction: ({ id, title }: SubAction) => void
 }) {
+  const addSubAction = useStoryMapStore((state) => state.addSubAction)
+  const updateSubAction = useStoryMapStore((state) => state.updateSubAction)
+  const deleteSubAction = useStoryMapStore((state) => state.deleteSubAction)
+
   return (
     <StrictModeDroppable droppableId={subActionGroupId} type="subAction">
       {(provided) => (
@@ -25,17 +28,18 @@ export function SubActionGroup({
               key={subAction.id}
               id={subAction.id}
               index={index}
+              subAction={subAction}
+              storyMapId={storyMapId}
               updateSubAction={updateSubAction}
-            >
-              {subAction.title}
-            </SubActionCard>
+              deleteSubAction={deleteSubAction}
+            />
           ))}
           <AddCard
             id={`subAction-add-${subActionGroupId}`}
             index={subActions.length}
             onClick={() =>
-              addSubAction(subActionGroupId, {
-                id: `ss-${getRndInteger()}`,
+              addSubAction(storyMapId, subActionGroupId, {
+                id: `${SUB_ACTION_PREFIX}-${getRndInteger()}`,
                 title: "New SubAction",
               })
             }
