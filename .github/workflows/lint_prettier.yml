@@ -1,0 +1,17 @@
+name: Prettier ans Eslint Test
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  test:
+    name: Prettier ans Eslint Test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install packages
+        run: yarn install
+      - name: Prettier
+        run: yarn run format
+      - name: EsLint
+        run: yarn canvas:eslint
