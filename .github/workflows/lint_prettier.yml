@@ -1,4 +1,4 @@
-name: Prettier ans Eslint Test
+name: Prettier and Eslint Test
 on:
   pull_request:
     branches:
@@ -12,6 +12,6 @@ jobs:
       - name: Install packages
         run: yarn install
       - name: Prettier
-        run: yarn --cwd project-canvas run format
+        run: yarn canvas:prettier
       - name: EsLint
         run: yarn canvas:eslint
