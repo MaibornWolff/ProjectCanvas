@@ -12,6 +12,7 @@
     "canvas:test": "yarn --cwd project-canvas test",
     "canvas:eslint": "yarn --cwd project-canvas run lint",
     "canvas:prettier": "yarn --cwd project-canvas run format",
+    "canvas:typecheck": "yarn --cwd project-canvas run typecheck",
     "extender": "yarn --cwd project-extender start",
     "extender:build": "yarn --cwd project-extender build",
     "jira": "yarn --cwd fake-jira-server start",
