@@ -9,6 +9,7 @@
   "scripts": {
     "canvas": "yarn extender:build && yarn --cwd project-canvas dev",
     "canvas:build": "yarn extender:build && yarn --cwd project-canvas build ",
+    "canvas:test": "yarn --cwd project-canvas test",
     "extender": "yarn --cwd project-extender start",
     "extender:build": "yarn --cwd project-extender build",
     "jira": "yarn --cwd fake-jira-server start",
@@ -27,6 +28,7 @@
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-testing-library": "^5.10.2",
     "husky": "^8.0.0",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
