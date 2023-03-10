@@ -3,7 +3,9 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
+
 import { LogoutButton } from "./LogoutButton"
+import { StoryMapMenu } from "./StoryMapMenu"
 
 export function LayoutHeader() {
   const navigate = useNavigate()
@@ -48,6 +50,7 @@ export function LayoutHeader() {
           >
             Backlog
           </Anchor>
+          <StoryMapMenu />
           <Button onClick={() => setCreateIssueModalOpened(true)}>
             Create
           </Button>

@@ -22,6 +22,7 @@ export function DraggableIssuesWrapper({
             {issues.map((issue: Issue, index) => (
               <IssueCard {...issue} key={issue.issueKey} index={index} />
             ))}
+
             {provided.placeholder}
           </Stack>
         ) : (

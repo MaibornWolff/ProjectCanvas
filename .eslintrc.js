@@ -22,6 +22,8 @@ module.exports = {
         "import/no-default-export": "error",
         "react/destructuring-assignment": "off",
         "react/jsx-props-no-spreading": "off",
+        "react/prop-types": "off",
+        "react/require-default-props": "off",
         "react/jsx-filename-extension": [1, { extensions: [".tsx", ".ts"] }],
         "no-use-before-define": [
           "error",
@@ -39,5 +41,5 @@ module.exports = {
       },
     },
   ],
-  plugins: ["react"],
+  plugins: ["react", "testing-library"],
 }

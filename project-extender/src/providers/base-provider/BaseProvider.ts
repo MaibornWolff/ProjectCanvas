@@ -18,6 +18,12 @@ interface LoginOptions {
 }
 
 export interface ProviderApi {
+  deleteIssue(issueIdOrKey: string): Promise<void>
+  createSubtask(
+    parentIssueKey: string,
+    projectId: string,
+    summary: string
+  ): Promise<{ id: string; key: string }>
   login(loginOptions: LoginOptions): Promise<void>
   isLoggedIn(): Promise<void>
   logout(): Promise<void>
@@ -45,12 +51,22 @@ export interface ProviderApi {
     rankBefore: string,
     rankAfter: string
   ): Promise<void>
-
+  editIssue(issue: Issue, issueIdOrKey: string): Promise<void>
   createIssue(issue: Issue): Promise<string>
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]>
   getLabels(): Promise<string[]>
   getPriorities(): Promise<Priority[]>
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }>
+  setTransition(issueIdOrKey: string, targetStatus: string): Promise<void>
+  getEditableIssueFields(issueIdOrKey: string): Promise<string[]>
+  getIssueReporter(issueIdOrKey: string): Promise<User>
+  addCommentToIssue(issueIdOrKey: string, commentText: string): Promise<void>
+  editIssueComment(
+    issueIdOrKey: string,
+    commentId: string,
+    commentText: string
+  ): Promise<void>
+  deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void>
 }
 
 export abstract class ProviderCreator {

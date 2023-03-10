@@ -9,6 +9,24 @@ export const getIssueTypes = (projectIdOrKey: string): Promise<IssueType[]> =>
     .then((issueTypes) => issueTypes.json())
     .catch((err) => err)
 
+export const createNewIssue = (issue: Issue): Promise<string> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/createIssue`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ issue }),
+  })
+    .then((issueKey) => issueKey.json())
+    .catch((err) => err)
+
+export const moveIssueToBacklog = (issueIdOrKey: string): Promise<void> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToBacklog`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ issueIdOrKey }),
+  })
+    .then(() => {})
+    .catch((err) => err)
+
 export const getAssignableUsersByProject = (
   projectIdOrKey: string
 ): Promise<User[]> =>
@@ -18,22 +36,6 @@ export const getAssignableUsersByProject = (
     }/assignableUsersByProject?projectIdOrKey=${projectIdOrKey}`
   )
     .then((users) => users.json())
-    .catch((err) => err)
-
-export const createNewIssue = (issue: Issue) =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/createIssue`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ issue }),
-  }).catch((err) => err)
-
-export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> =>
-  fetch(
-    `${
-      import.meta.env.VITE_EXTENDER
-    }/epicsByProject?projectIdOrKey=${projectIdOrKey}`
-  )
-    .then((epics) => epics.json())
     .catch((err) => err)
 
 export const getBoardIds = (projectIdOrKey: string): Promise<number[]> =>
@@ -73,4 +75,43 @@ export const getIssueTypesWithFieldsMap = (): Promise<Map<string, string[]>> =>
       Object.entries(resp).forEach(([key, value]) => map.set(key, value))
       return map
     })
+    .catch((err) => err)
+
+export const setStatus = (
+  issueKey: string,
+  targetStatus: string
+): Promise<void> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/setStatus?issueKey=${issueKey}&targetStatus=${targetStatus} `
+  ).then(() => {})
+
+export const getIssueReporter = (issueIdOrKey: string): Promise<User> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/issueReporter?issueIdOrKey=${issueIdOrKey}`
+  )
+    .then((reporter) => reporter.json())
+    .catch((err) => err)
+
+export const getEditableIssueFields = (
+  issueIdOrKey: string
+): Promise<string[]> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/editableIssueFields?issueIdOrKey=${issueIdOrKey}`
+  )
+    .then((fields) => fields.json())
+    .catch((err) => err)
+
+export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> =>
+  fetch(
+    `${
+      import.meta.env.VITE_EXTENDER
+    }/epicsByProject?projectIdOrKey=${projectIdOrKey}`
+  )
+    .then((epics) => epics.json())
     .catch((err) => err)

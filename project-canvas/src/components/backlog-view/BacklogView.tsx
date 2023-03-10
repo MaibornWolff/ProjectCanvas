@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Center,
   Divider,
@@ -180,7 +181,7 @@ export function BacklogView() {
         >
           <ScrollArea.Autosize
             className="left-panel"
-            maxHeight="60vh"
+            maxHeight="calc(100vh - 260px)"
             w="50%"
             p="sm"
             sx={{
@@ -188,10 +189,12 @@ export function BacklogView() {
             }}
           >
             {searchedissuesWrappers.get("Backlog") && (
-              <DraggableIssuesWrapper
-                id="Backlog"
-                issues={searchedissuesWrappers.get("Backlog")!.issues}
-              />
+              <Box mr="sm">
+                <DraggableIssuesWrapper
+                  id="Backlog"
+                  issues={searchedissuesWrappers.get("Backlog")!.issues}
+                />
+              </Box>
             )}
             <Button
               mt="xs"
@@ -215,6 +218,7 @@ export function BacklogView() {
             />
           </ScrollArea.Autosize>
           <Divider
+            mr="xs"
             size="xl"
             className="resize-handle"
             orientation="vertical"
@@ -224,7 +228,7 @@ export function BacklogView() {
           />
           <ScrollArea.Autosize
             className="right-panel"
-            maxHeight="64vh"
+            maxHeight="calc(100vh - 260px)"
             w="50%"
             p="sm"
             sx={{ minWidth: "260px" }}
