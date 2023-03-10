@@ -8,11 +8,12 @@ test.describe("Check Man Page", async () => {
 
   // Set up the test before each test execution
   test.beforeEach(async () => {
-    electronApp = await electron.launch({executablePath: './release/1.0.0/mac-arm64/ProjectCanvas.app/Contents/MacOS/ProjectCanvas' });
-
-    //const latestBuild = findLatestBuild("release/1.0.0")
-    //const appInfo = parseElectronApp(latestBuild)
+    // use for run the tests on a mac
+    // electronApp = await electron.launch({executablePath: './release/1.0.0/mac-arm64/ProjectCanvas.app/Contents/MacOS/ProjectCanvas' });
     
+    // use for run the tests on windows
+    electronApp = await electron.launch({executablePath: './release/1.0.0/win-unpacked/resources/elevate.exe' });
+
     let windowText
     while (!windowText) {
       // eslint-disable-next-line no-await-in-loop
