@@ -6,12 +6,12 @@ on:
 jobs:
   test:
     name: TypeCheck Tests
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install packages
         run: yarn install
       - name: build project extender
         run: yarn extender:build
       - name: TypeCheck
-        run: yarn canvas:typecheck
+        run: yarn typecheck
