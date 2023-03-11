@@ -68,7 +68,10 @@ export function IssueCard({
               transition: "background-color .8s ease-out",
               boxShadow: theme.shadows.xs,
               ":hover": {
-                backgroundColor: "#ebecf0",
+                backgroundColor:
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[8]
+                    : "#ebecf0",
                 transition: "background-color .1s ease-in",
               },
             })}
@@ -78,7 +81,7 @@ export function IssueCard({
             </Center>
 
             <Stack spacing={0} sx={{ flex: 12 }}>
-              <Group>
+              <Group spacing={2}>
                 <Text
                   size="sm"
                   color="blue"

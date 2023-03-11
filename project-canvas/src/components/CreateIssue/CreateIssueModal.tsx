@@ -176,7 +176,6 @@ export function CreateIssueModal({
           />
           <ReporterSelect
             form={form}
-            currentUser={currentUser}
             assignableUsers={assignableUsers}
             isLoading={isLoading}
           />

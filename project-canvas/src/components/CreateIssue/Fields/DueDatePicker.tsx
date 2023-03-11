@@ -12,7 +12,7 @@ export function DueDatePicker({
   return (
     <DatePicker
       label="Due Date"
-      placeholder=""
+      placeholder="Pick due date"
       minDate={form.getInputProps("startDate").value}
       clearable
       disabled={

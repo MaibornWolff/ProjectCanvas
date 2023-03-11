@@ -30,7 +30,7 @@ export function PrioritySelect({
     <Select
       label="Priority"
       placeholder="Choose priority"
-      nothingFound="Select an Issue Type first"
+      nothingFound="Please select an issue type first"
       itemComponent={SelectItem}
       disabled={isDisabled}
       data={

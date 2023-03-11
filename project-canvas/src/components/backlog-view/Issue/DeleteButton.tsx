@@ -1,6 +1,6 @@
 import { ActionIcon, Transition, Popover, Box } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { DeleteIssueAlert } from "../../DetailView/Components/DeleteIssue/DeleteIssueAlert"
 
 export function DeleteButton({
@@ -11,6 +11,12 @@ export function DeleteButton({
   issueKey: string
 }) {
   const [issuePopoverOpened, setIssuePopoverOpened] = useState(false)
+
+  useEffect(() => {
+    if (!mounted) {
+      setIssuePopoverOpened(false)
+    }
+  }, [mounted])
 
   return (
     <Box sx={{ position: "absolute", bottom: 5, right: 11 }}>

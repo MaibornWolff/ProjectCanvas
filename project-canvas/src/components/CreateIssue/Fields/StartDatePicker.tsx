@@ -12,7 +12,7 @@ export function StartDatePicker({
   return (
     <DatePicker
       label="Start Date"
-      placeholder=""
+      placeholder="Pick start date"
       clearable
       disabled={
         issueTypesWithFieldsMap &&

@@ -14,10 +14,10 @@ export function StatusSelect({
   return (
     <Select
       label="Status"
-      placeholder="To Do"
+      placeholder="Choose status"
       nothingFound={
         form.getInputProps("type").value === ""
-          ? "Please Select an Issue Type First."
+          ? "Please select an issue type first"
           : "No Options"
       }
       data={

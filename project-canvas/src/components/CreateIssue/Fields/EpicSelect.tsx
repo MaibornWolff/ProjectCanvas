@@ -27,8 +27,12 @@ export function EpicSelect({
   return (
     <Select
       label="Epic"
-      placeholder=""
-      nothingFound="No Options"
+      placeholder="Choose epic"
+      nothingFound={
+        epics && epics.length > 0
+          ? "Please select an issue type first"
+          : "No epics found"
+      }
       disabled={
         issueTypesWithFieldsMap &&
         issueTypesWithFieldsMap.size > 0 &&

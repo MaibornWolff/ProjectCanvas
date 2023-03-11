@@ -135,12 +135,22 @@ export function BacklogView() {
   if (isLoadingBacklogIssues)
     return (
       <Center style={{ width: "100%", height: "100%" }}>
-        <Loader />
+        {projectKey ? (
+          <Loader />
+        ) : (
+          <Stack align="center">
+            <Title>No Project has been selected!</Title>
+            <Text>
+              Please go back to the Projects View section and select a project
+            </Text>
+            <Button onClick={() => navigate("/projectsview")}>Go back</Button>
+          </Stack>
+        )}
       </Center>
     )
   return (
     <Stack sx={{ minHeight: "100%" }}>
-      <Stack align="left" py="xs" spacing="md">
+      <Stack align="left" spacing="sm">
         <Group>
           <Group spacing="xs" c="dimmed">
             <Text
@@ -162,7 +172,6 @@ export function BacklogView() {
         <Title>Backlog</Title>
         <TextInput
           placeholder="Search by issue summary"
-          mb="md"
           icon={<IconSearch size={14} stroke={1.5} />}
           value={search}
           onChange={handleSearchChange}
@@ -181,7 +190,7 @@ export function BacklogView() {
         >
           <ScrollArea.Autosize
             className="left-panel"
-            maxHeight="calc(100vh - 260px)"
+            maxHeight="calc(100vh - 242px)"
             w="50%"
             p="sm"
             sx={{
@@ -189,7 +198,7 @@ export function BacklogView() {
             }}
           >
             {searchedissuesWrappers.get("Backlog") && (
-              <Box mr="sm">
+              <Box mr="xs">
                 <DraggableIssuesWrapper
                   id="Backlog"
                   issues={searchedissuesWrappers.get("Backlog")!.issues}
@@ -228,9 +237,9 @@ export function BacklogView() {
           />
           <ScrollArea.Autosize
             className="right-panel"
-            maxHeight="calc(100vh - 260px)"
+            maxHeight="calc(100vh - 242px)"
             w="50%"
-            p="sm"
+            p="xs"
             sx={{ minWidth: "260px" }}
           >
             <SprintsPanel

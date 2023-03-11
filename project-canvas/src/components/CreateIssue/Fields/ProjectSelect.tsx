@@ -14,7 +14,7 @@ export function ProjectSelect({
   return (
     <Select
       label="Project"
-      placeholder="Project"
+      placeholder="Choose project"
       nothingFound="No Options"
       data={projects.map((project) => ({
         value: project.id,

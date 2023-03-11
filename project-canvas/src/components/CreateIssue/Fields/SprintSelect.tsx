@@ -41,8 +41,8 @@ export function SprintSelect({
   return (
     <Select
       label="Sprint"
-      placeholder="Backlog"
-      nothingFound="No Options"
+      placeholder="Choose sprint"
+      nothingFound="Please select an issue type first"
       disabled={isDisabled}
       data={
         !isLoading && sprints && sprints instanceof Array

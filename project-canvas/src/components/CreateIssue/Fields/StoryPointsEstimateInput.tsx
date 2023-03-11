@@ -24,6 +24,7 @@ export function StoryPointsEstimateInput({
     <NumberInput
       min={0}
       label="Story Point Estimate"
+      placeholder="Choose story point estimate"
       defaultValue={null}
       precision={3}
       disabled={isDisabled}
