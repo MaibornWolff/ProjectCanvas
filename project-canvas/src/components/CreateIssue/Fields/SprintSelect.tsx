@@ -1,4 +1,4 @@
-import { Select } from "@mantine/core"
+import { Select, Tooltip, Box } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
 import { useQuery } from "@tanstack/react-query"
 import { Issue, IssueType } from "project-extender"
@@ -39,22 +39,34 @@ export function SprintSelect({
         issueTypes?.find((issueType) => issueType.name === "Epic")?.id)
 
   return (
-    <Select
-      label="Sprint"
-      placeholder="Choose sprint"
-      nothingFound="Please select an issue type first"
-      disabled={isDisabled}
-      data={
-        !isLoading && sprints && sprints instanceof Array
-          ? sprints.map((sprint) => ({
-              value: sprint.id,
-              label: sprint.name,
-            }))
-          : []
-      }
-      searchable
-      clearable
-      {...form.getInputProps("sprintId")}
-    />
+    <Tooltip
+      label="Sprint cannot be selected for this issue type"
+      position="top-start"
+      events={{
+        hover: true && !!isDisabled,
+        focus: false && !!isDisabled,
+        touch: false && !!isDisabled,
+      }}
+    >
+      <Box>
+        <Select
+          label="Sprint"
+          placeholder="Choose sprint"
+          nothingFound="Please select an issue type first"
+          disabled={isDisabled}
+          data={
+            !isLoading && sprints && sprints instanceof Array
+              ? sprints.map((sprint) => ({
+                  value: sprint.id,
+                  label: sprint.name,
+                }))
+              : []
+          }
+          searchable
+          clearable
+          {...form.getInputProps("sprint.id")}
+        />
+      </Box>
+    </Tooltip>
   )
 }

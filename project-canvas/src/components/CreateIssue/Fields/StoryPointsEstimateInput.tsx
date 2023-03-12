@@ -1,4 +1,4 @@
-import { NumberInput } from "@mantine/core"
+import { Box, NumberInput, Tooltip } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
 import { Issue, IssueType } from "project-extender"
 
@@ -21,14 +21,26 @@ export function StoryPointsEstimateInput({
         issueTypes?.find((issueType) => issueType.name === "Epic")?.id)
 
   return (
-    <NumberInput
-      min={0}
-      label="Story Point Estimate"
-      placeholder="Choose story point estimate"
-      defaultValue={null}
-      precision={3}
-      disabled={isDisabled}
-      {...form.getInputProps("storyPointsEstimate")}
-    />
+    <Tooltip
+      label="Story Point Estimate cannot be defined for this issue type"
+      position="top-start"
+      events={{
+        hover: true && !!isDisabled,
+        focus: false && !!isDisabled,
+        touch: false && !!isDisabled,
+      }}
+    >
+      <Box>
+        <NumberInput
+          min={0}
+          label="Story Point Estimate"
+          placeholder="Choose story point estimate"
+          defaultValue={null}
+          precision={3}
+          disabled={isDisabled}
+          {...form.getInputProps("storyPointsEstimate")}
+        />
+      </Box>
+    </Tooltip>
   )
 }
