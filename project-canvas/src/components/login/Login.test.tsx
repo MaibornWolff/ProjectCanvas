@@ -36,7 +36,7 @@ jest.mock("react-i18next", () => ({
 }))
 
 describe("<Login />", () => {
-  it("should set providerLogin  to JiraCloud after clicking on the Jira Cloud Button", async () => {
+  it("should set providerLogin to JiraCloud after clicking on the Jira Cloud Button", async () => {
     const toggleColorScheme = () => {}
     const { container, getByTestId } = render(
       <ColorSchemeProvider
@@ -57,7 +57,7 @@ describe("<Login />", () => {
     }
   })
 
-  it(" should set providerLogin to JiraServer after clicking on the Jira Server Button", async () => {
+  it("should set providerLogin to JiraServer after clicking on the Jira Server Button", async () => {
     const toggleColorScheme = () => {}
     const { container, getByTestId } = render(
       <ColorSchemeProvider

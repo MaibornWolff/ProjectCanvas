@@ -13,5 +13,7 @@ jobs:
         run: yarn install
       - name: build project extender
         run: yarn extender:build
-      - name: TypeCheck
-        run: yarn typecheck
+      - name: Canvas TypeCheck
+        run: yarn --cwd project-canvas typecheck
+      - name: Extender TypeCheck
+        run: yarn  --cwd project-extender typecheck
