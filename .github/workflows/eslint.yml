@@ -12,4 +12,4 @@ jobs:
       - name: Install packages
         run: yarn install
       - name: EsLint
-        run: yarn eslint
+        run: yarn lint

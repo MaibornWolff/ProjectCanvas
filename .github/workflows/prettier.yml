@@ -12,4 +12,4 @@ jobs:
       - name: Install packages
         run: yarn install
       - name: Prettier
-        run: yarn prettier
+        run: yarn format
