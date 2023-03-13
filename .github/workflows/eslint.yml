@@ -1,0 +1,15 @@
+name: Eslint Test
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  test:
+    name: Eslint Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install packages
+        run: yarn install
+      - name: EsLint
+        run: yarn lint

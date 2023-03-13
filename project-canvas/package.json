@@ -13,7 +13,8 @@
     "release": "electron-builder --publish always",
     "format": "yarn prettier --write .",
     "lint": "eslint",
-    "test": "jest"
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
   },
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
