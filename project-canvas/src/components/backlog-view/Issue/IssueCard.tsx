@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
   Tooltip,
+  useMantineTheme,
 } from "@mantine/core"
 import { useHover, useMergedRef } from "@mantine/hooks"
 import { useQueryClient } from "@tanstack/react-query"
@@ -35,6 +36,18 @@ export function IssueCard({
   const [opened, setOpened] = useState(false)
   const queryClient = useQueryClient()
   const { ref, hovered } = useHover()
+  const theme = useMantineTheme()
+
+  const hoverStyles =
+    theme.colorScheme === "dark"
+      ? {
+          backgroundColor: theme.colors.dark[8],
+          transition: "background-color .1s ease-in",
+        }
+      : {
+          backgroundColor: theme.colors.gray[1],
+          transition: "background-color .1s ease-in",
+        }
 
   switch (status) {
     case "To Do":
@@ -61,29 +74,25 @@ export function IssueCard({
         >
           <DeleteButton mounted={hovered} issueKey={issueKey} />
           <Group
-            sx={(theme) => ({
+            display="flex"
+            sx={{
               borderRadius: theme.radius.sm,
               gap: 0,
               padding: theme.spacing.xs,
-              transition: "background-color .8s ease-out",
               boxShadow: theme.shadows.xs,
-              ":hover": {
-                backgroundColor:
-                  theme.colorScheme === "dark"
-                    ? theme.colors.dark[8]
-                    : "#ebecf0",
-                transition: "background-color .1s ease-in",
-              },
-            })}
+              transition: "background-color .8s ease-out",
+              ":hover": hoverStyles,
+            }}
           >
-            <Center sx={{ flex: 1, minWidth: "48px" }}>
+            <Center sx={{ flex: 2 }}>
               <IssueIcon type={type} />
             </Center>
 
-            <Stack spacing={0} sx={{ flex: 12 }}>
+            <Stack spacing={0} sx={{ flex: 19 }}>
               <Group spacing={2}>
                 <Text
                   size="sm"
+                  mr={5}
                   color="blue"
                   td={status === "Done" ? "line-through" : "none"}
                   sx={{
@@ -119,10 +128,14 @@ export function IssueCard({
                     {...props}
                   />
                 </Modal>
-                {epic && <Badge color="violet">{epic}</Badge>}
+                {epic && (
+                  <Badge mr={5} color="violet">
+                    {epic}
+                  </Badge>
+                )}
                 {labels?.length !== 0 &&
                   labels.map((label) => (
-                    <Badge key={`${issueKey}-${label}`} color="yellow">
+                    <Badge mr={2} key={`${issueKey}-${label}`} color="yellow">
                       {label}
                     </Badge>
                   ))}
@@ -140,6 +153,7 @@ export function IssueCard({
                   ? assignee.displayName
                   : "unassigned"
               }
+              sx={{ flex: 2 }}
             >
               {assignee.avatarUrls !== undefined ? (
                 <Avatar
@@ -164,7 +178,7 @@ export function IssueCard({
                   : "transparent"
               }
               variant="filled"
-              sx={{ alignSelf: "flex-start" }}
+              sx={{ alignSelf: "flex-start", flex: 1 }}
             >
               {storyPointsEstimate}
             </Badge>
