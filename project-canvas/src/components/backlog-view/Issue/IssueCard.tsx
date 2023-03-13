@@ -2,6 +2,7 @@ import {
   Avatar,
   Badge,
   Center,
+  Box,
   Group,
   Modal,
   Paper,
@@ -167,21 +168,21 @@ export function IssueCard({
                 <Avatar radius="xl" />
               )}
             </Tooltip>
-
-            <Badge
-              w="24px"
-              p="0"
-              bg={
-                storyPointsEstimate !== undefined &&
-                storyPointsEstimate !== null
-                  ? storyPointsColor
-                  : "transparent"
-              }
-              variant="filled"
-              sx={{ alignSelf: "flex-start", flex: 1 }}
-            >
-              {storyPointsEstimate}
-            </Badge>
+            <Box sx={{ alignSelf: "flex-start", flex: 1 }}>
+              <Badge
+                w="24px"
+                p="0"
+                bg={
+                  storyPointsEstimate !== undefined &&
+                  storyPointsEstimate !== null
+                    ? storyPointsColor
+                    : "transparent"
+                }
+                variant="filled"
+              >
+                {storyPointsEstimate}
+              </Badge>
+            </Box>
           </Group>
         </Paper>
       )}
