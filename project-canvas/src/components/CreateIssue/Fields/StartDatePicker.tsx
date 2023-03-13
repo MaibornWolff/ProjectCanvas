@@ -31,6 +31,7 @@ export function StartDatePicker({
         <DatePicker
           label="Start Date"
           placeholder="Pick start date"
+          withinPortal
           clearable
           disabled={isDisabled}
           {...form.getInputProps("startDate")}

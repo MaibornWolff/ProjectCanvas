@@ -112,8 +112,8 @@ export function CreateIssueModal({
       opened={opened}
       onClose={() => setOpened(false)}
       title="Create Issue"
-      size="70%"
-      overflow="inside"
+      overflow="outside"
+      size="70vw"
       overlayColor={
         theme.colorScheme === "dark"
           ? theme.colors.dark[9]

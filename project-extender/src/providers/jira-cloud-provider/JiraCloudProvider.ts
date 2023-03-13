@@ -10,6 +10,7 @@ import {
   IssueType,
   User,
   Priority,
+  SprintCreate,
 } from "../../types"
 import {
   JiraIssue,
@@ -1139,6 +1140,68 @@ class JiraCloudProvider implements ProviderApi {
           resolve(createdSubtask)
         }
       })
+    })
+  }
+
+  async createSprint({
+    name,
+    startDate,
+    endDate,
+    originBoardId,
+    goal,
+  }: SprintCreate): Promise<void> {
+    const offsetStartDate = this.offsetDate(startDate)
+    const offsetEndDate = this.offsetDate(endDate)
+
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${this.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            originBoardId,
+            ...(offsetStartDate && {
+              startDate: offsetStartDate,
+            }),
+            ...(offsetEndDate && {
+              endDate: offsetEndDate,
+            }),
+            ...(goal && { goal }),
+          }),
+        }
+      )
+        .then(async (data) => {
+          if (data.status === 201) {
+            resolve()
+          }
+          if (data.status === 400) {
+            reject(new Error("Invalid request"))
+          }
+          if (data.status === 401) {
+            reject(new Error("User not authenticated"))
+          }
+          if (data.status === 403) {
+            reject(
+              new Error("The user does not have the necessary permissions")
+            )
+          }
+          if (data.status === 404) {
+            reject(
+              new Error(
+                "The Board does not exists or the user does not have the necessary permissions to view it"
+              )
+            )
+          }
+        })
+        .catch((error) => {
+          reject(new Error(`Error creating sprint: ${error}`))
+        })
     })
   }
 }

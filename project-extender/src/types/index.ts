@@ -107,7 +107,15 @@ export interface User {
   displayName: string
 }
 
-export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
+export interface SprintCreate {
+  name: string
+  startDate: Date
+  endDate: Date
+  originBoardId: number
+  goal: string
+}
+
+export const dateTimeFormat = new Intl.DateTimeFormat("en-GB", {
   year: "numeric",
   month: "2-digit",
   day: "2-digit",

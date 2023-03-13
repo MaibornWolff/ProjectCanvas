@@ -9,7 +9,7 @@ import {
 } from "./providers/base-provider"
 import { JiraCloudProviderCreator } from "./providers/jira-cloud-provider"
 import { JiraServerProviderCreator } from "./providers/jira-server-provider"
-import { Issue } from "./types"
+import { Issue, SprintCreate } from "./types"
 
 export * from "./types"
 
@@ -419,4 +419,17 @@ server.post<{
       reply.status(200).send(createdSubtask)
     })
     .catch(() => reply.status(400).send())
+})
+
+server.post<{
+  Body: {
+    sprint: SprintCreate
+  }
+}>("/createSprint", (request, reply) => {
+  issueProvider
+    .createSprint(request.body.sprint)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
 })

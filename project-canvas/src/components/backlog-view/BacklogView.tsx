@@ -20,6 +20,7 @@ import { DragDropContext } from "react-beautiful-dnd"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../lib/Store"
 import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
+import { CreateSprint } from "./CreateSprint/CreateSprint"
 import { searchIssuesFilter, sortIssuesByRank } from "./helpers/backlogHelpers"
 import { onDragEnd } from "./helpers/draggingHelpers"
 import {
@@ -205,22 +206,29 @@ export function BacklogView() {
                 />
               </Box>
             )}
-            <Button
-              mt="xs"
-              variant="subtle"
-              color="gray"
-              compact
-              radius="xs"
-              display="flex"
-              w="100%"
-              onClick={() => setCreateIssueModalOpened(true)}
-              sx={{
-                justifyContent: "left",
-                ":hover": { backgroundColor: "#E8E2E2" },
-              }}
-            >
-              + Create Issue
-            </Button>
+            <Box mr="xs">
+              <Button
+                mt="sm"
+                mb="xl"
+                variant="subtle"
+                color="gray"
+                radius="sm"
+                display="flex"
+                fullWidth
+                onClick={() => setCreateIssueModalOpened(true)}
+                sx={(theme) => ({
+                  justifyContent: "left",
+                  ":hover": {
+                    background:
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[4]
+                        : theme.colors.gray[4],
+                  },
+                })}
+              >
+                + Create Issue
+              </Button>
+            </Box>
             <CreateIssueModal
               opened={createIssueModalOpened}
               setOpened={setCreateIssueModalOpened}
@@ -252,6 +260,7 @@ export function BacklogView() {
                 }[]
               }
             />
+            <CreateSprint />
           </ScrollArea.Autosize>
         </DragDropContext>
       </Flex>

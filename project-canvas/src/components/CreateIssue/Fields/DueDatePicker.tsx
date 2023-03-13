@@ -31,6 +31,7 @@ export function DueDatePicker({
           label="Due Date"
           placeholder="Pick due date"
           minDate={form.getInputProps("startDate").value}
+          withinPortal
           clearable
           disabled={isDisabled}
           {...form.getInputProps("dueDate")}
