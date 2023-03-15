@@ -63,7 +63,17 @@ export const searchIssuesFilter = (
       .get(issueWrapperKey)!
       .issues.filter(
         (issue: Issue) =>
-          issue.summary.includes(currentSearch) || currentSearch === ""
+          issue.summary.toLowerCase().includes(currentSearch.toLowerCase()) ||
+          issue.epic?.toLowerCase().includes(currentSearch.toLowerCase()) ||
+          issue.assignee?.displayName
+            ?.toLowerCase()
+            .includes(currentSearch.toLowerCase()) ||
+          issue.issueKey.toLowerCase().includes(currentSearch.toLowerCase()) ||
+          issue.creator?.toLowerCase().includes(currentSearch.toLowerCase()) ||
+          issue.labels?.some((label: string) =>
+            label.toLowerCase().includes(currentSearch.toLowerCase())
+          ) ||
+          currentSearch === ""
       )
     setSearchedissueWrapper(
       (map) => new Map(map.set(issueWrapperKey, newIssueWrapper))
