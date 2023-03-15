@@ -346,9 +346,8 @@ class JiraCloudProvider implements ProviderApi {
     boardId: number
   ): Promise<Issue[]> {
     const response = await this.fetchIssues(
-      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
+      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/board/${boardId}/backlog?jql=project=${project}&maxResults=500`
     )
-
     return response
   }
 
