@@ -63,24 +63,26 @@ export function BacklogView() {
 
   const sprintsIssuesResults = useQueries({
     queries:
-      sprints?.map((sprint) => ({
-        queryKey: ["issues", "sprints", projectKey, sprints, sprint.id],
-        queryFn: () => getIssuesBySprint(sprint.id),
-        enabled: !!projectKey && !!sprints,
-        onSuccess: (issues: Issue[]) => {
-          updateIssuesWrapper(sprint.name, {
-            sprint,
-            issues: issues
-              .filter(
-                (issue: Issue) =>
-                  issue.type !== "Epic" && issue.type !== "Subtask"
-              )
-              .sort((issueA: Issue, issueB: Issue) =>
-                sortIssuesByRank(issueA, issueB)
-              ),
-          })
-        },
-      })) ?? [],
+      !isErrorSprints && sprints && sprints instanceof Array
+        ? sprints?.map((sprint) => ({
+            queryKey: ["issues", "sprints", projectKey, sprints, sprint.id],
+            queryFn: () => getIssuesBySprint(sprint.id),
+            enabled: !!projectKey && !!sprints,
+            onSuccess: (issues: Issue[]) => {
+              updateIssuesWrapper(sprint.name, {
+                sprint,
+                issues: issues
+                  .filter(
+                    (issue: Issue) =>
+                      issue.type !== "Epic" && issue.type !== "Subtask"
+                  )
+                  .sort((issueA: Issue, issueB: Issue) =>
+                    sortIssuesByRank(issueA, issueB)
+                  ),
+              })
+            },
+          }))
+        : [],
   })
   const isErrorSprintsIssues = sprintsIssuesResults.some(
     ({ isError }) => isError
@@ -94,14 +96,17 @@ export function BacklogView() {
       onSuccess: (backlogIssues) => {
         updateIssuesWrapper("Backlog", {
           sprint: undefined,
-          issues: backlogIssues
-            .filter(
-              (issue: Issue) =>
-                issue.type !== "Epic" && issue.type !== "Subtask"
-            )
-            .sort((issueA: Issue, issueB: Issue) =>
-              sortIssuesByRank(issueA, issueB)
-            ),
+          issues:
+            backlogIssues && backlogIssues instanceof Array
+              ? backlogIssues
+                  .filter(
+                    (issue: Issue) =>
+                      issue.type !== "Epic" && issue.type !== "Subtask"
+                  )
+                  .sort((issueA: Issue, issueB: Issue) =>
+                    sortIssuesByRank(issueA, issueB)
+                  )
+              : [],
         })
       },
     })
