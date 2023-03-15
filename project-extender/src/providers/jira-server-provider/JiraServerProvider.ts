@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 import { fetch } from "cross-fetch"
@@ -19,6 +20,50 @@ import {
 } from "../../types/jira"
 
 class JiraServerProvider implements ProviderApi {
+  deleteIssue(issueIdOrKey: string): Promise<void> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  createSubtask(
+    parentIssueKey: string,
+    projectId: string,
+    summary: string
+  ): Promise<{ id: string; key: string }> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  editIssue(issue: Issue, issueIdOrKey: string): Promise<void> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  setTransition(issueIdOrKey: string, targetStatus: string): Promise<void> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  getEditableIssueFields(issueIdOrKey: string): Promise<string[]> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  getIssueReporter(issueIdOrKey: string): Promise<User> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  addCommentToIssue(issueIdOrKey: string, commentText: string): Promise<void> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  editIssueComment(
+    issueIdOrKey: string,
+    commentId: string,
+    commentText: string
+  ): Promise<void> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
   private loginOptions = {
     url: "",
     username: "",
@@ -397,35 +442,35 @@ class JiraServerProvider implements ProviderApi {
   /* eslint-disable @typescript-eslint/no-unused-vars */
 
   getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   createIssue(issue: Issue): Promise<string> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getCurrentUser(): Promise<User> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getIssuesBySprint(sprintId: number): Promise<Issue[]> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getLabels(): Promise<string[]> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getPriorities(): Promise<Priority[]> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 }
 
