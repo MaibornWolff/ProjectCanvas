@@ -10,6 +10,7 @@ import {
   Priority,
   Project,
   Sprint,
+  SprintCreate,
   User,
 } from "../../types"
 import {
@@ -20,50 +21,6 @@ import {
 } from "../../types/jira"
 
 class JiraServerProvider implements ProviderApi {
-  deleteIssue(issueIdOrKey: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
-  }
-
-  createSubtask(
-    parentIssueKey: string,
-    projectId: string,
-    summary: string
-  ): Promise<{ id: string; key: string }> {
-    throw new Error("Method not implemented for Jira Server")
-  }
-
-  editIssue(issue: Issue, issueIdOrKey: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
-  }
-
-  setTransition(issueIdOrKey: string, targetStatus: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
-  }
-
-  getEditableIssueFields(issueIdOrKey: string): Promise<string[]> {
-    throw new Error("Method not implemented for Jira Server")
-  }
-
-  getIssueReporter(issueIdOrKey: string): Promise<User> {
-    throw new Error("Method not implemented for Jira Server")
-  }
-
-  addCommentToIssue(issueIdOrKey: string, commentText: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
-  }
-
-  editIssueComment(
-    issueIdOrKey: string,
-    commentId: string,
-    commentText: string
-  ): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
-  }
-
-  deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
-  }
-
   private loginOptions = {
     url: "",
     username: "",
@@ -470,6 +427,54 @@ class JiraServerProvider implements ProviderApi {
   }
 
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  createSprint(sprint: SprintCreate): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
+
+  deleteIssue(issueIdOrKey: string): Promise<void> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  createSubtask(
+    parentIssueKey: string,
+    projectId: string,
+    summary: string
+  ): Promise<{ id: string; key: string }> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  editIssue(issue: Issue, issueIdOrKey: string): Promise<void> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  setTransition(issueIdOrKey: string, targetStatus: string): Promise<void> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  getEditableIssueFields(issueIdOrKey: string): Promise<string[]> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  getIssueReporter(issueIdOrKey: string): Promise<User> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  addCommentToIssue(issueIdOrKey: string, commentText: string): Promise<void> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  editIssueComment(
+    issueIdOrKey: string,
+    commentId: string,
+    commentText: string
+  ): Promise<void> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void> {
     throw new Error("Method not implemented for Jira Server")
   }
 }
