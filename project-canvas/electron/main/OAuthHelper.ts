@@ -43,19 +43,9 @@ export function handleOAuth2(win: BrowserWindow) {
 
   authWindow.webContents.on("will-redirect", (_, url) => {
     if (url.startsWith(REDIRECT_URI)) {
-      if (
-        // handle cancel button press event on the authWindow
-        url.includes(
-          "error=access_denied&error_description=User%20did%20not%20authorize%20the%20request"
-        )
-      ) {
-        authWindow.destroy()
-        win.webContents.send("cancelOAuth")
-      } else {
-        const code = handleCallback(url, authWindow)
-        // Send OAuth code back to renderer process
-        win.webContents.send("code", code)
-      }
+      const code = handleCallback(url, authWindow)
+      // Send OAuth code back to renderer process
+      win.webContents.send("code", code)
     }
   })
 }
