@@ -88,25 +88,28 @@ class JiraCloudProvider implements ProviderApi {
   }): Promise<void> {
     if (this.refreshToken) {
       const { clientId, clientSecret } = oauthRefreshOptions
-      const { accessToken, refreshToken } = await refreshTokens({
-        clientId,
-        clientSecret,
-        _refreshToken: this.refreshToken,
-      })
-      this.accessToken = accessToken
-      this.refreshToken = refreshToken
-      return new Promise((resolve) => {
-        resolve()
-      })
+      try {
+        const { accessToken, refreshToken } = await refreshTokens({
+          clientId,
+          clientSecret,
+          _refreshToken: this.refreshToken,
+        })
+        this.accessToken = accessToken
+        this.refreshToken = refreshToken
+        return await Promise.resolve()
+      } catch (error) {
+        return Promise.reject(
+          new Error(`Error refreshing the access token: ${error}`)
+        )
+      }
     }
-    return new Promise((reject) => {
-      reject()
-    })
+    return Promise.reject(new Error("Error refreshing the access token"))
   }
 
   logout(): Promise<void> {
     return new Promise((resolve) => {
       this.accessToken = undefined
+      this.refreshToken = undefined
       resolve()
     })
   }

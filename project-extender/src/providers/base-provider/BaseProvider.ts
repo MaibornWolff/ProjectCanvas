@@ -18,18 +18,12 @@ interface LoginOptions {
 }
 
 export interface ProviderApi {
+  login(loginOptions: LoginOptions): Promise<void>
+  isLoggedIn(): Promise<void>
   refreshAccessToken(oauthRefreshOptions: {
     clientId: string
     clientSecret: string
   }): Promise<void>
-  deleteIssue(issueIdOrKey: string): Promise<void>
-  createSubtask(
-    parentIssueKey: string,
-    projectId: string,
-    summary: string
-  ): Promise<{ id: string; key: string }>
-  login(loginOptions: LoginOptions): Promise<void>
-  isLoggedIn(): Promise<void>
   logout(): Promise<void>
   getProjects(): Promise<Project[]>
   getBoardIds(project: string): Promise<number[]>
@@ -56,7 +50,13 @@ export interface ProviderApi {
     rankAfter: string
   ): Promise<void>
   editIssue(issue: Issue, issueIdOrKey: string): Promise<void>
+  deleteIssue(issueIdOrKey: string): Promise<void>
   createIssue(issue: Issue): Promise<string>
+  createSubtask(
+    parentIssueKey: string,
+    projectId: string,
+    summary: string
+  ): Promise<{ id: string; key: string }>
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]>
   getLabels(): Promise<string[]>
   getPriorities(): Promise<Priority[]>

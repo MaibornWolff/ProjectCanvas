@@ -477,7 +477,7 @@ class JiraServerProvider implements ProviderApi {
     clientId: string
     clientSecret: string
   }): Promise<void> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 }
 
