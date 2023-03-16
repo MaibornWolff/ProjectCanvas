@@ -113,22 +113,15 @@ export function Attachments(props: {
               }
 
               return (
-                <Tooltip label={attachment.filename} inline>
+                <Tooltip label={attachment.filename} key={attachment.id} inline>
                   <Box>
                     <HoverCard
-                      key={attachment.id}
                       shadow="md"
                       position="top-end"
+                      key={attachment.id}
                       offset={-20}
                     >
-                      <Card
-                        key={attachment.id}
-                        shadow="sm"
-                        radius="md"
-                        w={150}
-                        h={180}
-                        withBorder
-                      >
+                      <Card shadow="sm" radius="md" w={150} h={180} withBorder>
                         <HoverCard.Target>
                           <Flex
                             direction="column"
