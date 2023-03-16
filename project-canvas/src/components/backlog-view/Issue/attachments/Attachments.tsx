@@ -11,6 +11,8 @@ import {
   Flex,
   Box,
   Tooltip,
+  Center,
+  LoadingOverlay,
 } from "@mantine/core"
 import { IconCloudDownload, IconPlus, IconTrash } from "@tabler/icons"
 import { showNotification } from "@mantine/notifications"
@@ -129,25 +131,33 @@ export function Attachments(props: {
                             p={0}
                           >
                             <Card.Section>
-                              <Image
-                                height={100}
-                                fit="contain"
-                                src={
-                                  !thumbnailsLoading &&
-                                  thumbnails &&
-                                  thumbnails.find(
-                                    (thumbnail) =>
-                                      thumbnail.id === attachment.id
-                                  )?.url
-                                    ? thumbnails.find(
-                                        (thumbnail) =>
-                                          thumbnail.id === attachment.id
-                                      )?.url
-                                    : null
-                                }
-                                alt="With default placeholder"
-                                withPlaceholder
-                              />
+                              <Center>
+                                <LoadingOverlay
+                                  overlayOpacity={0.3}
+                                  overlayColor="#c5c5c5"
+                                  visible={thumbnailsLoading}
+                                />
+
+                                <Image
+                                  height={100}
+                                  fit="contain"
+                                  src={
+                                    !thumbnailsLoading &&
+                                    thumbnails &&
+                                    thumbnails.find(
+                                      (thumbnail) =>
+                                        thumbnail.id === attachment.id
+                                    )?.url
+                                      ? thumbnails.find(
+                                          (thumbnail) =>
+                                            thumbnail.id === attachment.id
+                                        )?.url
+                                      : null
+                                  }
+                                  alt={`${attachment.filename}`}
+                                  withPlaceholder
+                                />
+                              </Center>
                             </Card.Section>
                             <Card.Section p="xs">
                               <Box>
