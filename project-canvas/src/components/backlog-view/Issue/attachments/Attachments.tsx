@@ -8,7 +8,9 @@ import {
   Card,
   HoverCard,
   Image,
-  Stack,
+  Flex,
+  Box,
+  Tooltip,
 } from "@mantine/core"
 import { IconCloudDownload, IconPlus, IconTrash } from "@tabler/icons"
 import { showNotification } from "@mantine/notifications"
@@ -18,8 +20,7 @@ import { Attachment } from "project-extender"
 import { addAttachmentMutation, deleteAttachmentMutation } from "./queries"
 import {
   downloadAttachment,
-  // getAttachmentThumbnail,
-  // getAttachmentThumbnail,
+  getAttachmentThumbnail,
   getResource,
 } from "./queryFunctions"
 
@@ -34,36 +35,23 @@ export function Attachments(props: {
 
   const resource = resourceQuery?.data
 
-  /*    const fetchThumb = (id: string): Promise<string | undefined> =>
+  const fetchThumb = (id: string): Promise<string | undefined> =>
     getAttachmentThumbnail(id, resource!)
       .then((b) => URL.createObjectURL(b))
-      .catch(() => undefined) */
+      .catch(() => undefined)
 
-  /*   const getThumbnailQuery = (id: string) =>
-    useQuery({
-      queryKey: ["thumbnail", id],
-      queryFn: () => fetchThumb(id),
-      enabled: !!resource,
-    })
-
-  const thumbnailQueries = resource
-    ? props.attachments.map((att) => ({ id: att.id, url: fetchThumb(att.id) }))
-    : [] */
-
-  /*     const [promises, setPromises] = useState<{
-      attId: string
-      url: (string | undefined)
-    }[]>([]) 
-    
-  useEffect(() => {
-    Promise.all(
-        props.attachments.map((a: Attachment) => ({
-          attId: a.id,
-          url: fetchThumb(a.id),
-        }))
-      ).then(ps => setPromises(ps.map(ob => ob.url)))
-
-  }, [props.attachments]) */
+  const { data: thumbnails, isLoading: thumbnailsLoading } = useQuery({
+    queryKey: ["thumbnails", props.attachments],
+    queryFn: async () => {
+      const thumbnailPromises = props.attachments.map(async (attachment) => ({
+        id: attachment.id,
+        url: await fetchThumb(attachment.id),
+      }))
+      const thumbnailResults = await Promise.all(thumbnailPromises)
+      return thumbnailResults
+    },
+    enabled: !!resource,
+  })
 
   const queryClient = useQueryClient()
   const addAttachmentMutationLocal = addAttachmentMutation(queryClient)
@@ -84,8 +72,6 @@ export function Attachments(props: {
 
   return (
     <>
-      <Text>cgchh</Text>
-      <Text>kvjvjv</Text>
       <Group position="left" align="flex-start" spacing="xs">
         <Text color="dimmed" mb="sm">
           Attachments
@@ -110,19 +96,14 @@ export function Attachments(props: {
       <Paper mb="lg" mr="sm">
         {resource && (
           <Group>
-            {props.attachments.map((attach: Attachment) => {
+            {props.attachments.map((attachment: Attachment) => {
               const fetchFile: Promise<Blob> = downloadAttachment(
-                attach.id,
+                attachment.id,
                 resource
               )
-
-              /*               const urlData = thumbnailQueries.find(
-                (q) => q.id === attach.id
-              )?.url */
-
               const handleDownload = () => {
                 fetchFile
-                  .then((blob) => FileSaver.saveAs(blob, attach.filename))
+                  .then((blob) => FileSaver.saveAs(blob, attachment.filename))
                   .catch(() =>
                     showNotification({
                       message: `File couldn't be uploaded! 😢`,
@@ -132,61 +113,98 @@ export function Attachments(props: {
               }
 
               return (
-                <HoverCard key={attach.id} shadow="md" position="bottom-end">
-                  <Card
-                    key={attach.id}
-                    shadow="sm"
-                    p="xl"
-                    radius="md"
-                    withBorder
-                  >
-                    <Card.Section>
-                      <HoverCard.Target>
-                        <Stack>
-                          <Image
-                            height={100}
-                            src={null}
-                            alt="With default placeholder"
-                            withPlaceholder
-                          />
-                        </Stack>
-                      </HoverCard.Target>
-                    </Card.Section>
-                    <Card.Section p="xs">
-                      <Text size="xs" color="dimmed" truncate>
-                        {attach.filename}
-                      </Text>
-                      <Text size="xs" color="dimmed" truncate>
-                        {attach.created}
-                      </Text>
-                    </Card.Section>
-                    <HoverCard.Dropdown p={0}>
-                      <Group spacing={0}>
-                        <ActionIcon
-                          color="dark"
-                          size="lg"
-                          radius="xs"
-                          variant="outline"
-                        >
-                          <IconCloudDownload
-                            color="black"
-                            onClick={handleDownload}
-                          />
-                        </ActionIcon>
+                <Tooltip label={attachment.filename} inline>
+                  <Box>
+                    <HoverCard
+                      key={attachment.id}
+                      shadow="md"
+                      position="top-end"
+                      offset={-20}
+                    >
+                      <Card
+                        key={attachment.id}
+                        shadow="sm"
+                        radius="md"
+                        w={150}
+                        h={180}
+                        withBorder
+                      >
+                        <HoverCard.Target>
+                          <Flex
+                            direction="column"
+                            justify="space-between"
+                            p={0}
+                          >
+                            <Card.Section>
+                              <Image
+                                height={100}
+                                fit="contain"
+                                src={
+                                  !thumbnailsLoading &&
+                                  thumbnails &&
+                                  thumbnails.find(
+                                    (thumbnail) =>
+                                      thumbnail.id === attachment.id
+                                  )?.url
+                                    ? thumbnails.find(
+                                        (thumbnail) =>
+                                          thumbnail.id === attachment.id
+                                      )?.url
+                                    : null
+                                }
+                                alt="With default placeholder"
+                                withPlaceholder
+                              />
+                            </Card.Section>
+                            <Card.Section p="xs">
+                              <Box>
+                                <Text size="xs" color="dimmed" truncate>
+                                  {attachment.filename}
+                                </Text>
+                                <Text
+                                  size="xs"
+                                  fw={600}
+                                  color="dimmed"
+                                  truncate
+                                >
+                                  {new Intl.DateTimeFormat("en-GB", {
+                                    dateStyle: "short",
+                                    timeStyle: "short",
+                                  }).format(new Date(attachment.created))}
+                                </Text>
+                              </Box>
+                            </Card.Section>
+                          </Flex>
+                        </HoverCard.Target>
+                        <HoverCard.Dropdown p={0}>
+                          <Group spacing={0}>
+                            <ActionIcon
+                              color="dark"
+                              size="lg"
+                              radius="xs"
+                              variant="outline"
+                            >
+                              <IconCloudDownload
+                                color="black"
+                                onClick={handleDownload}
+                              />
+                            </ActionIcon>
 
-                        <ActionIcon
-                          size="lg"
-                          color="black"
-                          radius="xs"
-                          variant="outline"
-                          onClick={() => performDelete(attach.id)}
-                        >
-                          <IconTrash color="black" />
-                        </ActionIcon>
-                      </Group>
-                    </HoverCard.Dropdown>
-                  </Card>
-                </HoverCard>
+                            <ActionIcon
+                              size="lg"
+                              color="black"
+                              radius="xs"
+                              variant="outline"
+                              onClick={() => performDelete(attachment.id)}
+                            >
+                              <IconTrash color="black" />
+                            </ActionIcon>
+                          </Group>
+                        </HoverCard.Dropdown>
+                      </Card>
+                    </HoverCard>
+                  </Box>
+                </Tooltip>
               )
             })}
           </Group>
