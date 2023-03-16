@@ -5,8 +5,8 @@ import {
   Priority,
   Project,
   Sprint,
-  Resource,
   User,
+  Resource,
 } from "../../types"
 
 export interface BasicLoginOptions {
@@ -75,10 +75,7 @@ export interface ProviderApi {
     commentText: string
   ): Promise<void>
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void>
-  getAttachmentThumbnail(id: string): Promise<Resource>
-  deleteAttachment(id: string): Promise<void>
-  downloadAttachment(id: string): Promise<Resource>
-  uploadAttachments(issueIdOrKey: string): Promise<Resource>
+  getResource(): Promise<Resource>
 }
 
 export abstract class ProviderCreator {

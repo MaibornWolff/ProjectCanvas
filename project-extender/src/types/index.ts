@@ -23,6 +23,14 @@ export interface Priority {
   isDefault: boolean
 }
 
+export interface Attachment {
+  id: string
+  filename: string
+  created: string
+  mimeType: string
+  content: string
+}
+
 export interface Issue {
   issueKey: string
   summary: string
@@ -80,13 +88,7 @@ export interface Issue {
   startDate: Date
   dueDate: Date
   priority: Priority
-  attachment?: {
-    id: string
-    filename: string
-    created: string
-    mimeType: string
-    content: string
-  }[]
+  attachment: Attachment[]
 }
 
 interface IssueStatus {
@@ -124,14 +126,6 @@ export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
 })
 
 export interface Resource {
-  url: string
+  baseUrl: string
   authorization: string
-}
-
-export interface Attachment {
-  id: string
-  filename: string
-  created: string
-  mimeType: string
-  content: string
 }

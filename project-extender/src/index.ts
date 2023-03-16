@@ -440,50 +440,14 @@ server.get<{
     .catch(() => reply.status(400).send())
 })
 server.get<{
-  Querystring: { id: string }
-}>("/attachmentThumbnail", async (request, reply) => {
+  Querystring: {}
+}>("/getResource", async (request, reply) => {
   await issueProvider
-    .getAttachmentThumbnail(request.query.id)
-    .then((b) => {
-      reply.status(200).send(b)
-    })
-    .catch((error) => {
-      reply.status(400).send(error)
-    })
-})
-server.get<{
-  Querystring: { id: string }
-}>("/downloadAttachment", async (request, reply) => {
-  await issueProvider
-    .downloadAttachment(request.query.id)
+    .getResource()
     .then((data) => {
       reply.status(200).send(data)
     })
     .catch((error) => {
-      reply.status(400).send(error)
-    })
-})
-server.get<{
-  Querystring: { id: string }
-}>("/deleteAttachment", async (request, reply) => {
-  await issueProvider
-    .deleteAttachment(request.query.id)
-    .then((data) => {
-      reply.status(200).send(data)
-    })
-    .catch((error) => {
-      reply.status(400).send(error)
-    })
-})
-server.get<{
-  Querystring: { id: string }
-}>("/uploadAttachments", async (request, reply) => {
-  await issueProvider
-    .uploadAttachments(request.query.id)
-    .then((data) => {
-      reply.status(200).send(data)
-    })
-    .catch((error) => {
-      reply.status(400).send(error)
+      reply.status(500).send(error)
     })
 })

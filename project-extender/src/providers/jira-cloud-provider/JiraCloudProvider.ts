@@ -1145,58 +1145,17 @@ class JiraCloudProvider implements ProviderApi {
     })
   }
 
-  getAttachmentThumbnail(id: string): Promise<Resource> {
-    return new Promise((resolve) => {
-      const url = `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/attachment/thumbnail/${id}`
-      const authorization = `Bearer ${this.accessToken}`
-      resolve({ url, authorization })
-    })
-  }
-
-  deleteAttachment(id: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/attachment/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
+  getResource(): Promise<Resource> {
+    return new Promise<Resource>((resolve, reject) => {
+      if (this.accessToken !== undefined) {
+        const result: Resource = {
+          baseUrl: `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/`,
+          authorization: `Bearer ${this.accessToken}`,
         }
-      )
-        .then(async (data) => {
-          switch (data.status) {
-            case 200:
-              resolve()
-              break
-            case 403:
-              reject(new Error(`Error: Status Code ${data.status}`))
-              break
-            case 404:
-              reject(new Error(`Error: Status Code ${data.status}`))
-              break
-            default:
-              reject(new Error(`Error: Status Code ${data.status}`))
-          }
-        })
-        .catch((err) => reject(new Error(`Error: ${err}`)))
-    })
-  }
-
-  downloadAttachment(id: string): Promise<Resource> {
-    return new Promise((resolve) => {
-      const url = `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/attachment/content/${id}`
-      const authorization = `Bearer ${this.accessToken}`
-      resolve({ url, authorization })
-    })
-  }
-
-  uploadAttachments(id: string): Promise<Resource> {
-    return new Promise((resolve) => {
-      const url = `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${id}/attachments`
-      const authorization = `Bearer ${this.accessToken}`
-      resolve({ url, authorization })
+        resolve(result)
+      } else {
+        reject()
+      }
     })
   }
 }

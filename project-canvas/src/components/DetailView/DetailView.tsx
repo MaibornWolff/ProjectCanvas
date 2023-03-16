@@ -103,7 +103,7 @@ export function DetailView({
                 <AddSubtask issueKey={issueKey} projectId={projectId} />
               </Stack>
             </Paper>
-            <Attachments issueKey={issueKey} attachments={attachment || []} />
+            <Attachments issueKey={issueKey} attachments={attachment} />
             <CommentSection issueKey={issueKey} comment={comment} />
           </ScrollArea.Autosize>
         </Stack>
