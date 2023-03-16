@@ -18,6 +18,10 @@ interface LoginOptions {
 }
 
 export interface ProviderApi {
+  refreshAccessToken(oauthRefreshOptions: {
+    clientId: string
+    clientSecret: string
+  }): Promise<void>
   deleteIssue(issueIdOrKey: string): Promise<void>
   createSubtask(
     parentIssueKey: string,

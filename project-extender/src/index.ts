@@ -78,6 +78,26 @@ server.post<{
 })
 
 server.post<{
+  Body: { provider: ProviderType } & BasicLoginOptions & OauthLoginOptions
+}>("/refreshAccessToken", async (request, reply) => {
+  if (request.body.provider === ProviderType.JiraServer) {
+    reply.status(200).send()
+    return
+  }
+  if (request.body.provider === ProviderType.JiraCloud) {
+    await issueProvider
+      .refreshAccessToken({
+        clientId: server.config.CLIENT_ID,
+        clientSecret: server.config.CLIENT_SECRET,
+      })
+      .then(() => {
+        reply.status(200).send()
+      })
+      .catch((error) => reply.status(400).send(error))
+  }
+})
+
+server.post<{
   Body: {
     provider: ProviderType
     username: string

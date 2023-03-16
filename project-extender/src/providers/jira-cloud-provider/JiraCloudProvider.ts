@@ -18,10 +18,12 @@ import {
   JiraProject,
   JiraSprint,
 } from "../../types/jira"
-import { getAccessToken } from "./getAccessToken"
+import { getAccessToken, refreshTokens } from "./getAccessToken"
 
 class JiraCloudProvider implements ProviderApi {
   public accessToken: string | undefined
+
+  public refreshToken: string | undefined
 
   private cloudID = ""
 
@@ -48,8 +50,11 @@ class JiraCloudProvider implements ProviderApi {
       code: string
     }
   }) {
-    if (this.accessToken === undefined)
-      this.accessToken = await getAccessToken(oauthLoginOptions)
+    if (this.accessToken === undefined) {
+      const tokenObject = await getAccessToken(oauthLoginOptions)
+      this.accessToken = tokenObject.accessToken
+      this.refreshToken = tokenObject.refreshToken
+    }
     await fetch("https://api.atlassian.com/oauth/token/accessible-resources", {
       headers: {
         Accept: "application/json",
@@ -74,6 +79,28 @@ class JiraCloudProvider implements ProviderApi {
       } else {
         reject()
       }
+    })
+  }
+
+  async refreshAccessToken(oauthRefreshOptions: {
+    clientId: string
+    clientSecret: string
+  }): Promise<void> {
+    if (this.refreshToken) {
+      const { clientId, clientSecret } = oauthRefreshOptions
+      const { accessToken, refreshToken } = await refreshTokens({
+        clientId,
+        clientSecret,
+        _refreshToken: this.refreshToken,
+      })
+      this.accessToken = accessToken
+      this.refreshToken = refreshToken
+      return new Promise((resolve) => {
+        resolve()
+      })
+    }
+    return new Promise((reject) => {
+      reject()
     })
   }
 
