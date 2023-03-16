@@ -14,7 +14,7 @@ export function JiraCloudLogin({
 
   return (
     <>
-      <Center sx={{ height: "200px" }}>
+      <Center sx={{ height: "200px" }} data-testid="JiraCloudLogin">
         <Loader size="xl" />
       </Center>
       <Button variant="outline" fullWidth color="dark" onClick={goBack}>

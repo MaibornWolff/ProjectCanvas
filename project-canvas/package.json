@@ -14,7 +14,8 @@
     "format": "yarn prettier --write .",
     "lint": "eslint",
     "e2e": "npx playwright test tests/",
-    "test": "jest"
+    "test": "jest",
+	  "typecheck": "tsc --noEmit"
   },
   "engines": {
     "node": "^14.18.0 || >=16.0.0"

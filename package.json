@@ -11,6 +11,8 @@
     "canvas:build": "yarn extender:build && yarn --cwd project-canvas build ",
     "canvas:test": "yarn --cwd project-canvas test",
     "canvas:e2e": "yarn --cwd project-canvas e2e",
+	"lint": "eslint",
+    "format": "prettier .",
     "extender": "yarn --cwd project-extender start",
     "extender:build": "yarn --cwd project-extender build",
     "jira": "yarn --cwd fake-jira-server start",

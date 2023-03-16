@@ -112,5 +112,5 @@ ipcMain.handle("open-win", (event, arg) => {
 })
 
 app.whenReady().then(() => {
-  ipcMain.on("start-oauth2", () => handleOAuth2(win))
+  ipcMain.on("start-oauth2", () => handleOAuth2(win!))
 })
