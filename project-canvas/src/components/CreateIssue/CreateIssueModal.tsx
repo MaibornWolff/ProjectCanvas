@@ -13,6 +13,10 @@ import { Issue } from "project-extender"
 import { Dispatch, SetStateAction } from "react"
 import { useCanvasStore } from "../../lib/Store"
 import {
+  getResource,
+  uploadAttachment,
+} from "../backlog-view/Issue/attachments/queryFunctions"
+import {
   ProjectSelect,
   IssueTypeSelect,
   StatusSelect,
@@ -95,6 +99,10 @@ export function CreateIssueModal({
       })
     },
     onSuccess: (issueKey) => {
+      const files: File[] = form.getInputProps("attachment").value
+      const filesForm = new FormData()
+      files.forEach((f) => filesForm.append("file", f, f.name))
+      getResource().then((r) => uploadAttachment(issueKey, r, filesForm))
       showNotification({
         message: `The issue ${issueKey} has been created!`,
         color: "green",
