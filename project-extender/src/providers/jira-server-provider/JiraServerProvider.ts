@@ -472,6 +472,13 @@ class JiraServerProvider implements ProviderApi {
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
     throw new Error("Method not implemented for Jira Server")
   }
+
+  refreshAccessToken(oauthRefreshOptions: {
+    clientId: string
+    clientSecret: string
+  }): Promise<void> {
+    throw new Error("Method not implemented.")
+  }
 }
 
 export class JiraServerProviderCreator extends ProviderCreator {
