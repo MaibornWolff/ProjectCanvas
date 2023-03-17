@@ -59,7 +59,6 @@ export function IssueCard({
           {...provided.dragHandleProps}
           sx={{ position: "relative" }}
           onClick={() => setOpened(true)}
-          onBlur={() => setOpened(false)}
         >
           <DeleteButton mounted={hovered} issueKey={issueKey} />
           <Group
