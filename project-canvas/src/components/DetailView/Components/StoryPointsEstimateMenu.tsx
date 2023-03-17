@@ -60,63 +60,75 @@ export function StoryPointsEstimateMenu({
   }
 
   return (
-    <Group grow>
-      <Text color="dimmed" fz="sm">
-        Story Points Estimate
-      </Text>
-      {!showEditableInput && storyPointsEstimate !== undefined && (
-        <Group>
-          <Chip onClick={() => setShowEditableInput(true)}>
-            {localStoryPtsEstimate}
-          </Chip>
-          {showLoader && <Loader size="sm" />}
-        </Group>
-      )}
-      {showEditableInput &&
-        storyPointsEstimate !== undefined &&
-        editableFields &&
-        editableFields.includes("Story point estimate") && (
-          <Group>
-            <Box w={60}>
-              <NumberInput
-                min={0}
-                defaultValue={localStoryPtsEstimate}
-                onChange={(val) => {
-                  setLocalStoryPtsEstimate(val!)
-                  handleStoryPointsEstimateChange(val)
-                  setShowLoader(true)
-                }}
-                onBlur={() => setShowEditableInput(false)}
-              />
-            </Box>
-            {showLoader && <Loader size="sm" />}
-          </Group>
-        )}
-      {storyPointsEstimate === undefined &&
-        editableFields &&
-        !editableFields.includes("Story point estimate") && (
-          <NumberInput width={100} min={0} defaultValue={0} disabled />
-        )}
-      {showEditableInput &&
-        storyPointsEstimate === undefined &&
-        editableFields &&
-        editableFields.includes("Story point estimate") && (
-          <Group position="right">
-            <Box w={70}>
-              <NumberInput
-                min={0}
-                defaultValue={0}
-                onChange={(val) => {
-                  setLocalStoryPtsEstimate(val!)
-                  handleStoryPointsEstimateChange(val)
-                  setShowLoader(true)
-                }}
-                onBlur={() => setShowEditableInput(false)}
-              />
-            </Box>
-            {showLoader && <Loader size="sm" />}
-          </Group>
-        )}
-    </Group>
+    editableFields &&
+    editableFields.includes("Story point estimate") && (
+      <Group grow>
+        <Text color="dimmed" fz="sm">
+          Story Points Estimate
+        </Text>
+        {!showEditableInput &&
+          storyPointsEstimate !== undefined &&
+          editableFields &&
+          editableFields.includes("Story point estimate") && (
+            <Group>
+              {localStoryPtsEstimate ? (
+                <Chip onClick={() => setShowEditableInput(true)}>
+                  {localStoryPtsEstimate}
+                </Chip>
+              ) : (
+                <Text color="dimmed" onClick={() => setShowEditableInput(true)}>
+                  None
+                </Text>
+              )}
+              {showLoader && <Loader size="sm" />}
+            </Group>
+          )}
+        {showEditableInput &&
+          storyPointsEstimate !== undefined &&
+          editableFields &&
+          editableFields.includes("Story point estimate") && (
+            <Group>
+              <Box w={60}>
+                <NumberInput
+                  min={0}
+                  defaultValue={localStoryPtsEstimate}
+                  onChange={(val) => {
+                    setLocalStoryPtsEstimate(val!)
+                    handleStoryPointsEstimateChange(val)
+                    setShowLoader(true)
+                  }}
+                  onBlur={() => setShowEditableInput(false)}
+                />
+              </Box>
+              {showLoader && <Loader size="sm" />}
+            </Group>
+          )}
+        {storyPointsEstimate === undefined &&
+          editableFields &&
+          !editableFields.includes("Story point estimate") && (
+            <NumberInput width={100} min={0} defaultValue={0} disabled />
+          )}
+        {showEditableInput &&
+          storyPointsEstimate === undefined &&
+          editableFields &&
+          editableFields.includes("Story point estimate") && (
+            <Group position="right">
+              <Box w={70}>
+                <NumberInput
+                  min={0}
+                  defaultValue={0}
+                  onChange={(val) => {
+                    setLocalStoryPtsEstimate(val!)
+                    handleStoryPointsEstimateChange(val)
+                    setShowLoader(true)
+                  }}
+                  onBlur={() => setShowEditableInput(false)}
+                />
+              </Box>
+              {showLoader && <Loader size="sm" />}
+            </Group>
+          )}
+      </Group>
+    )
   )
 }
