@@ -166,7 +166,7 @@ export function BacklogView() {
         </Group>
         <Title>Backlog</Title>
         <TextInput
-          placeholder="Search by issue summary"
+          placeholder="Search by issue summary, key, epic, labels, creator or assignee.."
           mb="md"
           icon={<IconSearch size={14} stroke={1.5} />}
           value={search}
