@@ -2,9 +2,10 @@
 import { Box, Button, Group, Loader, TextInput } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { IconPlus } from "@tabler/icons"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { createSubtaskMutation } from "./queries"
+import { getIssueTypes } from "./queryFunctions"
 
 export function AddSubtask({
   issueKey,
@@ -14,14 +15,23 @@ export function AddSubtask({
   projectId: string
 }) {
   const queryClient = useQueryClient()
-
   const [summary, setSummary] = useState("")
+  const { data: issueTypes } = useQuery({
+    queryKey: ["issueTypes", projectId],
+    queryFn: () => getIssueTypes(projectId),
+    enabled: !!projectId,
+  })
+
+  const issueTypeWithSubTask = issueTypes?.find(
+    (issueType) => issueType?.subtask === true
+  )
 
   const createSubstask = createSubtaskMutation(
     issueKey,
     summary,
     projectId,
     queryClient,
+    `${issueTypeWithSubTask?.id.toString()}`,
     () => setSummary("")
   )
 

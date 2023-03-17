@@ -22,7 +22,8 @@ export interface ProviderApi {
   createSubtask(
     parentIssueKey: string,
     projectId: string,
-    summary: string
+    summary: string,
+    subtaskId: string
   ): Promise<{ id: string; key: string }>
   login(loginOptions: LoginOptions): Promise<void>
   isLoggedIn(): Promise<void>

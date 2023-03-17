@@ -407,13 +407,15 @@ server.post<{
     parentIssueKey: string
     projectId: string
     summary: string
+    subtaskID: string
   }
 }>("/createSubtask", (request, reply) => {
   issueProvider
     .createSubtask(
       request.body.parentIssueKey,
       request.body.projectId,
-      request.body.summary
+      request.body.summary,
+      request.body.subtaskID
     )
     .then((createdSubtask) => {
       reply.status(200).send(createdSubtask)

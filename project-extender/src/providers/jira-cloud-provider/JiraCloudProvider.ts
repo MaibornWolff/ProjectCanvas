@@ -1105,11 +1105,12 @@ class JiraCloudProvider implements ProviderApi {
   createSubtask(
     parentIssueKey: string,
     projectId: string,
-    subtaskSummary: string
+    subtaskSummary: string,
+    subtaskID: string
   ): Promise<{ id: string; key: string }> {
     return new Promise((resolve) => {
       fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/issue/`,
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/`,
         {
           method: "POST",
           headers: {
@@ -1121,7 +1122,7 @@ class JiraCloudProvider implements ProviderApi {
             fields: {
               summary: subtaskSummary,
               issuetype: {
-                name: "Subtask",
+                id: subtaskID,
               },
               parent: {
                 key: parentIssueKey,
@@ -1132,12 +1133,15 @@ class JiraCloudProvider implements ProviderApi {
             },
           }),
         }
-      ).then(async (data) => {
-        if (data.status === 201) {
-          const createdSubtask: { id: string; key: string } = await data.json()
-          resolve(createdSubtask)
-        }
-      })
+      )
+        .then(async (data) => {
+          const resp = await data.json()
+          if (data.status === 201) {
+            const createdSubtask: { id: string; key: string } = resp
+            resolve(createdSubtask)
+          }
+        })
+        .catch((err) => err)
     })
   }
 }
