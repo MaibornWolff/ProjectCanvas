@@ -30,6 +30,7 @@ export function Subtask({
           transition: "background-color .1s ease-in",
         },
       })}
+      p="sm"
     >
       <ThemeIcon size="sm" sx={{ flex: 2 }}>
         <IconBinaryTree2 />
@@ -37,7 +38,7 @@ export function Subtask({
       <Text size="sm" color="blue" span sx={{ flex: 15 }} lineClamp={1}>
         {subtaskKey}
       </Text>
-      <Box sx={{ flex: 60 }}>
+      <Box sx={{ flex: 50 }}>
         <IssueSummary summary={fields.summary} issueKey={subtaskKey} />
       </Box>
       {deleteSubtask.isLoading && <Loader size="sm" />}
