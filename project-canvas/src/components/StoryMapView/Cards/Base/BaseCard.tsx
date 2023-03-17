@@ -17,6 +17,7 @@ export const BaseCard = forwardRef<
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        color: "black",
       },
       ...packSx(sx),
     ]}
