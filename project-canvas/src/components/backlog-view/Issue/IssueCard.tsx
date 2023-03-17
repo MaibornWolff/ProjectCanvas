@@ -66,153 +66,159 @@ export function IssueCard({
   }
 
   return (
-    <Draggable key={issueKey} draggableId={issueKey} index={index}>
-      {(provided) => (
-        <Paper
-          ref={useMergedRef(provided.innerRef, ref)}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          sx={{ position: "relative" }}
-        >
-          <DeleteButton mounted={hovered} issueKey={issueKey} />
-          <Grid
-            columns={100}
-            p={3}
-            sx={{
-              borderRadius: theme.radius.sm,
-              margin: 0,
-              boxShadow: theme.shadows.xs,
-              transition: "background-color .8s ease-out",
-              ":hover": hoverStyles,
-            }}
+    <>
+      <Draggable key={issueKey} draggableId={issueKey} index={index}>
+        {(provided) => (
+          <Paper
+            ref={useMergedRef(provided.innerRef, ref)}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            onClick={() => setOpened(true)}
+            sx={{ position: "relative" }}
           >
-            <Grid.Col
-              span={8}
+            <DeleteButton mounted={hovered} issueKey={issueKey} />
+            <Grid
+              columns={100}
+              p={3}
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
+                borderRadius: theme.radius.sm,
+                margin: 0,
+                boxShadow: theme.shadows.xs,
+                transition: "background-color .8s ease-out",
+                ":hover": hoverStyles,
               }}
             >
-              <Center>
-                <IssueIcon type={type} />
-              </Center>
-            </Grid.Col>
-            <Grid.Col span={77}>
-              <Stack spacing={0}>
-                <Group spacing={2}>
-                  <Text
-                    size="sm"
-                    mr={5}
-                    color="blue"
-                    td={status === "Done" ? "line-through" : "none"}
-                    sx={{
-                      ":hover": {
-                        textDecoration: "underline",
-                        cursor: "pointer",
-                      },
-                    }}
-                    onClick={() => setOpened(true)}
-                  >
-                    {issueKey}
-                  </Text>
-                  <Modal
-                    opened={opened}
-                    onClose={() => {
-                      setOpened(false)
-                      queryClient.invalidateQueries({ queryKey: ["issues"] })
-                    }}
-                    size="85%"
-                    withCloseButton={false}
-                  >
-                    <DetailView
-                      issueKey={issueKey}
-                      summary={summary}
-                      status={status}
-                      type={type}
-                      storyPointsEstimate={storyPointsEstimate}
-                      epic={epic}
-                      labels={labels}
-                      assignee={assignee}
-                      projectId={projectId}
-                      closeModal={() => setOpened(false)}
-                      {...props}
-                    />
-                  </Modal>
-                  {epic && (
-                    <Badge mr={5} color="violet">
-                      {epic}
-                    </Badge>
-                  )}
-                  {labels?.length !== 0 &&
-                    labels.map((label) => (
-                      <Badge mr={2} key={`${issueKey}-${label}`} color="yellow">
-                        {label}
-                      </Badge>
-                    ))}
-                </Group>
-                <Text size="lg">{summary}</Text>
-                <Group align="center" spacing="sm">
-                  <Text size="sm">{type}</Text>
-                  <Text size="sm">•</Text>
-                  <Text size="sm">{status}</Text>
-                </Group>
-              </Stack>
-            </Grid.Col>
-            <Grid.Col
-              span={8}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <Tooltip
-                label={
-                  assignee.displayName !== undefined
-                    ? assignee.displayName
-                    : "unassigned"
-                }
+              <Grid.Col
+                span={8}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
               >
-                {assignee.avatarUrls !== undefined ? (
-                  <Avatar
-                    src={assignee?.avatarUrls["24x24"]}
-                    size="sm"
-                    radius="xl"
-                    ml={4}
-                    mr={4}
-                  />
-                ) : (
-                  <Avatar
-                    radius="xl"
-                    variant="outline"
-                    size="sm"
-                    ml={4}
-                    mr={4}
-                  />
-                )}
-              </Tooltip>
-            </Grid.Col>
-            <Grid.Col span={3}>
-              <Box sx={{ alignSelf: "flex-start" }}>
-                <Badge
-                  w="24px"
-                  p="0"
-                  bg={
-                    storyPointsEstimate !== undefined &&
-                    storyPointsEstimate !== null
-                      ? storyPointsColor
-                      : "transparent"
+                <Center>
+                  <IssueIcon type={type} />
+                </Center>
+              </Grid.Col>
+              <Grid.Col span={74}>
+                <Stack spacing={0}>
+                  <Group spacing={2}>
+                    <Text
+                      size="sm"
+                      mr={5}
+                      color="blue"
+                      td={status === "Done" ? "line-through" : "none"}
+                      sx={{
+                        ":hover": {
+                          textDecoration: "underline",
+                          cursor: "pointer",
+                        },
+                      }}
+                    >
+                      {issueKey}
+                    </Text>
+                    {epic && (
+                      <Badge mr={5} color="violet">
+                        {epic}
+                      </Badge>
+                    )}
+                    {labels?.length !== 0 &&
+                      labels.map((label) => (
+                        <Badge
+                          mr={2}
+                          key={`${issueKey}-${label}`}
+                          color="yellow"
+                        >
+                          {label}
+                        </Badge>
+                      ))}
+                  </Group>
+                  <Text size="lg">{summary}</Text>
+                  <Group align="center" spacing="sm">
+                    <Text size="sm">{type}</Text>
+                    <Text size="sm">•</Text>
+                    <Text size="sm">{status}</Text>
+                  </Group>
+                </Stack>
+              </Grid.Col>
+              <Grid.Col
+                span={8}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <Tooltip
+                  label={
+                    assignee.displayName !== undefined
+                      ? assignee.displayName
+                      : "unassigned"
                   }
-                  variant="filled"
                 >
-                  {storyPointsEstimate}
-                </Badge>
-              </Box>
-            </Grid.Col>
-          </Grid>
-        </Paper>
-      )}
-    </Draggable>
+                  {assignee.avatarUrls !== undefined ? (
+                    <Avatar
+                      src={assignee?.avatarUrls["24x24"]}
+                      size="sm"
+                      radius="xl"
+                      ml={4}
+                      mr={4}
+                    />
+                  ) : (
+                    <Avatar
+                      radius="xl"
+                      variant="outline"
+                      size="sm"
+                      ml={4}
+                      mr={4}
+                    />
+                  )}
+                </Tooltip>
+              </Grid.Col>
+              <Grid.Col span={3}>
+                <Box sx={{ alignSelf: "flex-start" }}>
+                  <Badge
+                    w="24px"
+                    p="0px"
+                    bg={
+                      storyPointsEstimate !== undefined &&
+                      storyPointsEstimate !== null
+                        ? storyPointsColor
+                        : "transparent"
+                    }
+                    variant="filled"
+                  >
+                    {storyPointsEstimate}
+                  </Badge>
+                </Box>
+              </Grid.Col>
+            </Grid>
+          </Paper>
+        )}
+      </Draggable>
+      <Modal
+        opened={opened}
+        onClose={() => {
+          setOpened(false)
+          queryClient.invalidateQueries({ queryKey: ["issues"] })
+        }}
+        size="85%"
+        withCloseButton={false}
+      >
+        <DetailView
+          issueKey={issueKey}
+          summary={summary}
+          status={status}
+          type={type}
+          storyPointsEstimate={storyPointsEstimate}
+          epic={epic}
+          labels={labels}
+          assignee={assignee}
+          projectId={projectId}
+          closeModal={() => setOpened(false)}
+          {...props}
+        />
+      </Modal>
+    </>
   )
 }
