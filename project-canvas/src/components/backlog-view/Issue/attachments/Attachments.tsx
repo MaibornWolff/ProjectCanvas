@@ -135,6 +135,7 @@ export function Attachments(props: {
                                 <LoadingOverlay
                                   overlayOpacity={0.3}
                                   overlayColor="#c5c5c5"
+                                  exitTransitionDuration={5000}
                                   visible={thumbnailsLoading}
                                 />
 
