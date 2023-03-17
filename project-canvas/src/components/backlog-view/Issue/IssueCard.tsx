@@ -10,6 +10,7 @@ import {
   Text,
   Tooltip,
   useMantineTheme,
+  Grid,
 } from "@mantine/core"
 import { useHover, useMergedRef } from "@mantine/hooks"
 import { useQueryClient } from "@tanstack/react-query"
@@ -74,116 +75,142 @@ export function IssueCard({
           sx={{ position: "relative" }}
         >
           <DeleteButton mounted={hovered} issueKey={issueKey} />
-          <Group
-            display="flex"
+          <Grid
+            columns={100}
+            p={3}
             sx={{
               borderRadius: theme.radius.sm,
-              gap: 0,
-              padding: theme.spacing.xs,
+              margin: 0,
               boxShadow: theme.shadows.xs,
               transition: "background-color .8s ease-out",
               ":hover": hoverStyles,
             }}
           >
-            <Center sx={{ flex: 2 }}>
-              <IssueIcon type={type} />
-            </Center>
-
-            <Stack spacing={0} sx={{ flex: 19 }}>
-              <Group spacing={2}>
-                <Text
-                  size="sm"
-                  mr={5}
-                  color="blue"
-                  td={status === "Done" ? "line-through" : "none"}
-                  sx={{
-                    ":hover": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                  onClick={() => setOpened(true)}
-                >
-                  {issueKey}
-                </Text>
-                <Modal
-                  opened={opened}
-                  onClose={() => {
-                    setOpened(false)
-                    queryClient.invalidateQueries({ queryKey: ["issues"] })
-                  }}
-                  size="85%"
-                  withCloseButton={false}
-                >
-                  <DetailView
-                    issueKey={issueKey}
-                    summary={summary}
-                    status={status}
-                    type={type}
-                    storyPointsEstimate={storyPointsEstimate}
-                    epic={epic}
-                    labels={labels}
-                    assignee={assignee}
-                    projectId={projectId}
-                    closeModal={() => setOpened(false)}
-                    {...props}
-                  />
-                </Modal>
-                {epic && (
-                  <Badge mr={5} color="violet">
-                    {epic}
-                  </Badge>
-                )}
-                {labels?.length !== 0 &&
-                  labels.map((label) => (
-                    <Badge mr={2} key={`${issueKey}-${label}`} color="yellow">
-                      {label}
-                    </Badge>
-                  ))}
-              </Group>
-              <Text size="lg">{summary}</Text>
-              <Group align="center" spacing="sm">
-                <Text size="sm">{type}</Text>
-                <Text size="sm">•</Text>
-                <Text size="sm">{status}</Text>
-              </Group>
-            </Stack>
-            <Tooltip
-              label={
-                assignee.displayName !== undefined
-                  ? assignee.displayName
-                  : "unassigned"
-              }
-              sx={{ flex: 2 }}
+            <Grid.Col
+              span={8}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
             >
-              {assignee.avatarUrls !== undefined ? (
-                <Avatar
-                  src={assignee?.avatarUrls["24x24"]}
-                  size="sm"
-                  radius="xl"
-                  ml={4}
-                  mr={4}
-                />
-              ) : (
-                <Avatar radius="xl" />
-              )}
-            </Tooltip>
-            <Box sx={{ alignSelf: "flex-start", flex: 1 }}>
-              <Badge
-                w="24px"
-                p="0"
-                bg={
-                  storyPointsEstimate !== undefined &&
-                  storyPointsEstimate !== null
-                    ? storyPointsColor
-                    : "transparent"
+              <Center>
+                <IssueIcon type={type} />
+              </Center>
+            </Grid.Col>
+            <Grid.Col span={77}>
+              <Stack spacing={0}>
+                <Group spacing={2}>
+                  <Text
+                    size="sm"
+                    mr={5}
+                    color="blue"
+                    td={status === "Done" ? "line-through" : "none"}
+                    sx={{
+                      ":hover": {
+                        textDecoration: "underline",
+                        cursor: "pointer",
+                      },
+                    }}
+                    onClick={() => setOpened(true)}
+                  >
+                    {issueKey}
+                  </Text>
+                  <Modal
+                    opened={opened}
+                    onClose={() => {
+                      setOpened(false)
+                      queryClient.invalidateQueries({ queryKey: ["issues"] })
+                    }}
+                    size="85%"
+                    withCloseButton={false}
+                  >
+                    <DetailView
+                      issueKey={issueKey}
+                      summary={summary}
+                      status={status}
+                      type={type}
+                      storyPointsEstimate={storyPointsEstimate}
+                      epic={epic}
+                      labels={labels}
+                      assignee={assignee}
+                      projectId={projectId}
+                      closeModal={() => setOpened(false)}
+                      {...props}
+                    />
+                  </Modal>
+                  {epic && (
+                    <Badge mr={5} color="violet">
+                      {epic}
+                    </Badge>
+                  )}
+                  {labels?.length !== 0 &&
+                    labels.map((label) => (
+                      <Badge mr={2} key={`${issueKey}-${label}`} color="yellow">
+                        {label}
+                      </Badge>
+                    ))}
+                </Group>
+                <Text size="lg">{summary}</Text>
+                <Group align="center" spacing="sm">
+                  <Text size="sm">{type}</Text>
+                  <Text size="sm">•</Text>
+                  <Text size="sm">{status}</Text>
+                </Group>
+              </Stack>
+            </Grid.Col>
+            <Grid.Col
+              span={8}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <Tooltip
+                label={
+                  assignee.displayName !== undefined
+                    ? assignee.displayName
+                    : "unassigned"
                 }
-                variant="filled"
               >
-                {storyPointsEstimate}
-              </Badge>
-            </Box>
-          </Group>
+                {assignee.avatarUrls !== undefined ? (
+                  <Avatar
+                    src={assignee?.avatarUrls["24x24"]}
+                    size="sm"
+                    radius="xl"
+                    ml={4}
+                    mr={4}
+                  />
+                ) : (
+                  <Avatar
+                    radius="xl"
+                    variant="outline"
+                    size="sm"
+                    ml={4}
+                    mr={4}
+                  />
+                )}
+              </Tooltip>
+            </Grid.Col>
+            <Grid.Col span={3}>
+              <Box sx={{ alignSelf: "flex-start" }}>
+                <Badge
+                  w="24px"
+                  p="0"
+                  bg={
+                    storyPointsEstimate !== undefined &&
+                    storyPointsEstimate !== null
+                      ? storyPointsColor
+                      : "transparent"
+                  }
+                  variant="filled"
+                >
+                  {storyPointsEstimate}
+                </Badge>
+              </Box>
+            </Grid.Col>
+          </Grid>
         </Paper>
       )}
     </Draggable>
