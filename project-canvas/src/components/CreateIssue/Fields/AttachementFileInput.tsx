@@ -19,6 +19,7 @@ export function AttachementFileInput({
       placeholder="Upload Files"
       icon={<IconFileUpload />}
       multiple
+      clearable
       {...form.getInputProps("attachment")}
     />
   )
