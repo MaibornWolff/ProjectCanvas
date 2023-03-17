@@ -72,11 +72,16 @@ export function Attachments(props: {
       addAttachmentMutationLocal.mutate({ issueIdOrKey, resource, form })
   }
 
+  const label: string =
+    props.attachments.length === 0
+      ? "Attachments"
+      : `Attachments (${props.attachments.length})`
+
   return (
     <>
       <Group position="left" align="flex-start" spacing="xs">
         <Text color="dimmed" mb="sm">
-          Attachments
+          {label}
         </Text>
         <Group position="center">
           <FileButton onChange={performUpload} accept="*/*">
