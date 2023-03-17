@@ -492,6 +492,10 @@ class JiraServerProvider implements ProviderApi {
   deleteIssue(issueIdOrKey: string): Promise<void> {
     throw new Error("Method not implemented.")
   }
+
+  getResource(): Promise<Resource> {
+    throw new Error("Method not implemented.")
+  }
 }
 
 export class JiraServerProviderCreator extends ProviderCreator {
