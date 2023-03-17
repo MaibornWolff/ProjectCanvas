@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
-import {ElectronApplication, Page, _electron as electron } from "playwright"
-
+import { ElectronApplication, Page, _electron as electron } from "playwright"
+// import elevate from "../release/1.0.0/win-unpacked/resources/"
 
 test.describe("Check Man Page", async () => {
   let page: Page
@@ -10,9 +10,12 @@ test.describe("Check Man Page", async () => {
   test.beforeEach(async () => {
     // use for run the tests on a mac
     // electronApp = await electron.launch({executablePath: './release/1.0.0/mac-arm64/ProjectCanvas.app/Contents/MacOS/ProjectCanvas' });
-    
+
     // use for run the tests on windows
-    electronApp = await electron.launch({executablePath: './release/1.0.0/win-unpacked/resources/elevate.exe' });
+    electronApp = await electron.launch({
+      executablePath:
+        "./release/17.03 main ohne PRs/win-unpacked/ProjectCanvas.exe",
+    })
 
     let windowText
     while (!windowText) {
