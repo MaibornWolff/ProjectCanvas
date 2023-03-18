@@ -9,6 +9,7 @@ import {
   IssueType,
   Priority,
   Project,
+  Resource,
   Sprint,
   User,
 } from "../../types"
@@ -471,6 +472,10 @@ class JiraServerProvider implements ProviderApi {
 
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
     throw new Error("Method not implemented for Jira Server")
+  }
+
+  getResource(): Promise<Resource> {
+    throw new Error("Method not implemented.")
   }
 }
 
