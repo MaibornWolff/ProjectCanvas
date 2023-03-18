@@ -1,6 +1,6 @@
 import { BrowserWindow } from "electron"
 
-export function handleOAuth2(win) {
+export function handleOAuth2(win: BrowserWindow) {
   const authWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -53,7 +53,7 @@ export function handleOAuth2(win) {
   })
 }
 
-function handleCallback(url, authWindow) {
+function handleCallback(url: string, authWindow: BrowserWindow) {
   const rawCode = /\?code=(.+)/.exec(url) || null
   const code = rawCode && rawCode.length > 1 ? rawCode[1] : null
   const error = /\?error=(.+)\$/.exec(url)

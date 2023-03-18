@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 import { fetch } from "cross-fetch"
@@ -398,35 +399,35 @@ class JiraServerProvider implements ProviderApi {
   /* eslint-disable @typescript-eslint/no-unused-vars */
 
   getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   createIssue(issue: Issue): Promise<string> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getCurrentUser(): Promise<User> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getIssuesBySprint(sprintId: number): Promise<Issue[]> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getLabels(): Promise<string[]> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getPriorities(): Promise<Priority[]> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
-    throw new Error("Method not implemented.")
+    throw new Error("Method not implemented for Jira Server")
   }
 
   deleteSubtask(subtaskKey: string): Promise<void> {

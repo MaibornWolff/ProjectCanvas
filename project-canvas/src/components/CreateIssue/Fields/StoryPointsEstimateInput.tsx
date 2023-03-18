@@ -24,7 +24,7 @@ export function StoryPointsEstimateInput({
     <NumberInput
       min={0}
       label="Story Point Estimate"
-      defaultValue={null}
+      defaultValue={null as unknown as number}
       precision={3}
       disabled={isDisabled}
       {...form.getInputProps("storyPointsEstimate")}
