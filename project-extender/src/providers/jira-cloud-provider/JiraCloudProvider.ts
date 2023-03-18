@@ -597,7 +597,7 @@ class JiraCloudProvider implements ProviderApi {
               }),
               ...(sprint &&
                 sprint.id && {
-                  [this.customFields.get("Sprint")!]: sprint.id,
+                  [this.customFields.get("Sprint")!]: +sprint.id,
                 }),
               ...(storyPointsEstimate && {
                 [this.customFields.get("Story point estimate")!]:
