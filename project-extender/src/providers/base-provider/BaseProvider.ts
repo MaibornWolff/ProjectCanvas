@@ -4,6 +4,7 @@ import {
   IssueType,
   Priority,
   Project,
+  Resource,
   Sprint,
   SprintCreate,
   User,
@@ -75,6 +76,7 @@ export interface ProviderApi {
     commentText: string
   ): Promise<void>
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void>
+  getResource(): Promise<Resource>
   createSprint(sprint: SprintCreate): Promise<void>
 }
 

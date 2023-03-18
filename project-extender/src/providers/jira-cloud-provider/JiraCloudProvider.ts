@@ -10,6 +10,7 @@ import {
   IssueType,
   User,
   Priority,
+  Resource,
   SprintCreate,
 } from "../../types"
 import {
@@ -387,6 +388,7 @@ class JiraCloudProvider implements ProviderApi {
         comment: element.fields.comment,
         projectId: element.fields.project.id,
         sprint: element.fields.sprint,
+        attachments: element.fields.attachment,
       }))
     )
 
@@ -1140,6 +1142,20 @@ class JiraCloudProvider implements ProviderApi {
           resolve(createdSubtask)
         }
       })
+    })
+  }
+
+  getResource(): Promise<Resource> {
+    return new Promise<Resource>((resolve, reject) => {
+      if (this.accessToken !== undefined) {
+        const result: Resource = {
+          baseUrl: `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/`,
+          authorization: `Bearer ${this.accessToken}`,
+        }
+        resolve(result)
+      } else {
+        reject()
+      }
     })
   }
 

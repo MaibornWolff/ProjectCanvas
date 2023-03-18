@@ -23,6 +23,14 @@ export interface Priority {
   isDefault: boolean
 }
 
+export interface Attachment {
+  id: string
+  filename: string
+  created: string
+  mimeType: string
+  content: string
+}
+
 export interface Issue {
   issueKey: string
   summary: string
@@ -45,7 +53,6 @@ export interface Issue {
   }
   rank: string
   reporter: string
-  attachement: string
   sprint?: Sprint
   projectId: string
   subtasks: {
@@ -80,6 +87,7 @@ export interface Issue {
   startDate: Date
   dueDate: Date
   priority: Priority
+  attachments: Attachment[]
 }
 
 interface IssueStatus {
@@ -123,3 +131,8 @@ export const dateTimeFormat = new Intl.DateTimeFormat("en-GB", {
   minute: "2-digit",
   hour12: false,
 })
+
+export interface Resource {
+  baseUrl: string
+  authorization: string
+}

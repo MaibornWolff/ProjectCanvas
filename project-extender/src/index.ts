@@ -420,6 +420,18 @@ server.post<{
     })
     .catch(() => reply.status(400).send())
 })
+server.get<{
+  Querystring: {}
+}>("/getResource", async (request, reply) => {
+  await issueProvider
+    .getResource()
+    .then((data) => {
+      reply.status(200).send(data)
+    })
+    .catch((error) => {
+      reply.status(500).send(error)
+    })
+})
 
 server.post<{
   Body: {
