@@ -64,6 +64,7 @@ export function SprintSelect({
           }
           searchable
           clearable
+          withinPortal
           {...form.getInputProps("sprint.id")}
         />
       </Box>

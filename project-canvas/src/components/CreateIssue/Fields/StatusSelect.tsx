@@ -15,6 +15,8 @@ export function StatusSelect({
     <Select
       label="Status"
       placeholder="Choose status"
+      withinPortal
+      searchable
       nothingFound={
         form.getInputProps("type").value === ""
           ? "Please select an issue type first"

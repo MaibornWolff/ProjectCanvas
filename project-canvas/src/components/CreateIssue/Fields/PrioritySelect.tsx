@@ -53,6 +53,7 @@ export function PrioritySelect({
               : []
           }
           searchable
+          withinPortal
           clearable
           {...form.getInputProps("priority.id")}
         />

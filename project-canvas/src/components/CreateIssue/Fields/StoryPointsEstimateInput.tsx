@@ -36,8 +36,8 @@ export function StoryPointsEstimateInput({
           label="Story Point Estimate"
           placeholder="Choose story point estimate"
           defaultValue={null as unknown as number}
-          precision={3}
           disabled={isDisabled}
+          value={3}
           {...form.getInputProps("storyPointsEstimate")}
         />
       </Box>

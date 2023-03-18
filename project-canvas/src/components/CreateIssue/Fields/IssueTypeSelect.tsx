@@ -26,6 +26,8 @@ export function IssueTypeSelect({
               }))
           : []
       }
+      withinPortal
+      searchable
       required
       {...form.getInputProps("type")}
       onChange={(value) => {

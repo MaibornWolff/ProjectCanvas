@@ -29,6 +29,7 @@ export function AssigneeSelect({
       }
       clearable
       searchable
+      withinPortal
       {...form.getInputProps("assignee.id")}
     />
   )

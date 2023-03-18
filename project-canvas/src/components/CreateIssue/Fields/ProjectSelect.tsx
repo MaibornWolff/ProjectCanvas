@@ -21,6 +21,7 @@ export function ProjectSelect({
         label: `${project.name} (${project.key})`,
       }))}
       searchable
+      withinPortal
       required
       {...form.getInputProps("projectId")}
       onChange={(value) => {
