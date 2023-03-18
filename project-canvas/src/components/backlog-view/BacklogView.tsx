@@ -80,6 +80,12 @@ export function BacklogView() {
                     sortIssuesByRank(issueA, issueB)
                   ),
               })
+              searchIssuesFilter(
+                search,
+                issuesWrappers,
+                searchedissuesWrappers,
+                setSearchedissuesWrappers
+              )
             },
           }))
         : [],
@@ -108,6 +114,12 @@ export function BacklogView() {
                   )
               : [],
         })
+        searchIssuesFilter(
+          search,
+          issuesWrappers,
+          searchedissuesWrappers,
+          setSearchedissuesWrappers
+        )
       },
     })
 
@@ -137,6 +149,7 @@ export function BacklogView() {
       setSearchedissuesWrappers
     )
   }
+
   if (isLoadingBacklogIssues)
     return (
       <Center style={{ width: "100%", height: "100%" }}>
