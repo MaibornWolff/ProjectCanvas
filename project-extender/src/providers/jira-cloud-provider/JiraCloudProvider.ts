@@ -611,13 +611,13 @@ class JiraCloudProvider implements ProviderApi {
         }
       )
         .then(async (data) => {
+          const createdIssue = await data.json()
           if (data.status === 201) {
-            const createdIssue = await data.json()
             resolve(JSON.stringify(createdIssue.key))
             this.setTransition(createdIssue.id, status)
           }
           if (data.status === 400) {
-            reject(new Error(await data.json()))
+            reject(new Error(createdIssue))
           }
           if (data.status === 401) {
             reject(new Error("User not authenticated"))

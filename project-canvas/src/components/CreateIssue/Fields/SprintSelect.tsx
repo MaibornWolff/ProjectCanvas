@@ -57,7 +57,7 @@ export function SprintSelect({
           data={
             !isLoading && sprints && sprints instanceof Array
               ? sprints.map((sprint) => ({
-                  value: sprint.id.toString(),
+                  value: sprint.id,
                   label: sprint.name,
                 }))
               : []
