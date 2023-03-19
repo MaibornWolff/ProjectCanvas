@@ -18,6 +18,7 @@ export function LabelsSelect({ form }: { form: UseFormReturnType<Issue> }) {
       data={labels ?? []}
       searchable
       clearable
+      withinPortal
       {...form.getInputProps("labels")}
     />
   )

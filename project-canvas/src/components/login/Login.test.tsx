@@ -9,6 +9,8 @@ jest.mock("./jira-cloud/loginToJiraCloud.ts", () => ({
 jest.mock("electron", () => ({
   ipcRenderer: {
     send: jest.fn(),
+    on: jest.fn(),
+    removeAllListeners: jest.fn(),
   },
 }))
 

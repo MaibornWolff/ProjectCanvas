@@ -15,8 +15,8 @@ export function AssigneeSelect({
   return (
     <Select
       label="Assignee"
-      placeholder="Unassigned"
-      nothingFound="No Options"
+      placeholder="Choose assignee"
+      nothingFound="Please select a project first"
       itemComponent={SelectItem}
       data={
         !isLoading && assignableUsers && assignableUsers instanceof Array
@@ -29,6 +29,7 @@ export function AssigneeSelect({
       }
       clearable
       searchable
+      withinPortal
       {...form.getInputProps("assignee.id")}
     />
   )

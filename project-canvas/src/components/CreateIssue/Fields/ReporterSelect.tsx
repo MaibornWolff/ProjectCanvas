@@ -5,20 +5,18 @@ import { SelectItem } from "../SelectItem"
 
 export function ReporterSelect({
   form,
-  currentUser,
   assignableUsers,
   isLoading,
 }: {
   form: UseFormReturnType<Issue>
-  currentUser?: User
   assignableUsers?: User[]
   isLoading: boolean
 }) {
   return (
     <Select
       label="Reporter"
-      placeholder={currentUser?.displayName || "Select a Reporter"}
-      nothingFound="No Options"
+      placeholder="Choose reporter"
+      nothingFound="Please select a project first"
       itemComponent={SelectItem}
       data={
         !isLoading && assignableUsers && assignableUsers instanceof Array
@@ -31,6 +29,7 @@ export function ReporterSelect({
       }
       required
       searchable
+      withinPortal
       {...form.getInputProps("reporter")}
     />
   )

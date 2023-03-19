@@ -1,4 +1,11 @@
-import { MultiSelect, Text, Group, Badge, Box } from "@mantine/core"
+import {
+  MultiSelect,
+  Text,
+  Group,
+  Badge,
+  Box,
+  useMantineTheme,
+} from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Issue } from "project-extender"
@@ -13,6 +20,7 @@ export function Labels({
   labels: string[]
   issueKey: string
 }) {
+  const theme = useMantineTheme()
   const [defaultLabels, setdefaultLabels] = useState(labels)
   const [showLabelsInput, setshowLabelsInput] = useState(false)
   const { data: allLabels } = useQuery({
@@ -35,7 +43,16 @@ export function Labels({
     },
   })
   return (
-    <span>
+    <Box
+      sx={{
+        ":hover": {
+          cursor: "pointer",
+          boxShadow: theme.shadows.xs,
+          borderRadius: theme.radius.xs,
+          transition: "background-color .8s ease-out",
+        },
+      }}
+    >
       {showLabelsInput ? (
         <MultiSelect
           placeholder="Choose labels"
@@ -43,7 +60,7 @@ export function Labels({
           searchable
           clearable
           defaultValue={defaultLabels}
-          data={allLabels!}
+          data={allLabels || []}
           onBlur={() => {
             setshowLabelsInput(false)
             mutationLalbels.mutate({
@@ -55,9 +72,11 @@ export function Labels({
       ) : (
         <Box onClick={() => setshowLabelsInput(true)}>
           {defaultLabels.length !== 0 ? (
-            <Group>
+            <Group spacing={3}>
               {defaultLabels.map((label) => (
-                <Badge color="yellow">{label}</Badge>
+                <Badge key={label} color="yellow">
+                  {label}
+                </Badge>
               ))}
             </Group>
           ) : (
@@ -65,6 +84,6 @@ export function Labels({
           )}
         </Box>
       )}
-    </span>
+    </Box>
   )
 }
