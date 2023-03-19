@@ -22,7 +22,11 @@ export function StoryPointsEstimateInput({
 
   return (
     <Tooltip
-      label="Story Point Estimate cannot be defined for this issue type"
+      label={
+        form.getInputProps("type").value === ""
+          ? "Please select an issue type first"
+          : "Story Point Estimate cannot be defined for this issue type"
+      }
       position="top-start"
       events={{
         hover: true && !!isDisabled,

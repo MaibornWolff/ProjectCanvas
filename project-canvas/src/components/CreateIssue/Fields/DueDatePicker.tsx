@@ -18,7 +18,11 @@ export function DueDatePicker({
       ?.includes("Due date")
   return (
     <Tooltip
-      label="Due Date cannot be picked for this issue type"
+      label={
+        form.getInputProps("type").value === ""
+          ? "Please select an issue type first"
+          : "Due Date cannot be picked for this issue type"
+      }
       position="top-start"
       events={{
         hover: true && !!isDisabled,

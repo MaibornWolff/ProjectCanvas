@@ -40,7 +40,11 @@ export function SprintSelect({
 
   return (
     <Tooltip
-      label="Sprint cannot be selected for this issue type"
+      label={
+        form.getInputProps("type").value === ""
+          ? "Please select an issue type first"
+          : "Sprint cannot be selected for this issue type"
+      }
       position="top-start"
       events={{
         hover: true && !!isDisabled,

@@ -28,7 +28,11 @@ export function PrioritySelect({
 
   return (
     <Tooltip
-      label="Priority cannot be selected for this issue type"
+      label={
+        form.getInputProps("type").value === ""
+          ? "Please select an issue type first"
+          : "Priority cannot be selected for this issue type"
+      }
       position="top-start"
       events={{
         hover: true && !!isDisabled,
