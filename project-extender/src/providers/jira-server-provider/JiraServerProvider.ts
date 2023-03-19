@@ -482,6 +482,13 @@ class JiraServerProvider implements ProviderApi {
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void> {
     throw new Error("Method not implemented for Jira Server")
   }
+
+  refreshAccessToken(oauthRefreshOptions: {
+    clientId: string
+    clientSecret: string
+  }): Promise<void> {
+    throw new Error("Method not implemented for Jira Server")
+  }
 }
 
 export class JiraServerProviderCreator extends ProviderCreator {
