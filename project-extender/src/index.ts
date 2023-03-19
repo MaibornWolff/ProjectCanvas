@@ -1,6 +1,8 @@
 import cors from "@fastify/cors"
 import fastifyEnv from "@fastify/env"
 import fastify from "fastify"
+import dotenv from "dotenv"
+import path from "path"
 import { options } from "./FastifyEnvConfig"
 import {
   ProviderApi,
@@ -9,7 +11,11 @@ import {
 } from "./providers/base-provider"
 import { JiraCloudProviderCreator } from "./providers/jira-cloud-provider"
 import { JiraServerProviderCreator } from "./providers/jira-server-provider"
-import { Issue } from "./types"
+import { Issue, SprintCreate } from "./types"
+
+require("dotenv").config()
+
+dotenv.config({ path: path.join(__dirname, "../.env") })
 
 export * from "./types"
 
@@ -61,9 +67,9 @@ server.post<{
       .login({
         oauthLoginOptions: {
           code: request.body.code,
-          clientId: server.config.CLIENT_ID,
-          clientSecret: server.config.CLIENT_SECRET,
-          redirectUri: server.config.REDIRECT_URI,
+          clientId: process.env.CLIENT_ID!,
+          clientSecret: process.env.CLIENT_SECRET!,
+          redirectUri: process.env.REDIRECT_URI!,
         },
       })
       .then(() => {
@@ -75,6 +81,35 @@ server.post<{
     return
   }
   reply.status(400).send()
+})
+
+server.post<{
+  Body: { provider: ProviderType }
+}>("/refreshAccessToken", async (request, reply) => {
+  if (request.body.provider === ProviderType.JiraServer) {
+    reply.status(200).send()
+    return
+  }
+  if (request.body.provider === ProviderType.JiraCloud) {
+    await issueProvider
+      .refreshAccessToken({
+        clientId: server.config.CLIENT_ID,
+        clientSecret: server.config.CLIENT_SECRET,
+      })
+      .then(() => {
+        reply.status(200).send()
+      })
+      .catch((error) => reply.status(400).send(error))
+  }
+})
+
+server.get("/isLoggedIn", async (_, reply) => {
+  await issueProvider
+    .isLoggedIn()
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
 })
 
 server.post<{
@@ -421,4 +456,29 @@ server.post<{
       reply.status(200).send(createdSubtask)
     })
     .catch(() => reply.status(400).send())
+})
+server.get<{
+  Querystring: {}
+}>("/getResource", async (request, reply) => {
+  await issueProvider
+    .getResource()
+    .then((data) => {
+      reply.status(200).send(data)
+    })
+    .catch((error) => {
+      reply.status(500).send(error)
+    })
+})
+
+server.post<{
+  Body: {
+    sprint: SprintCreate
+  }
+}>("/createSprint", (request, reply) => {
+  issueProvider
+    .createSprint(request.body.sprint)
+    .then(() => {
+      reply.status(200).send()
+    })
+    .catch((error) => reply.status(400).send(error))
 })

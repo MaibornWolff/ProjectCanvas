@@ -1,5 +1,14 @@
 /* eslint-disable max-classes-per-file */
-import { Issue, IssueType, Priority, Project, Sprint, User } from "../../types"
+import {
+  Issue,
+  IssueType,
+  Priority,
+  Project,
+  Resource,
+  Sprint,
+  SprintCreate,
+  User,
+} from "../../types"
 
 export interface BasicLoginOptions {
   url: string
@@ -18,15 +27,12 @@ interface LoginOptions {
 }
 
 export interface ProviderApi {
-  deleteIssue(issueIdOrKey: string): Promise<void>
-  createSubtask(
-    parentIssueKey: string,
-    projectId: string,
-    summary: string,
-    subtaskId: string
-  ): Promise<{ id: string; key: string }>
   login(loginOptions: LoginOptions): Promise<void>
   isLoggedIn(): Promise<void>
+  refreshAccessToken(oauthRefreshOptions: {
+    clientId: string
+    clientSecret: string
+  }): Promise<void>
   logout(): Promise<void>
   getProjects(): Promise<Project[]>
   getBoardIds(project: string): Promise<number[]>
@@ -53,7 +59,13 @@ export interface ProviderApi {
     rankAfter: string
   ): Promise<void>
   editIssue(issue: Issue, issueIdOrKey: string): Promise<void>
+  deleteIssue(issueIdOrKey: string): Promise<void>
   createIssue(issue: Issue): Promise<string>
+  createSubtask(
+    parentIssueKey: string,
+    projectId: string,
+    summary: string
+  ): Promise<{ id: string; key: string }>
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]>
   getLabels(): Promise<string[]>
   getPriorities(): Promise<Priority[]>
@@ -68,6 +80,8 @@ export interface ProviderApi {
     commentText: string
   ): Promise<void>
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void>
+  getResource(): Promise<Resource>
+  createSprint(sprint: SprintCreate): Promise<void>
 }
 
 export abstract class ProviderCreator {

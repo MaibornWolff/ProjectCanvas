@@ -32,7 +32,8 @@ export function SprintsPanel({
         item: {
           border: "solid 1px lightgray",
           "&:hover": {
-            backgroundColor: theme.colors.gray[1],
+            background:
+              theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
           },
         },
       })}
@@ -45,6 +46,7 @@ export function SprintsPanel({
           <Accordion.Item
             key={`accordion-item-key-${sprint.name}`}
             value={sprint.name}
+            mr={2}
           >
             <SprintAccordionControl issues={issues} sprint={sprint} />
 
