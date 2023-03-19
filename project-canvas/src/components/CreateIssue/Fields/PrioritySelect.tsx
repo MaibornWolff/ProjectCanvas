@@ -1,4 +1,4 @@
-import { Select } from "@mantine/core"
+import { Box, Select, Tooltip } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
 import { useQuery } from "@tanstack/react-query"
 import { Issue } from "project-extender"
@@ -27,24 +27,41 @@ export function PrioritySelect({
       ?.includes("Priority")
 
   return (
-    <Select
-      label="Priority"
-      placeholder="Choose priority"
-      nothingFound="Select an Issue Type first"
-      itemComponent={SelectItem}
-      disabled={isDisabled}
-      data={
-        !isLoading && priorities && priorities instanceof Array
-          ? priorities.map((priority) => ({
-              image: priority.iconUrl,
-              value: priority.id,
-              label: priority.name,
-            }))
-          : []
+    <Tooltip
+      label={
+        form.getInputProps("type").value === ""
+          ? "Please select an issue type first"
+          : "Priority cannot be selected for this issue type"
       }
-      searchable
-      clearable
-      {...form.getInputProps("priority.id")}
-    />
+      position="top-start"
+      events={{
+        hover: true && !!isDisabled,
+        focus: false && !!isDisabled,
+        touch: false && !!isDisabled,
+      }}
+    >
+      <Box>
+        <Select
+          label="Priority"
+          placeholder="Choose priority"
+          nothingFound="Please select an issue type first"
+          itemComponent={SelectItem}
+          disabled={isDisabled}
+          data={
+            !isLoading && priorities && priorities instanceof Array
+              ? priorities.map((priority) => ({
+                  image: priority.iconUrl,
+                  value: priority.id,
+                  label: priority.name,
+                }))
+              : []
+          }
+          searchable
+          withinPortal
+          clearable
+          {...form.getInputProps("priority.id")}
+        />
+      </Box>
+    </Tooltip>
   )
 }

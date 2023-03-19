@@ -14,7 +14,7 @@ export function DeleteIssueAlert({
   const deleteIssue = deleteIssueMutation(queryClient)
 
   return (
-    <Stack>
+    <Stack onMouseLeave={closeModal}>
       <Alert
         icon={<IconAlertCircle size={16} />}
         title="Attention!"

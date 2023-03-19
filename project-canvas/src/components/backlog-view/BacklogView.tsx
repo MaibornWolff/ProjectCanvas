@@ -20,6 +20,7 @@ import { DragDropContext } from "react-beautiful-dnd"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../lib/Store"
 import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
+import { CreateSprint } from "./CreateSprint/CreateSprint"
 import { searchIssuesFilter, sortIssuesByRank } from "./helpers/backlogHelpers"
 import { onDragEnd } from "./helpers/draggingHelpers"
 import {
@@ -135,12 +136,22 @@ export function BacklogView() {
   if (isLoadingBacklogIssues)
     return (
       <Center style={{ width: "100%", height: "100%" }}>
-        <Loader />
+        {projectKey ? (
+          <Loader />
+        ) : (
+          <Stack align="center">
+            <Title>No Project has been selected!</Title>
+            <Text>
+              Please go back to the Projects View section and select a project
+            </Text>
+            <Button onClick={() => navigate("/projectsview")}>Go back</Button>
+          </Stack>
+        )}
       </Center>
     )
   return (
     <Stack sx={{ minHeight: "100%" }}>
-      <Stack align="left" py="xs" spacing="md">
+      <Stack align="left" spacing="sm">
         <Group>
           <Group spacing="xs" c="dimmed">
             <Text
@@ -162,7 +173,6 @@ export function BacklogView() {
         <Title>Backlog</Title>
         <TextInput
           placeholder="Search by issue summary"
-          mb="md"
           icon={<IconSearch size={14} stroke={1.5} />}
           value={search}
           onChange={handleSearchChange}
@@ -181,7 +191,7 @@ export function BacklogView() {
         >
           <ScrollArea.Autosize
             className="left-panel"
-            maxHeight="calc(100vh - 260px)"
+            maxHeight="calc(100vh - 242px)"
             w="50%"
             p="sm"
             sx={{
@@ -189,29 +199,36 @@ export function BacklogView() {
             }}
           >
             {searchedissuesWrappers.get("Backlog") && (
-              <Box mr="sm">
+              <Box mr="xs">
                 <DraggableIssuesWrapper
                   id="Backlog"
                   issues={searchedissuesWrappers.get("Backlog")!.issues}
                 />
               </Box>
             )}
-            <Button
-              mt="xs"
-              variant="subtle"
-              color="gray"
-              compact
-              radius="xs"
-              display="flex"
-              w="100%"
-              onClick={() => setCreateIssueModalOpened(true)}
-              sx={{
-                justifyContent: "left",
-                ":hover": { backgroundColor: "#E8E2E2" },
-              }}
-            >
-              + Create Issue
-            </Button>
+            <Box mr="xs">
+              <Button
+                mt="sm"
+                mb="xl"
+                variant="subtle"
+                color="gray"
+                radius="sm"
+                display="flex"
+                fullWidth
+                onClick={() => setCreateIssueModalOpened(true)}
+                sx={(theme) => ({
+                  justifyContent: "left",
+                  ":hover": {
+                    background:
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[4]
+                        : theme.colors.gray[4],
+                  },
+                })}
+              >
+                + Create Issue
+              </Button>
+            </Box>
             <CreateIssueModal
               opened={createIssueModalOpened}
               setOpened={setCreateIssueModalOpened}
@@ -228,9 +245,9 @@ export function BacklogView() {
           />
           <ScrollArea.Autosize
             className="right-panel"
-            maxHeight="calc(100vh - 260px)"
+            maxHeight="calc(100vh - 242px)"
             w="50%"
-            p="sm"
+            p="xs"
             sx={{ minWidth: "260px" }}
           >
             <SprintsPanel
@@ -243,6 +260,7 @@ export function BacklogView() {
                 }[]
               }
             />
+            <CreateSprint />
           </ScrollArea.Autosize>
         </DragDropContext>
       </Flex>

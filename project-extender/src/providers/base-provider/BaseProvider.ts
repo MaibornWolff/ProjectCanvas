@@ -1,5 +1,14 @@
 /* eslint-disable max-classes-per-file */
-import { Issue, IssueType, Priority, Project, Sprint, User } from "../../types"
+import {
+  Issue,
+  IssueType,
+  Priority,
+  Project,
+  Resource,
+  Sprint,
+  SprintCreate,
+  User,
+} from "../../types"
 
 export interface BasicLoginOptions {
   url: string
@@ -71,6 +80,8 @@ export interface ProviderApi {
     commentText: string
   ): Promise<void>
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void>
+  getResource(): Promise<Resource>
+  createSprint(sprint: SprintCreate): Promise<void>
 }
 
 export abstract class ProviderCreator {
