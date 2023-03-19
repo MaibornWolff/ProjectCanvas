@@ -1,6 +1,8 @@
 import cors from "@fastify/cors"
 import fastifyEnv from "@fastify/env"
 import fastify from "fastify"
+import dotenv from "dotenv"
+import path from "path"
 import { options } from "./FastifyEnvConfig"
 import {
   ProviderApi,
@@ -10,6 +12,10 @@ import {
 import { JiraCloudProviderCreator } from "./providers/jira-cloud-provider"
 import { JiraServerProviderCreator } from "./providers/jira-server-provider"
 import { Issue, SprintCreate } from "./types"
+
+require("dotenv").config()
+
+dotenv.config({ path: path.join(__dirname, "../.env") })
 
 export * from "./types"
 
@@ -61,9 +67,9 @@ server.post<{
       .login({
         oauthLoginOptions: {
           code: request.body.code,
-          clientId: server.config.CLIENT_ID,
-          clientSecret: server.config.CLIENT_SECRET,
-          redirectUri: server.config.REDIRECT_URI,
+          clientId: process.env.CLIENT_ID!,
+          clientSecret: process.env.CLIENT_SECRET!,
+          redirectUri: process.env.REDIRECT_URI!,
         },
       })
       .then(() => {
