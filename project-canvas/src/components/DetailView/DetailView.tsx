@@ -3,6 +3,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  createStyles,
   Group,
   Menu,
   Paper,
@@ -50,13 +51,24 @@ export function DetailView({
   attachments,
   closeModal,
 }: Issue & { closeModal: () => void }) {
+  const useStyles = createStyles(
+    (theme, { isOpened }: { isOpened: boolean }) => ({
+      icon: {
+        transition: "transform 150ms ease",
+        transform: isOpened ? "rotate(180deg)" : "rotate(0deg)",
+      },
+    })
+  )
+  const [opened, setOpened] = useState(false)
+  const { classes } = useStyles({ isOpened: opened })
+
   const { data: issueTypes } = useQuery({
     queryKey: ["issueTypes", projectId],
     queryFn: () => getIssueTypes(projectId),
     enabled: !!projectId,
   })
-  const queryClient = useQueryClient()
 
+  const queryClient = useQueryClient()
   const [defaultStatus, setDefaultStatus] = useState(status)
   const statusMutation = useMutation({
     mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
@@ -113,9 +125,17 @@ export function DetailView({
         >
           <Box>
             <Group position="apart" mb="sm">
-              <Menu shadow="md">
+              <Menu
+                shadow="md"
+                onOpen={() => setOpened(true)}
+                onClose={() => setOpened(false)}
+              >
                 <Menu.Target>
-                  <Button rightIcon={<IconCaretDown />}>{defaultStatus}</Button>
+                  <Button
+                    rightIcon={<IconCaretDown className={classes.icon} />}
+                  >
+                    {defaultStatus}
+                  </Button>
                 </Menu.Target>
 
                 <Menu.Dropdown>

@@ -1,4 +1,4 @@
-import { Text, Box, Select } from "@mantine/core"
+import { Text, Box, Select, useMantineTheme } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Issue, Sprint } from "project-extender"
@@ -14,6 +14,7 @@ export function IssueSprint(props: {
   sprint: Sprint | undefined
   issueKey: string
 }) {
+  const theme = useMantineTheme()
   const [defaultsprint, setdefaultsprint] = useState(props.sprint || undefined)
   const [showSprintInput, setshowSprintInput] = useState(false)
 
@@ -82,7 +83,17 @@ export function IssueSprint(props: {
           }}
         />
       ) : (
-        <Box onClick={() => setshowSprintInput(true)}>
+        <Box
+          onClick={() => setshowSprintInput(true)}
+          sx={{
+            ":hover": {
+              cursor: "pointer",
+              boxShadow: theme.shadows.xs,
+              borderRadius: theme.radius.xs,
+              transition: "background-color .8s ease-out",
+            },
+          }}
+        >
           {defaultsprint ? (
             <Text>{defaultsprint.name}</Text>
           ) : (

@@ -28,28 +28,27 @@ export function AddSubtask({
   return (
     <Group>
       <TextInput
-        rightSection={
-          <Box>
-            <Button fullWidth>
-              <IconPlus
-                onClick={() => {
-                  if (summary === "")
-                    showNotification({
-                      message: `The summary of an issue cannot be empty!`,
-                      color: "red",
-                    })
-                  else createSubstask.mutate()
-                }}
-              />
-            </Button>
-          </Box>
-        }
+        w="100%"
         mr="sm"
         placeholder="Add Subtask"
         sx={{ flex: 10 }}
         onChange={(e) => setSummary(e.target.value)}
         value={summary}
       />
+      <Box>
+        <Button p="5px">
+          <IconPlus
+            onClick={() => {
+              if (summary === "")
+                showNotification({
+                  message: `The summary of an issue cannot be empty!`,
+                  color: "red",
+                })
+              else createSubstask.mutate()
+            }}
+          />
+        </Button>
+      </Box>
       {createSubstask.isLoading && <Loader size="sm" />}
     </Group>
   )

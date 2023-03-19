@@ -6,6 +6,7 @@ import {
   Project,
   Resource,
   Sprint,
+  SprintCreate,
   User,
 } from "../../types"
 
@@ -76,6 +77,7 @@ export interface ProviderApi {
   ): Promise<void>
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void>
   getResource(): Promise<Resource>
+  createSprint(sprint: SprintCreate): Promise<void>
 }
 
 export abstract class ProviderCreator {

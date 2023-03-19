@@ -3,11 +3,20 @@ import {
   IconBookmark,
   IconCheck,
   IconBug,
-  IconQuestionMark,
   IconBolt,
+  IconEdit,
 } from "@tabler/icons"
 
 export function IssueIcon({ type }: { type: string }) {
+  const stringToColor = (value: string) => {
+    let hash = 0
+    for (let i = 0; i < value.length; i += 1) {
+      // eslint-disable-next-line no-bitwise
+      hash = value.charCodeAt(i) + ((hash << 1) - hash)
+    }
+    return `hsl(${hash % 360}, 85%, 35%)`
+  }
+
   let icon: JSX.Element
   let iconGradient1: string
   let iconGradient2: string
@@ -33,9 +42,9 @@ export function IssueIcon({ type }: { type: string }) {
       iconGradient2 = "white"
       break
     default:
-      icon = <IconQuestionMark />
-      iconGradient1 = "white"
-      iconGradient2 = "white"
+      icon = <IconEdit />
+      iconGradient1 = stringToColor(type)
+      iconGradient2 = stringToColor(type.split("").reverse().join(""))
   }
   return (
     <ThemeIcon
