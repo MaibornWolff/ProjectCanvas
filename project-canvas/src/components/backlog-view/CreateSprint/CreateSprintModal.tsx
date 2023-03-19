@@ -17,6 +17,7 @@ import { NameInput } from "./NameInput"
 import { GoalInput } from "./GoalInput"
 import { SprintEndDatePicker } from "./SprintEndDatePicker"
 import { SprintStartDatePicker } from "./SprintStartDatePicker"
+import { ColorSchemeToggle } from "../../common/ColorSchemeToggle"
 
 export function CreateSprintModal({
   opened,
@@ -75,6 +76,14 @@ export function CreateSprintModal({
       overlayOpacity={0.55}
       overlayBlur={3}
     >
+      <ColorSchemeToggle
+        size="34px"
+        sx={{
+          position: "absolute",
+          top: 19,
+          right: 50,
+        }}
+      />
       <ScrollArea.Autosize maxHeight="70vh">
         <form
           onSubmit={form.onSubmit((sprint, event) => {

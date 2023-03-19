@@ -31,6 +31,7 @@ import { StoryPointsEstimateMenu } from "./Components/StoryPointsEstimateMenu"
 import { Subtask } from "./Components/SubTask/Subtask"
 import { DeleteIssue } from "./Components/DeleteIssue"
 import { Attachments } from "./Components/Attachments/Attachments"
+import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 
 export function DetailView({
   issueKey,
@@ -86,6 +87,14 @@ export function DetailView({
           <IssueIcon type={type} /> {issueKey}
         </Group>
       </Breadcrumbs>
+      <ColorSchemeToggle
+        size="34px"
+        sx={{
+          position: "absolute",
+          top: 19,
+          right: 50,
+        }}
+      />
       <Group>
         <Stack sx={{ flex: 13 }}>
           <Title order={1}>

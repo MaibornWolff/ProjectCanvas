@@ -94,7 +94,7 @@ export function Attachments(props: {
                 size="xs"
                 compact
               >
-                <IconPlus color="black" />
+                <IconPlus />
               </Button>
             )}
           </FileButton>
@@ -203,22 +203,35 @@ export function Attachments(props: {
                                 color="dark"
                                 size="lg"
                                 radius="xs"
-                                variant="outline"
+                                variant="subtle"
+                                onMouseOver={(event) => {
+                                  const target = event.currentTarget
+                                  target.style.border = "1px solid"
+                                }}
+                                onMouseLeave={(event) => {
+                                  const target = event.currentTarget
+                                  target.style.border = "1px solid transparent"
+                                }}
                               >
-                                <IconCloudDownload
-                                  color="black"
-                                  onClick={handleDownload}
-                                />
+                                <IconCloudDownload onClick={handleDownload} />
                               </ActionIcon>
 
                               <ActionIcon
                                 size="lg"
-                                color="black"
+                                color="dark"
                                 radius="xs"
-                                variant="outline"
+                                variant="subtle"
+                                onMouseOver={(event) => {
+                                  const target = event.currentTarget
+                                  target.style.border = "1px solid"
+                                }}
+                                onMouseLeave={(event) => {
+                                  const target = event.currentTarget
+                                  target.style.border = "1px solid transparent"
+                                }}
                                 onClick={() => performDelete(attachment.id)}
                               >
-                                <IconTrash color="black" />
+                                <IconTrash />
                               </ActionIcon>
                             </Group>
                           </HoverCard.Dropdown>
