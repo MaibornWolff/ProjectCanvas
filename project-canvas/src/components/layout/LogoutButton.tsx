@@ -15,7 +15,7 @@ export function LogoutButton() {
   }
   return (
     <Button
-      color="red"
+      color="primaryRed"
       variant="outline"
       onClick={() => {
         Logout({ LogoutSuccess, LogoutFailed })
