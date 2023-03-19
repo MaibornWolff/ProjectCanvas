@@ -13,6 +13,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
 import { Dispatch, SetStateAction } from "react"
 import { useCanvasStore } from "../../lib/Store"
+import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import {
   getResource,
   uploadAttachment,
@@ -132,6 +133,14 @@ export function CreateIssueModal({
       overlayOpacity={0.55}
       overlayBlur={3}
     >
+      <ColorSchemeToggle
+        size="34px"
+        sx={{
+          position: "absolute",
+          top: 19,
+          right: 50,
+        }}
+      />
       <ScrollArea.Autosize maxHeight="70vh">
         <form
           onSubmit={form.onSubmit((issue, event) => {

@@ -202,7 +202,10 @@ export function IssueCard({
           setOpened(false)
           queryClient.invalidateQueries({ queryKey: ["issues"] })
         }}
-        size="85%"
+        size="90vw"
+        overflow="outside"
+        overlayOpacity={0.55}
+        overlayBlur={3}
         withCloseButton={false}
       >
         <DetailView
