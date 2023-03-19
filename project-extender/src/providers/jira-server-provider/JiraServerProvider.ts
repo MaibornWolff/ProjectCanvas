@@ -446,7 +446,8 @@ class JiraServerProvider implements ProviderApi {
   createSubtask(
     parentIssueKey: string,
     projectId: string,
-    summary: string
+    subtaskSummary: string,
+    subtaskIssueTypeId: string
   ): Promise<{ id: string; key: string }> {
     throw new Error("Method not implemented for Jira Server")
   }

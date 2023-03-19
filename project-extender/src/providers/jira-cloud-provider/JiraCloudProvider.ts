@@ -531,7 +531,7 @@ class JiraCloudProvider implements ProviderApi {
   ): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
       this.fetchIssues(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/board/${boardId}/backlog?jql=project=${project}&maxResults=500`
       )
         .then(async (response) => {
           resolve(response)
@@ -1429,11 +1429,12 @@ class JiraCloudProvider implements ProviderApi {
   createSubtask(
     parentIssueKey: string,
     projectId: string,
-    subtaskSummary: string
+    subtaskSummary: string,
+    subtaskIssueTypeId: string
   ): Promise<{ id: string; key: string }> {
     return new Promise((resolve, reject) => {
       fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/issue/`,
+        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/`,
         {
           method: "POST",
           headers: {
@@ -1445,7 +1446,7 @@ class JiraCloudProvider implements ProviderApi {
             fields: {
               summary: subtaskSummary,
               issuetype: {
-                name: "Subtask",
+                id: subtaskIssueTypeId,
               },
               parent: {
                 key: parentIssueKey,

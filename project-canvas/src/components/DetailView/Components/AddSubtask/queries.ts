@@ -7,10 +7,11 @@ export const createSubtaskMutation = (
   summary: string,
   projectId: string,
   queryClient: QueryClient,
+  subtaskID: string,
   resetSummary: () => void
 ) =>
   useMutation({
-    mutationFn: () => createSubtask(issueKey, summary, projectId),
+    mutationFn: () => createSubtask(issueKey, summary, projectId, subtaskID),
     onSuccess(createdSubtask: { id: string; key: string }) {
       resetSummary()
       showNotification({
