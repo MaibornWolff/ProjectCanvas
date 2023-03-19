@@ -64,7 +64,8 @@ export interface ProviderApi {
   createSubtask(
     parentIssueKey: string,
     projectId: string,
-    summary: string
+    subtaskSummary: string,
+    subtaskIssueTypeId: string
   ): Promise<{ id: string; key: string }>
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]>
   getLabels(): Promise<string[]>

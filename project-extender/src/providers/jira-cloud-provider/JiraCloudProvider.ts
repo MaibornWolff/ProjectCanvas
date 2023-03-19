@@ -1430,7 +1430,7 @@ class JiraCloudProvider implements ProviderApi {
     parentIssueKey: string,
     projectId: string,
     subtaskSummary: string,
-    subtaskID: string
+    subtaskIssueTypeId: string
   ): Promise<{ id: string; key: string }> {
     return new Promise((resolve, reject) => {
       fetch(
@@ -1446,7 +1446,7 @@ class JiraCloudProvider implements ProviderApi {
             fields: {
               summary: subtaskSummary,
               issuetype: {
-                id: subtaskID,
+                id: subtaskIssueTypeId,
               },
               parent: {
                 key: parentIssueKey,

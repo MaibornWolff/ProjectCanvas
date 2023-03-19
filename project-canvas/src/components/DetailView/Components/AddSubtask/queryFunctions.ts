@@ -2,15 +2,20 @@ import { IssueType } from "project-extender"
 
 export const createSubtask = (
   parentIssueKey: string,
-  summary: string,
+  subtaskSummary: string,
   projectId: string,
-  subtaskID: string
+  subtaskIssueTypeId: string
 ): Promise<{ id: string; key: string }> =>
   new Promise((resolve) => {
     fetch(`${import.meta.env.VITE_EXTENDER}/createSubtask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ parentIssueKey, summary, projectId, subtaskID }),
+      body: JSON.stringify({
+        parentIssueKey,
+        subtaskSummary,
+        projectId,
+        subtaskIssueTypeId,
+      }),
     }).then(async (createdSubtask) => {
       resolve(await createdSubtask.json())
     })
