@@ -74,7 +74,9 @@ export function Labels({
           {defaultLabels.length !== 0 ? (
             <Group spacing={3}>
               {defaultLabels.map((label) => (
-                <Badge color="yellow">{label}</Badge>
+                <Badge key={label} color="yellow">
+                  {label}
+                </Badge>
               ))}
             </Group>
           ) : (

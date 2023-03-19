@@ -578,6 +578,7 @@ class JiraCloudProvider implements ProviderApi {
                 comment: element.fields.comment,
                 projectId: element.fields.project.id,
                 sprint: element.fields.sprint,
+                attachments: element.fields.attachment,
               }))
             )
             resolve(issues)

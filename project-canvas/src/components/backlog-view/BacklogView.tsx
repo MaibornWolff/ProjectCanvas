@@ -169,7 +169,7 @@ export function BacklogView() {
     )
   return (
     <Stack sx={{ minHeight: "100%" }}>
-      <Stack align="left" spacing="sm">
+      <Stack align="left" spacing={0}>
         <Group>
           <Group spacing="xs" c="dimmed">
             <Text
@@ -188,10 +188,9 @@ export function BacklogView() {
           </Group>
           <ReloadButton ml="auto" mr="xs" />
         </Group>
-        <Title>Backlog</Title>
+        <Title mb="sm">Backlog</Title>
         <TextInput
           placeholder="Search by issue summary, key, epic, labels, creator or assignee.."
-          mb="md"
           icon={<IconSearch size={14} stroke={1.5} />}
           value={search}
           onChange={handleSearchChange}
@@ -210,7 +209,7 @@ export function BacklogView() {
         >
           <ScrollArea.Autosize
             className="left-panel"
-            maxHeight="calc(100vh - 242px)"
+            maxHeight="calc(100vh - 230px)"
             w="50%"
             p="sm"
             sx={{
@@ -264,7 +263,7 @@ export function BacklogView() {
           />
           <ScrollArea.Autosize
             className="right-panel"
-            maxHeight="calc(100vh - 242px)"
+            maxHeight="calc(100vh - 230px)"
             w="50%"
             p="xs"
             sx={{ minWidth: "260px" }}

@@ -2,10 +2,16 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { JiraCloudLogin } from "./JiraCloudLogin"
 
+export {}
 jest.mock("./loginToJiraCloud.ts", () => ({
   loginToJiraCloud: jest.fn(),
 }))
-
+jest.mock("electron", () => ({
+  ipcRenderer: {
+    on: jest.fn(),
+    removeAllListeners: jest.fn(),
+  },
+}))
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (str: string) => str,

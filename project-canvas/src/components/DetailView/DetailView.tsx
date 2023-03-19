@@ -107,6 +107,7 @@ export function DetailView({
               <Stack spacing="xs">
                 {subtasks.map((subtask) => (
                   <Subtask
+                    key={subtask.key}
                     subtaskKey={subtask.key}
                     id={subtask.id}
                     fields={subtask.fields}
@@ -144,6 +145,7 @@ export function DetailView({
                       .find((issueType) => issueType.name === type)
                       ?.statuses?.map((issueStatus) => (
                         <Menu.Item
+                          key={issueStatus.id}
                           onClick={() => {
                             statusMutation.mutate(issueStatus.name)
                             setDefaultStatus(issueStatus.name)
