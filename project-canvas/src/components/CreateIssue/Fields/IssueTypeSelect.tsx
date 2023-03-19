@@ -14,8 +14,8 @@ export function IssueTypeSelect({
   return (
     <Select
       label="Issue Type"
-      placeholder="Story"
-      nothingFound="No Options"
+      placeholder="Choose issue type"
+      nothingFound="Please select a project first"
       data={
         !isLoading && issueTypes && issueTypes instanceof Array
           ? issueTypes
@@ -26,6 +26,8 @@ export function IssueTypeSelect({
               }))
           : []
       }
+      withinPortal
+      searchable
       required
       {...form.getInputProps("type")}
       onChange={(value) => {

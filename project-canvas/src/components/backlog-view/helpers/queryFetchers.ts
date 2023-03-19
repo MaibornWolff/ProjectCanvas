@@ -1,4 +1,4 @@
-import { Issue, Sprint } from "project-extender"
+import { Issue, Sprint, SprintCreate } from "project-extender"
 
 export const getSprints = (boardId: number): Promise<Sprint[]> =>
   fetch(`${import.meta.env.VITE_EXTENDER}/sprintsByBoardId?boardId=${boardId}`)
@@ -22,4 +22,13 @@ export const getBacklogIssues = (
     }/backlogIssuesByProjectAndBoard?project=${projectKey}&boardId=${boardId}`
   )
     .then((issues) => issues.json())
+    .catch((err) => err)
+
+export const createSprint = (sprint: SprintCreate): Promise<void> =>
+  fetch(`${import.meta.env.VITE_EXTENDER}/createSprint`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sprint }),
+  })
+    .then(() => {})
     .catch((err) => err)

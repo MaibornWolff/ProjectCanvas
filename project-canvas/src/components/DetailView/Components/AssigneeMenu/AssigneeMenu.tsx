@@ -111,7 +111,7 @@ export function AssigneeMenu({
                 </Group>
               ) : (
                 <Group spacing="xs" position="apart">
-                  <Avatar radius="xl" />
+                  <Avatar size="sm" variant="outline" radius="xl" />
                   <Text size="sm" color="dimmed">
                     Unassigned
                   </Text>

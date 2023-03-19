@@ -32,6 +32,7 @@ export function handleOAuth2(win: BrowserWindow) {
     "write:epic:jira-software",
     "read:jql:jira",
     "offline_access",
+    "offline_access",
   ].join("%20")
   const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
   const AUDIENCE = "api.atlassian.com"

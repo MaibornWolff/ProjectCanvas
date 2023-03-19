@@ -1,5 +1,13 @@
 import { useState, useRef, useEffect } from "react"
-import { Text, Group, NumberInput, Chip, Loader, Box } from "@mantine/core"
+import {
+  Text,
+  Group,
+  NumberInput,
+  Chip,
+  Loader,
+  Box,
+  useMantineTheme,
+} from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "project-extender"
@@ -14,6 +22,7 @@ export function StoryPointsEstimateMenu({
   storyPointsEstimate: number
 }) {
   const queryClient = useQueryClient()
+  const theme = useMantineTheme()
   const timeoutRef = useRef<number | null>(null)
   const [localStoryPtsEstimate, setLocalStoryPtsEstimate] =
     useState(storyPointsEstimate)
@@ -59,19 +68,40 @@ export function StoryPointsEstimateMenu({
     }, 2000)
   }
 
-  return (
+  return editableFields && editableFields.includes("Story point estimate") ? (
     <Group grow>
       <Text color="dimmed" fz="sm">
         Story Points Estimate
       </Text>
-      {!showEditableInput && storyPointsEstimate !== undefined && (
-        <Group>
-          <Chip onClick={() => setShowEditableInput(true)}>
-            {localStoryPtsEstimate}
-          </Chip>
-          {showLoader && <Loader size="sm" />}
-        </Group>
-      )}
+      {!showEditableInput &&
+        storyPointsEstimate !== undefined &&
+        editableFields &&
+        editableFields.includes("Story point estimate") && (
+          <Group>
+            {localStoryPtsEstimate ? (
+              <Chip onClick={() => setShowEditableInput(true)}>
+                {localStoryPtsEstimate}
+              </Chip>
+            ) : (
+              <Text
+                color="dimmed"
+                onClick={() => setShowEditableInput(true)}
+                w="100%"
+                sx={{
+                  ":hover": {
+                    cursor: "pointer",
+                    boxShadow: theme.shadows.xs,
+                    borderRadius: theme.radius.xs,
+                    transition: "background-color .8s ease-out",
+                  },
+                }}
+              >
+                None
+              </Text>
+            )}
+            {showLoader && <Loader size="sm" />}
+          </Group>
+        )}
       {showEditableInput &&
         storyPointsEstimate !== undefined &&
         editableFields &&
@@ -118,5 +148,5 @@ export function StoryPointsEstimateMenu({
           </Group>
         )}
     </Group>
-  )
+  ) : null
 }
