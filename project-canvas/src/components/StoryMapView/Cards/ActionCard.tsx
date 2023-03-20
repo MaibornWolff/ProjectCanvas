@@ -26,7 +26,7 @@ export function ActionCard({
   const { hovered, ref } = useHover()
 
   return (
-    <Tooltip label={title}>
+    <Tooltip label={title} disabled={!title}>
       <DraggableBaseCard
         id={id}
         index={index}
@@ -53,7 +53,9 @@ export function ActionCard({
             variant="unstyled"
             value={title}
             autoFocus
-            styles={{ input: { textAlign: "center", fontSize: "16px" } }}
+            styles={{
+              input: { textAlign: "center", fontSize: "16px", color: "black" },
+            }}
           />
         )}
         <DeleteButton

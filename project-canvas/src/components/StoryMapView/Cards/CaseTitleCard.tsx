@@ -20,7 +20,7 @@ export function CaseTitleCard({
   const [title, setTitle] = useState(caseColumn.title)
   const { hovered, ref } = useHover()
   return (
-    <Tooltip label={title}>
+    <Tooltip label={title} disabled={!title}>
       <BaseCard
         w="100%"
         bg="primaryBlue.0"
@@ -49,7 +49,9 @@ export function CaseTitleCard({
             variant="unstyled"
             defaultValue={title}
             autoFocus
-            styles={{ input: { textAlign: "center", fontSize: "16px" } }}
+            styles={{
+              input: { textAlign: "center", fontSize: "16px", color: "black" },
+            }}
           />
         )}
         <DeleteButton

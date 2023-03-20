@@ -26,7 +26,7 @@ export function SubActionCard({
   const { hovered, ref } = useHover()
 
   return (
-    <Tooltip label={title}>
+    <Tooltip label={title} disabled={!title}>
       <DraggableBaseCard
         id={id}
         index={index}
