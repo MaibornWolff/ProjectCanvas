@@ -1,4 +1,4 @@
-import { ActionIcon, Transition } from "@mantine/core"
+import { ActionIcon, Transition, useMantineColorScheme } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
 import { MouseEventHandler } from "react"
 
@@ -9,6 +9,8 @@ export function DeleteButton({
   mounted: boolean
   onClick: MouseEventHandler<HTMLButtonElement>
 }) {
+  const { colorScheme } = useMantineColorScheme()
+  const dark = colorScheme === "dark"
   return (
     <Transition
       mounted={mounted}
@@ -25,7 +27,7 @@ export function DeleteButton({
           size="sm"
           variant="transparent"
           onClick={onClick}
-          style={{ ...styles, color: "black" }}
+          style={{ ...styles, color: dark ? "white" : "black" }}
         >
           <IconTrash />
         </ActionIcon>
