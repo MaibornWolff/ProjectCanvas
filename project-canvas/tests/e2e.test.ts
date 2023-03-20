@@ -13,8 +13,7 @@ test.describe("Check Man Page", async () => {
 
     // use for run the tests on windows
     electronApp = await electron.launch({
-      executablePath:
-        "./release/17.03 main ohne PRs/win-unpacked/ProjectCanvas.exe",
+      executablePath: "./release/1.0.0/win-unpacked/ProjectCanvas.exe",
     })
 
     let windowText
