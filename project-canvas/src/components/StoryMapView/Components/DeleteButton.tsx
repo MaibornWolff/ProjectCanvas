@@ -25,7 +25,7 @@ export function DeleteButton({
           size="sm"
           variant="transparent"
           onClick={onClick}
-          style={styles}
+          style={{ ...styles, color: "black" }}
         >
           <IconTrash />
         </ActionIcon>

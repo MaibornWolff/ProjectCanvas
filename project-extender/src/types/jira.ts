@@ -1,4 +1,4 @@
-import { Priority } from "."
+import { Attachment, Priority } from "."
 
 export interface JiraProject {
   projectTypeKey: string
@@ -77,6 +77,7 @@ export interface JiraIssue {
       ]
     }
     sprint?: JiraSprint
+    attachment?: Attachment[]
   }
 }
 

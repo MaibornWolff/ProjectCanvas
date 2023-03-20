@@ -3,6 +3,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  createStyles,
   Group,
   Menu,
   Paper,
@@ -29,6 +30,8 @@ import { ReporterMenu } from "./Components/ReporterMenu"
 import { StoryPointsEstimateMenu } from "./Components/StoryPointsEstimateMenu"
 import { Subtask } from "./Components/SubTask/Subtask"
 import { DeleteIssue } from "./Components/DeleteIssue"
+import { Attachments } from "./Components/Attachments/Attachments"
+import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 
 export function DetailView({
   issueKey,
@@ -46,15 +49,27 @@ export function DetailView({
   type,
   projectId,
   sprint,
+  attachments,
   closeModal,
 }: Issue & { closeModal: () => void }) {
+  const useStyles = createStyles(
+    (theme, { isOpened }: { isOpened: boolean }) => ({
+      icon: {
+        transition: "transform 150ms ease",
+        transform: isOpened ? "rotate(180deg)" : "rotate(0deg)",
+      },
+    })
+  )
+  const [opened, setOpened] = useState(false)
+  const { classes } = useStyles({ isOpened: opened })
+
   const { data: issueTypes } = useQuery({
     queryKey: ["issueTypes", projectId],
     queryFn: () => getIssueTypes(projectId),
     enabled: !!projectId,
   })
-  const queryClient = useQueryClient()
 
+  const queryClient = useQueryClient()
   const [defaultStatus, setDefaultStatus] = useState(status)
   const statusMutation = useMutation({
     mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
@@ -72,6 +87,14 @@ export function DetailView({
           <IssueIcon type={type} /> {issueKey}
         </Group>
       </Breadcrumbs>
+      <ColorSchemeToggle
+        size="34px"
+        sx={{
+          position: "absolute",
+          top: 19,
+          right: 50,
+        }}
+      />
       <Group>
         <Stack sx={{ flex: 13 }}>
           <Title order={1}>
@@ -93,6 +116,7 @@ export function DetailView({
               <Stack spacing="xs">
                 {subtasks.map((subtask) => (
                   <Subtask
+                    key={subtask.key}
                     subtaskKey={subtask.key}
                     id={subtask.id}
                     fields={subtask.fields}
@@ -101,6 +125,7 @@ export function DetailView({
                 <AddSubtask issueKey={issueKey} projectId={projectId} />
               </Stack>
             </Paper>
+            <Attachments issueKey={issueKey} attachments={attachments} />
             <CommentSection issueKey={issueKey} comment={comment} />
           </ScrollArea.Autosize>
         </Stack>
@@ -110,9 +135,17 @@ export function DetailView({
         >
           <Box>
             <Group position="apart" mb="sm">
-              <Menu shadow="md">
+              <Menu
+                shadow="md"
+                onOpen={() => setOpened(true)}
+                onClose={() => setOpened(false)}
+              >
                 <Menu.Target>
-                  <Button rightIcon={<IconCaretDown />}>{defaultStatus}</Button>
+                  <Button
+                    rightIcon={<IconCaretDown className={classes.icon} />}
+                  >
+                    {defaultStatus}
+                  </Button>
                 </Menu.Target>
 
                 <Menu.Dropdown>
@@ -121,6 +154,7 @@ export function DetailView({
                       .find((issueType) => issueType.name === type)
                       ?.statuses?.map((issueStatus) => (
                         <Menu.Item
+                          key={issueStatus.id}
                           onClick={() => {
                             statusMutation.mutate(issueStatus.name)
                             setDefaultStatus(issueStatus.name)

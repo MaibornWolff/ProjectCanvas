@@ -78,7 +78,6 @@ export function CommentSection({
           }}
           sx={{
             justifyContent: "left",
-            ":hover": { backgroundColor: "#E8E2E2" },
           }}
         >
           + Add a comment

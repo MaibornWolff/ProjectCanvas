@@ -14,13 +14,14 @@ export function ProjectSelect({
   return (
     <Select
       label="Project"
-      placeholder="Project"
+      placeholder="Choose project"
       nothingFound="No Options"
       data={projects.map((project) => ({
         value: project.id?.toString() || "",
         label: `${project.name} (${project.key})`,
       }))}
       searchable
+      withinPortal
       required
       {...form.getInputProps("projectId")}
       onChange={(value) => {
