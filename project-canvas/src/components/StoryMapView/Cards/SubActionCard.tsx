@@ -1,4 +1,4 @@
-import { PaperProps, Text, TextInput } from "@mantine/core"
+import { PaperProps, Text, TextInput, Tooltip } from "@mantine/core"
 import { useHover, useToggle } from "@mantine/hooks"
 import { useState } from "react"
 import { SubAction } from "../Types"
@@ -26,38 +26,42 @@ export function SubActionCard({
   const { hovered, ref } = useHover()
 
   return (
-    <DraggableBaseCard
-      id={id}
-      index={index}
-      m="sm"
-      bg="white"
-      pos="relative"
-      ref={ref}
-      {...props}
-    >
-      {edit && title !== "" ? (
-        <Text onClick={() => toggleEdit()}>{title}</Text>
-      ) : (
-        <TextInput
-          onBlur={() => toggleEdit()}
-          placeholder="Title"
-          onChange={(event) => {
-            setTitle(event.currentTarget.value)
-            updateSubAction(storyMapId, {
-              id,
-              title: event.currentTarget.value,
-            })
-          }}
-          variant="unstyled"
-          value={title}
-          autoFocus
-          styles={{ input: { textAlign: "center", fontSize: "16px" } }}
+    <Tooltip label={title}>
+      <DraggableBaseCard
+        id={id}
+        index={index}
+        m="sm"
+        bg="white"
+        pos="relative"
+        ref={ref}
+        {...props}
+      >
+        {edit && title !== "" ? (
+          <Text onClick={() => toggleEdit()} truncate>
+            {title}
+          </Text>
+        ) : (
+          <TextInput
+            onBlur={() => toggleEdit()}
+            placeholder="Title"
+            onChange={(event) => {
+              setTitle(event.currentTarget.value)
+              updateSubAction(storyMapId, {
+                id,
+                title: event.currentTarget.value,
+              })
+            }}
+            variant="unstyled"
+            value={title}
+            autoFocus
+            styles={{ input: { textAlign: "center", fontSize: "16px" } }}
+          />
+        )}
+        <DeleteButton
+          mounted={hovered}
+          onClick={() => deleteSubAction(storyMapId, subAction.id)}
         />
-      )}
-      <DeleteButton
-        mounted={hovered}
-        onClick={() => deleteSubAction(storyMapId, subAction.id)}
-      />
-    </DraggableBaseCard>
+      </DraggableBaseCard>
+    </Tooltip>
   )
 }
