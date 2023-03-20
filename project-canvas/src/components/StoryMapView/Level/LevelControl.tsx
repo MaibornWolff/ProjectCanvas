@@ -1,4 +1,4 @@
-import { Accordion, ActionIcon, Group, TextInput } from "@mantine/core"
+import { Accordion, ActionIcon, Group, TextInput, Tooltip } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
 import { useState } from "react"
 import { useStoryMapStore } from "../StoryMapStore"
@@ -17,26 +17,28 @@ export function LevelControl({
   return (
     <Accordion.Control>
       <Group>
-        <TextInput
-          placeholder="Title"
-          {...(edit ? { readOnly: false } : { readOnly: true })}
-          onBlur={(event) => {
-            updateLevel(storyMapId, {
-              id: level.id,
-              title: event.currentTarget.value,
-            })
-            toggleEdit(false)
-          }}
-          onClick={(event) => {
-            event.stopPropagation()
-            toggleEdit(true)
-          }}
-          variant="unstyled"
-          styles={{ input: { padding: 0 } }}
-          defaultValue={level.title}
-          autoFocus
-          size="lg"
-        />
+        <Tooltip label={level.title}>
+          <TextInput
+            placeholder="Title"
+            {...(edit ? { readOnly: false } : { readOnly: true })}
+            onBlur={(event) => {
+              updateLevel(storyMapId, {
+                id: level.id,
+                title: event.currentTarget.value,
+              })
+              toggleEdit(false)
+            }}
+            onClick={(event) => {
+              event.stopPropagation()
+              toggleEdit(true)
+            }}
+            variant="unstyled"
+            styles={{ input: { padding: 0 } }}
+            defaultValue={level.title}
+            autoFocus
+            size="lg"
+          />
+        </Tooltip>
         <ActionIcon
           color="red"
           size="sm"
