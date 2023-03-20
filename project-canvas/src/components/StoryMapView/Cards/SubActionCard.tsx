@@ -54,7 +54,9 @@ export function SubActionCard({
             variant="unstyled"
             value={title}
             autoFocus
-            styles={{ input: { textAlign: "center", fontSize: "16px" } }}
+            styles={{
+              input: { textAlign: "center", fontSize: "16px", color: "black" },
+            }}
           />
         )}
         <DeleteButton
