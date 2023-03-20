@@ -43,6 +43,7 @@ export function ActionCard({
         ) : (
           <TextInput
             onBlur={() => toggleEdit(!edit)}
+            placeholder="Action"
             onChange={(event) => {
               setTitle(event.currentTarget.value)
               updateAction(storyMapId, {
