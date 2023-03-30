@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "description": "The better project management tool.",
   "author": "TeamCanvas",
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "main": "dist-electron/electron/main/index.js",
   "scripts": {
     "dev": "vite",
