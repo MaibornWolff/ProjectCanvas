@@ -1,6 +1,7 @@
 {
   "private": true,
   "root": true,
+  "license": "BSD-3-Clause",
   "workspaces": [
     "project-canvas",
     "project-extender",
