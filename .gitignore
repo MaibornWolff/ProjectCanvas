@@ -25,7 +25,6 @@ release
 .vscode/.debug.env
 package-lock.json
 pnpm-lock.yaml
-yarn.lock
 dist-electron
 
 # local env files
