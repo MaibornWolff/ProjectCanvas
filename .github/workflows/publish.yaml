@@ -38,6 +38,8 @@ jobs:
           printenv
 
       - name: Build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn canvas:build
 
       - name: Publish releases
