@@ -2,6 +2,7 @@
   "private": true,
   "root": true,
   "license": "BSD-3-Clause",
+  "author": "MaibornWolff GmbH <ihsen.bouallegue@maibornwolff.de>",
   "workspaces": [
     "project-canvas",
     "project-extender",
