@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
-  "author": "",
+  "author": "MaibornWolff GmbH <ihsen.bouallegue@maibornwolff.de>",
   "license": "BSD-3-Clause",
   "dependencies": {
     "@fastify/cors": "^8.2.0",
