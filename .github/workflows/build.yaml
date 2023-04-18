@@ -1,0 +1,26 @@
+name: Build
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+        node_version:
+          - 18
+    name: Node ${{ matrix.node_version }} on ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node_version }}
+          cache: "yarn"
+      - name: install dependencies
+        run: yarn install --frozen-lockfile
+      - name: build
+        run: yarn canvas:build
