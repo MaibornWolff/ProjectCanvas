@@ -30,15 +30,15 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Build
-        run: yarn canvas:build
-
       - name: Test Env
         run: |
           echo 'The GitHub Action Secret will be masked:  '
           echo ${{ secrets.GITHUB_TOKEN }}
           echo 'Testing secret if its masked: '
           printenv
+
+      - name: Build
+        run: yarn canvas:build
 
       - name: Publish releases
         env:
