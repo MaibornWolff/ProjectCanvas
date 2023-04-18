@@ -10,8 +10,9 @@
   ],
   "scripts": {
     "canvas": "yarn extender:build && yarn --cwd project-canvas dev",
-    "canvas:build": "yarn extender:build && yarn --cwd project-canvas build ",
+    "canvas:build": "yarn extender:build && yarn --cwd project-canvas build",
     "canvas:test": "yarn --cwd project-canvas test",
+    "publish": "yarn extender:build && yarn --cwd project-canvas publish",
     "lint": "eslint",
     "format": "prettier .",
     "extender": "yarn --cwd project-extender start",

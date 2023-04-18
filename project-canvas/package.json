@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
-    "release": "electron-builder --win --mac --linux",
+    "publish": "electron-builder --win --mac --linux",
     "format": "yarn prettier --write .",
     "lint": "eslint",
     "test": "jest",
