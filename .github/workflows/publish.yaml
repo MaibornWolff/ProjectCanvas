@@ -1,10 +1,13 @@
-name: Release
+name: Publish
 
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+
+permissions:
+  contents: write
 
 jobs:
   publish:
