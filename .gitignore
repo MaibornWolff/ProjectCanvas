@@ -36,3 +36,7 @@ dist-electron
 
 # TS
 *.tsbuildinfo
+
+**/test-results/
+**/playwright-report/
+**/playwright/.cache/
