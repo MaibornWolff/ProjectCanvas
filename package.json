@@ -12,7 +12,7 @@
     "canvas": "yarn extender:build && yarn --cwd project-canvas dev",
     "canvas:build": "yarn extender:build && yarn --cwd project-canvas build",
     "canvas:test": "yarn --cwd project-canvas test",
-    "publish": "yarn extender:build && yarn --cwd project-canvas publish",
+    "release": "yarn extender:build && yarn --cwd project-canvas release",
     "lint": "eslint",
     "format": "prettier .",
     "extender": "yarn --cwd project-extender start",
