@@ -30,7 +30,7 @@ jobs:
   e2e:
     timeout-minutes: 60
     name: E2E Tests
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout git repo
         uses: actions/checkout@v3
