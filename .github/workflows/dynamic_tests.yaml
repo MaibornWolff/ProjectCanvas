@@ -7,8 +7,8 @@ on:
     branches:
       - main
 
-env:
-  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1 npm i -D playwright"
+# env:
+#   PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1 npm i -D playwright"
 
 jobs:
   unit:
