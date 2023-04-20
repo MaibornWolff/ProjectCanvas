@@ -32,7 +32,7 @@ jobs:
 
   e2e:
     timeout-minutes: 60
-    name:
+    name: E2E Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout git repo
