@@ -54,9 +54,18 @@ jobs:
         env:
           DEBUG: "pw:browser"
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: playwright-report
-          path: playwright-report/
+          path: project-canvas/playwright-report
+          retention-days: 30
+
+      - name: Upload Playwright screenshots
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-screenshots
+          path: project-canvas/e2e/screenshots
           retention-days: 30
