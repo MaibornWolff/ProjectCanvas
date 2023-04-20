@@ -20,8 +20,12 @@ jobs:
     steps:
       - name: Checkout git repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node
+      - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -29,13 +33,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
-      - name: Test Env
-        run: |
-          echo 'The GitHub Action Secret will be masked:  '
-          echo ${{ secrets.GITHUB_TOKEN }}
-          echo 'Testing secret if its masked: '
-          printenv
 
       - name: Publish releases
         env:
