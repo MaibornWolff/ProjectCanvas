@@ -12,6 +12,7 @@
     "canvas": "yarn extender:build && yarn --cwd project-canvas dev",
     "canvas:build": "yarn extender:build && yarn --cwd project-canvas build",
     "canvas:test": "yarn --cwd project-canvas test",
+    "canvas:e2e": "yarn extender:build && yarn --cwd project-canvas e2e",
     "extender": "yarn --cwd project-extender start",
     "extender:build": "yarn --cwd project-extender build",
     "release": "yarn canvas:build && yarn --cwd project-canvas release",

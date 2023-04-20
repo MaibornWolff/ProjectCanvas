@@ -13,7 +13,10 @@
     "format": "yarn prettier --write .",
     "lint": "eslint",
     "test": "jest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "pree2e": "vite build --mode=test",
+    "e2e": "playwright test"
   },
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
@@ -46,6 +49,7 @@
     "zustand": "^4.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.32.3",
     "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
