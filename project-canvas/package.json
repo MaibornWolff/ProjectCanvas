@@ -1,8 +1,7 @@
 {
   "name": "project-canvas",
   "productName": "Project Canvas",
-  "private": true,
-  "version": "1.0.0",
+  "version": "1.0.0-alpha",
   "description": "The better project management tool.",
   "author": "MaibornWolff GmbH <ihsen.bouallegue@maibornwolff.de>",
   "license": "BSD-3-Clause",
