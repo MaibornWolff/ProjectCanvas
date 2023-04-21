@@ -5,4 +5,5 @@ test("homepage has title and links to intro page", async () => {
   const page = await app.firstWindow()
   expect(await page.title()).toBe("Project Canvas")
   await page.screenshot({ path: "e2e/screenshots/example.png" })
+  await app.close()
 })

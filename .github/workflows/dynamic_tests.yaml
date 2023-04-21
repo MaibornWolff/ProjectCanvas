@@ -45,6 +45,7 @@ jobs:
         run: yarn install --frozen-lockfile
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+          DEBUG: "pw:webserver"
 
       - run: npx playwright install --with-deps chromium
 
