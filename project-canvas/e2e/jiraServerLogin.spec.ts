@@ -1,23 +1,9 @@
-import {
-  test,
-  _electron as electron,
-  ElectronApplication,
-  Page,
-} from "@playwright/test"
+import { _electron as electron, test } from "@playwright/test"
 
 test.describe("Login", () => {
-  let app: ElectronApplication
-  let page: Page
-
-  test.beforeAll(async () => {
-    app = await electron.launch({ args: [".", "--no-sandbox"] })
-    page = await app.firstWindow()
-  })
-
   test("Log in with Jira Server", async () => {
-    await page.route("http://localhost:9090/login", async (route) => {
-      await route.fulfill({ status: 200 })
-    })
+    const app = await electron.launch({ args: [".", "--no-sandbox"] })
+    const page = await app.firstWindow()
 
     await page.route("http://localhost:9090/projects", async (route) => {
       const json = [
@@ -69,8 +55,7 @@ test.describe("Login", () => {
         const json = [
           {
             issueKey: "TEST-10",
-            summary:
-              "As a developer, I can update story and task status with drag and drop",
+            summary: "Summary",
             creator: "admin",
             status: "In Arbeit",
             type: "Story",
@@ -93,8 +78,7 @@ test.describe("Login", () => {
           },
           {
             issueKey: "TEST-11",
-            summary:
-              'Update task status by dragging and dropping from column to column >> Try dragging this task to "Done"',
+            summary: "Summary",
             creator: "admin",
             status: "In Arbeit",
             type: "Sub-Task",
@@ -116,8 +100,7 @@ test.describe("Login", () => {
           },
           {
             issueKey: "TEST-12",
-            summary:
-              'When the last task is done, the story can be automatically closed >> Drag this task to "Done" too',
+            summary: "Summary",
             creator: "admin",
             status: "In Arbeit",
             type: "Sub-Task",
@@ -127,8 +110,7 @@ test.describe("Login", () => {
           },
           {
             issueKey: "TEST-13",
-            summary:
-              'As a developer, I can update details on an item using the Detail View >> Click the "TEST-13" link at the top of this card to open the detail view',
+            summary: "Summary",
             creator: "admin",
             status: "Zu erledigen",
             type: "Bug",
@@ -167,8 +149,7 @@ test.describe("Login", () => {
         const json = [
           {
             issueKey: "TEST-4",
-            summary:
-              'As a team, I\'d like to estimate the effort of a story in Story Points so we can understand the work remaining >> Try setting the Story Points for this story in the "Estimate" field',
+            summary: "Summary",
             creator: "admin",
             status: "Zu erledigen",
             type: "Story",
@@ -179,8 +160,7 @@ test.describe("Login", () => {
           },
           {
             issueKey: "TEST-3",
-            summary:
-              "As a product owner, I'd like to rank stories in the backlog so I can communicate the proposed implementation order >> Try dragging this story up above the previous story",
+            summary: "Summary",
             creator: "admin",
             status: "Zu erledigen",
             type: "Bug",
@@ -199,11 +179,11 @@ test.describe("Login", () => {
     await page.getByLabel("Username").fill("admin")
     await page.getByLabel("Password").fill("admin")
 
-    await page.screenshot({ path: "e2e/screenshots/t1.png" })
+    await page.route("http://localhost:9090/login", async (route) => {
+      await route.fulfill({ status: 200 })
+    })
 
     await page.click("text=Log in", { delay: 500 })
-    await page.screenshot({ path: "e2e/screenshots/t2.png" })
-
     await page.click("text=Backlog", { delay: 500 })
 
     await app.close()
