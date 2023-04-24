@@ -45,16 +45,14 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-        env:
-          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-          DEBUG: "pw:browser"
 
       - run: npx playwright install --with-deps chromium
 
       - name: Run e2e tests
         run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- yarn canvas:e2e
         env:
-          DEBUG: "pw:*"
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+          DEBUG: "pw:browser"
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v3
