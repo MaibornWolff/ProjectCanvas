@@ -31,6 +31,8 @@ jobs:
     timeout-minutes: 60
     name: E2E Tests
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.32.0-focal
     steps:
       - name: Checkout git repo
         uses: actions/checkout@v3
@@ -52,7 +54,7 @@ jobs:
       - name: Run e2e tests
         run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- yarn canvas:e2e
         env:
-          DEBUG: "pw:browser"
+          DEBUG: "pw:*"
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v3
