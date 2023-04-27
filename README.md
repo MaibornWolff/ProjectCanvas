@@ -38,7 +38,7 @@ From your command line:
 Clone the repository
 
 ```bash
-git clone https://github.com/maibornwolff/project-canvas
+git clone https://github.com/TU-TeamCanvas/ProjectCanvas
 ```
 
 Go into the folder
