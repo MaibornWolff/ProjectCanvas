@@ -3,19 +3,27 @@
   "root": true,
   "license": "BSD-3-Clause",
   "author": "MaibornWolff GmbH <ihsen.bouallegue@maibornwolff.de>",
-  "workspaces": [
-    "project-canvas",
-    "project-extender",
-    "fake-jira-server"
-  ],
+  "workspaces": {
+    "packages": [
+      "project-canvas",
+      "project-extender",
+      "fake-jira-server"
+    ],
+    "nohoist": [
+      "**/project-canvas",
+      "**/project-canvas/**",
+      "**/electron",
+      "**/electron/**"
+    ]
+  },
   "scripts": {
-    "canvas": "yarn extender:build && yarn --cwd project-canvas dev",
-    "canvas:build": "yarn extender:build && yarn --cwd project-canvas build",
+    "canvas": "yarn extender:build && yarn --cwd project-canvas start",
+    "canvas:build": "yarn extender:build && yarn --cwd project-canvas make",
     "canvas:test": "yarn --cwd project-canvas test",
     "canvas:e2e": "yarn extender:build && yarn --cwd project-canvas e2e",
     "extender": "yarn --cwd project-extender start",
     "extender:build": "yarn --cwd project-extender build",
-    "release": "yarn canvas:build && yarn --cwd project-canvas release",
+    "release": "yarn canvas:build && yarn --cwd project-canvas package",
     "lint": "eslint",
     "format": "prettier .",
     "jira": "yarn --cwd fake-jira-server start",
@@ -40,8 +48,5 @@
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "typescript": "^4.9.3"
-  },
-  "dependencies": {
-    "@types/jest": "^29.5.0"
   }
 }

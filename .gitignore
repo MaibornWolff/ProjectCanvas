@@ -25,7 +25,6 @@ release
 .vscode/.debug.env
 package-lock.json
 pnpm-lock.yaml
-dist-electron
 
 # local env files
 .env
@@ -42,3 +41,9 @@ dist-electron
 **/playwright-report/
 **/playwright/.cache/
 **/e2e/screenshots
+
+# Vite
+.vite/
+
+# Electron-Forge
+out/
