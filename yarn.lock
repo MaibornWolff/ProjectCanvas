@@ -6547,6 +6547,11 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+lib-esm@~0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/lib-esm/-/lib-esm-0.3.0.tgz#774d59ef27d3ab2b0485386b5dc70b2556178086"
+  integrity sha512-P7YcG7OnoaGL2h4j46g/m0P2xHMXlYf+0iCDvVrEfzUVxLe+abytgd2VjUhj9puqEgqRGEDbT504YWj75jHacA==
+
 light-my-request@^5.6.1:
   version "5.9.1"
   resolved "https://registry.yarnpkg.com/light-my-request/-/light-my-request-5.9.1.tgz#076f8d4cc4639408cc48381d4f2860212d469d4b"
@@ -9292,6 +9297,13 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+vite-plugin-electron-renderer@^0.14.1:
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/vite-plugin-electron-renderer/-/vite-plugin-electron-renderer-0.14.1.tgz#2546ad03a7b2faafaf1d46b5e273469937df102c"
+  integrity sha512-1s+FwZs+m4PUFPwtpYfxs3SNYEGOTdQlz3HCuRs3st/kWX20582gCTf/30PysF/uewexe6laSL151TqsENbmHg==
+  dependencies:
+    lib-esm "~0.3.0"
 
 vite@^4.1.1, vite@^4.3.2:
   version "4.3.2"

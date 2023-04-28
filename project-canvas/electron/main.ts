@@ -1,5 +1,8 @@
+import { shell } from "electron"
+import path from "path"
+
 const { app, BrowserWindow } = require("electron")
-const path = require("path")
+// const path = require("path")
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string
 declare const MAIN_WINDOW_VITE_NAME: string
@@ -11,10 +14,12 @@ if (require("electron-squirrel-startup")) {
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1280,
+    height: 720,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: true,
+      contextIsolation: false,
     },
   })
 
@@ -26,6 +31,11 @@ const createWindow = () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     )
   }
+  // Make all links open with the browser, not with the application
+  mainWindow.webContents.setWindowOpenHandler(({ url: _url }) => {
+    if (_url.startsWith("https:")) shell.openExternal(_url)
+    return { action: "deny" }
+  })
 }
 
 app.on("ready", createWindow)
@@ -37,7 +47,9 @@ app.on("window-all-closed", () => {
 })
 
 app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
+  if (BrowserWindow.getAllWindows().length) {
+    BrowserWindow.getAllWindows()[0].focus()
+  } else {
     createWindow()
   }
 })
