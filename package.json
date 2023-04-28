@@ -12,6 +12,8 @@
     "nohoist": [
       "**/project-canvas",
       "**/project-canvas/**",
+      "**/project-extender",
+      "**/project-extender/**",
       "**/electron",
       "**/electron/**"
     ]
