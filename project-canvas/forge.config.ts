@@ -1,5 +1,6 @@
 module.exports = {
   packagerConfig: {
+    executableName: "project-canvas",
     packageManager: false,
     derefSymlinks: true,
   },
