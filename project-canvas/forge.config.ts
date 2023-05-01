@@ -1,5 +1,8 @@
 module.exports = {
-  packagerConfig: {},
+  packagerConfig: {
+    packageManager: false,
+    derefSymlinks: true,
+  },
   rebuildConfig: {},
   makers: [
     {

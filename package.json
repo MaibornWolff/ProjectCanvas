@@ -15,7 +15,11 @@
       "**/project-extender",
       "**/project-extender/**",
       "**/electron",
-      "**/electron/**"
+      "**/electron/**",
+      "**/electron-squirrel-startup",
+      "**/electron-squirrel-startup/**",
+      "**/@electron-forge",
+      "**/@electron-forge/**"
     ]
   },
   "scripts": {
