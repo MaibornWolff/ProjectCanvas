@@ -23,6 +23,18 @@ module.exports = {
       config: {},
     },
   ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "TU-TeamCanvas",
+          name: "ProjectCanvas",
+        },
+        prerelease: true,
+      },
+    },
+  ],
   plugins: [
     {
       name: "@electron-forge/plugin-vite",
