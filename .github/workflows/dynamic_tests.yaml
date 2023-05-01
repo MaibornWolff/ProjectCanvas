@@ -31,6 +31,15 @@ jobs:
     timeout-minutes: 60
     name: E2E Tests
     runs-on: ubuntu-latest
+    env:
+      VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+      VITE_CLIENT_SECRET: ${{ secrets.VITE_CLIENT_SECRET }}
+      VITE_REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
+      VITE_EXTENDER: ${{ secrets.VITE_EXTENDER }}
+      CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.VITE_CLIENT_SECRET }}
+      REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
+
     steps:
       - name: Checkout git repo
         uses: actions/checkout@v3
