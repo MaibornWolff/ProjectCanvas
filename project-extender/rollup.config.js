@@ -19,7 +19,6 @@ const config = [
         declarationDir: "dts",
       }),
       babel({ babelHelpers: "bundled" }),
-      nodeResolve(),
     ],
   },
   {
