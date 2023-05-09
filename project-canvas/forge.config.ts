@@ -3,6 +3,7 @@ module.exports = {
     executableName: "project-canvas",
     packageManager: false,
     derefSymlinks: true,
+    asar: true,
   },
   rebuildConfig: {},
   makers: [
