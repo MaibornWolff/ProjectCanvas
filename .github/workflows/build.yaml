@@ -18,12 +18,23 @@ jobs:
     name: Node ${{ matrix.node_version }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+
       - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node_version }}
           cache: "yarn"
-      - name: install dependencies
+
+      - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: build
+
+      - name: Build
+        env:
+          VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+          VITE_CLIENT_SECRET: ${{ secrets.VITE_CLIENT_SECRET }}
+          VITE_REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
+          VITE_EXTENDER: ${{ secrets.VITE_EXTENDER }}
+          CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.VITE_CLIENT_SECRET }}
+          REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
         run: yarn canvas:build

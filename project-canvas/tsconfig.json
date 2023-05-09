@@ -17,10 +17,10 @@
     "module": "esnext",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"],
+  "include": ["src", "electron"],
   "references": [{ "path": "././tsconfig.node.json" }]
 }

@@ -1,7 +1,7 @@
 import cors from "@fastify/cors"
 import fastifyEnv from "@fastify/env"
 import fastify from "fastify"
-import dotenv from "dotenv"
+import * as dotenv from "dotenv"
 import path from "path"
 import { options } from "./FastifyEnvConfig"
 import {

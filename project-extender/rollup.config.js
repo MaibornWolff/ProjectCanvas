@@ -1,4 +1,5 @@
 import { babel, getBabelOutputPlugin } from "@rollup/plugin-babel"
+import { nodeResolve } from "@rollup/plugin-node-resolve"
 import typescript from "@rollup/plugin-typescript"
 import dts from "rollup-plugin-dts"
 import del from "rollup-plugin-delete"
