@@ -9,16 +9,12 @@ export function loginToJiraCloud({ onSuccess }: { onSuccess: () => void }) {
     ipcRenderer.on("code", async (_, code) => {
       if (code !== lastCode) {
         lastCode = code
-        await fetch(`${import.meta.env.VITE_EXTENDER}/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ provider: "JiraCloud", code }),
-        }).then((response) => {
-          if (response.ok) {
+        ipcRenderer
+          .invoke("login", { provider: "JiraCloud", code })
+          .then(() => {
             refreshInterval = setInterval(refreshAccessToken, 55 * 60 * 1000)
             onSuccess()
-          }
-        })
+          })
       }
     })
     listenerSetUp = true

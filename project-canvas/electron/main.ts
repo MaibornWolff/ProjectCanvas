@@ -1,6 +1,9 @@
 import { ipcMain, shell, app, BrowserWindow } from "electron"
 import path from "path"
 import { handleOAuth2 } from "./OAuthHelper"
+import { BasicLoginOptions, ProviderApi } from "./providers/base-provider"
+import { JiraServerProviderCreator } from "./providers/jira-server-provider"
+import { JiraCloudProviderCreator } from "./providers/jira-cloud-provider"
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string
 declare const MAIN_WINDOW_VITE_NAME: string
@@ -10,6 +13,7 @@ let mainWindow: BrowserWindow | null = null
 // eslint-disable-next-line global-require
 if (require("electron-squirrel-startup")) {
   app.quit()
+  process.exit(0)
 }
 
 const createWindow = () => {
@@ -54,17 +58,42 @@ app.on("activate", () => {
   }
 })
 
+let issueProvider: ProviderApi
+enum ProviderType {
+  JiraServer = "JiraServer",
+  JiraCloud = "JiraCloud",
+}
+type LoginOptions =
+  | { provider: ProviderType.JiraServer; basicLoginOptions: BasicLoginOptions }
+  | { provider: ProviderType.JiraCloud; code: string }
+
 app.whenReady().then(() => {
   ipcMain.on("start-oauth2", () =>
     handleOAuth2(BrowserWindow.getAllWindows()[0]!)
   )
+
+  ipcMain.handle("login", async (_, loginOptions: LoginOptions) => {
+    if (loginOptions.provider === ProviderType.JiraServer) {
+      issueProvider = new JiraServerProviderCreator().factoryMethod()
+      await issueProvider.login({
+        basicLoginOptions: loginOptions.basicLoginOptions,
+      })
+    }
+    if (loginOptions.provider === ProviderType.JiraCloud) {
+      issueProvider = new JiraCloudProviderCreator().factoryMethod()
+      await issueProvider.login({
+        oauthLoginOptions: {
+          code: loginOptions.code,
+          clientId: import.meta.env.VITE_CLIENT_ID!,
+          clientSecret: import.meta.env.VITE_CLIENT_SECRET!,
+          redirectUri: import.meta.env.VITE_REDIRECT_URI!,
+        },
+      })
+    }
+  })
 })
 
 app.whenReady().then(() => {
-  // Launch project extender fastify server
-  // eslint-disable-next-line global-require
-  require("project-extender")
-
   // Launch dev tools in development tools
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL && mainWindow) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
