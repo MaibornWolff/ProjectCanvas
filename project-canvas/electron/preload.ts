@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron"
 
 window.provider = {
-  login: () => ipcRenderer.invoke("login"),
+  login: (params) => ipcRenderer.invoke("login", params),
   logout: () => ipcRenderer.invoke("logout"),
   isLoggedIn: () => ipcRenderer.invoke("isLoggedIn"),
   refreshAccessToken: () => ipcRenderer.invoke("refreshAccessToken"),

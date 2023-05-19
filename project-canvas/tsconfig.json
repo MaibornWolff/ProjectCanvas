@@ -1,22 +1,25 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
     "target": "ESNext",
+    "module": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "paths": {
       "@/*": ["src/*"],
       "styles/*": ["src/assets/styles/*"]
     },
-    "allowJs": false,
-    "skipLibCheck": true,
-    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
     "isolatedModules": false,
     "noEmit": true,
     "jsx": "react-jsx"
