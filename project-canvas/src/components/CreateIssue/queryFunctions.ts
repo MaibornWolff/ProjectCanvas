@@ -1,4 +1,4 @@
-import { Issue, IssueType, User, Sprint, Priority } from "project-extender"
+import { Issue, IssueType, Priority, Sprint, User } from "project-extender"
 
 export const getIssueTypes = (projectIdOrKey: string): Promise<IssueType[]> =>
   fetch(
@@ -58,9 +58,7 @@ export const getLabels = (): Promise<string[]> =>
     .catch((err) => err)
 
 export const getCurrentUser = (): Promise<User> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/currentUser`)
-    .then((user) => user.json())
-    .catch((err) => err)
+  window.provider.getCurrentUser()
 
 export const getPriorities = (): Promise<Priority[]> =>
   fetch(`${import.meta.env.VITE_EXTENDER}/priorities`)

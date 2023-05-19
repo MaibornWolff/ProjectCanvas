@@ -1,6 +1,5 @@
-import { IssueType } from "project-extender"
+import { ipcRenderer } from "electron"
+import { Project } from "types"
 
-export const getProjects = (): Promise<IssueType[]> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/projects`)
-    .then((_projects) => _projects.json())
-    .catch((err) => err)
+export const getProjects = (): Promise<Project[]> =>
+  ipcRenderer.invoke("getProjects")

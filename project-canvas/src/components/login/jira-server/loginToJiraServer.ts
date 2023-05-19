@@ -1,5 +1,4 @@
 import { showNotification } from "@mantine/notifications"
-import { ipcRenderer } from "electron"
 
 export async function loginToJiraServer({
   onSuccess,
@@ -8,8 +7,8 @@ export async function loginToJiraServer({
   onSuccess: () => void
   loginOptions: { url: string; username: string; password: string }
 }) {
-  ipcRenderer
-    .invoke("login", {
+  window.provider
+    .login({
       provider: "JiraServer",
       basicLoginOptions: {
         ...loginOptions,

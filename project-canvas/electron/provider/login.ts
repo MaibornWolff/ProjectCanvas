@@ -3,7 +3,7 @@ import { JiraCloudProvider } from "../providers/jira-cloud-provider"
 import { JiraServerProvider } from "../providers/jira-server-provider"
 import { getProvider, ProviderType, setProvider } from "./setup"
 
-type LoginOptions =
+export type LoginOptions =
   | { provider: ProviderType.JiraServer; basicLoginOptions: BasicLoginOptions }
   | { provider: ProviderType.JiraCloud; code: string }
 
@@ -36,12 +36,9 @@ export async function isLoggedIn() {
 export async function logout() {
   await getProvider().logout()
 }
-export async function refreshAccessToken(
-  _: Electron.IpcMainInvokeEvent,
-  oauthRefreshOptions: {
-    clientId: string
-    clientSecret: string
-  }
-) {
-  await getProvider().refreshAccessToken(oauthRefreshOptions)
+export async function refreshAccessToken() {
+  await getProvider().refreshAccessToken({
+    clientId: import.meta.env.VITE_CLIENT_ID,
+    clientSecret: import.meta.env.VITE_CLIENT_SECRET,
+  })
 }

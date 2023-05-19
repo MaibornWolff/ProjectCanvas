@@ -9,12 +9,10 @@ export function loginToJiraCloud({ onSuccess }: { onSuccess: () => void }) {
     ipcRenderer.on("code", async (_, code) => {
       if (code !== lastCode) {
         lastCode = code
-        ipcRenderer
-          .invoke("login", { provider: "JiraCloud", code })
-          .then(() => {
-            refreshInterval = setInterval(refreshAccessToken, 55 * 60 * 1000)
-            onSuccess()
-          })
+        window.provider.login({ provider: "JiraCloud", code }).then(() => {
+          refreshInterval = setInterval(refreshAccessToken, 55 * 60 * 1000)
+          onSuccess()
+        })
       }
     })
     listenerSetUp = true
@@ -22,11 +20,9 @@ export function loginToJiraCloud({ onSuccess }: { onSuccess: () => void }) {
 }
 
 async function refreshAccessToken() {
-  const isLoggedIn = await fetch(`${import.meta.env.VITE_EXTENDER}/isLoggedIn`)
-    .then((res) => {
-      if (res.status === 200) return true
-      return false
-    })
+  const isLoggedIn = await window.provider
+    .isLoggedIn()
+    .then(() => true)
     .catch(() => false)
 
   if (!isLoggedIn) {
@@ -34,19 +30,5 @@ async function refreshAccessToken() {
     return
   }
 
-  await fetch(`${import.meta.env.VITE_EXTENDER}/refreshAccessToken`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ provider: "JiraCloud" }),
-  })
-    .then(async (response) => {
-      if (!response.ok) {
-        throw new Error(
-          `Failed to refresh access token: ${await response.text()}`
-        )
-      }
-    })
-    .catch((err) => {
-      throw new Error(`Failed to refresh access token: ${err}`)
-    })
+  await window.provider.refreshAccessToken()
 }

@@ -1,7 +1,17 @@
 import { ipcMain, shell, app, BrowserWindow } from "electron"
 import path from "path"
 import { handleOAuth2 } from "./OAuthHelper"
-import { isLoggedIn, login, logout, refreshAccessToken } from "./provider"
+import {
+  createSubtask,
+  getBoardIds,
+  getCurrentUser,
+  getProjects,
+  isLoggedIn,
+  login,
+  logout,
+  refreshAccessToken,
+  setTransition,
+} from "./provider"
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string
 declare const MAIN_WINDOW_VITE_NAME: string
@@ -66,11 +76,11 @@ app.whenReady().then(() => {
   ipcMain.handle("isLoggedIn", isLoggedIn)
   ipcMain.handle("refreshAccessToken", refreshAccessToken)
 
-  //   ipcMain.handle("getProjects", getProjects)
-  //   ipcMain.handle("getCurrentUser", getCurrentUser)
-  //   ipcMain.handle("getBoardIds", getBoardIds)
-  //   ipcMain.handle("setTransition", setTransition)
-  //   ipcMain.handle("createSubtask", createSubtask)
+  ipcMain.handle("getProjects", getProjects)
+  ipcMain.handle("getCurrentUser", getCurrentUser)
+  ipcMain.handle("getBoardIds", getBoardIds)
+  ipcMain.handle("setTransition", setTransition)
+  ipcMain.handle("createSubtask", createSubtask)
 
   //   ipcMain.handle("editIssue", editIssue)
   //   ipcMain.handle("createIssue", createIssue)
