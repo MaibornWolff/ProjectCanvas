@@ -26,7 +26,7 @@ interface LoginOptions {
   oauthLoginOptions?: OauthLoginOptions
 }
 
-export interface ProviderApi {
+export interface IProvider {
   login(loginOptions: LoginOptions): Promise<void>
   isLoggedIn(): Promise<void>
   refreshAccessToken(oauthRefreshOptions: {
@@ -83,8 +83,4 @@ export interface ProviderApi {
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void>
   getResource(): Promise<Resource>
   createSprint(sprint: SprintCreate): Promise<void>
-}
-
-export abstract class ProviderCreator {
-  public abstract factoryMethod(): ProviderApi
 }

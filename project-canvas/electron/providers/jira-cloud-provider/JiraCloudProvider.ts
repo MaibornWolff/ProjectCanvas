@@ -1,16 +1,14 @@
-/* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
-import { ProviderApi, ProviderCreator } from "../base-provider"
 import {
-  Issue,
-  Sprint,
-  Project,
   dateTimeFormat,
+  Issue,
   IssueType,
-  User,
   Priority,
+  Project,
   Resource,
+  Sprint,
   SprintCreate,
+  User,
 } from "../../../types"
 import {
   JiraIssue,
@@ -19,9 +17,10 @@ import {
   JiraProject,
   JiraSprint,
 } from "../../../types/jira"
+import { IProvider } from "../base-provider"
 import { getAccessToken, refreshTokens } from "./getAccessToken"
 
-class JiraCloudProvider implements ProviderApi {
+export class JiraCloudProvider implements IProvider {
   public accessToken: string | undefined
 
   public refreshToken: string | undefined
@@ -1557,10 +1556,5 @@ class JiraCloudProvider implements ProviderApi {
           reject(new Error(`Error creating sprint: ${error}`))
         })
     })
-  }
-}
-export class JiraCloudProviderCreator extends ProviderCreator {
-  public factoryMethod(): ProviderApi {
-    return new JiraCloudProvider()
   }
 }

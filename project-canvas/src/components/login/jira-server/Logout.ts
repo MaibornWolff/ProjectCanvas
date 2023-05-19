@@ -1,3 +1,6 @@
+import { showNotification } from "@mantine/notifications"
+import { ipcRenderer } from "electron"
+
 export function Logout({
   LogoutSuccess,
   LogoutFailed,
@@ -15,4 +18,15 @@ export function Logout({
     if (response.status === 204) LogoutSuccess()
     if (response.status === 401) LogoutFailed()
   })
+  ipcRenderer
+    .invoke("logout")
+    .then(() => LogoutSuccess())
+    .catch((error) => {
+      showNotification({
+        title: error.name,
+        message: error.message,
+        color: "red",
+      })
+      LogoutFailed()
+    })
 }

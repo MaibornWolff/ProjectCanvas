@@ -1,9 +1,7 @@
 import { ipcMain, shell, app, BrowserWindow } from "electron"
 import path from "path"
 import { handleOAuth2 } from "./OAuthHelper"
-import { BasicLoginOptions, ProviderApi } from "./providers/base-provider"
-import { JiraServerProviderCreator } from "./providers/jira-server-provider"
-import { JiraCloudProviderCreator } from "./providers/jira-cloud-provider"
+import { isLoggedIn, login, logout, refreshAccessToken } from "./provider"
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string
 declare const MAIN_WINDOW_VITE_NAME: string
@@ -58,39 +56,55 @@ app.on("activate", () => {
   }
 })
 
-let issueProvider: ProviderApi
-enum ProviderType {
-  JiraServer = "JiraServer",
-  JiraCloud = "JiraCloud",
-}
-type LoginOptions =
-  | { provider: ProviderType.JiraServer; basicLoginOptions: BasicLoginOptions }
-  | { provider: ProviderType.JiraCloud; code: string }
-
 app.whenReady().then(() => {
   ipcMain.on("start-oauth2", () =>
     handleOAuth2(BrowserWindow.getAllWindows()[0]!)
   )
 
-  ipcMain.handle("login", async (_, loginOptions: LoginOptions) => {
-    if (loginOptions.provider === ProviderType.JiraServer) {
-      issueProvider = new JiraServerProviderCreator().factoryMethod()
-      await issueProvider.login({
-        basicLoginOptions: loginOptions.basicLoginOptions,
-      })
-    }
-    if (loginOptions.provider === ProviderType.JiraCloud) {
-      issueProvider = new JiraCloudProviderCreator().factoryMethod()
-      await issueProvider.login({
-        oauthLoginOptions: {
-          code: loginOptions.code,
-          clientId: import.meta.env.VITE_CLIENT_ID!,
-          clientSecret: import.meta.env.VITE_CLIENT_SECRET!,
-          redirectUri: import.meta.env.VITE_REDIRECT_URI!,
-        },
-      })
-    }
-  })
+  ipcMain.handle("login", login)
+  ipcMain.handle("logout", logout)
+  ipcMain.handle("isLoggedIn", isLoggedIn)
+  ipcMain.handle("refreshAccessToken", refreshAccessToken)
+
+  //   ipcMain.handle("getProjects", getProjects)
+  //   ipcMain.handle("getCurrentUser", getCurrentUser)
+  //   ipcMain.handle("getBoardIds", getBoardIds)
+  //   ipcMain.handle("setTransition", setTransition)
+  //   ipcMain.handle("createSubtask", createSubtask)
+
+  //   ipcMain.handle("editIssue", editIssue)
+  //   ipcMain.handle("createIssue", createIssue)
+  //   ipcMain.handle("getIssuesByProject", getIssuesByProject)
+  //   ipcMain.handle("getIssuesBySprint", getIssuesBySprint)
+  //   ipcMain.handle(
+  //     "getBacklogIssuesByProjectAndBoard",
+  //     getBacklogIssuesByProjectAndBoard
+  //   )
+  //   ipcMain.handle("deleteIssue", deleteIssue)
+  //   ipcMain.handle("moveIssueToSprintAndRank", moveIssueToSprintAndRank)
+  //   ipcMain.handle("moveIssueToBacklog", moveIssueToBacklog)
+  //   ipcMain.handle("rankIssueInBacklog", rankIssueInBacklog)
+
+  //   ipcMain.handle("getIssueTypesByProject", getIssueTypesByProject)
+  //   ipcMain.handle("getLabels", getLabels)
+  //   ipcMain.handle("getPriorities", getPriorities)
+  //   ipcMain.handle("getEditableIssueFields", getEditableIssueFields)
+  //   ipcMain.handle("getIssueReporter", getIssueReporter)
+  //   ipcMain.handle("getIssueTypesWithFieldsMap", getIssueTypesWithFieldsMap)
+  //   ipcMain.handle("setStatus", setStatus)
+
+  //   ipcMain.handle("createSprint", createSprint)
+  //   ipcMain.handle("getSprints", getSprints)
+  //   ipcMain.handle("getAssignableUsersByProject", getAssignableUsersByProject)
+  //   ipcMain.handle("getBoardIdsByProject", getBoardIdsByProject)
+  //   ipcMain.handle("getSprintsByBoardId", getSprintsByBoardId)
+  //   ipcMain.handle("getEpicsByProject", getEpicsByProject)
+
+  //   ipcMain.handle("addCommentToIssue", addCommentToIssue)
+  //   ipcMain.handle("editIssueComment", editIssueComment)
+  //   ipcMain.handle("deleteIssueComment", deleteIssueComment)
+
+  //   ipcMain.handle("getResource", getResource)
 })
 
 app.whenReady().then(() => {

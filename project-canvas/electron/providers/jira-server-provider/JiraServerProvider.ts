@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 import fetch from "cross-fetch"
-import { ProviderApi, ProviderCreator } from "../base-provider"
 import {
   dateTimeFormat,
   Issue,
@@ -20,8 +17,9 @@ import {
   JiraProject,
   JiraSprint,
 } from "../../../types/jira"
+import { IProvider } from "../base-provider"
 
-class JiraServerProvider implements ProviderApi {
+export class JiraServerProvider implements IProvider {
   private loginOptions = {
     url: "",
     username: "",
@@ -489,11 +487,5 @@ class JiraServerProvider implements ProviderApi {
     clientSecret: string
   }): Promise<void> {
     throw new Error("Method not implemented for Jira Server")
-  }
-}
-
-export class JiraServerProviderCreator extends ProviderCreator {
-  public factoryMethod(): ProviderApi {
-    return new JiraServerProvider()
   }
 }
