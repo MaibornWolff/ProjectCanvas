@@ -37,7 +37,7 @@ import {
 } from "./Fields"
 
 import {
-  createNewIssue,
+  createIssue,
   getAssignableUsersByProject,
   getCurrentUser,
   getIssueTypes,
@@ -94,7 +94,7 @@ export function CreateIssueModal({
   })
 
   const mutation = useMutation({
-    mutationFn: (issue: Issue) => createNewIssue(issue),
+    mutationFn: (issue: Issue) => createIssue(issue),
     onError: () => {
       showNotification({
         message: "The issue couldn't be created! 😢",

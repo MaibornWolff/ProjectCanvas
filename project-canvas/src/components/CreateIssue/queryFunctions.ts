@@ -1,31 +1,13 @@
 import { Issue, IssueType, Priority, Sprint, User } from "project-extender"
 
 export const getIssueTypes = (projectIdOrKey: string): Promise<IssueType[]> =>
-  fetch(
-    `${
-      import.meta.env.VITE_EXTENDER
-    }/issueTypesByProject?projectIdOrKey=${projectIdOrKey}`
-  )
-    .then((issueTypes) => issueTypes.json())
-    .catch((err) => err)
+  window.provider.getIssueTypesByProject(projectIdOrKey)
 
-export const createNewIssue = (issue: Issue): Promise<string> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/createIssue`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ issue }),
-  })
-    .then((issueKey) => issueKey.json())
-    .catch((err) => err)
+export const createIssue = (issue: Issue): Promise<string> =>
+  window.provider.createIssue(issue)
 
 export const moveIssueToBacklog = (issueIdOrKey: string): Promise<void> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToBacklog`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ issueIdOrKey }),
-  })
-    .then(() => {})
-    .catch((err) => err)
+  window.provider.moveIssueToBacklog(issueIdOrKey)
 
 export const getAssignableUsersByProject = (
   projectIdOrKey: string
@@ -39,41 +21,27 @@ export const getAssignableUsersByProject = (
     .catch((err) => err)
 
 export const getBoardIds = (projectIdOrKey: string): Promise<number[]> =>
-  fetch(
-    `${
-      import.meta.env.VITE_EXTENDER
-    }/boardIdsByProject?project=${projectIdOrKey}`
-  )
-    .then((boards) => boards.json())
-    .catch((err) => err)
+  window.provider.getBoardIds(projectIdOrKey)
 
 export const getSprints = (boardId: number): Promise<Sprint[]> =>
   fetch(`${import.meta.env.VITE_EXTENDER}/sprintsByBoardId?boardId=${boardId}`)
     .then((sprints) => sprints.json())
     .catch((err) => err)
 
-export const getLabels = (): Promise<string[]> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/labels`)
-    .then((labels) => labels.json())
-    .catch((err) => err)
+export const getLabels = (): Promise<string[]> => window.provider.getLabels()
 
 export const getCurrentUser = (): Promise<User> =>
   window.provider.getCurrentUser()
 
 export const getPriorities = (): Promise<Priority[]> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/priorities`)
-    .then((priorities) => priorities.json())
-    .catch((err) => err)
+  window.provider.getPriorities()
 
 export const getIssueTypesWithFieldsMap = (): Promise<Map<string, string[]>> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/issueTypesWithFieldsMap`)
-    .then(async (mapResponse) => {
-      const resp: { [key: string]: string[] } = await mapResponse.json()
-      const map = new Map<string, string[]>()
-      Object.entries(resp).forEach(([key, value]) => map.set(key, value))
-      return map
-    })
-    .catch((err) => err)
+  window.provider.getIssueTypesWithFieldsMap().then(async (mapResponse) => {
+    const map = new Map<string, string[]>()
+    Object.entries(mapResponse).forEach(([key, value]) => map.set(key, value))
+    return map
+  })
 
 export const setStatus = (
   issueKey: string,
@@ -86,24 +54,11 @@ export const setStatus = (
   ).then(() => {})
 
 export const getIssueReporter = (issueIdOrKey: string): Promise<User> =>
-  fetch(
-    `${
-      import.meta.env.VITE_EXTENDER
-    }/issueReporter?issueIdOrKey=${issueIdOrKey}`
-  )
-    .then((reporter) => reporter.json())
-    .catch((err) => err)
+  window.provider.getIssueReporter(issueIdOrKey)
 
 export const getEditableIssueFields = (
   issueIdOrKey: string
-): Promise<string[]> =>
-  fetch(
-    `${
-      import.meta.env.VITE_EXTENDER
-    }/editableIssueFields?issueIdOrKey=${issueIdOrKey}`
-  )
-    .then((fields) => fields.json())
-    .catch((err) => err)
+): Promise<string[]> => window.provider.getEditableIssueFields(issueIdOrKey)
 
 export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> =>
   fetch(

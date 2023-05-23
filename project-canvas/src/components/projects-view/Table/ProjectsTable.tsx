@@ -38,17 +38,9 @@ export function ProjectsTable({ data }: { data: Project[] }) {
     )
   }
 
-  const getBoardIds = async (projectKey: string) => {
-    const boardIdsResponse = await fetch(
-      `${import.meta.env.VITE_EXTENDER}/boardIdsByProject?project=${projectKey}`
-    )
-    const boardIds = await boardIdsResponse.json()
-    return boardIds
-  }
-
   const onClickRow = async (row: Project) => {
     setSelectedProject(row)
-    setselectedProjectBoardIds(await getBoardIds(row.key))
+    setselectedProjectBoardIds(await window.provider.getBoardIds(row.key))
     navigate("/backlogview")
   }
 

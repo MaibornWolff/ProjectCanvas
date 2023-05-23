@@ -13,21 +13,22 @@ export async function getCurrentUser() {
 
 export async function getBoardIds(
   _: Electron.IpcMainInvokeEvent,
-  params: Parameters<IProvider["getBoardIds"]>
+  ...params: Parameters<IProvider["getBoardIds"]>
 ) {
-  await getProvider().getBoardIds(...params)
+  const boardIds = await getProvider().getBoardIds(...params)
+  return boardIds
 }
 
 export async function setTransition(
   _: Electron.IpcMainInvokeEvent,
-  params: Parameters<IProvider["setTransition"]>
+  ...params: Parameters<IProvider["setTransition"]>
 ) {
   await getProvider().setTransition(...params)
 }
 
 export async function createSubtask(
   _: Electron.IpcMainInvokeEvent,
-  params: Parameters<IProvider["createSubtask"]>
+  ...params: Parameters<IProvider["createSubtask"]>
 ) {
   await getProvider().createSubtask(...params)
 }

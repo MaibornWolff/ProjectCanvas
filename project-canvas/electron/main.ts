@@ -2,13 +2,32 @@ import { ipcMain, shell, app, BrowserWindow } from "electron"
 import path from "path"
 import { handleOAuth2 } from "./OAuthHelper"
 import {
+  createIssue,
+  createSprint,
   createSubtask,
+  deleteIssue,
+  editIssue,
+  getAssignableUsersByProject,
+  getBacklogIssuesByProjectAndBoard,
   getBoardIds,
   getCurrentUser,
+  getEditableIssueFields,
+  getEpicsByProject,
+  getIssueReporter,
+  getIssuesByProject,
+  getIssuesBySprint,
+  getIssueTypesByProject,
+  getIssueTypesWithFieldsMap,
+  getLabels,
+  getPriorities,
   getProjects,
+  getSprints,
   isLoggedIn,
   login,
   logout,
+  moveIssueToBacklog,
+  moveIssueToSprintAndRank,
+  rankIssueInBacklog,
   refreshAccessToken,
   setTransition,
 } from "./provider"
@@ -82,33 +101,31 @@ app.whenReady().then(() => {
   ipcMain.handle("setTransition", setTransition)
   ipcMain.handle("createSubtask", createSubtask)
 
-  //   ipcMain.handle("editIssue", editIssue)
-  //   ipcMain.handle("createIssue", createIssue)
-  //   ipcMain.handle("getIssuesByProject", getIssuesByProject)
-  //   ipcMain.handle("getIssuesBySprint", getIssuesBySprint)
-  //   ipcMain.handle(
-  //     "getBacklogIssuesByProjectAndBoard",
-  //     getBacklogIssuesByProjectAndBoard
-  //   )
-  //   ipcMain.handle("deleteIssue", deleteIssue)
-  //   ipcMain.handle("moveIssueToSprintAndRank", moveIssueToSprintAndRank)
-  //   ipcMain.handle("moveIssueToBacklog", moveIssueToBacklog)
-  //   ipcMain.handle("rankIssueInBacklog", rankIssueInBacklog)
+  ipcMain.handle("editIssue", editIssue)
+  ipcMain.handle("createIssue", createIssue)
+  ipcMain.handle("getIssuesByProject", getIssuesByProject)
+  ipcMain.handle("getIssuesBySprint", getIssuesBySprint)
+  ipcMain.handle(
+    "getBacklogIssuesByProjectAndBoard",
+    getBacklogIssuesByProjectAndBoard
+  )
+  ipcMain.handle("deleteIssue", deleteIssue)
+  ipcMain.handle("moveIssueToSprintAndRank", moveIssueToSprintAndRank)
+  ipcMain.handle("moveIssueToBacklog", moveIssueToBacklog)
+  ipcMain.handle("rankIssueInBacklog", rankIssueInBacklog)
 
-  //   ipcMain.handle("getIssueTypesByProject", getIssueTypesByProject)
-  //   ipcMain.handle("getLabels", getLabels)
-  //   ipcMain.handle("getPriorities", getPriorities)
-  //   ipcMain.handle("getEditableIssueFields", getEditableIssueFields)
-  //   ipcMain.handle("getIssueReporter", getIssueReporter)
-  //   ipcMain.handle("getIssueTypesWithFieldsMap", getIssueTypesWithFieldsMap)
-  //   ipcMain.handle("setStatus", setStatus)
+  ipcMain.handle("getIssueTypesByProject", getIssueTypesByProject)
+  ipcMain.handle("getLabels", getLabels)
+  ipcMain.handle("getPriorities", getPriorities)
+  ipcMain.handle("getEditableIssueFields", getEditableIssueFields)
+  ipcMain.handle("getIssueReporter", getIssueReporter)
+  ipcMain.handle("getIssueTypesWithFieldsMap", getIssueTypesWithFieldsMap)
+  // ipcMain.handle("setStatus", setStatus)
 
-  //   ipcMain.handle("createSprint", createSprint)
-  //   ipcMain.handle("getSprints", getSprints)
-  //   ipcMain.handle("getAssignableUsersByProject", getAssignableUsersByProject)
-  //   ipcMain.handle("getBoardIdsByProject", getBoardIdsByProject)
-  //   ipcMain.handle("getSprintsByBoardId", getSprintsByBoardId)
-  //   ipcMain.handle("getEpicsByProject", getEpicsByProject)
+  ipcMain.handle("createSprint", createSprint)
+  ipcMain.handle("getSprints", getSprints)
+  ipcMain.handle("getAssignableUsersByProject", getAssignableUsersByProject)
+  ipcMain.handle("getEpicsByProject", getEpicsByProject)
 
   //   ipcMain.handle("addCommentToIssue", addCommentToIssue)
   //   ipcMain.handle("editIssueComment", editIssueComment)
