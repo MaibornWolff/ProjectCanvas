@@ -39,7 +39,6 @@ window.provider = {
     ipcRenderer.invoke("getIssueReporter", ...params),
   getIssueTypesWithFieldsMap: () =>
     ipcRenderer.invoke("getIssueTypesWithFieldsMap"),
-  // setStatus: () => ipcRenderer.invoke("setStatus"),
 
   createSprint: (...params) => ipcRenderer.invoke("createSprint", ...params),
   getSprints: (...params) => ipcRenderer.invoke("getSprints", ...params),

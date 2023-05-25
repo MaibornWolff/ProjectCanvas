@@ -720,6 +720,7 @@ export class JiraCloudProvider implements IProvider {
     rankAfter: string
   ): Promise<void> {
     return new Promise((resolve, reject) => {
+      if (!rankBefore && !rankAfter) resolve()
       const rankCustomField = this.customFields.get("Rank")
       const body: {
         rankCustomFieldId: string

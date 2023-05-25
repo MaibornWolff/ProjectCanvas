@@ -30,5 +30,6 @@ export async function createSubtask(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["createSubtask"]>
 ) {
-  await getProvider().createSubtask(...params)
+  const subtask = await getProvider().createSubtask(...params)
+  return subtask
 }

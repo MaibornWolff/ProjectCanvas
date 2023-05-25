@@ -14,7 +14,7 @@
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "paths": {
-      "@/*": ["src/*"],
+      "@lib": ["lib/*"],
       "styles/*": ["src/assets/styles/*"]
     },
     "allowSyntheticDefaultImports": true,

@@ -42,26 +42,18 @@ export const onDragEnd = ({
         : newList[destination.index + 1].issueKey
 
     if (destinationSprintId) {
-      fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToSprintAndRank`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sprint: destinationSprintId,
-          issue: movedIssueKey,
-          rankBefore: keyOfIssueRankedAfter,
-          rankAfter: keyOfIssueRankedBefore,
-        }),
-      })
+      window.provider.moveIssueToSprintAndRank(
+        destinationSprintId,
+        movedIssueKey,
+        keyOfIssueRankedAfter,
+        keyOfIssueRankedBefore
+      )
     } else if (destination.droppableId === "Backlog") {
-      fetch(`${import.meta.env.VITE_EXTENDER}/rankIssueInBacklog`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          issue: movedIssueKey,
-          rankBefore: keyOfIssueRankedAfter,
-          rankAfter: keyOfIssueRankedBefore,
-        }),
-      })
+      window.provider.rankIssueInBacklog(
+        movedIssueKey,
+        keyOfIssueRankedAfter,
+        keyOfIssueRankedBefore
+      )
     }
 
     updateIssuesWrapper(startId, {
@@ -91,35 +83,19 @@ export const onDragEnd = ({
       : newEndIssues[destination.index + 1].issueKey
 
   if (destinationSprintId) {
-    fetch(`${import.meta.env.VITE_EXTENDER}/moveIssueToSprintAndRank`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        sprint: destinationSprintId,
-        issue: movedIssueKey,
-        rankBefore: keyOfIssueRankedAfter,
-        rankAfter: keyOfIssueRankedBefore,
-      }),
-    })
+    window.provider.moveIssueToSprintAndRank(
+      destinationSprintId,
+      movedIssueKey,
+      keyOfIssueRankedAfter,
+      keyOfIssueRankedBefore
+    )
   } else if (destination.droppableId === "Backlog") {
-    fetch(`${import.meta.env.VITE_EXTENDER}/rankIssueInBacklog`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        issue: movedIssueKey,
-        rankBefore: keyOfIssueRankedAfter,
-        rankAfter: keyOfIssueRankedBefore,
-      }),
-    }).then(async () => {
-      fetch(`${import.meta.env.VITE_EXTENDER}/rankIssueInBacklog`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          issue: movedIssueKey,
-          rankBefore: keyOfIssueRankedAfter,
-          rankAfter: keyOfIssueRankedBefore,
-        }),
-      })
+    window.provider.moveIssueToBacklog(movedIssueKey).then(() => {
+      window.provider.rankIssueInBacklog(
+        movedIssueKey,
+        keyOfIssueRankedAfter,
+        keyOfIssueRankedBefore
+      )
     })
   }
 

@@ -2,11 +2,14 @@ import { ipcMain, shell, app, BrowserWindow } from "electron"
 import path from "path"
 import { handleOAuth2 } from "./OAuthHelper"
 import {
+  addCommentToIssue,
   createIssue,
   createSprint,
   createSubtask,
   deleteIssue,
+  deleteIssueComment,
   editIssue,
+  editIssueComment,
   getAssignableUsersByProject,
   getBacklogIssuesByProjectAndBoard,
   getBoardIds,
@@ -21,6 +24,7 @@ import {
   getLabels,
   getPriorities,
   getProjects,
+  getResource,
   getSprints,
   isLoggedIn,
   login,
@@ -120,18 +124,16 @@ app.whenReady().then(() => {
   ipcMain.handle("getEditableIssueFields", getEditableIssueFields)
   ipcMain.handle("getIssueReporter", getIssueReporter)
   ipcMain.handle("getIssueTypesWithFieldsMap", getIssueTypesWithFieldsMap)
-  // ipcMain.handle("setStatus", setStatus)
 
   ipcMain.handle("createSprint", createSprint)
   ipcMain.handle("getSprints", getSprints)
   ipcMain.handle("getAssignableUsersByProject", getAssignableUsersByProject)
   ipcMain.handle("getEpicsByProject", getEpicsByProject)
 
-  //   ipcMain.handle("addCommentToIssue", addCommentToIssue)
-  //   ipcMain.handle("editIssueComment", editIssueComment)
-  //   ipcMain.handle("deleteIssueComment", deleteIssueComment)
-
-  //   ipcMain.handle("getResource", getResource)
+  ipcMain.handle("addCommentToIssue", addCommentToIssue)
+  ipcMain.handle("editIssueComment", editIssueComment)
+  ipcMain.handle("deleteIssueComment", deleteIssueComment)
+  ipcMain.handle("getResource", getResource)
 })
 
 app.whenReady().then(() => {

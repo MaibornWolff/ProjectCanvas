@@ -13,7 +13,7 @@ export async function getLabels(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getLabels"]>
 ) {
-  const labels = getProvider().getLabels(...params)
+  const labels = await getProvider().getLabels(...params)
   return labels
 }
 
