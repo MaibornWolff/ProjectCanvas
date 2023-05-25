@@ -6,8 +6,7 @@
   "workspaces": {
     "packages": [
       "project-canvas",
-      "project-extender",
-      "fake-jira-server"
+      "project-extender"
     ],
     "nohoist": [
       "**/project-canvas",
@@ -32,7 +31,6 @@
     "release": "yarn --cwd project-canvas release",
     "lint": "eslint",
     "format": "prettier .",
-    "jira": "yarn --cwd fake-jira-server start",
     "prepare": "husky install",
     "pre-commit": "lint-staged"
   },
