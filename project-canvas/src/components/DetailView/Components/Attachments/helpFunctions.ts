@@ -1,4 +1,4 @@
-import { Resource } from "project-extender"
+import { Resource } from "types"
 
 export function getThumbnailUrl(
   attachemntId: string,

@@ -1,4 +1,4 @@
-import { User } from "project-extender"
+import { User } from "types"
 
 export const getAssignableUsersByProject = (
   projectIdOrKey: string

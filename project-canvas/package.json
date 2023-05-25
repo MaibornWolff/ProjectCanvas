@@ -44,7 +44,6 @@
     "file-saver": "^2.0.5",
     "i18next": "21.10.0",
     "immer": "^9.0.19",
-    "project-extender": "*",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",

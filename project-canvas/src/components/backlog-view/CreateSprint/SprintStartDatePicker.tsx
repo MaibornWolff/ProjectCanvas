@@ -1,6 +1,6 @@
 import { DatePicker } from "@mantine/dates"
 import { UseFormReturnType } from "@mantine/form"
-import { SprintCreate } from "project-extender"
+import { SprintCreate } from "types"
 
 export function SprintStartDatePicker({
   form,

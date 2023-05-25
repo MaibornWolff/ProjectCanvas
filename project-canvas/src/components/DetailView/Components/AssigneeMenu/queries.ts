@@ -1,6 +1,6 @@
 import { showNotification } from "@mantine/notifications"
 import { QueryClient, useMutation } from "@tanstack/react-query"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 import { editIssue } from "../../helpers/queryFunctions"
 
 export const editIssueMutation = (queryClient: QueryClient, issueKey: string) =>

@@ -12,7 +12,7 @@ import {
   Textarea,
   Box,
 } from "@mantine/core"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 import {
   addCommentMutation,
   deleteCommentMutation,

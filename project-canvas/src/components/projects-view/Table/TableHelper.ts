@@ -1,4 +1,4 @@
-import { Project } from "project-extender"
+import { Project } from "types"
 import { keys } from "@mantine/utils"
 
 export function filterData(data: Project[], search: string) {

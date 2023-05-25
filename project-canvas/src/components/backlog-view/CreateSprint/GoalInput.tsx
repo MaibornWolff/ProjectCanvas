@@ -1,6 +1,6 @@
 import { TextInput } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
-import { SprintCreate } from "project-extender"
+import { SprintCreate } from "types"
 
 export function GoalInput({ form }: { form: UseFormReturnType<SprintCreate> }) {
   return (

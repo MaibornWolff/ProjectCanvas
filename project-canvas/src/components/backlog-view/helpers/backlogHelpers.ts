@@ -1,4 +1,4 @@
-import { Issue, Sprint } from "project-extender"
+import { Issue, Sprint } from "types"
 import { Dispatch, SetStateAction } from "react"
 
 export const storyPointsAccumulator = (issues: Issue[], status: string) =>

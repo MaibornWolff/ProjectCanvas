@@ -10,7 +10,7 @@ import {
 } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 import { getEditableIssueFields } from "../../CreateIssue/queryFunctions"
 import { editIssue } from "../helpers/queryFunctions"
 

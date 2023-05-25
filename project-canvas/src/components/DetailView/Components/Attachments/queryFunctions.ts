@@ -1,4 +1,4 @@
-import { Resource, Attachment } from "project-extender"
+import { Resource, Attachment } from "types"
 import {
   getDeleteUrl,
   getDownloadUrl,

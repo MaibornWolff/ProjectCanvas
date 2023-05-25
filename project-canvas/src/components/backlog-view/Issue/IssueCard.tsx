@@ -14,7 +14,7 @@ import {
 } from "@mantine/core"
 import { useHover, useMergedRef } from "@mantine/hooks"
 import { useQueryClient } from "@tanstack/react-query"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { DetailView } from "../../DetailView/DetailView"

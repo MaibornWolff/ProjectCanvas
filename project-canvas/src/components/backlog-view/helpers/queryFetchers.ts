@@ -1,4 +1,4 @@
-import { Issue, Sprint, SprintCreate } from "project-extender"
+import { Issue, Sprint, SprintCreate } from "types"
 
 export const getSprints = (boardId: number): Promise<Sprint[]> =>
   window.provider.getSprints(boardId)

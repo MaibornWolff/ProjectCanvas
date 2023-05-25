@@ -1,5 +1,5 @@
 import { Text, Textarea } from "@mantine/core"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 import { useState } from "react"
 import { showNotification } from "@mantine/notifications"
 import { useMutation } from "@tanstack/react-query"

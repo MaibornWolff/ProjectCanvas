@@ -1,4 +1,4 @@
-import { IssueType, Project } from "project-extender"
+import { IssueType, Project } from "types"
 import { create } from "zustand"
 
 export interface CanvasStore {

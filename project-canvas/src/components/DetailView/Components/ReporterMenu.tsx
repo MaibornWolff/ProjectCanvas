@@ -10,7 +10,7 @@ import {
 import { showNotification } from "@mantine/notifications"
 import { IconChevronDown } from "@tabler/icons"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 import { useState } from "react"
 import { useCanvasStore } from "../../../lib/Store"
 import {

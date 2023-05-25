@@ -10,7 +10,7 @@ import {
 import { useForm } from "@mantine/form"
 import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 import { Dispatch, SetStateAction } from "react"
 import { useCanvasStore } from "../../lib/Store"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"

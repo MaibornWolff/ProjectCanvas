@@ -1,6 +1,6 @@
 import { Accordion, Badge, Flex, Group, Text, Title } from "@mantine/core"
 import { IconChevronRight } from "@tabler/icons"
-import { Issue, Sprint } from "project-extender"
+import { Issue, Sprint } from "types"
 import {
   pluralize,
   sortSprintsByActive,

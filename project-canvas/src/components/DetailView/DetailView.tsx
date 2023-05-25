@@ -14,7 +14,7 @@ import {
 } from "@mantine/core"
 import { IconCaretDown } from "@tabler/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 import { useState } from "react"
 import { getIssueTypes, setStatus } from "../CreateIssue/queryFunctions"
 import { AddSubtask } from "./Components/AddSubtask"

@@ -1,5 +1,5 @@
 import { DropResult } from "react-beautiful-dnd"
-import { Issue, Sprint } from "project-extender"
+import { Issue, Sprint } from "types"
 
 export const onDragEnd = ({
   source,

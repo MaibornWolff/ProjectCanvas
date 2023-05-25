@@ -1,4 +1,4 @@
-import { Issue, IssueType, Priority, Sprint, User } from "project-extender"
+import { Issue, IssueType, Priority, Sprint, User } from "types"
 
 export const getIssueTypes = (projectIdOrKey: string): Promise<IssueType[]> =>
   window.provider.getIssueTypesByProject(projectIdOrKey)

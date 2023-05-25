@@ -1,6 +1,6 @@
 import { ScrollArea, Table, Text, TextInput } from "@mantine/core"
 import { IconSearch } from "@tabler/icons"
-import { Project } from "project-extender"
+import { Project } from "types"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../../lib/Store"

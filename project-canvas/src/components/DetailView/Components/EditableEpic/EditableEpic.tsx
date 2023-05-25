@@ -1,7 +1,7 @@
 import { Group, Loader, Select, Text } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 import { useState } from "react"
 import { editIssue } from "../../helpers/queryFunctions"
 import { IssueIcon } from "../../../backlog-view/Issue/IssueIcon"

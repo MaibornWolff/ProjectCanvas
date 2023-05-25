@@ -1,6 +1,6 @@
 import { Center, Loader, Text } from "@mantine/core"
 import { useQuery } from "@tanstack/react-query"
-import { Project } from "project-extender"
+import { Project } from "types"
 import { useCanvasStore } from "../../lib/Store"
 import { getProjects } from "./queryFetchers"
 import { ProjectsTable } from "./Table/ProjectsTable"

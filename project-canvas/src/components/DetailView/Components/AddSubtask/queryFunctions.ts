@@ -1,4 +1,4 @@
-import { IssueType } from "project-extender"
+import { IssueType } from "types"
 
 export const createSubtask = (
   parentIssueKey: string,
