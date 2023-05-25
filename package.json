@@ -23,13 +23,13 @@
     ]
   },
   "scripts": {
-    "canvas": "yarn extender:build && yarn --cwd project-canvas start",
-    "canvas:build": "yarn extender:build && yarn --cwd project-canvas make",
+    "canvas": "yarn --cwd project-canvas start",
+    "canvas:build": "yarn --cwd project-canvas make",
     "canvas:test": "yarn --cwd project-canvas test",
-    "canvas:e2e": "yarn extender:build && yarn --cwd project-canvas e2e",
+    "canvas:e2e": "yarn --cwd project-canvas e2e",
     "extender": "yarn --cwd project-extender start",
     "extender:build": "yarn --cwd project-extender build",
-    "release": "yarn canvas:build && yarn --cwd project-canvas release",
+    "release": "yarn --cwd project-canvas release",
     "lint": "eslint",
     "format": "prettier .",
     "jira": "yarn --cwd fake-jira-server start",
