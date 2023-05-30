@@ -38,8 +38,4 @@ jobs:
           VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
           VITE_CLIENT_SECRET: ${{ secrets.VITE_CLIENT_SECRET }}
           VITE_REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
-          VITE_EXTENDER: ${{ secrets.VITE_EXTENDER }}
-          CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.VITE_CLIENT_SECRET }}
-          REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
         run: yarn release

@@ -35,19 +35,19 @@
 To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. Preferrably use the [yarn](https://yarnpkg.com/) package manager.
 From your command line:
 
-Clone the repository
+Clone the repository:
 
 ```bash
 git clone https://github.com/maibornwolff/project-canvas
 ```
 
-Go into the folder
+Cd into the folder:
 
 ```bash
 cd ProjectCanvas
 ```
 
-Install dependencies
+Install dependencies:
 
 ```bash
 yarn install
@@ -55,20 +55,15 @@ yarn install
 
 ### Usage
 
-To build project extender(the backend) and start project canvas
+To start project canvas:
 
 ```bash
 yarn canvas
 ```
 
-To only build and start project extender
+To add a new package (**this is important as this is a monorepo**):
 
-```bash
-yarn extender
-```
-
-To add a new package (**this is important as this is a monorepo**)  
-`project` can be `project-canvas` or `project-extender`
+> `project` can be `project-canvas` or `project-extender`
 
 ```bash
 yarn workspace <project> add <package>

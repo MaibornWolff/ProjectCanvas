@@ -61,11 +61,5 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Build ProjectExtender
-        run: yarn extender:build
-
       - name: Run ProjectCanvas TypeCheck
         run: yarn --cwd project-canvas typecheck
-
-      - name: Run ProjectExtender TypeCheck
-        run: yarn --cwd project-extender typecheck

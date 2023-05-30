@@ -1,7 +1,7 @@
 import { Button } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useNavigate } from "react-router-dom"
-import { Logout } from "../login/jira-server/Logout"
+import { Logout } from "../Login/jira-server/Logout"
 
 export function LogoutButton() {
   const navigate = useNavigate()

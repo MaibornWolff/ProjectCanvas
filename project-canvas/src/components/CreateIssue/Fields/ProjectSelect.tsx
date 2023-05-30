@@ -1,6 +1,6 @@
 import { Select } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
-import { Issue, Project, User } from "project-extender"
+import { Issue, Project, User } from "types"
 
 export function ProjectSelect({
   form,

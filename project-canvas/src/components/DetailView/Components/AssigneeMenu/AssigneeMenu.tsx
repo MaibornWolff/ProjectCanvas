@@ -9,7 +9,7 @@ import {
 } from "@mantine/core"
 import { IconChevronDown } from "@tabler/icons"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 import { useState } from "react"
 import { useCanvasStore } from "../../../../lib/Store"
 import { editIssueMutation } from "./queries"

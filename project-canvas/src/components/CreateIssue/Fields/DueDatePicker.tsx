@@ -1,7 +1,7 @@
 import { Tooltip, Box } from "@mantine/core"
 import { DatePicker } from "@mantine/dates"
 import { UseFormReturnType } from "@mantine/form"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 
 export function DueDatePicker({
   form,

@@ -8,7 +8,7 @@ import {
 } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 import { useState } from "react"
 import { getLabels } from "../../CreateIssue/queryFunctions"
 import { editIssue } from "../helpers/queryFunctions"
