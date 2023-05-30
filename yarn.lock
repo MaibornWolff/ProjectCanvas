@@ -1157,7 +1157,7 @@
   dependencies:
     "@electron-forge/shared-types" "6.1.1"
 
-"@electron-forge/plugin-vite@^6.1.1":
+"@electron-forge/plugin-vite@6.1.1":
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/@electron-forge/plugin-vite/-/plugin-vite-6.1.1.tgz#d66f88912f98f1e9cc2da499b79dcb08188b1e95"
   integrity sha512-YvzUu6lzAl6BQ3rY4CMlLYymkfx3ywBRXKaL8ewvmQFQL8Ex8k2d1rTxg2AHWhG+2n8A4lpQkmb7GaS51jSTLA==
@@ -4167,6 +4167,13 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
+
+electron-fetch@^1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/electron-fetch/-/electron-fetch-1.9.1.tgz#e28bfe78d467de3f2dec884b1d72b8b05322f30f"
+  integrity sha512-M9qw6oUILGVrcENMSRRefE1MbHPIz0h79EKIeJWK9v563aT9Qkh8aEHPO1H5vi970wPirNY+jO9OpFoLiMsMGA==
+  dependencies:
+    encoding "^0.1.13"
 
 electron-installer-common@^0.10.2:
   version "0.10.3"
@@ -9497,7 +9504,18 @@ vite-plugin-electron-renderer@^0.14.1:
   dependencies:
     lib-esm "~0.3.0"
 
-vite@^4.1.1, vite@^4.3.2:
+vite@^4.1.1:
+  version "4.3.6"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-4.3.6.tgz#d129487dd9edf10ec79314e2e7891c60a2f86051"
+  integrity sha512-cqIyLSbA6gornMS659AXTVKF7cvSHMdKmJJwQ9DXq3lwsT1uZSdktuBRlpHQ8VnOWx0QHtjDwxPpGtyo9Fh/Qg==
+  dependencies:
+    esbuild "^0.17.5"
+    postcss "^8.4.23"
+    rollup "^3.21.0"
+  optionalDependencies:
+    fsevents "~2.3.2"
+
+vite@^4.3.2:
   version "4.3.3"
   resolved "https://registry.yarnpkg.com/vite/-/vite-4.3.3.tgz#26adb4aa01439fc4546c480ea547674d87289396"
   integrity sha512-MwFlLBO4udZXd+VBcezo3u8mC77YQk+ik+fbc0GZWGgzfbPP+8Kf0fldhARqvSYmtIWoAJ5BXPClUbMTlqFxrA==

@@ -1,7 +1,7 @@
 import { FileInput, Text } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
 import { IconFileUpload } from "@tabler/icons"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 
 export function AttachementFileInput({
   form,

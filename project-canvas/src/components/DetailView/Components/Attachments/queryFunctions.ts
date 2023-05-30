@@ -1,4 +1,4 @@
-import { Resource, Attachment } from "project-extender"
+import { Resource, Attachment } from "types"
 import {
   getDeleteUrl,
   getDownloadUrl,
@@ -7,9 +7,7 @@ import {
 } from "./helpFunctions"
 
 export const getResource = (): Promise<Resource> =>
-  fetch(`${import.meta.env.VITE_EXTENDER}/getResource`)
-    .then((res) => res.json())
-    .catch((err) => err)
+  window.provider.getResource()
 
 export const getAttachmentThumbnail = (
   attachmentId: string,

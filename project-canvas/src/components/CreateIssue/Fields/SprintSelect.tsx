@@ -1,7 +1,7 @@
 import { Select, Tooltip, Box } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
 import { useQuery } from "@tanstack/react-query"
-import { Issue, IssueType } from "project-extender"
+import { Issue, IssueType } from "types"
 import { getBoardIds, getSprints } from "../queryFunctions"
 
 export function SprintSelect({

@@ -1,6 +1,6 @@
 import { Textarea } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 
 export function DiscriptionInput({ form }: { form: UseFormReturnType<Issue> }) {
   return (

@@ -1,6 +1,6 @@
 import { showNotification } from "@mantine/notifications"
 import { QueryClient, useMutation } from "@tanstack/react-query"
-import { Resource } from "project-extender"
+import { Resource } from "types"
 import { deleteAttachment, uploadAttachment } from "./queryFunctions"
 
 export const addAttachmentMutation = (queryClient: QueryClient) =>

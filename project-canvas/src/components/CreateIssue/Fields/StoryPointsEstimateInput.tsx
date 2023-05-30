@@ -1,6 +1,6 @@
 import { Box, NumberInput, Tooltip } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
-import { Issue, IssueType } from "project-extender"
+import { Issue, IssueType } from "types"
 
 export function StoryPointsEstimateInput({
   form,

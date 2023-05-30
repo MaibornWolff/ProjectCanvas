@@ -1,7 +1,7 @@
 import { Box, Select, Tooltip } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
 import { useQuery } from "@tanstack/react-query"
-import { Issue } from "project-extender"
+import { Issue } from "types"
 import { getPriorities } from "../queryFunctions"
 import { SelectItem } from "../SelectItem"
 

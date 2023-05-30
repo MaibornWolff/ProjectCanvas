@@ -1,12 +1,6 @@
-import { User } from "project-extender"
+import { User } from "types"
 
 export const getAssignableUsersByProject = (
   projectIdOrKey: string
 ): Promise<User[]> =>
-  fetch(
-    `${
-      import.meta.env.VITE_EXTENDER
-    }/assignableUsersByProject?projectIdOrKey=${projectIdOrKey}`
-  )
-    .then((users) => users.json())
-    .catch((err) => err)
+  window.provider.getAssignableUsersByProject(projectIdOrKey)
