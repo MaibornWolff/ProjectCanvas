@@ -1,6 +1,6 @@
 import { Group, Badge, Text } from "@mantine/core"
 import { forwardRef } from "react"
-import { IssueIcon } from "../../../backlog-view/Issue/IssueIcon"
+import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon"
 
 interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
   image: string

@@ -22,7 +22,6 @@ import { AssigneeMenu } from "./Components/AssigneeMenu"
 import { EditableEpic } from "./Components/EditableEpic"
 import { CommentSection } from "./Components/CommentSection"
 import { Description } from "./Components/Description"
-import { IssueIcon } from "../backlog-view/Issue/IssueIcon"
 import { IssueSprint } from "./Components/IssueSprint"
 import { IssueSummary } from "./Components/IssueSummary"
 import { Labels } from "./Components/Labels"
@@ -32,6 +31,7 @@ import { Subtask } from "./Components/SubTask/Subtask"
 import { DeleteIssue } from "./Components/DeleteIssue"
 import { Attachments } from "./Components/Attachments/Attachments"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
+import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
 
 export function DetailView({
   issueKey,
