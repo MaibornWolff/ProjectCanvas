@@ -107,34 +107,32 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
       <Text fz="sm" color="dimmed">
         Reporter
       </Text>
-      {issueReporter &&
-        issueReporter.displayName &&
-        issueReporter.avatarUrls && (
-          <Menu onOpen={() => setOpened(true)} onClose={() => setOpened(false)}>
-            <Menu.Target>
-              <UnstyledButton className={classes.control}>
-                <Group spacing="xs" position="apart">
-                  <Avatar
-                    src={issueReporter.avatarUrls["24x24"]}
-                    size="sm"
-                    radius="xl"
-                  />
-                  <Text size="sm">{issueReporter.displayName}</Text>
-                  <IconChevronDown
-                    size={18}
-                    stroke={1.5}
-                    className={classes.icon}
-                  />
-                </Group>
-              </UnstyledButton>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <ScrollArea style={{ height: 200 }} type="auto">
-                {displayedReporters}
-              </ScrollArea>
-            </Menu.Dropdown>
-          </Menu>
-        )}
+      {issueReporter && issueReporter.displayName && issueReporter.avatarUrls && (
+        <Menu onOpen={() => setOpened(true)} onClose={() => setOpened(false)}>
+          <Menu.Target>
+            <UnstyledButton className={classes.control}>
+              <Group spacing="xs" position="apart">
+                <Avatar
+                  src={issueReporter.avatarUrls["24x24"]}
+                  size="sm"
+                  radius="xl"
+                />
+                <Text size="sm">{issueReporter.displayName}</Text>
+                <IconChevronDown
+                  size={18}
+                  stroke={1.5}
+                  className={classes.icon}
+                />
+              </Group>
+            </UnstyledButton>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <ScrollArea style={{ height: 200 }} type="auto">
+              {displayedReporters}
+            </ScrollArea>
+          </Menu.Dropdown>
+        </Menu>
+      )}
     </Group>
   )
 }

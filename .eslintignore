@@ -38,3 +38,6 @@ dist-electron
 
 # TS
 *.tsbuildinfo
+
+.eslintrc.js
+*.config.ts

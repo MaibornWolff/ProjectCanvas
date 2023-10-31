@@ -62,4 +62,4 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Run ProjectCanvas TypeCheck
-        run: yarn --cwd project-canvas typecheck
+        run: yarn typecheck

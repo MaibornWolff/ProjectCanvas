@@ -34,4 +34,4 @@ jobs:
           VITE_CLIENT_SECRET: ${{ secrets.VITE_CLIENT_SECRET }}
           VITE_REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
 
-        run: yarn canvas:build
+        run: yarn make

@@ -2,7 +2,6 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: "./tsconfig.json",
-    tsconfigRootDir: __dirname,
   },
   env: { node: true, browser: true, es2021: true },
   extends: ["plugin:react/recommended"],
