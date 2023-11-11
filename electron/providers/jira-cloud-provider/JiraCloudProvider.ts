@@ -19,7 +19,8 @@ import {
 } from "../../../types/jira"
 import { IProvider } from "../base-provider"
 import { getAccessToken, refreshTokens } from "./getAccessToken"
-import { Axios, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios"
+import axios from "axios"
 
 export class JiraCloudProvider implements IProvider {
   public accessToken: string | undefined
@@ -35,7 +36,7 @@ export class JiraCloudProvider implements IProvider {
   private constructRestBasedClient(basePath: string, version: string) {
     // TODO define validateStatus
     // TODO catch errors and handle common status codes
-    return new Axios({
+    return axios.create({
       baseURL: `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/${basePath}/${version}`,
       headers: {
         Accept: "application/json",
@@ -141,17 +142,16 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get('/field')
         .then(async (response) => {
-          const fetchedFields = JSON.parse(response.data)
           if (response.status === 200) {
-            fetchedFields.forEach((field: { name: string; id: string }) => {
+            response.data.forEach((field: { name: string; id: string }) => {
               this.customFields.set(field.name, field.id)
               this.reversedCustomFields.set(field.id, field.name)
             })
             resolve()
           } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${fetchedFields}`))
+            reject(new Error(`User not authenticated: ${response.data}`))
           } else {
-            reject(new Error(`Unknown error: ${fetchedFields}`))
+            reject(new Error(`Unknown error: ${response.data}`))
           }
         })
         .catch((error) => {
@@ -165,7 +165,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get('/project/search?expand=description,lead,issueTypes,url,projectKeys,permissions,insight')
         .then(async (response) => {
-          const data = JSON.parse(response.data)
+          const data = response.data
           if (response.status === 200) {
             const projects = data.values.map((project: JiraProject) => ({
               key: project.key,
@@ -200,7 +200,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(2)
         .get(`/project/${projectIdOrKey}/statuses`)
         .then(async (response) => {
-          const data = JSON.parse(response.data)
+          const data = response.data
           if (response.status === 200) {
             const issueTypes: JiraIssueType[] = data
             resolve(issueTypes as IssueType[])
@@ -225,7 +225,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get('/issue/createmeta?expand=projects.issuetypes.fields')
         .then(async (response) => {
-          const metadata = JSON.parse(response.data)
+          const metadata = response.data
           if (response.status === 200) {
             const issueTypeToFieldsMap: { [key: string]: string[] } = {}
             metadata.projects.forEach(
@@ -262,7 +262,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get(`/issue/${issueIdOrKey}/editmeta`)
         .then(async (response) => {
-          const metadata = JSON.parse(response.data)
+          const metadata = response.data
           if (response.status === 200) {
             const fieldKeys = Object.keys(metadata.fields).map(
               (fieldKey) => this.reversedCustomFields.get(fieldKey)!
@@ -285,7 +285,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get(`/user/assignable/search?project=${projectIdOrKey}`)
         .then(async (response) => {
-          const data = JSON.parse(response.data)
+          const data = response.data
           if (response.status === 200) {
             const users: User[] = data
             resolve(users as User[])
@@ -316,7 +316,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get('/myself')
         .then(async (response) => {
-          const data = response.data;
+          const data = response.data
           if (response.status === 200) {
             const user: User = data
             resolve(user as User)
@@ -337,7 +337,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get(`/issue/${issueIdOrKey}?fields=reporter`)
         .then(async (response) => {
-          const user = JSON.parse(response.data)
+          const user = response.data
           if (response.status === 200) {
             resolve(user.fields.reporter as User)
           } else if (response.status === 401) {
@@ -361,7 +361,7 @@ export class JiraCloudProvider implements IProvider {
       this.getAgileRestApiClient('1.0')
         .get(`/board?projectKeyOrId=${project}`)
         .then(async (response) => {
-          const data = JSON.parse(response.data)
+          const data = response.data
           if (response.status === 200) {
             const boardIds: number[] = data.values.map(
               (element: { id: number; name: string }) => element.id
@@ -386,11 +386,10 @@ export class JiraCloudProvider implements IProvider {
   async getSprints(boardId: number): Promise<Sprint[]> {
     return new Promise((resolve, reject) => {
       this.getAgileRestApiClient('1.0')
-        .get('/board/${boardId}/sprint')
+        .get(`/board/${boardId}/sprint`)
         .then(async (response) => {
-          const data = JSON.parse(response.data)
           if (response.status === 200) {
-            const sprints: Sprint[] = data.values
+            const sprints: Sprint[] = response.data.values
               .filter(
                 (element: { state: string }) => element.state !== "closed"
               )
@@ -413,19 +412,19 @@ export class JiraCloudProvider implements IProvider {
               })
             resolve(sprints)
           } else if (response.status === 400) {
-            reject(new Error(`Invalid request: ${data}`))
+            reject(new Error(`Invalid request: ${response.data}`))
           } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${data}`))
+            reject(new Error(`User not authenticated: ${response.data}`))
           } else if (response.status === 403) {
-            reject(new Error(`User does not have a valid licence: ${data}`))
+            reject(new Error(`User does not have a valid licence: ${response.data}`))
           } else if (response.status === 404) {
             reject(
               new Error(
-                `The board does not exist or the user does not have permission to view it: ${data}`
+                `The board does not exist or the user does not have permission to view it: ${response.data}`
               )
             )
           } else {
-            reject(new Error(`Unknown error: ${data}`))
+            reject(new Error(`Unknown error: ${response.data}`))
           }
         })
         .catch((error) => {
@@ -479,7 +478,7 @@ export class JiraCloudProvider implements IProvider {
   async fetchIssues(response: AxiosResponse): Promise<Issue[]> {
     const rankCustomField = this.customFields.get("Rank") || ""
     return new Promise((resolve, reject) => {
-      const data = JSON.parse(response.data)
+      const data = response.data
       if (response.status === 200) {
         const issues: Promise<Issue[]> = Promise.all(
           data.issues.map(async (element: JiraIssue) => ({
@@ -542,7 +541,7 @@ export class JiraCloudProvider implements IProvider {
           }
         )
         .then(async (response) => {
-          const data = JSON.parse(response.data)
+          const data = response.data
           if (response.status === 204) {
             resolve()
           } else if (response.status === 400) {
@@ -573,7 +572,7 @@ export class JiraCloudProvider implements IProvider {
           { issues: [issue] }
         )
         .then(async (response) => {
-          const data = JSON.parse(response.data)
+          const data = response.data
           if (response.status === 204) {
             resolve()
           } else if (response.status === 400) {
@@ -622,7 +621,7 @@ export class JiraCloudProvider implements IProvider {
       this.getAgileRestApiClient('1.0')
         .put('/issue/rank', body)
         .then(async (response) => {
-          const data = JSON.parse(response.data)
+          const data = response.data
           if (response.status === 204) {
             resolve()
           } else if (response.status === 207) {
@@ -650,7 +649,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get(`/issue/${issue}`)
         .then(async (response) => {
-          const data = JSON.parse(response.data)
+          const data = response.data
           if (response.status === 200) {
             const customField = this.customFields.get("Story point estimate")
             const points: number = data.fields[customField!]
@@ -745,7 +744,7 @@ export class JiraCloudProvider implements IProvider {
           }
         )
         .then(async (response) => {
-          const createdIssue = JSON.parse(response.data)
+          const createdIssue = response.data
           if (response.status === 201) {
             resolve(JSON.stringify(createdIssue.key))
             this.setTransition(createdIssue.id, status)
@@ -853,20 +852,20 @@ export class JiraCloudProvider implements IProvider {
             },
           }
         )
-        .then(async (data) => {
-          if (data.status === 204) {
+        .then(async (response) => {
+          if (response.status === 204) {
             resolve()
           }
-          if (data.status === 400) {
+          if (response.status === 400) {
             reject(new Error("400 Error: consult the atlassian rest api v3 under Edit issue for information"))
           }
-          if (data.status === 401) {
+          if (response.status === 401) {
             reject(new Error("User not authenticated"))
           }
-          if (data.status === 403) {
+          if (response.status === 403) {
             reject(new Error("The user does not have the necessary permissions"))
           }
-          if (data.status === 404) {
+          if (response.status === 404) {
             reject(new Error("The issue was not found or the user does not have the necessary permissions"))
           }
         })
@@ -882,7 +881,7 @@ export class JiraCloudProvider implements IProvider {
       `/issue/${issueKey}/transitions`,
     )
 
-    const data = await JSON.parse(transitionResponse.data)
+    const data = transitionResponse.data
 
     data.transitions.forEach((field: { name: string; id: string }) => {
       transitions.set(field.name, field.id)
@@ -900,7 +899,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}`)
         .then(async (response) => {
-          const epicData = JSON.parse(response.data)
+          const epicData = response.data
           if (response.status === 200) {
             const epics: Promise<Issue[]> = Promise.all(
               epicData.issues.map(async (element: JiraIssue) => ({
@@ -941,7 +940,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get('/label')
         .then(async (response) => {
-          const labelData = JSON.parse(response.data)
+          const labelData = response.data
           if (response.status === 200) {
             resolve(labelData.values)
           } else if (response.status === 401) {
@@ -963,7 +962,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get('/priority/search')
         .then(async (response) => {
-          const priorityData: JiraPriority = JSON.parse(response.data)
+          const priorityData: JiraPriority = response.data
           if (response.status === 200) {
             const priorities: Priority[] = priorityData.values
             resolve(priorities)
@@ -1005,17 +1004,17 @@ export class JiraCloudProvider implements IProvider {
             }
           }
         )
-        .then(async (data) => {
-          if (data.status === 201) {
+        .then(async (response) => {
+          if (response.status === 201) {
             resolve()
           }
-          if (data.status === 400) {
+          if (response.status === 400) {
             reject(new Error("Invalid api request"))
           }
-          if (data.status === 401) {
+          if (response.status === 401) {
             reject(new Error("User not authenticated"))
           }
-          if (data.status === 404) {
+          if (response.status === 404) {
             reject(new Error("The issue was not found or the user does not have the necessary permissions"))
           }
         })
@@ -1052,19 +1051,19 @@ export class JiraCloudProvider implements IProvider {
             }
           }
         )
-        .then(async (data) => {
-          if (data.status === 200) {
+        .then(async (response) => {
+          if (response.status === 200) {
             resolve()
           }
-          if (data.status === 400) {
+          if (response.status === 400) {
             reject(
               new Error("The user does not have permission to edit the comment or the request is invalid")
             )
           }
-          if (data.status === 401) {
+          if (response.status === 401) {
             reject(new Error("User not authenticated"))
           }
-          if (data.status === 404) {
+          if (response.status === 404) {
             reject(new Error("The issue was not found or the user does not have the necessary permissions"))
           }
         })
@@ -1078,20 +1077,20 @@ export class JiraCloudProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(3)
         .delete(`/issue/${issueIdOrKey}/comment/${commentId}`)
-        .then(async (data) => {
-          if (data.status === 204) {
+        .then(async (response) => {
+          if (response.status === 204) {
             resolve()
           }
-          if (data.status === 400) {
+          if (response.status === 400) {
             reject(new Error("The user does not have permission to delete the comment"))
           }
-          if (data.status === 401) {
+          if (response.status === 401) {
             reject(new Error("User not authenticated"))
           }
-          if (data.status === 404) {
+          if (response.status === 404) {
             reject(new Error("The issue  was not found or the user does not have the necessary permissions"))
           }
-          if (data.status === 405) {
+          if (response.status === 405) {
             reject(new Error("An anonymous call has been made to the operation"))
           }
         })
@@ -1105,23 +1104,23 @@ export class JiraCloudProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
         .delete(`/issue/${issueIdOrKey}`)
-        .then(async (data) => {
-          if (data.status === 204) {
+        .then(async (response) => {
+          if (response.status === 204) {
             resolve()
           }
-          if (data.status === 400) {
+          if (response.status === 400) {
             reject(new Error("The issue has subtasks and deleteSubtasks is not set to true"))
           }
-          if (data.status === 401) {
+          if (response.status === 401) {
             reject(new Error("User not authenticated"))
           }
-          if (data.status === 403) {
+          if (response.status === 403) {
             reject(new Error("The user does not have permission to delete the issue"))
           }
-          if (data.status === 404) {
+          if (response.status === 404) {
             reject(new Error("The issue was not found or the user does not have the necessary permissions"))
           }
-          if (data.status === 405) {
+          if (response.status === 405) {
             reject(new Error("An anonymous call has been made to the operation"))
           }
         })
@@ -1157,7 +1156,7 @@ export class JiraCloudProvider implements IProvider {
           }
         )
         .then(async (response) => {
-          const createdSubtask: { id: string; key: string } = JSON.parse(response.data)
+          const createdSubtask: { id: string; key: string } = response.data
           if (response.status === 201) {
             resolve(createdSubtask)
           } else if (response.status === 400) {
@@ -1216,20 +1215,20 @@ export class JiraCloudProvider implements IProvider {
             ...(goal && { goal }),
           }
         )
-        .then(async (data) => {
-          if (data.status === 201) {
+        .then(async (response) => {
+          if (response.status === 201) {
             resolve()
           }
-          if (data.status === 400) {
+          if (response.status === 400) {
             reject(new Error("Invalid request"))
           }
-          if (data.status === 401) {
+          if (response.status === 401) {
             reject(new Error("User not authenticated"))
           }
-          if (data.status === 403) {
+          if (response.status === 403) {
             reject(new Error("The user does not have the necessary permissions"))
           }
-          if (data.status === 404) {
+          if (response.status === 404) {
             reject(
               new Error(
                 "The Board does not exists or the user does not have the necessary permissions to view it"
