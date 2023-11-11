@@ -34,16 +34,26 @@ export class JiraCloudProvider implements IProvider {
   private reversedCustomFields = new Map<string, string>()
 
   private constructRestBasedClient(basePath: string, version: string) {
-    // TODO define validateStatus
     // TODO catch errors and handle common status codes
-    return axios.create({
+    const instance = axios.create({
       baseURL: `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/${basePath}/${version}`,
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${this.accessToken}`,
         "Content-Type": "application/json",
-      }
+      },
+      validateStatus: (statusCode) => statusCode < 500,
     })
+
+    instance.interceptors.response.use((response) => {
+      if (response.status === 401) {
+        return Promise.reject(new Error(`User not authenticated: ${JSON.stringify(response.data)}`))
+      }
+
+      return response
+    })
+
+    return instance
   }
 
   private getRestApiClient(version: number) {
@@ -148,8 +158,6 @@ export class JiraCloudProvider implements IProvider {
               this.reversedCustomFields.set(field.id, field.name)
             })
             resolve()
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${response.data}`))
           } else {
             reject(new Error(`Unknown error: ${response.data}`))
           }
@@ -177,8 +185,6 @@ export class JiraCloudProvider implements IProvider {
             resolve(projects)
           } else if (response.status === 400) {
             reject(new Error(`Invalid request: ${data}`))
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 404) {
             reject(
               new Error(
@@ -204,8 +210,6 @@ export class JiraCloudProvider implements IProvider {
           if (response.status === 200) {
             const issueTypes: JiraIssueType[] = data
             resolve(issueTypes as IssueType[])
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 404) {
             reject(
               new Error(`The project was not found or the user does not have permission to view it: ${data}`)
@@ -245,8 +249,6 @@ export class JiraCloudProvider implements IProvider {
               }
             )
             resolve(issueTypeToFieldsMap)
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${metadata}`))
           } else {
             reject(new Error(`Unknown error: ${metadata}`))
           }
@@ -268,8 +270,6 @@ export class JiraCloudProvider implements IProvider {
               (fieldKey) => this.reversedCustomFields.get(fieldKey)!
             )
             resolve(fieldKeys)
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${metadata}`))
           } else {
             reject(new Error(`Unknown error: ${metadata}`))
           }
@@ -291,8 +291,6 @@ export class JiraCloudProvider implements IProvider {
             resolve(users as User[])
           } else if (response.status === 400) {
             reject(new Error(`Some infos are missing: ${data}`))
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 404) {
             reject(
               new Error(`Project, issue, or transition were not found: ${data}`)
@@ -320,8 +318,6 @@ export class JiraCloudProvider implements IProvider {
           if (response.status === 200) {
             const user: User = data
             resolve(user as User)
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${data}`))
           } else {
             reject(new Error(`Unknown error: ${data}`))
           }
@@ -340,8 +336,6 @@ export class JiraCloudProvider implements IProvider {
           const user = response.data
           if (response.status === 200) {
             resolve(user.fields.reporter as User)
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${user}`))
           } else if (response.status === 404) {
             reject(
               new Error(`The issue was not found or the user does not have permission to view it: ${user}`)
@@ -369,8 +363,6 @@ export class JiraCloudProvider implements IProvider {
             resolve(boardIds)
           } else if (response.status === 400) {
             reject(new Error(`Invalid request: ${data}`))
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 403) {
             reject(new Error(`User does not have a valid licence: ${data}`))
           } else {
@@ -413,8 +405,6 @@ export class JiraCloudProvider implements IProvider {
             resolve(sprints)
           } else if (response.status === 400) {
             reject(new Error(`Invalid request: ${response.data}`))
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${response.data}`))
           } else if (response.status === 403) {
             reject(new Error(`User does not have a valid licence: ${response.data}`))
           } else if (response.status === 404) {
@@ -508,8 +498,6 @@ export class JiraCloudProvider implements IProvider {
         resolve(issues)
       } else if (response.status === 400) {
         reject(new Error(`Invalid request: ${data}`))
-      } else if (response.status === 401) {
-        reject(new Error(`User not authenticated: ${data}`))
       } else if (response.status === 403) {
         reject(new Error(`User does not have a valid licence: ${data}`))
       } else if (response.status === 404) {
@@ -546,8 +534,6 @@ export class JiraCloudProvider implements IProvider {
             resolve()
           } else if (response.status === 400) {
             reject(new Error(`Invalid request: ${data}`))
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 403) {
             reject(new Error(`User does not have a valid licence or permissions to assign issues: ${data}`))
           } else if (response.status === 404) {
@@ -577,8 +563,6 @@ export class JiraCloudProvider implements IProvider {
             resolve()
           } else if (response.status === 400) {
             reject(new Error(`Invalid request: ${data}`))
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 403) {
             reject(new Error(`User does not have a valid licence or permissions to assign issues: ${data}`))
           } else if (response.status === 404) {
@@ -630,8 +614,6 @@ export class JiraCloudProvider implements IProvider {
             resolve()
           } else if (response.status === 400) {
             reject(new Error(`Invalid request: ${data}`))
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 403) {
             reject(new Error(`User does not have a valid licence or permissions to rank issues: ${data}`))
           } else {
@@ -655,8 +637,6 @@ export class JiraCloudProvider implements IProvider {
             const points: number = data.fields[customField!]
 
             resolve(points)
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 404) {
             reject(
               new Error(`The issue was not found or the user does not have permission to view it: ${data}`)
@@ -748,14 +728,9 @@ export class JiraCloudProvider implements IProvider {
           if (response.status === 201) {
             resolve(JSON.stringify(createdIssue.key))
             this.setTransition(createdIssue.id, status)
-          }
-          if (response.status === 400) {
+          } else if (response.status === 400) {
             reject(new Error(createdIssue))
-          }
-          if (response.status === 401) {
-            reject(new Error("User not authenticated"))
-          }
-          if (response.status === 403) {
+          } else if (response.status === 403) {
             reject(new Error("The user does not have the necessary permissions"))
           }
         })
@@ -859,9 +834,6 @@ export class JiraCloudProvider implements IProvider {
           if (response.status === 400) {
             reject(new Error("400 Error: consult the atlassian rest api v3 under Edit issue for information"))
           }
-          if (response.status === 401) {
-            reject(new Error("User not authenticated"))
-          }
           if (response.status === 403) {
             reject(new Error("The user does not have the necessary permissions"))
           }
@@ -915,8 +887,6 @@ export class JiraCloudProvider implements IProvider {
             resolve(epics)
           } else if (response.status === 400) {
             reject(new Error(`Invalid request: ${epicData}`))
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${epicData}`))
           } else if (response.status === 403) {
             reject(new Error(`User does not have a valid licence: ${epicData}`))
           } else if (response.status === 404) {
@@ -943,8 +913,6 @@ export class JiraCloudProvider implements IProvider {
           const labelData = response.data
           if (response.status === 200) {
             resolve(labelData.values)
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${labelData}`))
           } else {
             reject(new Error(`Unknown error: ${labelData}`))
           }
@@ -966,8 +934,6 @@ export class JiraCloudProvider implements IProvider {
           if (response.status === 200) {
             const priorities: Priority[] = priorityData.values
             resolve(priorities)
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${priorityData}`))
           } else {
             reject(new Error(`Unknown error: ${priorityData}`))
           }
@@ -1007,14 +973,9 @@ export class JiraCloudProvider implements IProvider {
         .then(async (response) => {
           if (response.status === 201) {
             resolve()
-          }
-          if (response.status === 400) {
+          } else if (response.status === 400) {
             reject(new Error("Invalid api request"))
-          }
-          if (response.status === 401) {
-            reject(new Error("User not authenticated"))
-          }
-          if (response.status === 404) {
+          } else if (response.status === 404) {
             reject(new Error("The issue was not found or the user does not have the necessary permissions"))
           }
         })
@@ -1054,16 +1015,11 @@ export class JiraCloudProvider implements IProvider {
         .then(async (response) => {
           if (response.status === 200) {
             resolve()
-          }
-          if (response.status === 400) {
+          } else if (response.status === 400) {
             reject(
               new Error("The user does not have permission to edit the comment or the request is invalid")
             )
-          }
-          if (response.status === 401) {
-            reject(new Error("User not authenticated"))
-          }
-          if (response.status === 404) {
+          } else if (response.status === 404) {
             reject(new Error("The issue was not found or the user does not have the necessary permissions"))
           }
         })
@@ -1080,17 +1036,11 @@ export class JiraCloudProvider implements IProvider {
         .then(async (response) => {
           if (response.status === 204) {
             resolve()
-          }
-          if (response.status === 400) {
+          } else if (response.status === 400) {
             reject(new Error("The user does not have permission to delete the comment"))
-          }
-          if (response.status === 401) {
-            reject(new Error("User not authenticated"))
-          }
-          if (response.status === 404) {
+          } else if (response.status === 404) {
             reject(new Error("The issue  was not found or the user does not have the necessary permissions"))
-          }
-          if (response.status === 405) {
+          } else if (response.status === 405) {
             reject(new Error("An anonymous call has been made to the operation"))
           }
         })
@@ -1107,20 +1057,13 @@ export class JiraCloudProvider implements IProvider {
         .then(async (response) => {
           if (response.status === 204) {
             resolve()
-          }
-          if (response.status === 400) {
+          } else if (response.status === 400) {
             reject(new Error("The issue has subtasks and deleteSubtasks is not set to true"))
-          }
-          if (response.status === 401) {
-            reject(new Error("User not authenticated"))
-          }
-          if (response.status === 403) {
+          } else if (response.status === 403) {
             reject(new Error("The user does not have permission to delete the issue"))
-          }
-          if (response.status === 404) {
+          } else if (response.status === 404) {
             reject(new Error("The issue was not found or the user does not have the necessary permissions"))
-          }
-          if (response.status === 405) {
+          } else if (response.status === 405) {
             reject(new Error("An anonymous call has been made to the operation"))
           }
         })
@@ -1161,8 +1104,6 @@ export class JiraCloudProvider implements IProvider {
             resolve(createdSubtask)
           } else if (response.status === 400) {
             reject(new Error(`Invalid request: ${createdSubtask}`))
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${createdSubtask}`))
           } else if (response.status === 403) {
             reject(new Error(`User does not have a valid licence: ${createdSubtask}`))
           } else {
@@ -1218,17 +1159,11 @@ export class JiraCloudProvider implements IProvider {
         .then(async (response) => {
           if (response.status === 201) {
             resolve()
-          }
-          if (response.status === 400) {
+          } else if (response.status === 400) {
             reject(new Error("Invalid request"))
-          }
-          if (response.status === 401) {
-            reject(new Error("User not authenticated"))
-          }
-          if (response.status === 403) {
+          } else if (response.status === 403) {
             reject(new Error("The user does not have the necessary permissions"))
-          }
-          if (response.status === 404) {
+          } else if (response.status === 404) {
             reject(
               new Error(
                 "The Board does not exists or the user does not have the necessary permissions to view it"
