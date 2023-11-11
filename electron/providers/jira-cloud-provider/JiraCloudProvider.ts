@@ -19,7 +19,7 @@ import {
 } from "../../../types/jira"
 import { IProvider } from "../base-provider"
 import { getAccessToken, refreshTokens } from "./getAccessToken"
-import { Axios } from "axios";
+import { Axios, AxiosResponse } from "axios";
 
 export class JiraCloudProvider implements IProvider {
   public accessToken: string | undefined
@@ -436,11 +436,10 @@ export class JiraCloudProvider implements IProvider {
 
   async getIssuesByProject(project: string): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
-      this.fetchIssues(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/search?jql=project=${project}&maxResults=10000`
-      )
+      this.getRestApiClient(3)
+        .get(`/search?jql=project=${project}&maxResults=10000`)
         .then(async (response) => {
-          resolve(response)
+          resolve(this.fetchIssues(response))
         })
         .catch((error) => {
           reject(new Error(`Error fetching issues by project: ${error}`))
@@ -450,11 +449,10 @@ export class JiraCloudProvider implements IProvider {
 
   async getIssuesBySprint(sprintId: number): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
-      this.fetchIssues(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint/${sprintId}/issue`
-      )
+      this.getAgileRestApiClient('1.0')
+        .get(`/sprint/${sprintId}/issue`)
         .then(async (response) => {
-          resolve(response)
+          resolve(this.fetchIssues(response))
         })
         .catch((error) => {
           reject(new Error(`Error fetching issues by sprint: ${error}`))
@@ -467,11 +465,10 @@ export class JiraCloudProvider implements IProvider {
     boardId: number
   ): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
-      this.fetchIssues(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/board/${boardId}/backlog?jql=project=${project}&maxResults=500`
-      )
+      this.getAgileRestApiClient('1.0')
+        .get(`/board/${boardId}/backlog?jql=project=${project}&maxResults=500`)
         .then(async (response) => {
-          resolve(response)
+          resolve(this.fetchIssues(response))
         })
         .catch((error) => {
           reject(new Error(`Error fetching issues by project: ${error}`))
@@ -479,65 +476,50 @@ export class JiraCloudProvider implements IProvider {
     })
   }
 
-  async fetchIssues(url: string): Promise<Issue[]> {
+  async fetchIssues(response: AxiosResponse): Promise<Issue[]> {
     const rankCustomField = this.customFields.get("Rank") || ""
     return new Promise((resolve, reject) => {
-      fetch(url, {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${this.accessToken}`,
-        },
-      })
-        .then(async (response) => {
-          const data = await response.json()
-          if (response.status === 200) {
-            const issues: Promise<Issue[]> = Promise.all(
-              data.issues.map(async (element: JiraIssue) => ({
-                issueKey: element.key,
-                summary: element.fields.summary,
-                creator: element.fields.creator.displayName,
-                status: element.fields.status.name,
-                type: element.fields.issuetype.name,
-                storyPointsEstimate: await this.getIssueStoryPointsEstimate(
-                  element.key
-                ),
-                epic: element.fields.parent?.fields.summary,
-                labels: element.fields.labels,
-                assignee: {
-                  displayName: element.fields.assignee?.displayName,
-                  avatarUrls: element.fields.assignee?.avatarUrls,
-                },
-                rank: element.fields[rankCustomField],
-                description: element.fields.description,
-                subtasks: element.fields.subtasks,
-                created: element.fields.created,
-                updated: element.fields.updated,
-                comment: element.fields.comment,
-                projectId: element.fields.project.id,
-                sprint: element.fields.sprint,
-                attachments: element.fields.attachment,
-              }))
-            )
-            resolve(issues)
-          } else if (response.status === 400) {
-            reject(new Error(`Invalid request: ${data}`))
-          } else if (response.status === 401) {
-            reject(new Error(`User not authenticated: ${data}`))
-          } else if (response.status === 403) {
-            reject(new Error(`User does not have a valid licence: ${data}`))
-          } else if (response.status === 404) {
-            reject(
-              new Error(
-                `The board does not exist or the user does not have permission to view it: ${data}`
-              )
-            )
-          } else {
-            reject(new Error(`Unknown error: ${data}`))
-          }
-        })
-        .catch((error) => {
-          reject(new Error(`Error fetching issues: ${error}`))
-        })
+      const data = JSON.parse(response.data)
+      if (response.status === 200) {
+        const issues: Promise<Issue[]> = Promise.all(
+          data.issues.map(async (element: JiraIssue) => ({
+            issueKey: element.key,
+            summary: element.fields.summary,
+            creator: element.fields.creator.displayName,
+            status: element.fields.status.name,
+            type: element.fields.issuetype.name,
+            storyPointsEstimate: await this.getIssueStoryPointsEstimate(element.key),
+            epic: element.fields.parent?.fields.summary,
+            labels: element.fields.labels,
+            assignee: {
+              displayName: element.fields.assignee?.displayName,
+              avatarUrls: element.fields.assignee?.avatarUrls,
+            },
+            rank: element.fields[rankCustomField],
+            description: element.fields.description,
+            subtasks: element.fields.subtasks,
+            created: element.fields.created,
+            updated: element.fields.updated,
+            comment: element.fields.comment,
+            projectId: element.fields.project.id,
+            sprint: element.fields.sprint,
+            attachments: element.fields.attachment,
+          }))
+        )
+        resolve(issues)
+      } else if (response.status === 400) {
+        reject(new Error(`Invalid request: ${data}`))
+      } else if (response.status === 401) {
+        reject(new Error(`User not authenticated: ${data}`))
+      } else if (response.status === 403) {
+        reject(new Error(`User does not have a valid licence: ${data}`))
+      } else if (response.status === 404) {
+        reject(
+          new Error(`The board does not exist or the user does not have permission to view it: ${data}`)
+        )
+      } else {
+        reject(new Error(`Unknown error: ${data}`))
+      }
     })
   }
 
