@@ -19,6 +19,7 @@ import {
 } from "../../../types/jira"
 import { IProvider } from "../base-provider"
 import { getAccessToken, refreshTokens } from "./getAccessToken"
+import { Axios } from "axios";
 
 export class JiraCloudProvider implements IProvider {
   public accessToken: string | undefined
@@ -30,6 +31,27 @@ export class JiraCloudProvider implements IProvider {
   private customFields = new Map<string, string>()
 
   private reversedCustomFields = new Map<string, string>()
+
+  private constructRestBasedClient(basePath: string, version: string) {
+    // TODO define validateStatus
+    // TODO catch errors and handle common status codes
+    return new Axios({
+      baseURL: `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/${basePath}/${version}`,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${this.accessToken}`,
+        "Content-Type": "application/json",
+      }
+    })
+  }
+
+  private getRestApiClient(version: number) {
+    return this.constructRestBasedClient('api', version.toString());
+  }
+
+  private getAgileRestApiClient(version: string) {
+    return this.constructRestBasedClient('agile', version);
+  }
 
   offsetDate(date: Date) {
     if (!date) {
