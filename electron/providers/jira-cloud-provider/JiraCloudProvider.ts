@@ -138,24 +138,17 @@ export class JiraCloudProvider implements IProvider {
 
   async mapCustomFields(): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/field`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
-        .then(async (data) => {
-          const fetchedFields = await data.json()
-          if (data.status === 200) {
+      this.getRestApiClient(3)
+        .get('/field')
+        .then(async (response) => {
+          const fetchedFields = JSON.parse(response.data)
+          if (response.status === 200) {
             fetchedFields.forEach((field: { name: string; id: string }) => {
               this.customFields.set(field.name, field.id)
               this.reversedCustomFields.set(field.id, field.name)
             })
             resolve()
-          } else if (data.status === 401) {
+          } else if (response.status === 401) {
             reject(new Error(`User not authenticated: ${fetchedFields}`))
           } else {
             reject(new Error(`Unknown error: ${fetchedFields}`))
@@ -169,17 +162,10 @@ export class JiraCloudProvider implements IProvider {
 
   async getProjects(): Promise<Project[]> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/project/search?expand=description,lead,issueTypes,url,projectKeys,permissions,insight`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(3)
+        .get('/project/search?expand=description,lead,issueTypes,url,projectKeys,permissions,insight')
         .then(async (response) => {
-          const data = await response.json()
+          const data = JSON.parse(response.data)
           if (response.status === 200) {
             const projects = data.values.map((project: JiraProject) => ({
               key: project.key,
@@ -211,31 +197,21 @@ export class JiraCloudProvider implements IProvider {
 
   async getIssueTypesByProject(projectIdOrKey: string): Promise<IssueType[]> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/project/${projectIdOrKey}/statuses`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(2)
+        .get(`/project/${projectIdOrKey}/statuses`)
         .then(async (response) => {
+          const data = JSON.parse(response.data)
           if (response.status === 200) {
-            const issueTypes: JiraIssueType[] = await response.json()
+            const issueTypes: JiraIssueType[] = data
             resolve(issueTypes as IssueType[])
           } else if (response.status === 401) {
-            reject(
-              new Error(`User not authenticated: ${await response.json()}`)
-            )
+            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 404) {
             reject(
-              new Error(
-                `The project was not found or the user does not have permission to view it: ${await response.json()}`
-              )
+              new Error(`The project was not found or the user does not have permission to view it: ${data}`)
             )
           } else {
-            reject(new Error(`Unknown error: ${await response.json()}`))
+            reject(new Error(`Unknown error: ${data}`))
           }
         })
         .catch((error) =>
@@ -246,17 +222,10 @@ export class JiraCloudProvider implements IProvider {
 
   async getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/createmeta?expand=projects.issuetypes.fields`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(3)
+        .get('/issue/createmeta?expand=projects.issuetypes.fields')
         .then(async (response) => {
-          const metadata = await response.json()
+          const metadata = JSON.parse(response.data)
           if (response.status === 200) {
             const issueTypeToFieldsMap: { [key: string]: string[] } = {}
             metadata.projects.forEach(
@@ -267,9 +236,9 @@ export class JiraCloudProvider implements IProvider {
                   id: string
                 }[]
               }) => {
-                project.issuetypes.forEach((issuetype) => {
-                  const fieldKeys = Object.keys(issuetype.fields)
-                  issueTypeToFieldsMap[issuetype.id] = fieldKeys.map(
+                project.issuetypes.forEach((issueType) => {
+                  const fieldKeys = Object.keys(issueType.fields)
+                  issueTypeToFieldsMap[issueType.id] = fieldKeys.map(
                     (fieldKey) => this.reversedCustomFields.get(fieldKey)!
                   )
                 })
@@ -290,17 +259,10 @@ export class JiraCloudProvider implements IProvider {
 
   async getEditableIssueFields(issueIdOrKey: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/editmeta`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(3)
+        .get(`/issue/${issueIdOrKey}/editmeta`)
         .then(async (response) => {
-          const metadata = await response.json()
+          const metadata = JSON.parse(response.data)
           if (response.status === 200) {
             const fieldKeys = Object.keys(metadata.fields).map(
               (fieldKey) => this.reversedCustomFields.get(fieldKey)!
@@ -320,44 +282,30 @@ export class JiraCloudProvider implements IProvider {
 
   async getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/user/assignable/search?project=${projectIdOrKey}`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(3)
+        .get(`/user/assignable/search?project=${projectIdOrKey}`)
         .then(async (response) => {
+          const data = JSON.parse(response.data)
           if (response.status === 200) {
-            const users: User[] = await response.json()
+            const users: User[] = data
             resolve(users as User[])
           } else if (response.status === 400) {
-            reject(
-              new Error(`Some infos are missing: ${await response.json()}`)
-            )
+            reject(new Error(`Some infos are missing: ${data}`))
           } else if (response.status === 401) {
-            reject(
-              new Error(`User not authenticated: ${await response.json()}`)
-            )
+            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 404) {
             reject(
-              new Error(
-                `Project, issue, or transition were not found: ${await response.json()}`
-              )
+              new Error(`Project, issue, or transition were not found: ${data}`)
             )
           } else if (response.status === 429) {
-            reject(new Error(`Rate limit exceeded: ${await response.json()}`))
+            reject(new Error(`Rate limit exceeded: ${data}`))
           } else {
-            reject(new Error(`Unknown error: ${await response.json()}`))
+            reject(new Error(`Unknown error: ${data}`))
           }
         })
         .catch((error) =>
           reject(
-            new Error(
-              `Error in fetching the assignable users for the project ${projectIdOrKey}: ${error}`
-            )
+            new Error(`Error in fetching the assignable users for the project ${projectIdOrKey}: ${error}`)
           )
         )
     })
@@ -365,25 +313,17 @@ export class JiraCloudProvider implements IProvider {
 
   async getCurrentUser(): Promise<User> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/myself`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(3)
+        .get('/myself')
         .then(async (response) => {
+          const data = response.data;
           if (response.status === 200) {
-            const user: User = await response.json()
+            const user: User = data
             resolve(user as User)
           } else if (response.status === 401) {
-            reject(
-              new Error(`User not authenticated: ${await response.json()}`)
-            )
+            reject(new Error(`User not authenticated: ${data}`))
           } else {
-            reject(new Error(`Unknown error: ${await response.json()}`))
+            reject(new Error(`Unknown error: ${data}`))
           }
         })
         .catch((error) =>
@@ -394,26 +334,17 @@ export class JiraCloudProvider implements IProvider {
 
   async getIssueReporter(issueIdOrKey: string): Promise<User> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}?fields=reporter`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(3)
+        .get(`/issue/${issueIdOrKey}?fields=reporter`)
         .then(async (response) => {
-          const user = await response.json()
+          const user = JSON.parse(response.data)
           if (response.status === 200) {
             resolve(user.fields.reporter as User)
           } else if (response.status === 401) {
             reject(new Error(`User not authenticated: ${user}`))
           } else if (response.status === 404) {
             reject(
-              new Error(
-                `The issue was not found or the user does not have permission to view it: ${user}`
-              )
+              new Error(`The issue was not found or the user does not have permission to view it: ${user}`)
             )
           } else {
             reject(new Error(`Unknown error: ${user}`))
@@ -427,17 +358,10 @@ export class JiraCloudProvider implements IProvider {
 
   async getBoardIds(project: string): Promise<number[]> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/board?projectKeyOrId=${project}`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getAgileRestApiClient('1.0')
+        .get(`/board?projectKeyOrId=${project}`)
         .then(async (response) => {
-          const data = await response.json()
+          const data = JSON.parse(response.data)
           if (response.status === 200) {
             const boardIds: number[] = data.values.map(
               (element: { id: number; name: string }) => element.id
@@ -461,17 +385,10 @@ export class JiraCloudProvider implements IProvider {
 
   async getSprints(boardId: number): Promise<Sprint[]> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/board/${boardId}/sprint`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getAgileRestApiClient('1.0')
+        .get('/board/${boardId}/sprint')
         .then(async (response) => {
-          const data = await response.json()
+          const data = JSON.parse(response.data)
           if (response.status === 200) {
             const sprints: Sprint[] = data.values
               .filter(
@@ -632,106 +549,67 @@ export class JiraCloudProvider implements IProvider {
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const rankCustomField = this.customFields.get("Rank")
-      const body = {
-        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
-        issues: [issue],
-        ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
-        ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
-      }
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint/${sprint}/issue`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        }
-      )
+      this.getAgileRestApiClient('1.0')
+        .post(
+          `/sprint/${sprint}/issue`,
+          {
+            rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+            issues: [issue],
+            ...(rankAfter ? { rankAfterIssue: rankAfter } : {}),
+            ...(rankBefore ? { rankBeforeIssue: rankBefore } : {}),
+          }
+        )
         .then(async (response) => {
+          const data = JSON.parse(response.data)
           if (response.status === 204) {
             resolve()
           } else if (response.status === 400) {
-            reject(new Error(`Invalid request: ${await response.json()}`))
+            reject(new Error(`Invalid request: ${data}`))
           } else if (response.status === 401) {
-            reject(
-              new Error(`User not authenticated: ${await response.json()}`)
-            )
+            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 403) {
-            reject(
-              new Error(
-                `User does not have a valid licence or permissions to assign issues: ${await response.json()}`
-              )
-            )
+            reject(new Error(`User does not have a valid licence or permissions to assign issues: ${data}`))
           } else if (response.status === 404) {
             reject(
-              new Error(
-                `The sprint does not exist or the user does not have permission to view it: ${await response.json()}`
-              )
+              new Error(`The sprint does not exist or the user does not have permission to view it: ${data}`)
             )
           } else {
-            reject(new Error(`Unknown error: ${await response.json()}`))
+            reject(new Error(`Unknown error: ${data}`))
           }
         })
         .catch((error) => {
-          reject(
-            new Error(
-              `Error in moving this issue to the Sprint with id ${sprint}: ${error}`
-            )
-          )
+          reject(new Error(`Error in moving this issue to the Sprint with id ${sprint}: ${error}`))
         })
     })
   }
 
   async moveIssueToBacklog(issue: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/backlog/issue`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: `{
-            "issues": [
-              "${issue}"
-            ]
-          }`,
-        }
-      )
+      this.getAgileRestApiClient('1.0')
+        .post(
+          '/backlog/issue',
+          { issues: [issue] }
+        )
         .then(async (response) => {
+          const data = JSON.parse(response.data)
           if (response.status === 204) {
             resolve()
           } else if (response.status === 400) {
-            reject(new Error(`Invalid request: ${await response.json()}`))
+            reject(new Error(`Invalid request: ${data}`))
           } else if (response.status === 401) {
-            reject(
-              new Error(`User not authenticated: ${await response.json()}`)
-            )
+            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 403) {
-            reject(
-              new Error(
-                `User does not have a valid licence or permissions to assign issues: ${await response.json()}`
-              )
-            )
+            reject(new Error(`User does not have a valid licence or permissions to assign issues: ${data}`))
           } else if (response.status === 404) {
             reject(
-              new Error(
-                `The board does not exist or the user does not have permission to view it: ${await response.json()}`
-              )
+              new Error(`The board does not exist or the user does not have permission to view it: ${data}`)
             )
           } else {
-            reject(new Error(`Unknown error: ${await response.json()}`))
+            reject(new Error(`Unknown error: ${data}`))
           }
         })
         .catch((error) => {
-          reject(
-            new Error(`Error in moving this issue to the backlog: ${error}`)
-          )
+          reject(new Error(`Error in moving this issue to the backlog: ${error}`))
         })
     })
   }
@@ -759,19 +637,10 @@ export class JiraCloudProvider implements IProvider {
         body.rankAfterIssue = rankAfter
       }
 
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/issue/rank`,
-        {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        }
-      )
+      this.getAgileRestApiClient('1.0')
+        .put('/issue/rank', body)
         .then(async (response) => {
+          const data = JSON.parse(response.data)
           if (response.status === 204) {
             resolve()
           } else if (response.status === 207) {
@@ -779,42 +648,27 @@ export class JiraCloudProvider implements IProvider {
             // see documentation: https://developer.atlassian.com/cloud/jira/software/rest/api-group-issue/#api-rest-agile-1-0-issue-rank-put-responses
             resolve()
           } else if (response.status === 400) {
-            reject(new Error(`Invalid request: ${await response.json()}`))
+            reject(new Error(`Invalid request: ${data}`))
           } else if (response.status === 401) {
-            reject(
-              new Error(`User not authenticated: ${await response.json()}`)
-            )
+            reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 403) {
-            reject(
-              new Error(
-                `User does not have a valid licence or permissions to rank issues: ${await response.json()}`
-              )
-            )
+            reject(new Error(`User does not have a valid licence or permissions to rank issues: ${data}`))
           } else {
-            reject(new Error(`Unknown error: ${await response.json()}`))
+            reject(new Error(`Unknown error: ${data}`))
           }
         })
         .catch((error) => {
-          reject(
-            new Error(`Error in moving this issue to the backlog: ${error}`)
-          )
+          reject(new Error(`Error in moving this issue to the backlog: ${error}`))
         })
     })
   }
 
   async getIssueStoryPointsEstimate(issue: string): Promise<number> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issue}`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(3)
+        .get(`/issue/${issue}`)
         .then(async (response) => {
-          const data = await response.json()
+          const data = JSON.parse(response.data)
           if (response.status === 200) {
             const customField = this.customFields.get("Story point estimate")
             const points: number = data.fields[customField!]
@@ -824,20 +678,14 @@ export class JiraCloudProvider implements IProvider {
             reject(new Error(`User not authenticated: ${data}`))
           } else if (response.status === 404) {
             reject(
-              new Error(
-                `The issue was not found or the user does not have permission to view it: ${data}`
-              )
+              new Error(`The issue was not found or the user does not have permission to view it: ${data}`)
             )
           } else {
             reject(new Error(`Unknown error: ${data}`))
           }
         })
         .catch((error) =>
-          reject(
-            new Error(
-              `Error in getting the story points for issue: ${issue}: ${error}`
-            )
-          )
+          reject(new Error(`Error in getting the story points for issue: ${issue}: ${error}`))
         )
     })
   }
@@ -862,16 +710,10 @@ export class JiraCloudProvider implements IProvider {
     const offsetDueDate = this.offsetDate(dueDate)
 
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+      this.getRestApiClient(3)
+        .post(
+          `/issue`,
+          {
             fields: {
               summary,
               parent: { key: epic },
@@ -912,31 +754,28 @@ export class JiraCloudProvider implements IProvider {
                 }),
               ...(storyPointsEstimate && {
                 [this.customFields.get("Story point estimate")!]:
-                  storyPointsEstimate,
+                storyPointsEstimate,
               }),
               // ...(files && {
               //   [this.customFields.get("Attachment")!]: files,
               // }),
             },
-          }),
-        }
-      )
-        .then(async (data) => {
-          const createdIssue = await data.json()
-          if (data.status === 201) {
+          }
+        )
+        .then(async (response) => {
+          const createdIssue = JSON.parse(response.data)
+          if (response.status === 201) {
             resolve(JSON.stringify(createdIssue.key))
             this.setTransition(createdIssue.id, status)
           }
-          if (data.status === 400) {
+          if (response.status === 400) {
             reject(new Error(createdIssue))
           }
-          if (data.status === 401) {
+          if (response.status === 401) {
             reject(new Error("User not authenticated"))
           }
-          if (data.status === 403) {
-            reject(
-              new Error("The user does not have the necessary permissions")
-            )
+          if (response.status === 403) {
+            reject(new Error("The user does not have the necessary permissions"))
           }
         })
         .catch((error) => {
@@ -967,16 +806,10 @@ export class JiraCloudProvider implements IProvider {
     const offsetDueDate = this.offsetDate(dueDate)
 
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}`,
-        {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+      this.getRestApiClient(3)
+        .put(
+          `/issue/${issueIdOrKey}`,
+          {
             fields: {
               ...(summary && {
                 summary,
@@ -1033,37 +866,26 @@ export class JiraCloudProvider implements IProvider {
               }),
               ...(storyPointsEstimate !== undefined && {
                 [this.customFields.get("Story point estimate")!]:
-                  storyPointsEstimate,
+                storyPointsEstimate,
               }),
             },
-          }),
-        }
-      )
+          }
+        )
         .then(async (data) => {
           if (data.status === 204) {
             resolve()
           }
           if (data.status === 400) {
-            reject(
-              new Error(
-                "400 Error: consult the atlassian rest api v3 under Edit issue for information"
-              )
-            )
+            reject(new Error("400 Error: consult the atlassian rest api v3 under Edit issue for information"))
           }
           if (data.status === 401) {
             reject(new Error("User not authenticated"))
           }
           if (data.status === 403) {
-            reject(
-              new Error("The user does not have the necessary permissions")
-            )
+            reject(new Error("The user does not have the necessary permissions"))
           }
           if (data.status === 404) {
-            reject(
-              new Error(
-                "The issue was not found or the user does not have the necessary permissions"
-              )
-            )
+            reject(new Error("The issue was not found or the user does not have the necessary permissions"))
           }
         })
         .catch(async (error) => {
@@ -1074,50 +896,29 @@ export class JiraCloudProvider implements IProvider {
 
   async setTransition(issueKey: string, status: string): Promise<void> {
     const transitions = new Map<string, string>()
-    const transitonResponse = await fetch(
-      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueKey}/transitions`,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${this.accessToken}`,
-        },
-      }
+    const transitionResponse = await this.getRestApiClient(3).get(
+      `/issue/${issueKey}/transitions`,
     )
 
-    const data = await transitonResponse.json()
+    const data = await JSON.parse(transitionResponse.data)
 
     data.transitions.forEach((field: { name: string; id: string }) => {
       transitions.set(field.name, field.id)
     })
     const transitionId = +transitions.get(status)!
 
-    fetch(
-      `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueKey}/transitions`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${this.accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ transition: { id: transitionId } }),
-      }
+    this.getRestApiClient(3).post(
+      `/issue/${issueKey}/transitions`,
+      { transition: { id: transitionId } }
     )
   }
 
   async getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/search?jql=issuetype = Epic AND project = ${projectIdOrKey}`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(3)
+        .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}`)
         .then(async (response) => {
-          const epicData = await response.json()
+          const epicData = JSON.parse(response.data)
           if (response.status === 200) {
             const epics: Promise<Issue[]> = Promise.all(
               epicData.issues.map(async (element: JiraIssue) => ({
@@ -1148,32 +949,19 @@ export class JiraCloudProvider implements IProvider {
           }
         })
         .catch((error) =>
-          reject(
-            new Error(
-              `Error in fetching the epics for the project ${projectIdOrKey}: ${error}`
-            )
-          )
+          reject(new Error(`Error in fetching the epics for the project ${projectIdOrKey}: ${error}`))
         )
     })
   }
 
   async getLabels(): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/label`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(3)
+        .get('/label')
         .then(async (response) => {
-          const labelData = await response.json()
+          const labelData = JSON.parse(response.data)
           if (response.status === 200) {
-            const labels: Promise<string[]> = labelData.values
-
-            resolve(labels)
+            resolve(labelData.values)
           } else if (response.status === 401) {
             reject(new Error(`User not authenticated: ${labelData}`))
           } else {
@@ -1190,26 +978,17 @@ export class JiraCloudProvider implements IProvider {
     // WARNING: currently (15.03.2023) GET /rest/api/3/priority is deprecated
     // and GET /rest/api/3/priority/search is experimental
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/priority/search`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(3)
+        .get('/priority/search')
         .then(async (response) => {
+          const priorityData: JiraPriority = JSON.parse(response.data)
           if (response.status === 200) {
-            const priorityData: JiraPriority = await response.json()
             const priorities: Priority[] = priorityData.values
             resolve(priorities)
           } else if (response.status === 401) {
-            reject(
-              new Error(`User not authenticated: ${await response.json()}`)
-            )
+            reject(new Error(`User not authenticated: ${priorityData}`))
           } else {
-            reject(new Error(`Unknown error: ${await response.json()}`))
+            reject(new Error(`Unknown error: ${priorityData}`))
           }
         })
         .catch((error) =>
@@ -1222,36 +1001,28 @@ export class JiraCloudProvider implements IProvider {
     issueIdOrKey: string,
     commentText: string
   ): Promise<void> {
-    const bodyData = `{
-      "body": {
-      "content": [
-          {
-            "content": [
-              {
-                "text": "${commentText.replace(/\n/g, " ")}",
-                "type": "text"
-              }
-            ],
-            "type": "paragraph"
-          }
-        ],
-        "type": "doc",
-        "version": 1
-      }}`
-
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: bodyData,
-        }
-      )
+      this.getRestApiClient(3)
+        .post(
+          `/issue/${issueIdOrKey}/comment`,
+          {
+            body: {
+              content: [
+                {
+                  content: [
+                    {
+                      text: commentText.replace(/\n/g, " "),
+                      type: "text"
+                    }
+                  ],
+                  type: "paragraph"
+                }
+              ],
+              type: "doc",
+              version: 1
+            }
+          }
+        )
         .then(async (data) => {
           if (data.status === 201) {
             resolve()
@@ -1263,19 +1034,11 @@ export class JiraCloudProvider implements IProvider {
             reject(new Error("User not authenticated"))
           }
           if (data.status === 404) {
-            reject(
-              new Error(
-                "The issue  was not found or the user does not have the necessary permissions"
-              )
-            )
+            reject(new Error("The issue was not found or the user does not have the necessary permissions"))
           }
         })
         .catch(async (error) => {
-          reject(
-            new Error(
-              `Error adding a comment to the issue ${issueIdOrKey}: ${error}`
-            )
-          )
+          reject(new Error(`Error adding a comment to the issue ${issueIdOrKey}: ${error}`))
         })
     })
   }
@@ -1285,165 +1048,103 @@ export class JiraCloudProvider implements IProvider {
     commentId: string,
     commentText: string
   ): Promise<void> {
-    const bodyData = `{
-      "body": {
-      "content": [
-          {
-            "content": [
-              {
-                "text": "${commentText.replace(/\n/g, " ")}",
-                "type": "text"
-              }
-            ],
-            "type": "paragraph"
-          }
-        ],
-        "type": "doc",
-        "version": 1
-      }}`
-
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment/${commentId}`,
-        {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: bodyData,
-        }
-      )
+      this.getRestApiClient(3)
+        .put(
+          `/issue/${issueIdOrKey}/comment/${commentId}`,
+          {
+            body: {
+              content: [
+                {
+                  content: [
+                    {
+                      text: commentText.replace(/\n/g, " "),
+                      type: "text"
+                    }
+                  ],
+                  type: "paragraph"
+                }
+              ],
+              type: "doc",
+              version: 1
+            }
+          }
+        )
         .then(async (data) => {
           if (data.status === 200) {
             resolve()
           }
           if (data.status === 400) {
             reject(
-              new Error(
-                "The user does not have permission to edit the comment or the request is invalid"
-              )
+              new Error("The user does not have permission to edit the comment or the request is invalid")
             )
           }
           if (data.status === 401) {
             reject(new Error("User not authenticated"))
           }
           if (data.status === 404) {
-            reject(
-              new Error(
-                "The issue  was not found or the user does not have the necessary permissions"
-              )
-            )
+            reject(new Error("The issue was not found or the user does not have the necessary permissions"))
           }
         })
         .catch(async (error) => {
-          reject(
-            new Error(
-              `Error editing the comment in issue ${issueIdOrKey}: ${error}`
-            )
-          )
+          reject(new Error(`Error editing the comment in issue ${issueIdOrKey}: ${error}`))
         })
     })
   }
 
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/${issueIdOrKey}/comment/${commentId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(3)
+        .delete(`/issue/${issueIdOrKey}/comment/${commentId}`)
         .then(async (data) => {
           if (data.status === 204) {
             resolve()
           }
           if (data.status === 400) {
-            reject(
-              new Error(
-                "The user does not have permission to delete the comment"
-              )
-            )
+            reject(new Error("The user does not have permission to delete the comment"))
           }
           if (data.status === 401) {
             reject(new Error("User not authenticated"))
           }
           if (data.status === 404) {
-            reject(
-              new Error(
-                "The issue  was not found or the user does not have the necessary permissions"
-              )
-            )
+            reject(new Error("The issue  was not found or the user does not have the necessary permissions"))
           }
           if (data.status === 405) {
-            reject(
-              new Error("An anonymous call has been made to the operation")
-            )
+            reject(new Error("An anonymous call has been made to the operation"))
           }
         })
         .catch(async (error) => {
-          reject(
-            new Error(
-              `Error editing the comment in issue ${issueIdOrKey}: ${error}`
-            )
-          )
+          reject(new Error(`Error editing the comment in issue ${issueIdOrKey}: ${error}`))
         })
     })
   }
 
   deleteIssue(issueIdOrKey: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/2/issue/${issueIdOrKey}`,
-        {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      )
+      this.getRestApiClient(2)
+        .delete(`/issue/${issueIdOrKey}`)
         .then(async (data) => {
           if (data.status === 204) {
             resolve()
           }
           if (data.status === 400) {
-            reject(
-              new Error(
-                "The issue has subtasks and deleteSubtasks is not set to true"
-              )
-            )
+            reject(new Error("The issue has subtasks and deleteSubtasks is not set to true"))
           }
           if (data.status === 401) {
             reject(new Error("User not authenticated"))
           }
           if (data.status === 403) {
-            reject(
-              new Error("The user does not have permission to delete the issue")
-            )
+            reject(new Error("The user does not have permission to delete the issue"))
           }
           if (data.status === 404) {
-            reject(
-              new Error(
-                "The issue  was not found or the user does not have the necessary permissions"
-              )
-            )
+            reject(new Error("The issue was not found or the user does not have the necessary permissions"))
           }
           if (data.status === 405) {
-            reject(
-              new Error("An anonymous call has been made to the operation")
-            )
+            reject(new Error("An anonymous call has been made to the operation"))
           }
         })
         .catch(async (error) => {
-          reject(
-            new Error(`Error deleting the  subtask ${issueIdOrKey}: ${error}`)
-          )
+          reject(new Error(`Error deleting the subtask ${issueIdOrKey}: ${error}`))
         })
     })
   }
@@ -1455,16 +1156,10 @@ export class JiraCloudProvider implements IProvider {
     subtaskIssueTypeId: string
   ): Promise<{ id: string; key: string }> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/issue/`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+      this.getRestApiClient(3)
+        .post(
+          '/issue',
+          {
             fields: {
               summary: subtaskSummary,
               issuetype: {
@@ -1477,26 +1172,20 @@ export class JiraCloudProvider implements IProvider {
                 id: projectId,
               },
             },
-          }),
-        }
-      )
-        .then(async (data) => {
-          if (data.status === 201) {
-            const createdSubtask: { id: string; key: string } =
-              await data.json()
+          }
+        )
+        .then(async (response) => {
+          const createdSubtask: { id: string; key: string } = JSON.parse(response.data)
+          if (response.status === 201) {
             resolve(createdSubtask)
-          } else if (data.status === 400) {
-            reject(new Error(`Invalid request: ${await data.json()}`))
-          } else if (data.status === 401) {
-            reject(new Error(`User not authenticated: ${await data.json()}`))
-          } else if (data.status === 403) {
-            reject(
-              new Error(
-                `User does not have a valid licence: ${await data.json()}`
-              )
-            )
+          } else if (response.status === 400) {
+            reject(new Error(`Invalid request: ${createdSubtask}`))
+          } else if (response.status === 401) {
+            reject(new Error(`User not authenticated: ${createdSubtask}`))
+          } else if (response.status === 403) {
+            reject(new Error(`User does not have a valid licence: ${createdSubtask}`))
           } else {
-            reject(new Error(`Unknown error: ${await data.json()}`))
+            reject(new Error(`Unknown error: ${createdSubtask}`))
           }
         })
         .catch((error) => {
@@ -1530,16 +1219,10 @@ export class JiraCloudProvider implements IProvider {
     const offsetEndDate = this.offsetDate(endDate)
 
     return new Promise((resolve, reject) => {
-      fetch(
-        `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/agile/1.0/sprint`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${this.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+      this.getAgileRestApiClient('1.0')
+        .post(
+          '/sprint',
+          {
             name,
             originBoardId,
             ...(offsetStartDate && {
@@ -1549,9 +1232,8 @@ export class JiraCloudProvider implements IProvider {
               endDate: offsetEndDate,
             }),
             ...(goal && { goal }),
-          }),
-        }
-      )
+          }
+        )
         .then(async (data) => {
           if (data.status === 201) {
             resolve()
@@ -1563,9 +1245,7 @@ export class JiraCloudProvider implements IProvider {
             reject(new Error("User not authenticated"))
           }
           if (data.status === 403) {
-            reject(
-              new Error("The user does not have the necessary permissions")
-            )
+            reject(new Error("The user does not have the necessary permissions"))
           }
           if (data.status === 404) {
             reject(
