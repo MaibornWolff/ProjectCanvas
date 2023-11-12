@@ -1081,9 +1081,11 @@ export class JiraCloudProvider implements IProvider {
   getResource(): Promise<Resource> {
     return new Promise<Resource>((resolve, reject) => {
       if (this.accessToken !== undefined) {
+        // IMPROVE expose API client instead of resource
+        const defaults = this.getRestApiClient(3).defaults
         const result: Resource = {
-          baseUrl: `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/api/3/`,
-          authorization: `Bearer ${this.accessToken}`,
+          baseUrl: defaults.baseURL ?? '',
+          authorization: defaults.headers.Authorization as string,
         }
         resolve(result)
       } else {
