@@ -363,7 +363,6 @@ export class JiraServerProvider implements IProvider {
         )
     })
   }
-  /* eslint-disable @typescript-eslint/no-unused-vars */
 
   getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
     return new Promise((resolve, reject) => {
@@ -378,19 +377,13 @@ export class JiraServerProvider implements IProvider {
               return Promise.reject(Error(`Project was not found: ${error.response.data}`))
             }
           }
+
+          return Promise.reject(error)
         })
         .catch((error) => {
           reject(new Error(`Error in fetching the assignable users for the project ${projectIdOrKey}: ${error}`))
         })
     })
-  }
-
-  createIssue(issue: Issue): Promise<string> {
-    throw new Error("Method not implemented for Jira Server")
-  }
-
-  getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
-    throw new Error("Method not implemented for Jira Server")
   }
 
   getCurrentUser(): Promise<User> {
@@ -400,6 +393,15 @@ export class JiraServerProvider implements IProvider {
         .then(async (response) => resolve(response.data as User))
         .catch((error) => reject(new Error(`Error in the current user: ${error}`)))
     })
+  }
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+
+  createIssue(issue: Issue): Promise<string> {
+    throw new Error("Method not implemented for Jira Server")
+  }
+
+  getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
+    throw new Error("Method not implemented for Jira Server")
   }
 
   getIssuesBySprint(sprintId: number): Promise<Issue[]> {
