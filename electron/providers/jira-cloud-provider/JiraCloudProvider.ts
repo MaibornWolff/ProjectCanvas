@@ -60,6 +60,8 @@ export class JiraCloudProvider implements IProvider {
             return Promise.reject(recreateAxiosError(error, `Invalid request: ${JSON.stringify(error.response.data)}`))
           } else if (statusCode === 401) {
             return Promise.reject(recreateAxiosError(error, `User not authenticated: ${JSON.stringify(error.response.data)}`))
+          } else if (error.response.status === 403) {
+            return Promise.reject(recreateAxiosError(error, `User does not have a valid licence: ${JSON.stringify(error.response.data)}`))
           } else if (error.response.status === 429) {
             return Promise.reject(recreateAxiosError(error, `Rate limit exceeded: ${JSON.stringify(error.response.data)}`))
           }
@@ -342,14 +344,7 @@ export class JiraCloudProvider implements IProvider {
           resolve(boardIds)
         })
         .catch((error) => {
-          let specificError = error
-          if (error.response) {
-            if (error.response.status === 403) {
-              specificError = new Error(`User does not have a valid licence: ${error.response.data}`)
-            }
-          }
-
-          reject(new Error(`Error getting projects: ${specificError}`))
+          reject(new Error(`Error getting projects: ${error}`))
         })
     })
   }
@@ -385,9 +380,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 403) {
-              specificError = new Error(`User does not have a valid licence: ${error.response.data}`)
-            } else if (error.response.status === 404) {
+            if (error.response.status === 404) {
               specificError = new Error(
                 `The board does not exist or the user does not have permission to view it: ${error.response.data}`
               )
@@ -478,9 +471,7 @@ export class JiraCloudProvider implements IProvider {
       return error;
     }
 
-    if (error.response.status === 403) {
-      return new Error(`User does not have a valid licence: ${error.response.data}`)
-    } else if (error.response.status === 404) {
+    if (error.response.status === 404) {
       return new Error(
         `The board does not exist or the user does not have permission to view it: ${error.response.data}`
       )
@@ -808,11 +799,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 403) {
-              specificError = new Error(
-                "The user does not have the necessary permissions"
-              )
-            } else if (error.response.status === 404) {
+            if (error.response.status === 404) {
               specificError = new Error(
                 "The issue was not found or the user does not have the necessary permissions"
               )
@@ -864,9 +851,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 403) {
-              specificError = new Error(`User does not have a valid licence: ${error.response.data}`)
-            } else if (error.response.status === 404) {
+            if (error.response.status === 404) {
               specificError = new Error(
                 `The board does not exist or the user does not have permission to view it: ${error.response.data}`
               )
@@ -1066,14 +1051,7 @@ export class JiraCloudProvider implements IProvider {
           resolve(createdSubtask)
         })
         .catch((error) => {
-          let specificError = error
-          if (error.response) {
-            if (error.response.status === 403) {
-              specificError = new Error(`User does not have a valid licence: ${error.response.data}`)
-            }
-          }
-
-          reject(new Error(`Error creating subtask: ${specificError}`))
+          reject(new Error(`Error creating subtask: ${error}`))
         })
     })
   }
