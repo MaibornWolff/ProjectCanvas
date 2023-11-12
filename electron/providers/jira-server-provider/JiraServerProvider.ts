@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-import fetch from "cross-fetch"
 import {
   dateTimeFormat,
   Issue,
@@ -11,14 +9,9 @@ import {
   SprintCreate,
   User,
 } from "../../../types"
-import {
-  JiraIssue,
-  JiraIssueType,
-  JiraProject,
-  JiraSprint,
-} from "../../../types/jira"
-import { IProvider } from "../base-provider"
-import axios, { AxiosError, isAxiosError } from "axios";
+import {JiraIssue, JiraIssueType, JiraProject, JiraSprint,} from "../../../types/jira"
+import {IProvider} from "../base-provider"
+import axios, {AxiosError, AxiosResponse, isAxiosError} from "axios";
 
 export class JiraServerProvider implements IProvider {
   private loginOptions = {
@@ -226,9 +219,12 @@ export class JiraServerProvider implements IProvider {
   }
 
   async getIssuesByProject(project: string, boardId: number): Promise<Issue[]> {
-    return this.fetchIssues(
-      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/issue?jql=project=${project}&maxResults=10000`
-    )
+    return new Promise((resolve, reject) => {
+      this.getAgileRestApiClient('1.0')
+        .get(`/board/${boardId}/issue?jql=project=${project}&maxResults=10000`)
+        .then((response) => resolve(this.fetchIssues(response)))
+        .catch((error) => reject(new Error(`Error in fetching issues: ${error}`)))
+    })
   }
 
   async getIssuesBySprintAndProject(
@@ -236,34 +232,31 @@ export class JiraServerProvider implements IProvider {
     project: string,
     boardId: number
   ): Promise<Issue[]> {
-    return this.fetchIssues(
-      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/sprint/${sprintId}/issue?jql=project=${project}`
-    )
+    return new Promise((resolve, reject) => {
+      this.getAgileRestApiClient('1.0')
+        .get(`/board/${boardId}/sprint/${sprintId}/issue?jql=project=${project}`)
+        .then((response) => resolve(this.fetchIssues(response)))
+        .catch((error) => reject(new Error(`Error in fetching issues: ${error}`)))
+    })
   }
 
   async getBacklogIssuesByProjectAndBoard(
     project: string,
     boardId: number
   ): Promise<Issue[]> {
-    return this.fetchIssues(
-      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
-    )
+    return new Promise((resolve, reject) => {
+      this.getAgileRestApiClient('1.0')
+        .get(`/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`)
+        .then((response) => resolve(this.fetchIssues(response)))
+        .catch((error) => reject(new Error(`Error in fetching issues: ${error}`)))
+    })
   }
 
-  async fetchIssues(url: string): Promise<Issue[]> {
+  async fetchIssues(response: AxiosResponse): Promise<Issue[]> {
     const rankCustomField = this.customFields.get("Rank")
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: this.getAuthHeader(),
-      },
-    })
 
-    const data = await response.json()
-
-    const issues: Promise<Issue[]> = Promise.all(
-      data.issues.map(async (element: JiraIssue) => ({
+    return Promise.all(
+      response.data.issues.map(async (element: JiraIssue) => ({
         issueKey: element.key,
         summary: element.fields.summary,
         creator: element.fields.creator.name,
@@ -281,7 +274,6 @@ export class JiraServerProvider implements IProvider {
         rank: element.fields[rankCustomField!],
       }))
     )
-    return issues
   }
 
   async moveIssueToSprintAndRank(
