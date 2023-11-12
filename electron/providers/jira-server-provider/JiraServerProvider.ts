@@ -23,6 +23,8 @@ export class JiraServerProvider implements IProvider {
 
   private customFields = new Map<string, string>()
 
+  private reversedCustomFields = new Map<string, string>()
+
   private getAuthHeader() {
     return `Basic ${Buffer.from(
       `${this.loginOptions.username}:${this.loginOptions.password}`
@@ -95,7 +97,7 @@ export class JiraServerProvider implements IProvider {
     this.loginOptions.username = basicLoginOptions.username
     this.loginOptions.password = basicLoginOptions.password
 
-    // await this.mapCustomFields()
+    await this.mapCustomFields()
     return this.isLoggedIn()
   }
 
@@ -139,6 +141,7 @@ export class JiraServerProvider implements IProvider {
         .then((response) => {
           response.data.forEach((field: { name: string; id: string }) => {
             this.customFields.set(field.name, field.id)
+            this.reversedCustomFields.set(field.id, field.name)
           })
           resolve()
         })
