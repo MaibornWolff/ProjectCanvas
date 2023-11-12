@@ -19,7 +19,7 @@ import {
 } from "../../../types/jira"
 import { IProvider } from "../base-provider"
 import { getAccessToken, refreshTokens } from "./getAccessToken"
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse, isAxiosError } from "axios";
 import axios from "axios"
 
 export class JiraCloudProvider implements IProvider {
@@ -43,13 +43,23 @@ export class JiraCloudProvider implements IProvider {
       },
     })
 
+    const recreateAxiosError = (originalError: AxiosError, message: string) => new AxiosError(
+      message,
+      originalError.code,
+      originalError.config,
+      originalError.request,
+      originalError.response
+    )
+
     instance.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (error.response) {
+        if (isAxiosError(error) && error.response) {
           const statusCode = error.response.status
-          if (statusCode === 401) {
-            return Promise.reject(new Error(`User not authenticated: ${JSON.stringify(error.response.data)}`))
+          if (statusCode === 400) {
+            return Promise.reject(recreateAxiosError(error, `Invalid request: ${JSON.stringify(error.response.data)}`))
+          } else if (statusCode === 401) {
+            return Promise.reject(recreateAxiosError(error, `User not authenticated: ${JSON.stringify(error.response.data)}`))
           }
         }
 
@@ -185,9 +195,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error(`Invalid request: ${error.response.data}`)
-            } else if (error.response.status === 404) {
+            if (error.response.status === 404) {
               specificError = new Error(`No projects matching the search criteria were found: ${error.response.data}`)
             }
           }
@@ -276,9 +284,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error(`Some infos are missing: ${error.response.data}`)
-            } else if (error.response.status === 404) {
+            if (error.response.status === 404) {
               specificError = new Error(`Project, issue, or transition were not found: ${error.response.data}`)
             } else if (error.response.status === 429) {
               specificError = new Error(`Rate limit exceeded: ${error.response.data}`)
@@ -338,9 +344,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error(`Invalid request: ${error.response.data}`)
-            } else if (error.response.status === 403) {
+            if (error.response.status === 403) {
               specificError = new Error(`User does not have a valid licence: ${error.response.data}`)
             }
           }
@@ -381,9 +385,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error(`Invalid request: ${error.response.data}`)
-            } else if (error.response.status === 403) {
+            if (error.response.status === 403) {
               specificError = new Error(`User does not have a valid licence: ${error.response.data}`)
             } else if (error.response.status === 404) {
               specificError = new Error(
@@ -476,9 +478,7 @@ export class JiraCloudProvider implements IProvider {
       return error;
     }
 
-    if (error.response.status === 400) {
-      return new Error(`Invalid request: ${error.response.data}`)
-    } else if (error.response.status === 403) {
+    if (error.response.status === 403) {
       return new Error(`User does not have a valid licence: ${error.response.data}`)
     } else if (error.response.status === 404) {
       return new Error(
@@ -511,9 +511,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error(`Invalid request: ${error.response.data}`)
-            } else if (error.response.status === 403) {
+            if (error.response.status === 403) {
               specificError = new Error(
                 `User does not have a valid licence or permissions to assign issues: ${error.response.data}`
               )
@@ -540,9 +538,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error(`Invalid request: ${error.response.data}`)
-            } else if (error.response.status === 403) {
+            if (error.response.status === 403) {
               specificError = new Error(
                 `User does not have a valid licence or permissions to assign issues: ${error.response.data}`
               )
@@ -595,9 +591,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error(`Invalid request: ${error.response.data}`)
-            } else if (error.response.status === 403) {
+            if (error.response.status === 403) {
               specificError = new Error(
                 `User does not have a valid licence or permissions to rank issues: ${error.response.data}`
               )
@@ -713,9 +707,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error(error.response.data)
-            } else if (error.response.status === 404) {
+            if (error.response.status === 404) {
               specificError = new Error("The user does not have the necessary permissions")
             }
           }
@@ -816,11 +808,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error(
-                "400 Error: consult the atlassian rest api v3 under Edit issue for information"
-              )
-            } else if (error.response.status === 403) {
+            if (error.response.status === 403) {
               specificError = new Error(
                 "The user does not have the necessary permissions"
               )
@@ -876,9 +864,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error(`Invalid request: ${error.response.data}`)
-            } else if (error.response.status === 403) {
+            if (error.response.status === 403) {
               specificError = new Error(`User does not have a valid licence: ${error.response.data}`)
             } else if (error.response.status === 404) {
               specificError = new Error(
@@ -951,9 +937,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error("Invalid api request")
-            } else if (error.response.status === 404) {
+            if (error.response.status === 404) {
               specificError = new Error("The issue was not found or the user does not have the necessary permissions")
             }
           }
@@ -1084,9 +1068,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error(`Invalid request: ${error.response.data}`)
-            } else if (error.response.status === 403) {
+            if (error.response.status === 403) {
               specificError = new Error(`User does not have a valid licence: ${error.response.data}`)
             }
           }
@@ -1140,9 +1122,7 @@ export class JiraCloudProvider implements IProvider {
         .catch((error) => {
           let specificError = error
           if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error("Invalid request")
-            } else if (error.response.status === 403) {
+            if (error.response.status === 403) {
               specificError = new Error("The user does not have the necessary permissions")
             } else if (error.response.status === 404) {
               specificError = new Error("The Board does not exist or the user does not have the necessary permissions to view it")
