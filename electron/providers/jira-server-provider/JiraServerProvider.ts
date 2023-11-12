@@ -420,7 +420,33 @@ export class JiraServerProvider implements IProvider {
   }
 
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve) => {
+      // IMPROVE: This is barely scalable
+      this.getProjects()
+        .then(async (projects) => {
+          const issueTypeToFieldsMap: { [key: string]: string[] } = {}
+          await Promise.all(projects.map((project) =>
+            // IMPROVE: This call currently only supports 50 issue types
+            this.getRestApiClient(2)
+              .get(`/issue/createmeta/${project.id}/issuetypes`)
+              .then(async (response) => {
+                await Promise.all(response.data.values.map((issueType: { id: string }) => 
+                  // IMPROVE: This call currently only supports 50 issue types
+                  this.getRestApiClient(2)
+                    .get(`/issue/createmeta/${project.id}/issuetypes/${issueType.id}`)
+                    .then((issueTypesResponse) => {
+                      const fieldKeys = Object.keys(issueTypesResponse.data.values)
+                      issueTypeToFieldsMap[issueType.id] = fieldKeys.map(
+                        (fieldKey) => this.reversedCustomFields.get(fieldKey)!
+                      )
+                    })
+                ))
+              })
+          ))
+
+          return resolve(issueTypeToFieldsMap)
+        })
+    })
   }
 
   getResource(): Promise<Resource> {
