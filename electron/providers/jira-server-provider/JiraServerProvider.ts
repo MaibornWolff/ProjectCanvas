@@ -135,7 +135,7 @@ export class JiraServerProvider implements IProvider {
   async mapCustomFields(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
-        .delete('/field')
+        .get('/field')
         .then((response) => {
           response.data.forEach((field: { name: string; id: string }) => {
             this.customFields.set(field.name, field.id)
