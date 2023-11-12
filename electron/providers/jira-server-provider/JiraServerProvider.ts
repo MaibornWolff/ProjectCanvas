@@ -375,7 +375,12 @@ export class JiraServerProvider implements IProvider {
   }
 
   getCurrentUser(): Promise<User> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get('/myself')
+        .then(async (response) => resolve(response.data))
+        .catch((error) => reject(new Error(`Error in the current user: ${error}`)))
+    })
   }
 
   getIssuesBySprint(sprintId: number): Promise<Issue[]> {
