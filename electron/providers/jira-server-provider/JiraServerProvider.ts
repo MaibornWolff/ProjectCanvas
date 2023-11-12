@@ -18,6 +18,7 @@ import {
   JiraSprint,
 } from "../../../types/jira"
 import { IProvider } from "../base-provider"
+import axios, { AxiosError, isAxiosError } from "axios";
 
 export class JiraServerProvider implements IProvider {
   private loginOptions = {
@@ -28,10 +29,63 @@ export class JiraServerProvider implements IProvider {
 
   private customFields = new Map<string, string>()
 
-  getAuthHeader() {
+  private getAuthHeader() {
     return `Basic ${Buffer.from(
       `${this.loginOptions.username}:${this.loginOptions.password}`
     ).toString("base64")}`
+  }
+
+  private constructRestBasedClient(apiName: string, version: string) {
+    const instance = axios.create({
+      baseURL: `${this.loginOptions.url}/rest/${apiName}/${version}`,
+      headers: {
+        Accept: "application/json",
+        Authorization: this.getAuthHeader(),
+        "Content-Type": "application/json",
+      },
+    })
+
+    const recreateAxiosError = (originalError: AxiosError, message: string) => new AxiosError(
+        message,
+        originalError.code,
+        originalError.config,
+        originalError.request,
+        originalError.response
+    )
+
+    instance.interceptors.response.use(
+        (response) => response,
+        (error) => {
+          if (isAxiosError(error) && error.response) {
+            const statusCode = error.response.status
+            if (statusCode === 400) {
+              return Promise.reject(recreateAxiosError(error, `Invalid request: ${JSON.stringify(error.response.data)}`))
+            } else if (statusCode === 401) {
+              return Promise.reject(recreateAxiosError(error, `User not authenticated: ${JSON.stringify(error.response.data)}`))
+            } else if (error.response.status === 403) {
+              return Promise.reject(recreateAxiosError(error, `User does not have a valid licence: ${JSON.stringify(error.response.data)}`))
+            } else if (error.response.status === 429) {
+              return Promise.reject(recreateAxiosError(error, `Rate limit exceeded: ${JSON.stringify(error.response.data)}`))
+            }
+          }
+
+          return Promise.reject(error)
+        }
+    )
+
+    return instance
+  }
+
+  private getRestApiClient(version: number) {
+    return this.constructRestBasedClient('api', version.toString());
+  }
+
+  private getAuthRestApiClient(version: number) {
+    return this.constructRestBasedClient('auth', version.toString());
+  }
+
+  private getAgileRestApiClient(version: string) {
+    return this.constructRestBasedClient('agile', version);
   }
 
   async login({
