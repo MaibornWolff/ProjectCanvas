@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+import  axios, {AxiosError, AxiosResponse, isAxiosError} from "axios";
 import {
   dateTimeFormat,
   Issue,
@@ -11,7 +13,6 @@ import {
 } from "../../../types"
 import {JiraIssue, JiraIssueType, JiraProject, JiraSprint,} from "../../../types/jira"
 import {IProvider} from "../base-provider"
-import axios, {AxiosError, AxiosResponse, isAxiosError} from "axios";
 
 export class JiraServerProvider implements IProvider {
   private loginOptions = {
@@ -53,11 +54,11 @@ export class JiraServerProvider implements IProvider {
             const statusCode = error.response.status
             if (statusCode === 400) {
               return Promise.reject(recreateAxiosError(error, `Invalid request: ${JSON.stringify(error.response.data)}`))
-            } else if (statusCode === 401) {
+            } if (statusCode === 401) {
               return Promise.reject(recreateAxiosError(error, `User not authenticated: ${JSON.stringify(error.response.data)}`))
-            } else if (error.response.status === 403) {
+            } if (error.response.status === 403) {
               return Promise.reject(recreateAxiosError(error, `User does not have a valid licence: ${JSON.stringify(error.response.data)}`))
-            } else if (error.response.status === 429) {
+            } if (error.response.status === 429) {
               return Promise.reject(recreateAxiosError(error, `Rate limit exceeded: ${JSON.stringify(error.response.data)}`))
             }
           }
@@ -107,10 +108,12 @@ export class JiraServerProvider implements IProvider {
           if (isAxiosError(error) && error.response) {
             if (error.response.status === 401) {
               return Promise.reject(new Error("Wrong Username or Password"))
-            } else if (error.response.status === 404) {
+            } if (error.response.status === 404) {
               return Promise.reject(new Error("Wrong URL"))
             }
           }
+
+          return Promise.reject(error)
         })
         .catch((error) => {
           reject(new Error(`Error in checking login status: ${error}`))
@@ -146,7 +149,7 @@ export class JiraServerProvider implements IProvider {
   }
 
   async getProjects(): Promise<Project[]> {
-    return new Promise((resolve, _) => {
+    return new Promise((resolve) => {
       this.getRestApiClient(2)
         .get('/project?expand=lead,description')
         .then((response) => {
