@@ -60,6 +60,8 @@ export class JiraCloudProvider implements IProvider {
             return Promise.reject(recreateAxiosError(error, `Invalid request: ${JSON.stringify(error.response.data)}`))
           } else if (statusCode === 401) {
             return Promise.reject(recreateAxiosError(error, `User not authenticated: ${JSON.stringify(error.response.data)}`))
+          } else if (error.response.status === 429) {
+            return Promise.reject(recreateAxiosError(error, `Rate limit exceeded: ${JSON.stringify(error.response.data)}`))
           }
         }
 
@@ -286,8 +288,6 @@ export class JiraCloudProvider implements IProvider {
           if (error.response) {
             if (error.response.status === 404) {
               specificError = new Error(`Project, issue, or transition were not found: ${error.response.data}`)
-            } else if (error.response.status === 429) {
-              specificError = new Error(`Rate limit exceeded: ${error.response.data}`)
             }
           }
 
