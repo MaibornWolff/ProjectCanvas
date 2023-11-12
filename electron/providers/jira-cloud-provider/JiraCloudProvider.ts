@@ -1,4 +1,5 @@
 /* eslint-disable class-methods-use-this */
+import axios, { AxiosError, AxiosResponse, isAxiosError } from "axios";
 import {
   dateTimeFormat,
   Issue,
@@ -19,8 +20,6 @@ import {
 } from "../../../types/jira"
 import { IProvider } from "../base-provider"
 import { getAccessToken, refreshTokens } from "./getAccessToken"
-import { AxiosError, AxiosResponse, isAxiosError } from "axios";
-import axios from "axios"
 
 export class JiraCloudProvider implements IProvider {
   public accessToken: string | undefined
@@ -58,11 +57,11 @@ export class JiraCloudProvider implements IProvider {
           const statusCode = error.response.status
           if (statusCode === 400) {
             return Promise.reject(recreateAxiosError(error, `Invalid request: ${JSON.stringify(error.response.data)}`))
-          } else if (statusCode === 401) {
+          } if (statusCode === 401) {
             return Promise.reject(recreateAxiosError(error, `User not authenticated: ${JSON.stringify(error.response.data)}`))
-          } else if (error.response.status === 403) {
+          } if (error.response.status === 403) {
             return Promise.reject(recreateAxiosError(error, `User does not have a valid licence: ${JSON.stringify(error.response.data)}`))
-          } else if (error.response.status === 429) {
+          } if (error.response.status === 429) {
             return Promise.reject(recreateAxiosError(error, `Rate limit exceeded: ${JSON.stringify(error.response.data)}`))
           }
         }
@@ -436,7 +435,7 @@ export class JiraCloudProvider implements IProvider {
 
   async fetchIssues(response: AxiosResponse): Promise<Issue[]> {
     const rankCustomField = this.customFields.get("Rank") || ""
-    return new Promise((resolve, _) => {
+    return new Promise((resolve) => {
       const issues: Promise<Issue[]> = Promise.all(
         response.data.issues.map(async (element: JiraIssue) => ({
           issueKey: element.key,
@@ -817,7 +816,7 @@ export class JiraCloudProvider implements IProvider {
       `/issue/${issueKey}/transitions`,
     )
 
-    const data = transitionResponse.data
+    const {data} = transitionResponse
 
     data.transitions.forEach((field: { name: string; id: string }) => {
       transitions.set(field.name, field.id)
@@ -1060,7 +1059,7 @@ export class JiraCloudProvider implements IProvider {
     return new Promise<Resource>((resolve, reject) => {
       if (this.accessToken !== undefined) {
         // IMPROVE expose API client instead of resource
-        const defaults = this.getRestApiClient(3).defaults
+        const {defaults} = this.getRestApiClient(3)
         const result: Resource = {
           baseUrl: defaults.baseURL ?? '',
           authorization: defaults.headers.Authorization as string,
