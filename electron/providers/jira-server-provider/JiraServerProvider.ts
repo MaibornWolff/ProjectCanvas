@@ -416,7 +416,17 @@ export class JiraServerProvider implements IProvider {
   }
 
   getPriorities(): Promise<Priority[]> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get('/priority')
+        .then((response) => {
+          const priorityData: Priority[] = response.data
+          resolve(priorityData)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching priorities: ${error}`))
+        )
+    })
   }
 
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
