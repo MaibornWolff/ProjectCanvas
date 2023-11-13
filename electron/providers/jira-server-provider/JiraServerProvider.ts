@@ -435,9 +435,8 @@ export class JiraServerProvider implements IProvider {
                   this.getRestApiClient(2)
                     .get(`/issue/createmeta/${project.id}/issuetypes/${issueType.id}`)
                     .then((issueTypesResponse) => {
-                      const fieldKeys = Object.keys(issueTypesResponse.data.values)
-                      issueTypeToFieldsMap[issueType.id] = fieldKeys.map(
-                        (fieldKey) => this.reversedCustomFields.get(fieldKey)!
+                      issueTypeToFieldsMap[issueType.id] = issueTypesResponse.data.values.map(
+                        (issueTypeField: { fieldId: string }) => this.reversedCustomFields.get(issueTypeField.fieldId)!
                       )
                     })
                 ))
