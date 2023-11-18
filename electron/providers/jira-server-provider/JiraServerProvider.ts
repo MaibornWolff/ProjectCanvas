@@ -408,7 +408,16 @@ export class JiraServerProvider implements IProvider {
   }
 
   getIssuesBySprint(sprintId: number): Promise<Issue[]> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getAgileRestApiClient('1.0')
+        .get(`/sprint/${sprintId}/issue`)
+        .then(async (response) => {
+          resolve(this.fetchIssues(response))
+        })
+        .catch((error) => {
+          reject(new Error(`Error fetching issues by sprint ${sprintId}: ${error}`))
+        })
+    })
   }
 
   getLabels(): Promise<string[]> {
