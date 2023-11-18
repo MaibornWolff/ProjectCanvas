@@ -503,7 +503,19 @@ export class JiraServerProvider implements IProvider {
   }
 
   getEditableIssueFields(issueIdOrKey: string): Promise<string[]> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get(`/issue/${issueIdOrKey}/editmeta`)
+        .then(async (response) => {
+          const fieldKeys = Object.keys(response.data.fields).map(
+            (fieldKey) => this.reversedCustomFields.get(fieldKey)!
+          )
+          resolve(fieldKeys)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the issue types map: ${error}`))
+        )
+    })
   }
 
   getIssueReporter(issueIdOrKey: string): Promise<User> {
