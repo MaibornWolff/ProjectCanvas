@@ -462,8 +462,46 @@ export class JiraServerProvider implements IProvider {
     throw new Error("Method not implemented.")
   }
 
-  createSprint(sprint: SprintCreate): Promise<void> {
-    throw new Error("Method not implemented.")
+  createSprint({
+    name,
+    startDate,
+    endDate,
+    originBoardId,
+    goal,
+  }: SprintCreate): Promise<void> {
+    const offsetStartDate = this.offsetDate(startDate)
+    const offsetEndDate = this.offsetDate(endDate)
+
+    return new Promise((resolve, reject) => {
+      this.getAgileRestApiClient('1.0')
+        .post(
+          '/sprint',
+          {
+            name,
+            originBoardId,
+            ...(offsetStartDate && {
+              startDate: offsetStartDate,
+            }),
+            ...(offsetEndDate && {
+              endDate: offsetEndDate,
+            }),
+            ...(goal && { goal }),
+          }
+        )
+        .then(async () => { resolve() })
+        .catch((error) => {
+          let specificError = error
+          if (error.response) {
+            if (error.response.status === 403) {
+              specificError = new Error("The user does not have the necessary permissions")
+            } else if (error.response.status === 404) {
+              specificError = new Error("The Board does not exist or the user does not have the necessary permissions to view it")
+            }
+          }
+
+          reject(new Error(`Error creating sprint: ${specificError}`))
+        })
+    })
   }
 
   deleteIssue(issueIdOrKey: string): Promise<void> {
@@ -516,5 +554,14 @@ export class JiraServerProvider implements IProvider {
     clientSecret: string
   }): Promise<void> {
     throw new Error("Method not implemented for Jira Server")
+  }
+
+  offsetDate(date: Date) {
+    if (!date) {
+      return date
+    }
+    const convertedDate = new Date(date)
+    const timezoneOffset = convertedDate.getTimezoneOffset()
+    return new Date(convertedDate.getTime() - timezoneOffset * 60 * 1000)
   }
 }
