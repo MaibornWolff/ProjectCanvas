@@ -265,19 +265,25 @@ export class JiraServerProvider implements IProvider {
       response.data.issues.map(async (element: JiraIssue) => ({
         issueKey: element.key,
         summary: element.fields.summary,
-        creator: element.fields.creator.name,
+        creator: element.fields.creator.displayName,
         status: element.fields.status.name,
         type: element.fields.issuetype.name,
-        storyPointsEstimate: await this.getIssueStoryPointsEstimate(
-          element.key
-        ),
-        epic: element.fields.epic?.name,
+        storyPointsEstimate: await this.getIssueStoryPointsEstimate(element.key),
+        epic: element.fields.parent?.fields.summary,
         labels: element.fields.labels,
         assignee: {
           displayName: element.fields.assignee?.displayName,
           avatarUrls: element.fields.assignee?.avatarUrls,
         },
         rank: element.fields[rankCustomField!],
+        description: element.fields.description,
+        subtasks: element.fields.subtasks,
+        created: element.fields.created,
+        updated: element.fields.updated,
+        comment: element.fields.comment,
+        projectId: element.fields.project.id,
+        sprint: element.fields.sprint,
+        attachments: element.fields.attachment,
       }))
     )
   }
