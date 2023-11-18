@@ -507,7 +507,25 @@ export class JiraServerProvider implements IProvider {
   }
 
   getIssueReporter(issueIdOrKey: string): Promise<User> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get(`/issue/${issueIdOrKey}?fields=reporter`)
+        .then(async (response) => {
+          resolve(response.data.fields.reporter as User)
+        })
+        .catch((error) => {
+          let specificError = error
+          if (error.response) {
+            if (error.response.status === 404) {
+              specificError = new Error(
+                `The issue was not found or the user does not have permission to view it: ${error.response.data}`
+              )
+            }
+          }
+
+          reject(new Error(`Error in fetching the issue reporter: ${specificError}`))
+        })
+    })
   }
 
   addCommentToIssue(issueIdOrKey: string, commentText: string): Promise<void> {
