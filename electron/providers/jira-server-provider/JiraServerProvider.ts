@@ -584,7 +584,29 @@ export class JiraServerProvider implements IProvider {
   }
 
   setTransition(issueIdOrKey: string, targetStatus: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get(`/issue/${issueIdOrKey}/transitions`)
+        .then((response) => {
+          const transitions = new Map<string, string>()
+          response.data.transitions.forEach((field: { name: string; id: string }) => {
+            transitions.set(field.name, field.id)
+          })
+
+          const transitionId = +transitions.get(targetStatus)!
+
+          return this
+            .getRestApiClient(2)
+            .post(
+            `/issue/${issueIdOrKey}/transitions`,
+            { transition: { id: transitionId } }
+          )
+        })
+        .then(() => resolve())
+        .catch((error) => {
+          reject(new Error(`Error setting transition: ${error}`))
+        })
+    })
   }
 
   getEditableIssueFields(issueIdOrKey: string): Promise<string[]> {
