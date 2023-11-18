@@ -482,7 +482,25 @@ export class JiraServerProvider implements IProvider {
   }
 
   deleteIssue(issueIdOrKey: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .delete(`/issue/${issueIdOrKey}?deleteSubtasks`)
+        .then(async () => { resolve() })
+        .catch((error) => {
+          let specificError = error
+          if (error.response) {
+            if (error.response.status === 403) {
+              specificError = new Error("The user does not have permission to delete the issue")
+            } else if (error.response.status === 404) {
+              specificError = new Error("The issue was not found or the user does not have the necessary permissions")
+            } else if (error.response.status === 405) {
+              specificError = new Error("An anonymous call has been made to the operation")
+            }
+          }
+
+          reject(new Error(`Error deleting the issue ${issueIdOrKey}: ${specificError}`))
+        })
+    })
   }
 
   createSubtask(
