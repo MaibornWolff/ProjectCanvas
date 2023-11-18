@@ -494,8 +494,93 @@ export class JiraServerProvider implements IProvider {
     throw new Error("Method not implemented for Jira Server")
   }
 
-  editIssue(issue: Issue, issueIdOrKey: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+  editIssue(
+    {
+      summary,
+      type,
+      projectId,
+      reporter,
+      assignee,
+      sprint,
+      storyPointsEstimate,
+      description,
+      epic,
+      startDate,
+      dueDate,
+      labels,
+      priority,
+    }: Issue,
+    issueIdOrKey: string
+  ): Promise<void> {
+    const offsetStartDate = this.offsetDate(startDate)
+    const offsetDueDate = this.offsetDate(dueDate)
+
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .put(
+          `/issue/${issueIdOrKey}`,
+          {
+            fields: {
+              ...(summary && {
+                summary,
+              }),
+              ...(epic && {
+                parent: { key: epic },
+              }),
+              ...(type && {
+                issuetype: { id: type },
+              }),
+              ...(projectId && {
+                project: {
+                  id: projectId,
+                },
+              }),
+              ...(reporter && {
+                reporter: {
+                  id: reporter,
+                },
+              }),
+              ...(priority && priority.id && { priority }),
+              ...(assignee &&
+                assignee.id && {
+                  assignee,
+                }),
+              ...(description && {
+                description
+              }),
+              ...(labels && {
+                labels,
+              }),
+              ...(offsetStartDate && {
+                [this.customFields.get("Start date")!]: offsetStartDate,
+              }),
+              ...(offsetDueDate && {
+                [this.customFields.get("Due date")!]: offsetDueDate,
+              }),
+              ...(sprint && {
+                [this.customFields.get("Sprint")!]: sprint.id,
+              }),
+              ...(storyPointsEstimate !== undefined && {
+                [this.customFields.get("Story point estimate")!]:
+                storyPointsEstimate,
+              }),
+            },
+          }
+        )
+        .then(async () => { resolve() })
+        .catch((error) => {
+          let specificError = error
+          if (error.response) {
+            if (error.response.status === 404) {
+              specificError = new Error(
+                "The issue was not found or the user does not have the necessary permissions"
+              )
+            }
+          }
+
+          reject(new Error(`Error creating issue: ${specificError}`))
+        })
+    })
   }
 
   setTransition(issueIdOrKey: string, targetStatus: string): Promise<void> {
@@ -561,5 +646,14 @@ export class JiraServerProvider implements IProvider {
     clientSecret: string
   }): Promise<void> {
     throw new Error("Method not implemented for Jira Server")
+  }
+
+  offsetDate(date: Date) {
+    if (!date) {
+      return date
+    }
+    const convertedDate = new Date(date)
+    const timezoneOffset = convertedDate.getTimezoneOffset()
+    return new Date(convertedDate.getTime() - timezoneOffset * 60 * 1000)
   }
 }
