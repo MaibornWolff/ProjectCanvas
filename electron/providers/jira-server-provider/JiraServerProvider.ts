@@ -410,7 +410,36 @@ export class JiraServerProvider implements IProvider {
   }
 
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}`)
+        .then(async (response) => {
+          const epics: Promise<Issue[]> = Promise.all(
+            response.data.issues.map(async (element: JiraIssue) => ({
+              issueKey: element.key,
+              summary: element.fields.summary,
+              labels: element.fields.labels,
+              assignee: {
+                displayName: element.fields.assignee?.displayName,
+                avatarUrls: element.fields.assignee?.avatarUrls,
+              },
+            }))
+          )
+          resolve(epics)
+        })
+        .catch((error) => {
+          let specificError = error
+          if (error.response) {
+            if (error.response.status === 404) {
+              specificError = new Error(
+                `The board does not exist or the user does not have permission to view it: ${error.response.data}`
+              )
+            }
+          }
+
+          reject(new Error(`Error in fetching the epics for the project ${projectIdOrKey}: ${specificError}`))
+        })
+    })
   }
 
   getIssuesBySprint(sprintId: number): Promise<Issue[]> {
