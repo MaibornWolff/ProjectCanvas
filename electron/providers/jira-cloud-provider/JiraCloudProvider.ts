@@ -184,7 +184,7 @@ export class JiraCloudProvider implements IProvider {
   async getProjects(): Promise<Project[]> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(3)
-        .get('/project/searchs?expand=description,lead,issueTypes,url,projectKeys,permissions,insight')
+        .get('/project/search?expand=description,lead,issueTypes,url,projectKeys,permissions,insight')
         .then(async (response) => {
           const projects = response.data.values.map((project: JiraProject) => ({
             key: project.key,
