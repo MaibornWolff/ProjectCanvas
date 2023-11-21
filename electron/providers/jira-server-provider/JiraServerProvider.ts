@@ -678,7 +678,17 @@ export class JiraServerProvider implements IProvider {
   }
 
   addCommentToIssue(issueIdOrKey: string, commentText: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+     return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .post(
+          `/issue/${issueIdOrKey}/comment`,
+          { body: commentText.replace(/\n/g, " ") }
+        )
+        .then(() => resolve())
+        .catch((error) => {
+          reject(new Error(`Error adding a comment to the issue ${issueIdOrKey}: ${error}`))
+        })
+    })
   }
 
   editIssueComment(
@@ -686,11 +696,51 @@ export class JiraServerProvider implements IProvider {
     commentId: string,
     commentText: string
   ): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) =>{
+      // main part
+      this.getRestApiClient(2)
+        .put(
+          `/issue/${issueIdOrKey}/comment/${commentId}`,
+          { body: commentText.replace(/\n/g, " ") }
+        )
+        .then(() => { resolve() })
+        .catch((error) => {
+          if (error.response) {
+            if (error.response.status === 400) {
+              return Promise.reject(new Error("The user does not have permission to edit the comment or the request is invalid"))
+            } if (error.response.status === 404) {
+              return Promise.reject(new Error("The issue was not found or the user does not have the necessary permissions"))
+            }
+          }
+
+          return Promise.reject(error)
+        })
+        .catch((error) => {
+          reject(Error(`Error editing the comment in issue ${issueIdOrKey}: ${error}`))
+        })
+    })
   }
 
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .delete(`/issue/${issueIdOrKey}/comment/${commentId}`)
+        .then(() => { resolve() })
+        .catch((error) => {
+          if (error.response) {
+            if (error.response.status === 404) {
+              return Promise.reject(new Error("The issue was not found or the user does not have the necessary permissions"))
+            } if (error.response.status === 405) {
+              return Promise.reject(new Error("An anonymous call has been made to the operation"))
+            }
+          }
+
+          return Promise.reject(new Error(`Error deleting the comment in issue ${issueIdOrKey}: ${error}`))
+        })
+        .catch((error) => {
+          reject(Error(`Error deleting the comment in issue ${issueIdOrKey}: ${error}`))
+        })
+    })
   }
 
   refreshAccessToken(): Promise<void> {
