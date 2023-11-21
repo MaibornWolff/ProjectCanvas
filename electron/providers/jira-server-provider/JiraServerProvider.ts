@@ -706,7 +706,23 @@ export class JiraServerProvider implements IProvider {
   }
 
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .delete(`/issue/${issueIdOrKey}/comment/${commentId}`)
+        .then(() => { resolve() })
+        .catch((error) => {
+          if(error.response){
+            if (error.response.status === 400){
+              reject(new Error("The input is invalid"))
+            }else if (error.response.status === 404){
+              reject(new Error("The issue was not found or the user does not have the necessary permissions"))
+            }else if (error.res.status === 405){
+              reject(new Error("An anonymous call has been made to the operation"))
+            }
+          }
+          reject(new Error(`Error deleting the comment in issue ${issueIdOrKey}: ${error}`))
+        })
+    })
   }
 
   refreshAccessToken(oauthRefreshOptions: {
