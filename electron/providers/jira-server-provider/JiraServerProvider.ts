@@ -712,11 +712,9 @@ export class JiraServerProvider implements IProvider {
         .then(() => { resolve() })
         .catch((error) => {
           if(error.response){
-            if (error.response.status === 400){
-              reject(new Error("The input is invalid"))
-            }else if (error.response.status === 404){
+            if (error.response.status === 404) {
               reject(new Error("The issue was not found or the user does not have the necessary permissions"))
-            }else if (error.res.status === 405){
+            } else if (error.res.status === 405) {
               reject(new Error("An anonymous call has been made to the operation"))
             }
           }
