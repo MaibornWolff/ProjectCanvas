@@ -1022,8 +1022,8 @@ export class JiraCloudProvider implements IProvider {
 
   createSubtask(
     parentIssueKey: string,
-    projectId: string,
     subtaskSummary: string,
+    projectId: string,
     subtaskIssueTypeId: string
   ): Promise<{ id: string; key: string }> {
     return new Promise((resolve, reject) => {

@@ -63,8 +63,8 @@ export interface IProvider {
   createIssue(issue: Issue): Promise<string>
   createSubtask(
     parentIssueKey: string,
-    projectId: string,
     subtaskSummary: string,
+    projectId: string,
     subtaskIssueTypeId: string
   ): Promise<{ id: string; key: string }>
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]>

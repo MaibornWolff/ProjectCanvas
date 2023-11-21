@@ -517,11 +517,37 @@ export class JiraServerProvider implements IProvider {
 
   createSubtask(
     parentIssueKey: string,
-    projectId: string,
     subtaskSummary: string,
+    projectId: string,
     subtaskIssueTypeId: string
   ): Promise<{ id: string; key: string }> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+          .post(
+              '/issue',
+              {
+                fields: {
+                  summary: subtaskSummary,
+                  issuetype: {
+                    id: subtaskIssueTypeId,
+                  },
+                  parent: {
+                    key: parentIssueKey,
+                  },
+                  project: {
+                    id: projectId,
+                  },
+                },
+              }
+          )
+          .then(async (response) => {
+            const createdSubtask: { id: string; key: string } = response.data
+            resolve(createdSubtask)
+          })
+          .catch((error) => {
+            reject(new Error(`Error creating subtask: ${error}`))
+          })
+    })
   }
 
   editIssue(
