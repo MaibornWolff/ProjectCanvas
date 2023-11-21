@@ -265,19 +265,25 @@ export class JiraServerProvider implements IProvider {
       response.data.issues.map(async (element: JiraIssue) => ({
         issueKey: element.key,
         summary: element.fields.summary,
-        creator: element.fields.creator.name,
+        creator: element.fields.creator.displayName,
         status: element.fields.status.name,
         type: element.fields.issuetype.name,
-        storyPointsEstimate: await this.getIssueStoryPointsEstimate(
-          element.key
-        ),
-        epic: element.fields.epic?.name,
+        storyPointsEstimate: await this.getIssueStoryPointsEstimate(element.key),
+        epic: element.fields.parent?.fields.summary,
         labels: element.fields.labels,
         assignee: {
           displayName: element.fields.assignee?.displayName,
           avatarUrls: element.fields.assignee?.avatarUrls,
         },
         rank: element.fields[rankCustomField!],
+        description: element.fields.description,
+        subtasks: element.fields.subtasks,
+        created: element.fields.created,
+        updated: element.fields.updated,
+        comment: element.fields.comment,
+        projectId: element.fields.project.id,
+        sprint: element.fields.sprint,
+        attachments: element.fields.attachment,
       }))
     )
   }
@@ -408,7 +414,16 @@ export class JiraServerProvider implements IProvider {
   }
 
   getIssuesBySprint(sprintId: number): Promise<Issue[]> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getAgileRestApiClient('1.0')
+        .get(`/sprint/${sprintId}/issue`)
+        .then(async (response) => {
+          resolve(this.fetchIssues(response))
+        })
+        .catch((error) => {
+          reject(new Error(`Error fetching issues by sprint ${sprintId}: ${error}`))
+        })
+    })
   }
 
   getLabels(): Promise<string[]> {
@@ -467,7 +482,25 @@ export class JiraServerProvider implements IProvider {
   }
 
   deleteIssue(issueIdOrKey: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .delete(`/issue/${issueIdOrKey}?deleteSubtasks`)
+        .then(async () => { resolve() })
+        .catch((error) => {
+          let specificError = error
+          if (error.response) {
+            if (error.response.status === 403) {
+              specificError = new Error("The user does not have permission to delete the issue")
+            } else if (error.response.status === 404) {
+              specificError = new Error("The issue was not found or the user does not have the necessary permissions")
+            } else if (error.response.status === 405) {
+              specificError = new Error("An anonymous call has been made to the operation")
+            }
+          }
+
+          reject(new Error(`Error deleting the issue ${issueIdOrKey}: ${specificError}`))
+        })
+    })
   }
 
   createSubtask(
@@ -505,20 +538,157 @@ export class JiraServerProvider implements IProvider {
     })
   }
 
-  editIssue(issue: Issue, issueIdOrKey: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+  editIssue(
+    {
+      summary,
+      type,
+      projectId,
+      reporter,
+      assignee,
+      sprint,
+      storyPointsEstimate,
+      description,
+      epic,
+      startDate,
+      dueDate,
+      labels,
+      priority,
+    }: Issue,
+    issueIdOrKey: string
+  ): Promise<void> {
+    const offsetStartDate = this.offsetDate(startDate)
+    const offsetDueDate = this.offsetDate(dueDate)
+
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .put(
+          `/issue/${issueIdOrKey}`,
+          {
+            fields: {
+              ...(summary && {
+                summary,
+              }),
+              ...(epic && {
+                parent: { key: epic },
+              }),
+              ...(type && {
+                issuetype: { id: type },
+              }),
+              ...(projectId && {
+                project: {
+                  id: projectId,
+                },
+              }),
+              ...(reporter && {
+                reporter: {
+                  id: reporter,
+                },
+              }),
+              ...(priority && priority.id && { priority }),
+              ...(assignee &&
+                assignee.id && {
+                  assignee,
+                }),
+              ...(description && {
+                description
+              }),
+              ...(labels && {
+                labels,
+              }),
+              ...(offsetStartDate && {
+                [this.customFields.get("Start date")!]: offsetStartDate,
+              }),
+              ...(offsetDueDate && {
+                [this.customFields.get("Due date")!]: offsetDueDate,
+              }),
+              ...(sprint && {
+                [this.customFields.get("Sprint")!]: sprint.id,
+              }),
+              ...(storyPointsEstimate !== undefined && {
+                [this.customFields.get("Story point estimate")!]:
+                storyPointsEstimate,
+              }),
+            },
+          }
+        )
+        .then(async () => { resolve() })
+        .catch((error) => {
+          let specificError = error
+          if (error.response) {
+            if (error.response.status === 404) {
+              specificError = new Error(
+                "The issue was not found or the user does not have the necessary permissions"
+              )
+            }
+          }
+
+          reject(new Error(`Error creating issue: ${specificError}`))
+        })
+    })
   }
 
   setTransition(issueIdOrKey: string, targetStatus: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get(`/issue/${issueIdOrKey}/transitions`)
+        .then((response) => {
+          const transitions = new Map<string, string>()
+          response.data.transitions.forEach((field: { name: string; id: string }) => {
+            transitions.set(field.name, field.id)
+          })
+
+          const transitionId = +transitions.get(targetStatus)!
+
+          return this
+            .getRestApiClient(2)
+            .post(
+            `/issue/${issueIdOrKey}/transitions`,
+            { transition: { id: transitionId } }
+          )
+        })
+        .then(() => resolve())
+        .catch((error) => {
+          reject(new Error(`Error setting transition: ${error}`))
+        })
+    })
   }
 
   getEditableIssueFields(issueIdOrKey: string): Promise<string[]> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get(`/issue/${issueIdOrKey}/editmeta`)
+        .then(async (response) => {
+          const fieldKeys = Object.keys(response.data.fields).map(
+            (fieldKey) => this.reversedCustomFields.get(fieldKey)!
+          )
+          resolve(fieldKeys)
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching the issue types map: ${error}`))
+        )
+    })
   }
 
   getIssueReporter(issueIdOrKey: string): Promise<User> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get(`/issue/${issueIdOrKey}?fields=reporter`)
+        .then(async (response) => {
+          resolve(response.data.fields.reporter as User)
+        })
+        .catch((error) => {
+          let specificError = error
+          if (error.response) {
+            if (error.response.status === 404) {
+              specificError = new Error(
+                `The issue was not found or the user does not have permission to view it: ${error.response.data}`
+              )
+            }
+          }
+
+          reject(new Error(`Error in fetching the issue reporter: ${specificError}`))
+        })
+    })
   }
 
   addCommentToIssue(issueIdOrKey: string, commentText: string): Promise<void> {
@@ -542,5 +712,14 @@ export class JiraServerProvider implements IProvider {
     clientSecret: string
   }): Promise<void> {
     throw new Error("Method not implemented for Jira Server")
+  }
+
+  offsetDate(date: Date) {
+    if (!date) {
+      return date
+    }
+    const convertedDate = new Date(date)
+    const timezoneOffset = convertedDate.getTimezoneOffset()
+    return new Date(convertedDate.getTime() - timezoneOffset * 60 * 1000)
   }
 }
