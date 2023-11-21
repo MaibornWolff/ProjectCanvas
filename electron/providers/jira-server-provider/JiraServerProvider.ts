@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import fetch from "cross-fetch"
+import  axios, {AxiosError, AxiosResponse, isAxiosError} from "axios";
 import {
   dateTimeFormat,
   Issue,
@@ -11,13 +11,8 @@ import {
   SprintCreate,
   User,
 } from "../../../types"
-import {
-  JiraIssue,
-  JiraIssueType,
-  JiraProject,
-  JiraSprint,
-} from "../../../types/jira"
-import { IProvider } from "../base-provider"
+import {JiraIssue, JiraIssueType, JiraProject, JiraSprint,} from "../../../types/jira"
+import {IProvider} from "../base-provider"
 
 export class JiraServerProvider implements IProvider {
   private loginOptions = {
@@ -28,10 +23,63 @@ export class JiraServerProvider implements IProvider {
 
   private customFields = new Map<string, string>()
 
-  getAuthHeader() {
+  private getAuthHeader() {
     return `Basic ${Buffer.from(
       `${this.loginOptions.username}:${this.loginOptions.password}`
     ).toString("base64")}`
+  }
+
+  private constructRestBasedClient(apiName: string, version: string) {
+    const instance = axios.create({
+      baseURL: `${this.loginOptions.url}/rest/${apiName}/${version}`,
+      headers: {
+        Accept: "application/json",
+        Authorization: this.getAuthHeader(),
+        "Content-Type": "application/json",
+      },
+    })
+
+    const recreateAxiosError = (originalError: AxiosError, message: string) => new AxiosError(
+        message,
+        originalError.code,
+        originalError.config,
+        originalError.request,
+        originalError.response
+    )
+
+    instance.interceptors.response.use(
+        (response) => response,
+        (error) => {
+          if (isAxiosError(error) && error.response) {
+            const statusCode = error.response.status
+            if (statusCode === 400) {
+              return Promise.reject(recreateAxiosError(error, `Invalid request: ${JSON.stringify(error.response.data)}`))
+            } if (statusCode === 401) {
+              return Promise.reject(recreateAxiosError(error, `User not authenticated: ${JSON.stringify(error.response.data)}`))
+            } if (error.response.status === 403) {
+              return Promise.reject(recreateAxiosError(error, `User does not have a valid licence: ${JSON.stringify(error.response.data)}`))
+            } if (error.response.status === 429) {
+              return Promise.reject(recreateAxiosError(error, `Rate limit exceeded: ${JSON.stringify(error.response.data)}`))
+            }
+          }
+
+          return Promise.reject(error)
+        }
+    )
+
+    return instance
+  }
+
+  private getRestApiClient(version: number) {
+    return this.constructRestBasedClient('api', version.toString());
+  }
+
+  private getAuthRestApiClient(version: number) {
+    return this.constructRestBasedClient('auth', version.toString());
+  }
+
+  private getAgileRestApiClient(version: string) {
+    return this.constructRestBasedClient('agile', version);
   }
 
   async login({
@@ -53,166 +101,133 @@ export class JiraServerProvider implements IProvider {
 
   async isLoggedIn(): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch(`${this.loginOptions.url}/rest/auth/1/session`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: this.getAuthHeader(),
-        },
-      })
-        .then((response) => {
-          if (response.status === 200) resolve()
-          if (response.status === 401) {
-            reject(new Error("Wrong Username or Password"))
+      this.getAuthRestApiClient(1)
+        .get('/session')
+        .then(() => { resolve() })
+        .catch((error) => {
+          if (isAxiosError(error) && error.response) {
+            if (error.response.status === 401) {
+              return Promise.reject(new Error("Wrong Username or Password"))
+            } if (error.response.status === 404) {
+              return Promise.reject(new Error("Wrong URL"))
+            }
           }
-          if (response.status === 404) {
-            reject(new Error("Wrong URL"))
-          }
+
+          return Promise.reject(error)
         })
-        .catch((err) => {
-          if (err.name === "FetchError") reject(new Error("Wrong URL"))
+        .catch((error) => {
+          reject(new Error(`Error in checking login status: ${error}`))
         })
     })
   }
 
   async logout(): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch(`${this.loginOptions.url}/rest/auth/1/session`, {
-        method: "DELETE",
-        headers: {
-          Authorization: this.getAuthHeader(),
-        },
-      }).then((res) => {
-        if (res.status === 204) {
-          resolve()
-        }
-        if (res.status === 401) {
-          reject(new Error("user not authenticated"))
-        }
-      })
+      this.getAuthRestApiClient(1)
+        .delete('/session')
+        .then(() => { resolve() })
+        .catch((error) => {
+          reject(new Error(`Error in logging out: ${error}`))
+        })
     })
   }
 
   async mapCustomFields(): Promise<void> {
-    const response = await fetch(`${this.loginOptions.url}/rest/api/2/field`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: this.getAuthHeader(),
-      },
-    })
-    const data = await response.json()
-    data.forEach((field: { name: string; id: string }) => {
-      this.customFields.set(field.name, field.id)
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get('/field')
+        .then((response) => {
+          response.data.forEach((field: { name: string; id: string }) => {
+            this.customFields.set(field.name, field.id)
+          })
+          resolve()
+        })
+        .catch((error) => {
+          reject(new Error(`Error in mapping custom fields: ${error}`))
+        })
     })
   }
 
   async getProjects(): Promise<Project[]> {
-    const response = await fetch(
-      `${this.loginOptions.url}/rest/api/2/project?expand=lead,description`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: this.getAuthHeader(),
-        },
-      }
-    )
-    if (response.ok) {
-      const data = await response.json()
-      const projects = data.map((project: JiraProject) => ({
-        key: project.key,
-        name: project.name,
-        id: project.id,
-        lead: project.lead.displayName,
-        type: project.projectTypeKey,
-      }))
-      return projects
-    }
-    return Promise.reject(new Error(response.statusText))
+    return new Promise((resolve) => {
+      this.getRestApiClient(2)
+        .get('/project?expand=lead,description')
+        .then((response) => {
+          const projects = response.data.map((project: JiraProject) => ({
+            key: project.key,
+            name: project.name,
+            id: project.id,
+            lead: project.lead.displayName,
+            type: project.projectTypeKey,
+          }))
+          resolve(projects)
+        })
+    })
   }
 
   async getIssueTypesByProject(projectIdOrKey: string): Promise<IssueType[]> {
     return new Promise((resolve, reject) => {
-      fetch(
-        `${this.loginOptions.url}/rest/api/2/project/${projectIdOrKey}/statuses`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: this.getAuthHeader(),
-          },
-        }
-      )
+      this.getRestApiClient(2)
+        .get(`/project/${projectIdOrKey}/statuses`)
         .then(async (response) => {
-          const issueTypes: JiraIssueType[] = await response.json()
+          const issueTypes: JiraIssueType[] = response.data
           resolve(issueTypes as IssueType[])
         })
-        .catch((error) =>
-          reject(new Error(`Error in fetching the issue types: ${error}`))
-        )
+        .catch((error) => reject(new Error(`Error in fetching the issue types: ${error}`)))
     })
   }
 
   async getBoardIds(project: string): Promise<number[]> {
-    const response = await fetch(
-      `${this.loginOptions.url}/rest/agile/1.0/board?projectKeyOrId=${project}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: this.getAuthHeader(),
-        },
-      }
-    )
-
-    const data = await response.json()
-
-    const boardIds: number[] = data.values.map(
-      (element: { id: number; name: string }) => element.id
-    )
-    return boardIds
+    return new Promise((resolve, reject) => {
+      this.getAgileRestApiClient('1.0')
+        .get(`/board?projectKeyOrId=${project}`)
+        .then(async (response) => {
+          const boardIds: number[] = response.data.values.map(
+            (element: { id: number; name: string }) => element.id
+          )
+          resolve(boardIds)
+        })
+        .catch((error) => reject(new Error(`Error in fetching the boards: ${error}`)))
+    })
   }
 
   async getSprints(boardId: number): Promise<Sprint[]> {
-    const response = await fetch(
-      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/sprint`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: this.getAuthHeader(),
-        },
-      }
-    )
-
-    const data = await response.json()
-
-    const sprints: Sprint[] = data.values
-      .filter((element: { state: string }) => element.state !== "closed")
-      .map((element: JiraSprint) => {
-        const sDate = new Date(element.startDate)
-        const startDate = Number.isNaN(sDate.getTime())
-          ? "Invalid Date"
-          : dateTimeFormat.format(sDate)
-        const eDate = new Date(element.endDate)
-        const endDate = Number.isNaN(eDate.getTime())
-          ? "Invalid Date"
-          : dateTimeFormat.format(eDate)
-        return {
-          id: element.id,
-          name: element.name,
-          state: element.state,
-          startDate,
-          endDate,
-        }
-      })
-    return sprints
+    return new Promise((resolve, reject) => {
+      this.getAgileRestApiClient('1.0')
+        .get(`/board/${boardId}/sprint`)
+        .then(async (response) => {
+          const sprints: Sprint[] = response.data.values
+            .filter((element: { state: string }) => element.state !== "closed")
+            .map((element: JiraSprint) => {
+              const sDate = new Date(element.startDate)
+              const startDate = Number.isNaN(sDate.getTime())
+                ? "Invalid Date"
+                : dateTimeFormat.format(sDate)
+              const eDate = new Date(element.endDate)
+              const endDate = Number.isNaN(eDate.getTime())
+                ? "Invalid Date"
+                : dateTimeFormat.format(eDate)
+              return {
+                id: element.id,
+                name: element.name,
+                state: element.state,
+                startDate,
+                endDate,
+              }
+            })
+          resolve(sprints)
+        })
+        .catch((error) => reject(new Error(`Error in fetching the boards: ${error}`)))
+    })
   }
 
   async getIssuesByProject(project: string, boardId: number): Promise<Issue[]> {
-    return this.fetchIssues(
-      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/issue?jql=project=${project}&maxResults=10000`
-    )
+    return new Promise((resolve, reject) => {
+      this.getAgileRestApiClient('1.0')
+        .get(`/board/${boardId}/issue?jql=project=${project}&maxResults=10000`)
+        .then((response) => resolve(this.fetchIssues(response)))
+        .catch((error) => reject(new Error(`Error in fetching issues: ${error}`)))
+    })
   }
 
   async getIssuesBySprintAndProject(
@@ -220,34 +235,31 @@ export class JiraServerProvider implements IProvider {
     project: string,
     boardId: number
   ): Promise<Issue[]> {
-    return this.fetchIssues(
-      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/sprint/${sprintId}/issue?jql=project=${project}`
-    )
+    return new Promise((resolve, reject) => {
+      this.getAgileRestApiClient('1.0')
+        .get(`/board/${boardId}/sprint/${sprintId}/issue?jql=project=${project}`)
+        .then((response) => resolve(this.fetchIssues(response)))
+        .catch((error) => reject(new Error(`Error in fetching issues: ${error}`)))
+    })
   }
 
   async getBacklogIssuesByProjectAndBoard(
     project: string,
     boardId: number
   ): Promise<Issue[]> {
-    return this.fetchIssues(
-      `${this.loginOptions.url}/rest/agile/1.0/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
-    )
+    return new Promise((resolve, reject) => {
+      this.getAgileRestApiClient('1.0')
+        .get(`/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`)
+        .then((response) => resolve(this.fetchIssues(response)))
+        .catch((error) => reject(new Error(`Error in fetching issues: ${error}`)))
+    })
   }
 
-  async fetchIssues(url: string): Promise<Issue[]> {
+  async fetchIssues(response: AxiosResponse): Promise<Issue[]> {
     const rankCustomField = this.customFields.get("Rank")
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: this.getAuthHeader(),
-      },
-    })
 
-    const data = await response.json()
-
-    const issues: Promise<Issue[]> = Promise.all(
-      data.issues.map(async (element: JiraIssue) => ({
+    return Promise.all(
+      response.data.issues.map(async (element: JiraIssue) => ({
         issueKey: element.key,
         summary: element.fields.summary,
         creator: element.fields.creator.name,
@@ -265,7 +277,6 @@ export class JiraServerProvider implements IProvider {
         rank: element.fields[rankCustomField!],
       }))
     )
-    return issues
   }
 
   async moveIssueToSprintAndRank(
@@ -276,53 +287,33 @@ export class JiraServerProvider implements IProvider {
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const rankCustomField = this.customFields.get("Rank")
-      const body = {
-        rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
-        issues: [issue],
-        ...(rankAfter && { rankAfterIssue: rankAfter }),
-        ...(rankBefore && { rankBeforeIssue: rankBefore }),
-      }
-      fetch(`${this.loginOptions.url}/rest/agile/1.0/sprint/${sprint}/issue`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: this.getAuthHeader(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      })
+      this.getAgileRestApiClient('1.0')
+        .post(
+          `/sprint/${sprint}/issue`,
+          {
+            rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+            issues: [issue],
+            ...(rankAfter && { rankAfterIssue: rankAfter }),
+            ...(rankBefore && { rankBeforeIssue: rankBefore }),
+          }
+        )
         .then(() => resolve())
-
         .catch((error) => {
-          reject(
-            new Error(
-              `Error in moving this issue to the Sprint with id ${sprint}: ${error}`
-            )
-          )
+          reject(new Error(`Error in moving this issue to the Sprint with id ${sprint}: ${error}`))
         })
     })
   }
 
   async moveIssueToBacklog(issue: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch(`${this.loginOptions.url}/rest/agile/1.0/backlog/issue`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: this.getAuthHeader(),
-          "Content-Type": "application/json",
-        },
-        body: `{
-          "issues": [
-            "${issue}"
-          ]
-        }`,
-      })
+      this.getAgileRestApiClient('1.0')
+        .post(
+          '/backlog/issue',
+          { issues: [issue] }
+        )
         .then(() => resolve())
         .catch((error) =>
-          reject(
-            new Error(`Error in moving this issue to the Backlog: ${error}`)
-          )
+          reject(new Error(`Error in moving this issue to the Backlog: ${error}`))
         )
     })
   }
@@ -348,50 +339,27 @@ export class JiraServerProvider implements IProvider {
       } else if (rankAfter) {
         body.rankAfterIssue = rankAfter
       }
-      fetch(`http://${this.loginOptions.url}/rest/agile/1.0/issue/rank`, {
-        method: "PUT",
-        headers: {
-          Accept: "application/json",
-          Authorization: this.getAuthHeader(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      })
-        .then(() => {
-          resolve()
-        })
-
+      this.getAgileRestApiClient('1.0')
+        .put('/issue/rank', body)
+        .then(() => resolve())
         .catch((error) =>
-          reject(
-            new Error(`Error in moving this issue to the Backlog: ${error}`)
-          )
+          reject(new Error(`Error in moving this issue to the Backlog: ${error}`))
         )
     })
   }
 
   async getIssueStoryPointsEstimate(issue: string): Promise<number> {
     return new Promise((resolve, reject) => {
-      fetch(`${this.loginOptions.url}/rest/api/2/issue/${issue}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: this.getAuthHeader(),
-        },
-      })
+      this.getRestApiClient(2)
+        .get(`/issue/${issue}`)
         .then(async (response) => {
-          const data = await response.json()
           const customField = this.customFields.get("Story Points")
-          const points: number = data.fields[customField!]
+          const points: number = response.data.fields[customField!]
 
           resolve(points)
-          return points
         })
         .catch((error) =>
-          reject(
-            new Error(
-              `Error in getting the story points for issue: ${issue}: ${error}`
-            )
-          )
+          reject(new Error(`Error in getting the story points for issue: ${issue}: ${error}`))
         )
     })
   }
