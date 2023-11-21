@@ -666,7 +666,17 @@ export class JiraServerProvider implements IProvider {
   }
 
   addCommentToIssue(issueIdOrKey: string, commentText: string): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+     return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .post(
+          `/issue/${issueIdOrKey}/comment`,
+          { body: commentText.replace(/\n/g, " ") }
+        )
+        .then(() => resolve())
+        .catch((error) => {
+          reject(new Error(`Error adding a comment to the issue ${issueIdOrKey}: ${error}`))
+        })
+    })
   }
 
   editIssueComment(
