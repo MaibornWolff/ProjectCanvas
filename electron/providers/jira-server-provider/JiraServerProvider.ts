@@ -363,21 +363,44 @@ export class JiraServerProvider implements IProvider {
         )
     })
   }
-  /* eslint-disable @typescript-eslint/no-unused-vars */
 
   getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get(`/user/assignable/search?project=${projectIdOrKey}`)
+        .then(async (response) => {
+          resolve(response.data as User[])
+        })
+        .catch((error) => {
+          if (error.response) {
+            if (error.response.status === 404) {
+              return Promise.reject(Error(`Project was not found: ${error.response.data}`))
+            }
+          }
+
+          return Promise.reject(error)
+        })
+        .catch((error) => {
+          reject(new Error(`Error in fetching the assignable users for the project ${projectIdOrKey}: ${error}`))
+        })
+    })
   }
+
+  getCurrentUser(): Promise<User> {
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get('/myself')
+        .then(async (response) => resolve(response.data as User))
+        .catch((error) => reject(new Error(`Error in the current user: ${error}`)))
+    })
+  }
+  /* eslint-disable @typescript-eslint/no-unused-vars */
 
   createIssue(issue: Issue): Promise<string> {
     throw new Error("Method not implemented for Jira Server")
   }
 
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
-    throw new Error("Method not implemented for Jira Server")
-  }
-
-  getCurrentUser(): Promise<User> {
     throw new Error("Method not implemented for Jira Server")
   }
 
