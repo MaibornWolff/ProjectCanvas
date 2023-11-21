@@ -684,7 +684,25 @@ export class JiraServerProvider implements IProvider {
     commentId: string,
     commentText: string
   ): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) =>{
+      // main part
+      this.getRestApiClient(2)
+        .put(
+          `/issue/${issueIdOrKey}/comment/${commentId}`,
+          { body: commentText.replace(/\n/g, " ") }
+        )
+        .then(() => { resolve() })
+        .catch((error) => {
+          if (error.response) {
+            if (error.response.status === 400) {
+              reject(new Error("The user does not have permission to edit the comment or the request is invalid"))
+            } else if (error.response.status === 404) {
+              reject(new Error("The issue was not found or the user does not have the necessary permissions"))
+            }
+          }
+          return Promise.reject(Error(`Error editing the comment in issue ${issueIdOrKey}: ${error}`))
+        })
+    })
   }
 
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void> {
