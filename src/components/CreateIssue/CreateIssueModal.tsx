@@ -83,8 +83,12 @@ export function CreateIssueModal({
 
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", form.getInputProps("projectId").value],
-    queryFn: () =>
-      getAssignableUsersByProject(form.getInputProps("projectId").value!),
+    queryFn: () => {
+      const relevantProject = projects
+        .find((project) => project.id === form.getInputProps("projectId").value!)!
+
+      return getAssignableUsersByProject(relevantProject.key)
+    },
     enabled: !!projects && !!form.getInputProps("projectId").value,
   })
 
