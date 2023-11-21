@@ -693,10 +693,7 @@ export class JiraServerProvider implements IProvider {
     throw new Error("Method not implemented for Jira Server")
   }
 
-  refreshAccessToken(oauthRefreshOptions: {
-    clientId: string
-    clientSecret: string
-  }): Promise<void> {
+  refreshAccessToken(): Promise<void> {
     throw new Error("Method not implemented for Jira Server")
   }
 
