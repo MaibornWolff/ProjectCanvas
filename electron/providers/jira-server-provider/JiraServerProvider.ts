@@ -503,7 +503,19 @@ export class JiraServerProvider implements IProvider {
   }
 
   getResource(): Promise<Resource> {
-    throw new Error("Method not implemented.")
+    return new Promise<Resource>((resolve, reject) => {
+      if (this.loginOptions.username !== undefined && this.loginOptions.password) {
+        // IMPROVE expose API client instead of resource
+        const {defaults} = this.getRestApiClient(2)
+        const result: Resource = {
+          baseUrl: defaults.baseURL ?? '',
+          authorization: defaults.headers.Authorization as string,
+        }
+        resolve(result)
+      } else {
+        reject()
+      }
+    })
   }
 
   createSprint(sprint: SprintCreate): Promise<void> {
@@ -710,10 +722,7 @@ export class JiraServerProvider implements IProvider {
     throw new Error("Method not implemented for Jira Server")
   }
 
-  refreshAccessToken(oauthRefreshOptions: {
-    clientId: string
-    clientSecret: string
-  }): Promise<void> {
+  refreshAccessToken(): Promise<void> {
     throw new Error("Method not implemented for Jira Server")
   }
 
