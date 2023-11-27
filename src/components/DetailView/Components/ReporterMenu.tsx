@@ -91,8 +91,8 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
     assignableUsers.map((user) => (
       <Menu.Item
         icon={<Avatar src={user.avatarUrls["24x24"]} size="sm" radius="xl" />}
-        onClick={() => mutation.mutate({ reporter: user.accountId } as Issue)}
-        key={user.accountId}
+        onClick={() => mutation.mutate({ reporter: user } as Issue)}
+        key={user.id}
       >
         {user.displayName}
       </Menu.Item>
