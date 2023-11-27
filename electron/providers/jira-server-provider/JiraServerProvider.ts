@@ -13,6 +13,7 @@ import {
 } from "../../../types"
 import {JiraIssue, JiraIssueType, JiraProject, JiraSprint,} from "../../../types/jira"
 import {IProvider} from "../base-provider"
+import {JiraServerUser} from "./server-types";
 
 export class JiraServerProvider implements IProvider {
   private loginOptions = {
@@ -72,7 +73,7 @@ export class JiraServerProvider implements IProvider {
     return instance
   }
 
-  private getRestApiClient(version: number) {
+  private getRestApiClient(version: string|number) {
     return this.constructRestBasedClient('api', version.toString());
   }
 
@@ -377,8 +378,15 @@ export class JiraServerProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
         .get(`/user/assignable/search?project=${projectIdOrKey}`)
-        .then(async (response) => {
-          resolve(response.data as User[])
+        .then(async (response: AxiosResponse<JiraServerUser[]>) => {
+          const users: User[] = response.data.map((user) => ({
+            id: user.key,
+            name: user.name,
+            displayName: user.displayName,
+            avatarUrls: user.avatarUrls,
+            emailAddress: user.emailAddress,
+          } as User))
+          resolve(users)
         })
         .catch((error) => {
           if (error.response) {
@@ -399,14 +407,96 @@ export class JiraServerProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
         .get('/myself')
-        .then(async (response) => resolve(response.data as User))
+        .then(async (response: AxiosResponse<JiraServerUser>) => resolve({
+          id: response.data.key,
+          name: response.data.name,
+          displayName: response.data.displayName,
+          avatarUrls: response.data.avatarUrls,
+          emailAddress: response.data.emailAddress,
+        } as User))
         .catch((error) => reject(new Error(`Error in the current user: ${error}`)))
     })
   }
   /* eslint-disable @typescript-eslint/no-unused-vars */
 
-  createIssue(issue: Issue): Promise<string> {
-    throw new Error("Method not implemented for Jira Server")
+  createIssue({
+    summary,
+    type,
+    projectId,
+    reporter,
+    assignee,
+    sprint,
+    storyPointsEstimate,
+    description,
+    status,
+    epic,
+    startDate,
+    dueDate,
+    labels,
+    priority,
+  }: Issue): Promise<string> {
+    const offsetStartDate = this.offsetDate(startDate)
+    const offsetDueDate = this.offsetDate(dueDate)
+
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .post(
+          `/issue`,
+          {
+            fields: {
+              summary,
+              parent: { key: epic },
+              issuetype: { id: type },
+              project: {
+                id: projectId,
+              },
+              reporter: {
+                name: reporter.name,
+              },
+              ...(priority.id && { priority }),
+              ...(assignee && {
+                assignee: {
+                  name: assignee.name,
+                },
+              }),
+              description,
+              labels,
+              ...(offsetStartDate && {
+                [this.customFields.get("Start date")!]: offsetStartDate,
+              }),
+              ...(offsetDueDate && {
+                [this.customFields.get("Due date")!]: offsetDueDate,
+              }),
+              ...(sprint &&
+                sprint.id && {
+                  [this.customFields.get("Sprint")!]: +sprint.id,
+                }),
+              ...(storyPointsEstimate && {
+                [this.customFields.get("Story point estimate")!]:
+                storyPointsEstimate,
+              }),
+              // ...(files && {
+              //   [this.customFields.get("Attachment")!]: files,
+              // }),
+            },
+          }
+        )
+        .then(async (response) => {
+          const createdIssue = response.data
+          resolve(JSON.stringify(createdIssue.key))
+          await this.setTransition(createdIssue.id, status)
+        })
+        .catch((error) => {
+          let specificError = error
+          if (error.response) {
+            if (error.response.status === 404) {
+              specificError = new Error("The user does not have the necessary permissions")
+            }
+          }
+
+          reject(new Error(`Error creating issue: ${specificError}`))
+        })
+    })
   }
 
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
