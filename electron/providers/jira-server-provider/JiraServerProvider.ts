@@ -28,6 +28,49 @@ export class JiraServerProvider implements IProvider {
 
   private reversedCustomFields = new Map<string, string>()
 
+  private executeVersioned<R>(functionsByVersionMatcher: { [versionMatcher: string]: (...args: never[]) => R }, ...args: never[]) {
+    if (!this.serverInfo) {
+      throw new Error('Server info not set!')
+    }
+
+    const matches = (matcher: string): boolean => {
+      let match = true
+      matcher.split('.').forEach((matcherPart, index) => {
+        match = match && (
+            matcherPart === '*'
+            || matcherPart === this.serverInfo!.versionNumbers[index].toString()
+        )
+      })
+
+      return match
+    }
+
+    const isAMoreSpecificThanB = (matcherA: string, matcherB: string): boolean => {
+      const matcherBParts = matcherB.split('.')
+      let isMoreSpecific = false;
+      matcherA.split('.').forEach((matcherAPart, index) => {
+        if (matcherBParts[index] === '*' && matcherAPart !== '*') {
+          isMoreSpecific = true;
+        }
+      })
+
+      return isMoreSpecific;
+    }
+
+    let selectedMatcher: string | undefined
+    Object.keys(functionsByVersionMatcher).forEach((matcher) => {
+      if (matches(matcher) && (selectedMatcher === undefined || isAMoreSpecificThanB(matcher, selectedMatcher))) {
+        selectedMatcher = matcher
+      }
+    })
+
+    if (!selectedMatcher) {
+      throw new Error(`No version matcher found for version: ${this.serverInfo.version}`)
+    }
+
+    return functionsByVersionMatcher[selectedMatcher](...args)
+  }
+
   private getAuthHeader() {
     return `Basic ${Buffer.from(
       `${this.loginOptions.username}:${this.loginOptions.password}`
