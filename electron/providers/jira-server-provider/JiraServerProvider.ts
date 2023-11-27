@@ -13,7 +13,7 @@ import {
 } from "../../../types"
 import {JiraIssue, JiraIssueType, JiraProject, JiraSprint,} from "../../../types/jira"
 import {IProvider} from "../base-provider"
-import {JiraServerUser} from "./server-types";
+import {JiraServerInfo, JiraServerUser} from "./server-types";
 
 export class JiraServerProvider implements IProvider {
   private loginOptions = {
@@ -21,6 +21,8 @@ export class JiraServerProvider implements IProvider {
     username: "",
     password: "",
   }
+
+  private serverInfo?: JiraServerInfo = undefined
 
   private customFields = new Map<string, string>()
 
@@ -98,8 +100,23 @@ export class JiraServerProvider implements IProvider {
     this.loginOptions.username = basicLoginOptions.username
     this.loginOptions.password = basicLoginOptions.password
 
+    await this.getServerInfo()
     await this.mapCustomFields()
     return this.isLoggedIn()
+  }
+
+  async getServerInfo(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get('/serverInfo')
+        .then((response: AxiosResponse<JiraServerInfo>) => {
+          this.serverInfo = response.data
+          resolve()
+        })
+        .catch((error) => {
+          reject(new Error(`Error in checking server info: ${error}`))
+        })
+    })
   }
 
   async isLoggedIn(): Promise<void> {
