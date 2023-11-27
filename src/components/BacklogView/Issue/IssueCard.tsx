@@ -151,14 +151,14 @@ export function IssueCard({
               >
                 <Tooltip
                   label={
-                    assignee.displayName !== undefined
+                    assignee?.displayName !== undefined
                       ? assignee.displayName
                       : "unassigned"
                   }
                 >
-                  {assignee.avatarUrls !== undefined ? (
+                  {assignee?.avatarUrls !== undefined ? (
                     <Avatar
-                      src={assignee?.avatarUrls["24x24"]}
+                      src={assignee.avatarUrls["24x24"]}
                       size="sm"
                       radius="xl"
                       ml={4}

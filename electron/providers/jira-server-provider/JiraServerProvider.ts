@@ -749,15 +749,12 @@ export class JiraServerProvider implements IProvider {
                 },
               }),
               ...(reporter && {
-                reporter: {
-                  id: reporter,
-                },
+                reporter,
               }),
               ...(priority && priority.id && { priority }),
-              ...(assignee &&
-                assignee.id && {
-                  assignee,
-                }),
+              ...(assignee && {
+                assignee,
+              }),
               ...(description && {
                 description
               }),

@@ -74,9 +74,9 @@ export function AssigneeMenu({
       <Menu.Item
         icon={<Avatar src={user.avatarUrls["24x24"]} size="sm" radius="xl" />}
         onClick={() =>
-          editIssue.mutate({ assignee: { id: user.accountId } } as Issue)
+          editIssue.mutate({ assignee: user } as Issue)
         }
-        key={user.accountId}
+        key={user.id}
       >
         {user.displayName}
       </Menu.Item>
