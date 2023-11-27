@@ -154,6 +154,12 @@ export class JiraServerProvider implements IProvider {
         .get('/serverInfo')
         .then((response: AxiosResponse<JiraServerInfo>) => {
           this.serverInfo = response.data
+          if (this.serverInfo.versionNumbers[0] < 7) {
+            reject(new Error(
+              `Your Jira server version is unsupported. Minimum major version: 7. Your version: ${this.serverInfo.versionNumbers[0]}`,
+            ))
+          }
+
           resolve()
         })
         .catch((error) => {
