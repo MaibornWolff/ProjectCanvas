@@ -28,11 +28,10 @@ export function ProjectSelect({
         form.getInputProps("projectId").onChange(value)
         form.setFieldValue("type", "")
         form.setFieldValue("status", "")
-        form.setFieldValue("assignee.id", null)
-        form.setFieldValue(
-          "reporter",
-          currentUser?.accountId || (null as unknown as string)
-        )
+        form.setFieldValue("assignee", undefined)
+        if (currentUser) {
+          form.setFieldValue("reporter", currentUser)
+        }
       }}
     />
   )

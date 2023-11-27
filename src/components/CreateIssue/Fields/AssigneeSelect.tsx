@@ -19,10 +19,10 @@ export function AssigneeSelect({
       nothingFound="Please select a project first"
       itemComponent={SelectItem}
       data={
-        !isLoading && assignableUsers && assignableUsers instanceof Array
+        !isLoading && assignableUsers
           ? assignableUsers.map((assignableUser) => ({
               image: assignableUser.avatarUrls["24x24"],
-              value: assignableUser.accountId,
+              value: assignableUser.id,
               label: assignableUser.displayName,
             }))
           : []
@@ -30,7 +30,11 @@ export function AssigneeSelect({
       clearable
       searchable
       withinPortal
-      {...form.getInputProps("assignee.id")}
+      {...form.getInputProps("assignee")}
+      value={ form.getInputProps("assignee").value?.id }
+      onChange={(value) => {
+        form.getInputProps("assignee").onChange(assignableUsers?.find((user) => user.id === value))
+      }}
     />
   )
 }
