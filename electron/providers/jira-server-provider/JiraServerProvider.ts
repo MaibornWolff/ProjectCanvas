@@ -291,24 +291,16 @@ export class JiraServerProvider implements IProvider {
   async moveIssueToSprintAndRank(
     sprint: number,
     issue: string,
-    rankBefore: string,
-    rankAfter: string
   ): Promise<void> {
     return new Promise((resolve, reject) => {
-      const rankCustomField = this.customFields.get("Rank")
       this.getAgileRestApiClient('1.0')
         .post(
           `/sprint/${sprint}/issue`,
-          {
-            rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
-            issues: [issue],
-            ...(rankAfter && { rankAfterIssue: rankAfter }),
-            ...(rankBefore && { rankBeforeIssue: rankBefore }),
-          }
+          { issues: [issue] } // Ranking issues in the sprints is not supported by Jira server
         )
         .then(() => resolve())
         .catch((error) => {
-          reject(new Error(`Error in moving this issue to the Sprint with id ${sprint}: ${error}`))
+          reject(new Error(`Error in moving this issue to the Sprint with id ${sprint}: ${JSON.stringify(error.response.data)}`))
         })
     })
   }
@@ -352,7 +344,7 @@ export class JiraServerProvider implements IProvider {
         .put('/issue/rank', body)
         .then(() => resolve())
         .catch((error) =>
-          reject(new Error(`Error in moving this issue to the Backlog: ${error}`))
+          reject(new Error(`Error in ranking this issue in the Backlog: ${error}`))
         )
     })
   }
