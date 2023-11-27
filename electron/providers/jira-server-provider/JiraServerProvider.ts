@@ -624,6 +624,40 @@ export class JiraServerProvider implements IProvider {
   }
 
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
+    return this.executeVersioned({
+      '7.*': this.getIssueTypesWithFieldsMap_7.bind(this),
+      '*': this.getIssueTypesWithFieldsMap_8and9.bind(this)
+    })
+  }
+
+  getIssueTypesWithFieldsMap_7(): Promise<{ [key: string]: string[] }> {
+    return new Promise((resolve) => {
+      this.getRestApiClient(2)
+        .get('/issue/createmeta?expand=projects.issuetypes.fields')
+        .then(async (response) => {
+          const issueTypeToFieldsMap: { [key: string]: string[] } = {}
+          response.data.projects.forEach(
+            (project: {
+              id: string
+              issuetypes: {
+                fields: {}
+                id: string
+              }[]
+            }) => {
+              project.issuetypes.forEach((issueType) => {
+                const fieldKeys = Object.keys(issueType.fields)
+                issueTypeToFieldsMap[issueType.id] = fieldKeys.map(
+                  (fieldKey) => this.reversedCustomFields.get(fieldKey)!
+                )
+              })
+            }
+          )
+          resolve(issueTypeToFieldsMap)
+        })
+    })
+  }
+
+  getIssueTypesWithFieldsMap_8and9(): Promise<{ [key: string]: string[] }> {
     return new Promise((resolve) => {
       // IMPROVE: This is barely scalable
       this.getProjects()
@@ -634,7 +668,7 @@ export class JiraServerProvider implements IProvider {
             this.getRestApiClient(2)
               .get(`/issue/createmeta/${project.id}/issuetypes`)
               .then(async (response) => {
-                await Promise.all(response.data.values.map((issueType: { id: string }) => 
+                await Promise.all(response.data.values.map((issueType: { id: string }) =>
                   // IMPROVE: This call currently only supports 50 issue types
                   this.getRestApiClient(2)
                     .get(`/issue/createmeta/${project.id}/issuetypes/${issueType.id}`)
