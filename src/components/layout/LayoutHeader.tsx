@@ -50,6 +50,12 @@ export function LayoutHeader() {
           >
             Backlog
           </Anchor>
+          <Anchor
+            component="button"
+            type="button"
+            onClick={() => navigate("/epicview")}>
+            Epics
+          </Anchor>
           <StoryMapMenu />
           <Button onClick={() => setCreateIssueModalOpened(true)}>
             Create
