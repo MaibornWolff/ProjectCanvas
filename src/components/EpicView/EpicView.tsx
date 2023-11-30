@@ -37,12 +37,6 @@ export function EpicView() : JSX.Element {
           </Group>
         </Group>
         <Title mb="sm">Epics</Title>
-        <TextInput
-          placeholder="TODO what to search by" //TODO
-          icon={<IconSearch size={14} stroke={1.5} />}
-          value={search}
-          onChange={handleSearchChange}
-        />
       </Stack>
 
       <Flex sx={{ flexGrow: 1 }}>
