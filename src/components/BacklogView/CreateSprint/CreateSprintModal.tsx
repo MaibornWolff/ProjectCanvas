@@ -55,6 +55,7 @@ export function CreateSprintModal({
         message: `The sprint has been created!`,
         color: "green",
       })
+      queryClient.invalidateQueries({ queryKey: ["sprints"] })
       queryClient.invalidateQueries({ queryKey: ["issues", "sprints"] })
       setOpened(false)
       form.reset()
