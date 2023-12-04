@@ -125,6 +125,7 @@ export function EpicCard ({
                                     </Badge>
                                 ))}
                         </Group>
+                        <Text size="lg">{summary}</Text>
                     </Stack>
                 </Grid.Col>
                 <Grid.Col
