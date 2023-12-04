@@ -448,7 +448,16 @@ export class JiraServerProvider implements IProvider {
   }
 
   getLabels(): Promise<string[]> {
-    throw new Error("Method not implemented for Jira Server")
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get('/jql/autocompletedata/suggestions?fieldName=labels')
+        .then((response: AxiosResponse<{ results: { value: string }[] }>) => {
+          resolve(response.data.results.map((result) => result.value))
+        })
+        .catch((error) =>
+          reject(new Error(`Error in fetching labels: ${JSON.stringify(error)}`))
+        )
+    })
   }
 
   getPriorities(): Promise<Priority[]> {
