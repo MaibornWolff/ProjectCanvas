@@ -32,7 +32,7 @@ export function EpicCard ({
     index,
     projectId,
     ...props
-}: Issue & {index : number}) : JSX.Element {
+}: Issue & {index : number}) {
     let storyPointsColor: string
     const [opened, setOpened] = useState(false)
     const queryClient = useQueryClient()

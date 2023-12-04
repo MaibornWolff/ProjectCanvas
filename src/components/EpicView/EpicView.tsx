@@ -1,28 +1,68 @@
-import {Group, Stack, Text, Title, Flex, ScrollArea, TextInput, Box, Button} from "@mantine/core";
+import {Group, Stack, Text, Title, Flex, ScrollArea, TextInput, Box, Button, Center, Loader} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import {useCanvasStore} from "../../lib/Store";
 import {useState} from "react";
 import {CreateIssueModal} from "../CreateIssue/CreateIssueModal";
-import {DraggableIssuesWrapper} from "../BacklogView/IssuesWrapper/DraggableIssuesWrapper";
 import {Issue, Sprint} from "../../../types";
+import {EpicWrapper} from "./EpicWrapper";
+import {useQuery} from "@tanstack/react-query";
+import {getEpics} from "./helpers/queryFetchers";
 
 
-export function EpicView() : JSX.Element {
+export function EpicView() {
   const navigate = useNavigate()
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
   const [search, setSearch] = useState("")
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
-  const [searchedissuesWrappers, setSearchedissuesWrappers] = useState(
-      new Map<string, { issues: Issue[]; sprint?: Sprint }>()
+  const projectKey = useCanvasStore((state) => state.selectedProject?.key)
+  const [EpicWrappers, setEpicWrappers] = useState(
+      new Map<string, { issues: Issue[]}>()
+  )
+  const [searchedEpicWrappers, setSearchedepicWrappers] = useState(
+      new Map<string, { issues: Issue[]}>()
   )
 
+  const updateEpicWrapper = (
+      key: string,
+      value: { issues: Issue[]}
+  ) => {
+      setEpicWrappers((map) => new Map(map.set(key, value)))
+      setSearchedepicWrappers((map) => new Map(map.set(key, value)))
+  }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentSearch = event.currentTarget.value
     setSearch(currentSearch)
     //TODO implement search
   }
-
+    const { isLoading: isLoadingBacklogIssues, isError: isErrorBacklogIssues } =
+        useQuery({
+            queryKey: ["epics", projectKey],
+            queryFn: () => getEpics(projectKey),
+            enabled: !!projectKey,
+            onSuccess: (epics) => {
+                updateEpicWrapper("EpicView", {
+                    issues:
+                        epics && epics instanceof Array ? epics : []
+                })
+            },
+        })
+    if (isLoadingBacklogIssues)
+    return (
+        <Center style={{ width: "100%", height: "100%" }}>
+            {projectKey ? (
+                <Loader />
+            ) : (
+                <Stack align="center">
+                    <Title>No Project has been selected!</Title>
+                    <Text>
+                        Please go back to the Projects View section and select a project
+                    </Text>
+                    <Button onClick={() => navigate("/projectsview")}>Go back</Button>
+                </Stack>
+            )}
+        </Center>
+    )
   return (
     <Stack sx={{ minHeight: "100%"}}>
       <Stack align="left" spacing={0}>
@@ -54,7 +94,11 @@ export function EpicView() : JSX.Element {
             minWidth: "260px",
           }}
       >
-        TODO wrapper containing Epic Cards (havent seen an Epic Card yet they might need work)
+          {searchedEpicWrappers.get("EpicView") &&(
+        <Box mr="xs">
+            <EpicWrapper epics={searchedEpicWrappers.get("EpicView")!.issues}/>
+        </Box>
+        )}
         <Box mr="xs">
           <Button
               mt="sm"
