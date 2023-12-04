@@ -173,6 +173,7 @@ export function EpicDetailView({
               >
                 <Menu.Target>
                   <Button
+                      onClick={() => console.log('FARUGA')}
                     rightIcon={<IconCaretDown className={classes.icon} />}
                   >
                     {defaultStatus}
@@ -180,7 +181,18 @@ export function EpicDetailView({
                 </Menu.Target>
 
                 <Menu.Dropdown>
-                  {issueTypes &&
+                  <Menu.Label>Status</Menu.Label>
+                  <Menu.Item onClick={
+                    () => {setDefaultStatus("To Do")}
+                  }>To Do</Menu.Item>
+                  <Menu.Item onClick={
+                    () => {setDefaultStatus("In Progress")}
+                  }>In Progress</Menu.Item>
+                  <Menu.Item onClick={
+                    () => {setDefaultStatus("Done")}
+                  }>Done</Menu.Item>
+
+                  {/*issueTypes &&
                     issueTypes
                       .find((issueType) => issueType.name === type)
                       ?.statuses?.map((issueStatus) => (
@@ -193,9 +205,10 @@ export function EpicDetailView({
                         >
                           {issueStatus.name}
                         </Menu.Item>
-                      ))}
+                      ))*/}
                 </Menu.Dropdown>
               </Menu>
+
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>

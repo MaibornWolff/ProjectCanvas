@@ -19,6 +19,7 @@ import {DeleteButton} from "../BacklogView/Issue/DeleteButton";
 import {useState} from "react";
 import {useQueryClient} from "@tanstack/react-query";
 import {IconBolt} from "@tabler/icons";
+import { EpicDetailView } from "../EpicDetailView/EpicDetailView"
 
 export function EpicCard ({
     issueKey,
@@ -64,6 +65,9 @@ export function EpicCard ({
     return (
         <>
             <DeleteButton mounted={hovered} issueKey={issueKey} />
+            <Paper
+                onClick={() => setOpened(true)}
+            >
             <Grid
                 columns={100}
                 p={3}
@@ -186,6 +190,7 @@ export function EpicCard ({
                     </Box>
                 </Grid.Col>
             </Grid>
+            </Paper>
             <Modal
                 opened={opened}
                 onClose={() => {
@@ -198,7 +203,17 @@ export function EpicCard ({
                 overlayBlur={3}
                 withCloseButton={false}
             >
-                //TODO open Epic Detail View
+                <EpicDetailView
+                    issueKey={issueKey}
+                    summary={summary}
+                    status={status}
+                    labels={labels}
+                    assignee={assignee}
+                    type={type}
+                    projectId={projectId}
+                    closeModal={() => setOpened(false)}
+                    {...props}
+                />
             </Modal>
         </>
     )
