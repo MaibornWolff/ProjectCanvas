@@ -7,7 +7,6 @@ import {
     Grid,
     Group,
     Modal,
-    Paper,
     Stack,
     Text, ThemeIcon,
     Tooltip,
@@ -125,12 +124,6 @@ export function EpicCard ({
                                         {label}
                                     </Badge>
                                 ))}
-                        </Group>
-                        <Text size="lg">{summary}</Text>
-                        <Group align="center" spacing="sm">
-                            <Text size="sm">{type}</Text>
-                            <Text size="sm">•</Text>
-                            <Text size="sm">{status}</Text>
                         </Group>
                     </Stack>
                 </Grid.Col>
