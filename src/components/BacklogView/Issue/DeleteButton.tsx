@@ -1,6 +1,7 @@
 import { ActionIcon, Transition, Popover, Box } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
 import { useEffect, useState } from "react"
+import { useHover } from "@mantine/hooks";
 import { DeleteIssueAlert } from "../../DetailView/Components/DeleteIssue/DeleteIssueAlert"
 
 export function DeleteButton({
@@ -11,15 +12,16 @@ export function DeleteButton({
   issueKey: string
 }) {
   const [issuePopoverOpened, setIssuePopoverOpened] = useState(false)
+  const { ref, hovered } = useHover()
 
   useEffect(() => {
-    if (!mounted) {
+    if (!mounted && !hovered) {
       setIssuePopoverOpened(false)
     }
-  }, [mounted])
+  }, [mounted, hovered])
 
   return (
-    <Box sx={{ position: "absolute", bottom: 5, right: 11 }}>
+    <Box ref={ref} sx={{ position: "absolute", bottom: 5, right: 11 }}>
       <Transition
         mounted={mounted}
         transition="fade"
@@ -41,7 +43,10 @@ export function DeleteButton({
                 size="sm"
                 variant="transparent"
                 style={styles}
-                onClick={() => setIssuePopoverOpened(!issuePopoverOpened)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIssuePopoverOpened(!issuePopoverOpened)
+                }}
               >
                 <IconTrash />
               </ActionIcon>
@@ -54,6 +59,13 @@ export function DeleteButton({
                     : theme.white,
               })}
             >
+              <div style={{
+                height: "20px",
+                position: "absolute",
+                width: "inherit",
+                left: "0px",
+                top: "-10px",
+              }} />
               <DeleteIssueAlert
                 issueKey={issueKey}
                 closeModal={() => setIssuePopoverOpened(false)}

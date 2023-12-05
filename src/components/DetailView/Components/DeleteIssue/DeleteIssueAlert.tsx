@@ -23,9 +23,10 @@ export function DeleteIssueAlert({
         If you delete this issue, all related subtasks will be deleted as well!
       </Alert>
       <Button
-        onClick={() => {
-          closeModal()
+        onClick={(e) => {
+          e.stopPropagation()
           deleteIssue.mutate(issueKey)
+          closeModal()
         }}
       >
         Confirm
