@@ -3,10 +3,10 @@ import {
   Box,
   Breadcrumbs,
   Button,
-  createStyles,
+  createStyles, Grid,
   Group,
   Menu,
-  Paper,
+  Paper, Progress,
   ScrollArea,
   Stack,
   Text,
@@ -29,6 +29,7 @@ import { DeleteIssue } from "../DetailView/Components/DeleteIssue"
 import { Attachments } from "../DetailView/Components/Attachments/Attachments"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
+import {parseRgba} from "@mantine/core/lib/ColorPicker/converters/parsers";
 
 export function EpicDetailView({
   issueKey,
@@ -111,6 +112,12 @@ export function EpicDetailView({
     timeStyle: "short",
   });
 
+  {/*Hardcoded Progressbar*/}
+  let tasksDone = 3;
+  let tasksOpen = 1;
+
+
+
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
@@ -127,7 +134,11 @@ export function EpicDetailView({
         }}
       />
       <Group>
-        <Stack sx={{ flex: 13 }} justify="flex-start">
+        <Stack
+          sx={{
+            flex: 13
+          }}
+          justify="flex-start">
           <Title order={1}>
             {/* TODO find own epic summary here */}
             <IssueSummary summary={summary} issueKey={issueKey} />
@@ -141,6 +152,96 @@ export function EpicDetailView({
               Description
             </Text>
             <Description issueKey={issueKey} description={description} />
+            {/*Add Progressbar here*/}
+            <Group
+              align={"center"}
+            >
+                <Progress
+                    radius="md"
+                    size={25}
+                    styles={{
+                      label: {
+                        color: 'black',
+                        fontSize: '14px',
+                        fontWeight: 'normal'
+                      },
+
+                      bar: {
+                        '&:first-child': {
+                          border: '1px solid',
+                          borderColor: 'rgb(215,128,121)'
+                        }
+                      }
+
+                    }}
+                    sx={{
+                      width: '400px',
+                      marginRight: '10px'
+                    }}
+
+                    sections={
+
+                    [
+                      { value: tasksDone / (tasksDone + tasksOpen) * 100, color: 'rgba(239,186,177,0.55)', label: `${tasksDone}`, tooltip: 'Done' },
+                      { value: tasksOpen / (tasksDone + tasksOpen) * 100, color: 'rgb(225,223,223)', label: `${tasksOpen}`, tooltip: 'To Do' },
+                    ]}
+                />
+                <Paper
+                  withBorder
+                  style={{
+                    backgroundColor: '#f2f2f0',
+                    borderColor: '#6e7363',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '26px',
+                    height: '26px',
+                    borderRadius: '50%',
+                    color: 'black',
+                    marginLeft: '5px',
+                    marginRight: '5px'
+                    }}
+                >
+                  <Text size="xs">{tasksOpen + tasksDone}</Text>
+                </Paper>
+                <Paper
+                    withBorder
+                    style={{
+                      backgroundColor: '#dbe3ef',
+                      borderColor: '#434fe3',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '26px',
+                      height: '26px',
+                      borderRadius: '50%',
+                      color: 'black',
+                      marginLeft: '5px',
+                      marginRight: '5px'
+                    }}
+                >
+                  <Text size="xs">{tasksOpen}</Text>
+                </Paper>
+                <Paper
+                    withBorder
+                    style={{
+                      backgroundColor: 'rgba(255,150,141,0.34)',
+                      borderColor: 'rgb(248,123,115)',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '26px',
+                      height: '26px',
+                      borderRadius: '50%',
+                      color: 'black',
+                      marginLeft: '5px',
+                      marginRight: '5px'
+                    }}
+                >
+                  <Text size="xs">{tasksDone}</Text>
+                </Paper>
+            </Group>
+            {/*Implementation of Progressbar ends here*/}
             <Text color="dimmed" mb="sm">
               Child Issues
             </Text>
@@ -173,7 +274,6 @@ export function EpicDetailView({
               >
                 <Menu.Target>
                   <Button
-                      onClick={() => console.log('FARUGA')}
                     rightIcon={<IconCaretDown className={classes.icon} />}
                   >
                     {defaultStatus}
