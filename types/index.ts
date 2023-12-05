@@ -14,6 +14,19 @@ export interface Project {
   type: string
 }
 
+export interface User {
+  id: string
+  name: string
+  displayName: string
+  emailAddress: string
+  avatarUrls: {
+    "16x16": string
+    "24x24": string
+    "32x32": string
+    "48x48": string
+  }
+}
+
 export interface Priority {
   statusColor: string
   description: string
@@ -41,18 +54,9 @@ export interface Issue {
   storyPointsEstimate: number
   epic: string
   labels: string[]
-  assignee: {
-    id: string
-    displayName: string
-    avatarUrls: {
-      "48x48": string
-      "24x24": string
-      "16x16": string
-      "32x32": string
-    }
-  }
+  assignee?: User
   rank: string
-  reporter: string
+  reporter: User
   sprint?: Sprint
   projectId: string
   subtasks: {
@@ -101,18 +105,6 @@ export interface IssueType {
   name?: string
   statuses?: IssueStatus[]
   subtask: boolean
-}
-
-export interface User {
-  accountId: string
-  emailAddress: string
-  avatarUrls: {
-    "48x48": string
-    "24x24": string
-    "16x16": string
-    "32x32": string
-  }
-  displayName: string
 }
 
 export interface SprintCreate {

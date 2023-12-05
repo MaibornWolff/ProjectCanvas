@@ -70,7 +70,7 @@ export function CreateIssueModal({
       description: "",
       assignee: { id: "" },
       status: "To Do",
-      reporter: currentUser?.accountId,
+      reporter: currentUser,
       priority: { id: "" },
     } as Issue,
   })

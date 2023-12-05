@@ -20,6 +20,7 @@ import {
 } from "../../../types/jira"
 import { IProvider } from "../base-provider"
 import { getAccessToken, refreshTokens } from "./getAccessToken"
+import {JiraCloudUser} from "./cloud-types";
 
 export class JiraCloudProvider implements IProvider {
   public accessToken: string | undefined
@@ -282,7 +283,15 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get(`/user/assignable/search?project=${projectIdOrKey}`)
         .then(async (response) => {
-          resolve(response.data as User[])
+          const users = response.data.map((cloudUser: JiraCloudUser) => ({
+            id: cloudUser.accountId,
+            name: cloudUser.name,
+            avatarUrls: cloudUser.avatarUrls,
+            displayName: cloudUser.displayName,
+            emailAddress: cloudUser.emailAddress,
+          } as User))
+
+          resolve(users as User[])
         })
         .catch((error) => {
           let specificError = error
@@ -301,8 +310,14 @@ export class JiraCloudProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(3)
         .get('/myself')
-        .then(async (response) => {
-          resolve(response.data as User)
+        .then(async (response: AxiosResponse<JiraCloudUser>) => {
+          resolve({
+            id: response.data.accountId,
+            name: response.data.name,
+            avatarUrls: response.data.avatarUrls,
+            displayName: response.data.displayName,
+            emailAddress: response.data.emailAddress,
+          } as User)
         })
         .catch((error) =>
           reject(new Error(`Error in fetching the current user: ${error}`))
@@ -649,10 +664,14 @@ export class JiraCloudProvider implements IProvider {
                 id: projectId,
               },
               reporter: {
-                id: reporter,
+                id: reporter.id,
               },
               ...(priority.id && { priority }),
-              assignee,
+              ...(assignee && {
+                assignee: {
+                  id: assignee.id,
+                }
+              }),
               description: {
                 type: "doc",
                 version: 1,
