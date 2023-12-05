@@ -139,113 +139,106 @@ export function EpicDetailView({
             flex: 13
           }}
           justify="flex-start">
-          <Title order={1}>
+          <Title
+              size="h1"
+              sx={{ marginBottom: "-10px" }}
+          >
             {/* TODO find own epic summary here */}
-            <IssueSummary summary={summary} issueKey={issueKey} />
+            <IssueSummary summary={summary} issueKey={issueKey}/>
           </Title>
           <ScrollArea.Autosize
             maxHeight="70vh"
             mr="xs"
             sx={{ minWidth: "260px" }}
-          >
-            <Text color="dimmed" mb="sm">
+          ><Text color="dimmed" mb="sm" size="md" sx={{ marginLeft: "7px" }}>
               Description
             </Text>
-            <Description issueKey={issueKey} description={description} />
+            <Group sx={{marginLeft: "10px", marginTop: "-7px", marginBottom: "20px"}}>
+              <Description issueKey={issueKey} description={description} />
+            </Group>
             {/*Add Progressbar here*/}
             <Group
               align={"center"}
             >
-                <Progress
-                    radius="md"
-                    size={25}
-                    styles={{
-                      label: {
-                        color: 'black',
-                        fontSize: '14px',
-                        fontWeight: 'normal'
-                      },
-
-                      bar: {
-                        '&:first-child': {
-                          border: '1px solid',
-                          borderColor: 'rgb(215,128,121)'
-                        }
-                      }
-
-                    }}
-                    sx={{
-                      width: '400px',
-                      marginRight: '10px'
-                    }}
-
-                    sections={
-
-                    [
-                      { value: tasksDone / (tasksDone + tasksOpen) * 100, color: 'rgba(239,186,177,0.55)', label: `${tasksDone}`, tooltip: 'Done' },
-                      { value: tasksOpen / (tasksDone + tasksOpen) * 100, color: 'rgb(225,223,223)', label: `${tasksOpen}`, tooltip: 'To Do' },
-                    ]}
-                />
-                <Paper
-                  withBorder
-                  style={{
-                    backgroundColor: '#f2f2f0',
-                    borderColor: '#6e7363',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '26px',
-                    height: '26px',
-                    borderRadius: '50%',
-                    color: 'black',
-                    marginLeft: '5px',
-                    marginRight: '5px'
-                    }}
-                >
-                  <Text size="xs">{tasksOpen + tasksDone}</Text>
-                </Paper>
-                <Paper
-                    withBorder
-                    style={{
-                      backgroundColor: '#dbe3ef',
-                      borderColor: '#434fe3',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      width: '26px',
-                      height: '26px',
-                      borderRadius: '50%',
-                      color: 'black',
-                      marginLeft: '5px',
-                      marginRight: '5px'
-                    }}
-                >
-                  <Text size="xs">{tasksOpen}</Text>
-                </Paper>
-                <Paper
-                    withBorder
-                    style={{
-                      backgroundColor: 'rgba(255,150,141,0.34)',
-                      borderColor: 'rgb(248,123,115)',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      width: '26px',
-                      height: '26px',
-                      borderRadius: '50%',
-                      color: 'black',
-                      marginLeft: '5px',
-                      marginRight: '5px'
-                    }}
-                >
-                  <Text size="xs">{tasksDone}</Text>
-                </Paper>
-            </Group>
-            {/*Implementation of Progressbar ends here*/}
-            <Text color="dimmed" mb="sm">
+            <Progress
+              radius="md"
+              size={25}
+              styles={{
+                label: {
+                  color: 'black',
+                  fontSize: '14px',
+                  fontWeight: 'normal'
+                },
+                bar: {
+                  '&:first-child': {
+                    border: '1px solid',
+                    borderColor: 'rgb(215,128,121)'
+                  }
+                }
+              }}
+              sx={{
+                width: '400px',
+                marginRight: '5px',
+                marginBottom: '20px'
+              }}
+              sections={[
+                { value: tasksDone / (tasksDone + tasksOpen) * 100, color: 'rgba(239,186,177,0.55)', label: `${tasksDone}`, tooltip: 'Done' },
+                { value: tasksOpen / (tasksDone + tasksOpen) * 100, color: 'rgb(225,223,223)', label: `${tasksOpen}`, tooltip: 'To Do' },
+              ]}
+            />
+            <Paper
+              withBorder
+              style={{
+                backgroundColor: '#f2f2f0',
+                borderColor: '#6e7363',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '26px',
+                height: '26px',
+                borderRadius: '50%',
+                color: 'black',
+                marginBottom: '20px'
+                }}
+            ><Text size="xs">{tasksOpen + tasksDone}</Text>
+            </Paper>
+            <Paper
+              withBorder
+              style={{
+                backgroundColor: '#dbe3ef',
+                borderColor: '#434fe3',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '26px',
+                height: '26px',
+                borderRadius: '50%',
+                color: 'black',
+                marginBottom: '20px'
+              }}
+            ><Text size="xs">{tasksOpen}</Text>
+            </Paper>
+            <Paper
+              withBorder
+              style={{
+                backgroundColor: 'rgba(255,150,141,0.34)',
+                borderColor: 'rgb(248,123,115)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '26px',
+                height: '26px',
+                borderRadius: '50%',
+                color: 'black',
+                marginBottom: '20px'
+              }}
+            ><Text size="xs">{tasksDone}</Text>
+            </Paper>
+          </Group>
+            <Text color="dimmed" mb="sm" sx={{marginLeft: "10px"}}>
               Child Issues
             </Text>
-            <Paper mb="lg" mr="sm">
+            <Paper mb="lg" mr="sm" sx={{marginLeft: "10px"}}>
               {/* TODO add empty child issue token */}
               {/* TODO map child issues instead of subtasks */}
               <Stack spacing="xs">
@@ -281,6 +274,7 @@ export function EpicDetailView({
                 </Menu.Target>
 
                 <Menu.Dropdown>
+                  {/* TODO update status in Backend */}
                   <Menu.Label>Status</Menu.Label>
                   <Menu.Item onClick={
                     () => {setDefaultStatus("To Do")}
@@ -292,7 +286,8 @@ export function EpicDetailView({
                     () => {setDefaultStatus("Done")}
                   }>Done</Menu.Item>
 
-                  {/*issueTypes &&
+                  {/* Code from issueCard -> probably delete
+                   issueTypes &&
                     issueTypes
                       .find((issueType) => issueType.name === type)
                       ?.statuses?.map((issueStatus) => (
@@ -308,7 +303,6 @@ export function EpicDetailView({
                       ))*/}
                 </Menu.Dropdown>
               </Menu>
-
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
