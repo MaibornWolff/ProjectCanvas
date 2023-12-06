@@ -9,7 +9,7 @@ import {
   Text,
   Title,
 } from "@mantine/core"
-import { Issue, User } from "types"
+import {Attachment, Issue, User} from "types"
 import { useQueryClient } from "@tanstack/react-query";
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
 import { Description } from "../DetailView/Components/Description"
@@ -19,6 +19,7 @@ import { ReporterMenu } from "../DetailView/Components/ReporterMenu"
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
+import {Attachments} from "../DetailView/Components/Attachments/Attachments";
 
 export function EpicDetailView({
    issueKey,
@@ -28,6 +29,7 @@ export function EpicDetailView({
    description,
    created,
    updated,
+   attachments,
    closeModal,
  }: {
   issueKey: string
@@ -37,6 +39,7 @@ export function EpicDetailView({
   description: string
   created: string
   updated: string
+  attachments: Attachment[]
   closeModal: () => void
 }) {
   const queryClient = useQueryClient()
@@ -111,6 +114,16 @@ export function EpicDetailView({
                       </Group>
                       <ReporterMenu issueKey={issueKey} />
                     </Stack>
+                  </Accordion.Panel>
+                </Accordion.Item>
+              </Accordion>
+              <Accordion variant="contained" mb={20}>
+                <Accordion.Item value="Attachments">
+                  <Accordion.Control sx={{ textAlign: "left" }}>
+                    Attachments
+                  </Accordion.Control>
+                  <Accordion.Panel>
+                    <Attachments issueKey={issueKey} attachments={attachments} />
                   </Accordion.Panel>
                 </Accordion.Item>
               </Accordion>
