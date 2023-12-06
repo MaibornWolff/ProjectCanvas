@@ -201,11 +201,8 @@ export function EpicCard ({
                 <EpicDetailView
                     issueKey={issueKey}
                     summary={summary}
-                    status={status}
                     labels={labels}
                     assignee={assignee}
-                    type={type}
-                    projectId={projectId}
                     closeModal={() => setOpened(false)}
                     {...props}
                 />

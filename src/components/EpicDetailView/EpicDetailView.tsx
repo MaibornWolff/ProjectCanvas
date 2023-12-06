@@ -2,29 +2,20 @@ import {
   Accordion,
   Box,
   Breadcrumbs,
-  Button,
-  createStyles,
   Group, HoverCard,
-  Menu,
   Paper, Progress,
   ScrollArea,
   Stack,
   Text,
   Title,
 } from "@mantine/core"
-import { IconCaretDown } from "@tabler/icons"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Attachment, Issue, Sprint, User } from "types"
-import { useState } from "react"
-import { getIssueTypes, setStatus } from "../CreateIssue/queryFunctions"
+import { Attachment, Issue, User } from "types"
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
 import { CommentSection } from "../DetailView/Components/CommentSection"
 import { Description } from "../DetailView/Components/Description"
-import { IssueSprint } from "./Components/IssueSprint"
 import { IssueSummary } from "./Components/IssueSummary"
 import { Labels } from "../DetailView/Components/Labels"
 import { ReporterMenu } from "../DetailView/Components/ReporterMenu"
-import { Subtask } from "./Components/SubTask"
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue"
 import { Attachments } from "../DetailView/Components/Attachments/Attachments"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
@@ -33,33 +24,20 @@ import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
 export function EpicDetailView({
    issueKey,
    summary,
-   status,
    labels,
    assignee,
    description,
-   subtasks,
    created,
    updated,
    comment,
-   type,
-   projectId,
-   sprint,
    attachments,
    closeModal,
  }: {
   issueKey: string
   summary: string
-  status: string
   labels: string[]
   assignee?: User
   description: string
-  subtasks: {
-    id: string
-    key: string
-    fields: {
-      summary: string
-    }
-  }[]
   created: string
   updated: string
   comment: {
@@ -73,39 +51,9 @@ export function EpicDetailView({
       }
     ]
   }
-  type: string
-  projectId: string
-  sprint?: Sprint
   attachments: Attachment[]
   closeModal: () => void
 }) {
-
-  const useStyles = createStyles(
-      (theme, { isOpened }: { isOpened: boolean }) => ({
-        icon: {
-          transition: "transform 150ms ease",
-          transform: isOpened ? "rotate(180deg)" : "rotate(0deg)",
-        },
-      })
-  )
-  const [opened, setOpened] = useState(false)
-  const { classes } = useStyles({ isOpened: opened })
-
-  const { data: issueTypes } = useQuery({
-    queryKey: ["issueTypes", projectId],
-    queryFn: () => getIssueTypes(projectId),
-    enabled: !!projectId,
-  })
-
-  const queryClient = useQueryClient()
-  const [defaultStatus, setDefaultStatus] = useState(status)
-  const statusMutation = useMutation({
-    mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["epics"] })
-    },
-  })
-
   const dateFormat = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
     timeStyle: "short",
@@ -255,23 +203,6 @@ export function EpicDetailView({
                   </HoverCard.Dropdown>
                 </HoverCard>
               </Group>
-              <Text color="dimmed" mb="sm" sx={{marginLeft: "10px"}}>
-                Child Issues
-              </Text>
-              <Paper mb="lg" mr="sm" sx={{marginLeft: "10px"}}>
-                {/* TODO add empty child issue token */}
-                {/* TODO map child issues instead of subtasks */}
-                <Stack spacing="xs">
-                  {subtasks.map((subtask) => (
-                    <Subtask
-                      key={subtask.key}
-                      subtaskKey={subtask.key}
-                      id={subtask.id}
-                      fields={subtask.fields}
-                    />
-                  ))}
-                </Stack>
-              </Paper>
             </ScrollArea.Autosize>
           </Stack>
           <ScrollArea.Autosize
@@ -279,39 +210,7 @@ export function EpicDetailView({
               sx={{ minWidth: "260px", flex: 10 }}
           >
             <Box>
-              <Group position="apart" mb="sm">
-                <Menu
-                    shadow="md"
-                    onOpen={() => setOpened(true)}
-                    onClose={() => setOpened(false)}
-                >
-                  <Menu.Target>
-                    <Button
-                        rightIcon={<IconCaretDown className={classes.icon} />}
-                    >
-                      {defaultStatus}
-                    </Button>
-                  </Menu.Target>
-
-                  <Menu.Dropdown>
-                    {/* TODO update status in Backend */}
-                    <Menu.Label>Status</Menu.Label>
-                    {issueTypes &&
-                      issueTypes
-                        .find((issueType) => issueType.name === type)
-                        ?.statuses?.map((issueStatus) => (
-                        <Menu.Item
-                          key={issueStatus.id}
-                          onClick={() => {
-                            statusMutation.mutate(issueStatus.name)
-                            setDefaultStatus(issueStatus.name)
-                          }}
-                        >
-                          {issueStatus.name}
-                        </Menu.Item>
-                      ))}
-                  </Menu.Dropdown>
-                </Menu>
+              <Group position="right" mb="sm">
                 <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
               </Group>
               <Accordion variant="contained" defaultValue="Details" mb={20}>
@@ -330,20 +229,6 @@ export function EpicDetailView({
                           Labels
                         </Text>
                         <Labels labels={labels} issueKey={issueKey} />
-                      </Group>
-                      <Group grow>
-                        <Text fz="sm" color="dimmed">
-                          Start date
-                        </Text>
-                        {/* TODO add start date picker */}
-                        <IssueSprint sprint={sprint} issueKey={issueKey} />
-                      </Group>
-                      <Group grow>
-                        <Text fz="sm" color="dimmed">
-                          Due date
-                        </Text>
-                        {/* TODO add due date picker */}
-                        <IssueSprint sprint={sprint} issueKey={issueKey} />
                       </Group>
                       <ReporterMenu issueKey={issueKey} />
                     </Stack>
