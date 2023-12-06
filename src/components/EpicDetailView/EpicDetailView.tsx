@@ -3,7 +3,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
-  createStyles, Grid,
+  createStyles,
   Group, HoverCard,
   Menu,
   Paper, Progress,
@@ -29,7 +29,6 @@ import { DeleteIssue } from "../DetailView/Components/DeleteIssue"
 import { Attachments } from "../DetailView/Components/Attachments/Attachments"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
-import {getEpics} from "../EpicView/helpers/queryFetchers";
 
 export function EpicDetailView({
    issueKey,
@@ -103,8 +102,7 @@ export function EpicDetailView({
   const statusMutation = useMutation({
     mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
     onSuccess: () => {
-      // TODO invalidate epics instead of issues when available
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
+      queryClient.invalidateQueries({ queryKey: ["epics"] })
     },
   })
 
@@ -113,11 +111,9 @@ export function EpicDetailView({
     timeStyle: "short",
   });
 
-  {/*Hardcoded Progressbar*/}
-  let tasksDone = 3;
-  let tasksOpen = 1;
-
-
+  // Hardcoded Progressbar
+  const tasksDone = 3;
+  const tasksOpen = 1;
 
   return (
       <Paper p="xs">
@@ -134,11 +130,9 @@ export function EpicDetailView({
               right: 50,
             }}
         />
-        <Group align={"flex-start"}>
+        <Group align="flex-start">
           <Stack
-              sx={{
-                flex: 13
-              }}
+              sx={{ flex: 13 }}
               justify="flex-start">
             <Title
                 size="h1"
@@ -157,10 +151,8 @@ export function EpicDetailView({
               <Group sx={{marginLeft: "10px", marginTop: "-7px", marginBottom: "20px"}}>
                 <Description issueKey={issueKey} description={description} />
               </Group>
-              {/*Add Progressbar here*/}
-              <Group
-                  align={"center"}
-              >
+              {/* Add Progressbar here */}
+              <Group align="center">
                 <Progress
                     radius="md"
                     size={25}
@@ -181,7 +173,7 @@ export function EpicDetailView({
                       { value: tasksOpen / (tasksDone + tasksOpen) * 100, color: 'rgb(225,223,223)', label: `${tasksOpen}`, tooltip: `${tasksOpen} ToDo` },
                     ]}
                 />
-                <HoverCard width={'relative'} shadow="md" radius="md">
+                <HoverCard width="relative" shadow="md" radius="md">
                   <HoverCard.Target>
                     <Paper
                         withBorder
@@ -208,7 +200,7 @@ export function EpicDetailView({
                     </Text>
                   </HoverCard.Dropdown>
                 </HoverCard>
-                <HoverCard width={'relative'} shadow="md" radius="md">
+                <HoverCard width="relative" shadow="md" radius="md">
                   <HoverCard.Target>
                     <Paper
                         withBorder
@@ -235,7 +227,7 @@ export function EpicDetailView({
                     </Text>
                   </HoverCard.Dropdown>
                 </HoverCard>
-                <HoverCard width={'relative'} shadow="md" radius="md">
+                <HoverCard width="relative" shadow="md" radius="md">
                   <HoverCard.Target>
                     <Paper
                         withBorder
@@ -271,12 +263,12 @@ export function EpicDetailView({
                 {/* TODO map child issues instead of subtasks */}
                 <Stack spacing="xs">
                   {subtasks.map((subtask) => (
-                      <Subtask
-                          key={subtask.key}
-                          subtaskKey={subtask.key}
-                          id={subtask.id}
-                          fields={subtask.fields}
-                      />
+                    <Subtask
+                      key={subtask.key}
+                      subtaskKey={subtask.key}
+                      id={subtask.id}
+                      fields={subtask.fields}
+                    />
                   ))}
                 </Stack>
               </Paper>
@@ -304,21 +296,10 @@ export function EpicDetailView({
                   <Menu.Dropdown>
                     {/* TODO update status in Backend */}
                     <Menu.Label>Status</Menu.Label>
-                    <Menu.Item onClick={
-                      () => {setDefaultStatus("To Do")}
-                    }>To Do</Menu.Item>
-                    <Menu.Item onClick={
-                      () => {setDefaultStatus("In Progress")}
-                    }>In Progress</Menu.Item>
-                    <Menu.Item onClick={
-                      () => {setDefaultStatus("Done")}
-                    }>Done</Menu.Item>
-
-                    {/* Code from issueCard -> probably delete
-                   issueTypes &&
-                    issueTypes
-                      .find((issueType) => issueType.name === type)
-                      ?.statuses?.map((issueStatus) => (
+                    {issueTypes &&
+                      issueTypes
+                        .find((issueType) => issueType.name === type)
+                        ?.statuses?.map((issueStatus) => (
                         <Menu.Item
                           key={issueStatus.id}
                           onClick={() => {
@@ -328,7 +309,7 @@ export function EpicDetailView({
                         >
                           {issueStatus.name}
                         </Menu.Item>
-                      ))*/}
+                      ))}
                   </Menu.Dropdown>
                 </Menu>
                 <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
