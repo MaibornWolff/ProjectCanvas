@@ -19,6 +19,7 @@ import { ReporterMenu } from "../DetailView/Components/ReporterMenu"
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
+import {CommentSection} from "../DetailView/Components/CommentSection";
 
 export function EpicDetailView({
    issueKey,
@@ -28,6 +29,7 @@ export function EpicDetailView({
    description,
    created,
    updated,
+   comment,
    closeModal,
  }: {
   issueKey: string
@@ -37,6 +39,17 @@ export function EpicDetailView({
   description: string
   created: string
   updated: string
+  comment: {
+    comments: [
+      {
+        id: string
+        author: User
+        body: string
+        created: string
+        updated: string
+      }
+    ]
+  }
   closeModal: () => void
 }) {
   const queryClient = useQueryClient()
@@ -111,6 +124,16 @@ export function EpicDetailView({
                       </Group>
                       <ReporterMenu issueKey={issueKey} />
                     </Stack>
+                  </Accordion.Panel>
+                </Accordion.Item>
+              </Accordion>
+              <Accordion variant="contained" mb={20}>
+                <Accordion.Item value="Comments">
+                  <Accordion.Control sx={{ textAlign: "left" }}>
+                    Comments
+                  </Accordion.Control>
+                  <Accordion.Panel>
+                    <CommentSection issueKey={issueKey} comment={comment} />
                   </Accordion.Panel>
                 </Accordion.Item>
               </Accordion>
