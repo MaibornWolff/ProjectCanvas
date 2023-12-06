@@ -8,9 +8,14 @@ import {
   Stack,
   Text,
   Title,
+  Menu,
+  Button,
+  createStyles,
 } from "@mantine/core"
+import { IconCaretDown } from "@tabler/icons"
 import { Issue, User } from "types"
-import { useQueryClient } from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { useState } from "react";
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
 import { Description } from "../DetailView/Components/Description"
 import { IssueSummary } from "./Components/IssueSummary"
@@ -19,6 +24,7 @@ import { ReporterMenu } from "../DetailView/Components/ReporterMenu"
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
+import {getIssueTypes, setStatus} from "../CreateIssue/queryFunctions";
 
 export function EpicDetailView({
    issueKey,
@@ -28,7 +34,9 @@ export function EpicDetailView({
    description,
    created,
    updated,
+   status,
    closeModal,
+   projectId,
  }: {
   issueKey: string
   summary: string
@@ -37,10 +45,35 @@ export function EpicDetailView({
   description: string
   created: string
   updated: string
+  status: string
+  projectId: string
   closeModal: () => void
 }) {
   const queryClient = useQueryClient()
   const reloadEpics = () => queryClient.invalidateQueries({ queryKey: ["epics"] });
+
+  const [defaultStatus, setDefaultStatus] = useState(status)
+  const statusMutation = useMutation({
+    mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
+    onSuccess: reloadEpics,
+  })
+
+  const { data: issueTypes } = useQuery({
+    queryKey: ["issueTypes", projectId],
+    queryFn: () => getIssueTypes(projectId),
+    enabled: !!projectId,
+  })
+
+  const useStyles = createStyles(
+    (theme, { isOpened }: { isOpened: boolean }) => ({
+      icon: {
+        transition: "transform 150ms ease",
+        transform: isOpened ? "rotate(180deg)" : "rotate(0deg)",
+      },
+    })
+  )
+  const [opened, setOpened] = useState(false)
+  const { classes } = useStyles({ isOpened: opened })
 
   const dateFormat = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
@@ -89,7 +122,38 @@ export function EpicDetailView({
               sx={{ minWidth: "260px", flex: 10 }}
           >
             <Box>
-              <Group position="right" mb="sm">
+              <Group position="apart" mb="sm">
+                <Menu
+                  shadow="md"
+                  onOpen={() => setOpened(true)}
+                  onClose={() => setOpened(false)}
+                >
+                  <Menu.Target>
+                    <Button
+                      rightIcon={<IconCaretDown className={classes.icon} />}
+                    >
+                      {defaultStatus}
+                    </Button>
+                  </Menu.Target>
+
+                  <Menu.Dropdown>
+                    <Menu.Label>Status</Menu.Label>
+                    {issueTypes &&
+                      issueTypes
+                        .find((issueType) => issueType.name === type)
+                        ?.statuses?.map((issueStatus) => (
+                        <Menu.Item
+                          key={issueStatus.id}
+                          onClick={() => {
+                            statusMutation.mutate(issueStatus.name)
+                            setDefaultStatus(issueStatus.name)
+                          }}
+                        >
+                          {issueStatus.name}
+                        </Menu.Item>
+                      ))}
+                  </Menu.Dropdown>
+                </Menu>
                 <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
               </Group>
               <Accordion variant="contained" defaultValue="Details" mb={20}>
