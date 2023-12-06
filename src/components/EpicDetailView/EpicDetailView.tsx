@@ -109,6 +109,20 @@ export function EpicDetailView({
                         </Text>
                         <Labels labels={labels} issueKey={issueKey} onMutate={reloadEpics} />
                       </Group>
+                      <Group grow>
+                        <Text fz="sm" color="dimmed">
+                          Start date
+                        </Text>
+                        {/* TODO add start date picker */}
+                        <IssueSprint sprint={sprint} issueKey={issueKey} />
+                      </Group>
+                      <Group grow>
+                        <Text fz="sm" color="dimmed">
+                          Due date
+                        </Text>
+                        {/* TODO add due date picker */}
+                        <IssueSprint sprint={sprint} issueKey={issueKey} />
+                      </Group>
                       <ReporterMenu issueKey={issueKey} />
                     </Stack>
                   </Accordion.Panel>
