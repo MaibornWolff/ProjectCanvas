@@ -505,62 +505,70 @@ export class JiraServerProvider implements IProvider {
     const offsetDueDate = this.offsetDate(dueDate)
 
     return new Promise((resolve, reject) => {
-      this.getRestApiClient(2)
-        .post(
-          `/issue`,
-          {
-            fields: {
-              summary,
-              parent: { key: epic },
-              issuetype: { id: type },
-              project: {
-                id: projectId,
-              },
-              reporter: {
-                name: reporter.name,
-              },
-              ...(priority.id && { priority }),
-              ...(assignee && {
-                assignee: {
-                  name: assignee.name,
-                },
-              }),
-              description,
-              labels,
-              ...(offsetStartDate && {
-                [this.customFields.get("Start date")!]: offsetStartDate,
-              }),
-              ...(offsetDueDate && {
-                [this.customFields.get("Due date")!]: offsetDueDate,
-              }),
-              ...(sprint &&
-                sprint.id && {
-                  [this.customFields.get("Sprint")!]: +sprint.id,
-                }),
-              ...(storyPointsEstimate && {
-                [this.customFields.get("Story point estimate")!]:
-                storyPointsEstimate,
-              }),
-              // ...(files && {
-              //   [this.customFields.get("Attachment")!]: files,
-              // }),
-            },
-          }
-        )
-        .then(async (response) => {
-          const createdIssue = response.data
-          resolve(JSON.stringify(createdIssue.key))
-          await this.setTransition(createdIssue.id, status)
-        })
-        .catch((error) => {
-          let specificError = error
-          if (error.response) {
-            if (error.response.status === 404) {
-              specificError = new Error("The user does not have the necessary permissions")
-            }
-          }
+      this.getIssueTypesByProject(projectId)
+        .then((issueTypes) => {
+          const relevantIssueType = issueTypes.find((issueType) => issueType.id === type)
 
-          reject(new Error(`Error creating issue: ${specificError}`))
+          this.getRestApiClient(2)
+            .post(
+              `/issue`,
+              {
+                fields: {
+                  summary,
+                  parent: { key: epic },
+                  issuetype: { id: type },
+                  project: {
+                    id: projectId,
+                  },
+                  reporter: {
+                    name: reporter.name,
+                  },
+                  ...(priority.id && { priority }),
+                  ...(assignee && {
+                    assignee: {
+                      name: assignee.name,
+                    },
+                  }),
+                  description,
+                  labels,
+                  ...(offsetStartDate && {
+                    [this.customFields.get("Start date")!]: offsetStartDate,
+                  }),
+                  ...(offsetDueDate && {
+                    [this.customFields.get("Due date")!]: offsetDueDate,
+                  }),
+                  ...(sprint &&
+                    sprint.id && {
+                      [this.customFields.get("Sprint")!]: +sprint.id,
+                    }),
+                  ...(storyPointsEstimate && {
+                    [this.customFields.get("Story point estimate")!]:
+                    storyPointsEstimate,
+                  }),
+                  ...(relevantIssueType && relevantIssueType.name === 'Epic' && {
+                    [this.customFields.get("Epic Name")!]: summary
+                  }),
+                  // ...(files && {
+                  //   [this.customFields.get("Attachment")!]: files,
+                  // }),
+                },
+              }
+            )
+            .then(async (response) => {
+              const createdIssue = response.data
+              resolve(JSON.stringify(createdIssue.key))
+              await this.setTransition(createdIssue.id, status)
+            })
+            .catch((error) => {
+              let specificError = error
+              if (error.response) {
+                if (error.response.status === 404) {
+                  specificError = new Error("The user does not have the necessary permissions")
+                }
+              }
+
+              reject(new Error(`Error creating issue: ${specificError}`))
+            })
         })
     })
   }
