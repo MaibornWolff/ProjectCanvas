@@ -10,15 +10,18 @@ import {
   Title,
 } from "@mantine/core"
 import { Issue, User } from "types"
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { showNotification } from "@mantine/notifications";
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
 import { Description } from "../DetailView/Components/Description"
+import { InlineDatePicker } from "./Components/InlineDatePicker"
 import { IssueSummary } from "./Components/IssueSummary"
 import { Labels } from "../DetailView/Components/Labels"
 import { ReporterMenu } from "../DetailView/Components/ReporterMenu"
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
+import { editIssue } from "./helpers/queryFunctions";
 
 export function EpicDetailView({
    issueKey,
@@ -29,6 +32,8 @@ export function EpicDetailView({
    created,
    updated,
    closeModal,
+   startDate,
+   dueDate,
  }: {
   issueKey: string
   summary: string
@@ -38,9 +43,27 @@ export function EpicDetailView({
   created: string
   updated: string
   closeModal: () => void
+  startDate: Date
+  dueDate: Date
 }) {
   const queryClient = useQueryClient()
   const reloadEpics = () => queryClient.invalidateQueries({ queryKey: ["epics"] });
+
+  const useDateMutation = (property: string) => useMutation({
+    mutationFn: (currentDate: Date | undefined) => editIssue({ [property]: currentDate } as unknown as Issue, issueKey),
+    onError: () => {
+      showNotification({
+        message: `An error occurred while modifing the date 😢`,
+        color: "red",
+      })
+    },
+    onSuccess: () => {
+      showNotification({
+        message: `The date for epic ${issueKey} has been modified!`,
+        color: "green",
+      })
+    },
+  })
 
   const dateFormat = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
@@ -113,15 +136,22 @@ export function EpicDetailView({
                         <Text fz="sm" color="dimmed">
                           Start date
                         </Text>
-                        {/* TODO add start date picker */}
-                        <IssueSprint sprint={sprint} issueKey={issueKey} />
+                        {/* TODO fixme also fix using custom fields */}
+                        <InlineDatePicker
+                          date={startDate}
+                          mutation={useDateMutation('startDate')}
+                          placeholder="Pick start date"
+                        />
                       </Group>
                       <Group grow>
                         <Text fz="sm" color="dimmed">
                           Due date
                         </Text>
-                        {/* TODO add due date picker */}
-                        <IssueSprint sprint={sprint} issueKey={issueKey} />
+                        <InlineDatePicker
+                          date={dueDate}
+                          mutation={useDateMutation('dueDate')}
+                          placeholder="Pick due date"
+                        />
                       </Group>
                       <ReporterMenu issueKey={issueKey} />
                     </Stack>

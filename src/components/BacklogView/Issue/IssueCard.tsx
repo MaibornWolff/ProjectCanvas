@@ -17,9 +17,10 @@ import { useQueryClient } from "@tanstack/react-query"
 import { Issue } from "types"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
-import { DetailView } from "../../DetailView/DetailView"
+// import { DetailView } from "../../DetailView/DetailView"
 import { IssueIcon } from "./IssueIcon"
 import { DeleteButton } from "./DeleteButton"
+import { EpicDetailView } from "../../EpicDetailView/EpicDetailView";
 
 export function IssueCard({
   issueKey,
@@ -208,13 +209,12 @@ export function IssueCard({
         overlayBlur={3}
         withCloseButton={false}
       >
-        <DetailView
+        <EpicDetailView
           issueKey={issueKey}
           summary={summary}
           status={status}
           type={type}
           storyPointsEstimate={storyPointsEstimate}
-          epic={epic}
           labels={labels}
           assignee={assignee}
           projectId={projectId}
