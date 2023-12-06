@@ -1,6 +1,5 @@
 import {Stack} from "@mantine/core";
 import {Issue} from "../../../types";
-import {IssueCard} from "../BacklogView/Issue/IssueCard";
 import {EpicCard} from "./EpicCard";
 
 

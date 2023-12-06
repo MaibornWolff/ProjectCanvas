@@ -1,9 +1,9 @@
-import {Group, Stack, Text, Title, Flex, ScrollArea, TextInput, Box, Button, Center, Loader} from "@mantine/core";
+import {Group, Stack, Text, Title, ScrollArea, Box, Button, Center, Loader} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import {useCanvasStore} from "../../lib/Store";
 import {useState} from "react";
 import {CreateIssueModal} from "../CreateIssue/CreateIssueModal";
-import {Issue, Sprint} from "../../../types";
+import {Issue} from "../../../types";
 import {EpicWrapper} from "./EpicWrapper";
 import {useQuery} from "@tanstack/react-query";
 import {getEpics} from "./helpers/queryFetchers";
@@ -18,7 +18,7 @@ export function EpicView() {
   const [EpicWrappers, setEpicWrappers] = useState(
       new Map<string, { issues: Issue[]}>()
   )
-  const [searchedEpicWrappers, setSearchedepicWrappers] = useState(
+  const [searchedEpicWrappers, setSearchedEpicWrappers] = useState(
       new Map<string, { issues: Issue[]}>()
   )
 
@@ -27,7 +27,7 @@ export function EpicView() {
       value: { issues: Issue[]}
   ) => {
       setEpicWrappers((map) => new Map(map.set(key, value)))
-      setSearchedepicWrappers((map) => new Map(map.set(key, value)))
+      setSearchedEpicWrappers((map) => new Map(map.set(key, value)))
   }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,34 +35,34 @@ export function EpicView() {
     setSearch(currentSearch)
     //TODO implement search
   }
-    const { isLoading: isLoadingBacklogIssues, isError: isErrorBacklogIssues } =
-        useQuery({
-            queryKey: ["epics", projectKey],
-            queryFn: () => getEpics(projectKey),
-            enabled: !!projectKey,
-            onSuccess: (epics) => {
-                updateEpicWrapper("EpicView", {
-                    issues:
-                        epics && epics instanceof Array ? epics : []
-                })
-            },
-        })
-    if (isLoadingBacklogIssues)
-    return (
-        <Center style={{ width: "100%", height: "100%" }}>
-            {projectKey ? (
-                <Loader />
-            ) : (
-                <Stack align="center">
-                    <Title>No Project has been selected!</Title>
-                    <Text>
-                        Please go back to the Projects View section and select a project
-                    </Text>
-                    <Button onClick={() => navigate("/projectsview")}>Go back</Button>
-                </Stack>
-            )}
-        </Center>
-    )
+  const { isLoading: isLoadingEpics, isError: isErrorBacklogIssues } =
+     useQuery({
+          queryKey: ["epics", projectKey],
+          queryFn: () => getEpics(projectKey),
+          enabled: !!projectKey,
+          onSuccess: (epics) => {
+              updateEpicWrapper("EpicView", {
+                  issues:
+                      epics && epics instanceof Array ? epics : []
+              })
+          },
+     })
+  if (isLoadingEpics)
+  return (
+      <Center style={{ width: "100%", height: "100%" }}>
+          {projectKey ? (
+              <Loader />
+          ) : (
+              <Stack align="center">
+                  <Title>No Project has been selected!</Title>
+                  <Text>
+                      Please go back to the Projects View section and select a project
+                  </Text>
+                  <Button onClick={() => navigate("/projectsview")}>Go back</Button>
+              </Stack>
+          )}
+      </Center>
+  )
   return (
     <Stack sx={{ minHeight: "100%"}}>
       <Stack align="left" spacing={0}>

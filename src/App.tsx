@@ -13,8 +13,8 @@ export function App() {
       <Route path="/" index element={<Login />} />
       <Route element={<Layout />}>
         <Route path="projectsview" element={<ProjectsView />} />
-          <Route path="backlogview" element={<BacklogView />} />
-          <Route path="epicview" element={<EpicView />} />
+        <Route path="backlogview" element={<BacklogView />} />
+        <Route path="epicview" element={<EpicView />} />
         <Route path="storymapview">
           <Route index element={<StoryMapDashboard />} />
           <Route path=":storyMapId" element={<StoryMapView />} />

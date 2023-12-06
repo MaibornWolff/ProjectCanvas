@@ -117,6 +117,7 @@ export function CreateIssueModal({
         color: "green",
       })
       queryClient.invalidateQueries({ queryKey: ["issues"] })
+      queryClient.invalidateQueries({ queryKey: ["epics"] })
       setOpened(false)
       form.reset()
     },

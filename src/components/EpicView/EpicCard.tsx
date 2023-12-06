@@ -12,8 +12,7 @@ import {
     Tooltip,
     useMantineTheme
 } from "@mantine/core";
-import {Draggable} from "react-beautiful-dnd";
-import {useHover, useMergedRef} from "@mantine/hooks";
+import {useHover} from "@mantine/hooks";
 import {DeleteButton} from "../BacklogView/Issue/DeleteButton";
 import {useState} from "react";
 import {useQueryClient} from "@tanstack/react-query";
@@ -35,7 +34,7 @@ export function EpicCard ({
     let storyPointsColor: string
     const [opened, setOpened] = useState(false)
     const queryClient = useQueryClient()
-    const { ref, hovered } = useHover()
+    const {hovered} = useHover()
     const theme = useMantineTheme()
     const hoverStyles =
         theme.colorScheme === "dark"
