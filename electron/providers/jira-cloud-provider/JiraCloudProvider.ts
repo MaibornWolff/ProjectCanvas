@@ -767,11 +767,7 @@ export class JiraCloudProvider implements IProvider {
                   id: projectId,
                 },
               }),
-              ...(reporter && {
-                reporter: {
-                  id: reporter,
-                },
-              }),
+              ...(reporter && { reporter }),
               ...(priority && priority.id && { priority }),
               ...(assignee &&
                 assignee.id && {

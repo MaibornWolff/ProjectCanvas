@@ -9,16 +9,14 @@ import {
   Text,
   Title,
 } from "@mantine/core"
-import { Attachment, Issue, User } from "types"
-import {useQueryClient} from "@tanstack/react-query";
+import { Issue, User } from "types"
+import { useQueryClient } from "@tanstack/react-query";
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
-import { CommentSection } from "../DetailView/Components/CommentSection"
 import { Description } from "../DetailView/Components/Description"
 import { IssueSummary } from "./Components/IssueSummary"
 import { Labels } from "../DetailView/Components/Labels"
 import { ReporterMenu } from "../DetailView/Components/ReporterMenu"
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue"
-import { Attachments } from "../DetailView/Components/Attachments/Attachments"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
 
@@ -30,8 +28,6 @@ export function EpicDetailView({
    description,
    created,
    updated,
-   comment,
-   attachments,
    closeModal,
  }: {
   issueKey: string
@@ -41,21 +37,11 @@ export function EpicDetailView({
   description: string
   created: string
   updated: string
-  comment: {
-    comments: [
-      {
-        id: string
-        author: User
-        body: string
-        created: string
-        updated: string
-      }
-    ]
-  }
-  attachments: Attachment[]
   closeModal: () => void
 }) {
   const queryClient = useQueryClient()
+  const reloadEpics = () => queryClient.invalidateQueries({ queryKey: ["epics"] });
+
   const dateFormat = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
     timeStyle: "short",
@@ -88,9 +74,7 @@ export function EpicDetailView({
                 size="h1"
                 sx={{ marginBottom: "-10px" }}
             >
-              <IssueSummary summary={summary} issueKey={issueKey} onMutate={() => {
-                queryClient.invalidateQueries({ queryKey: ["epics"] })
-              }} />
+              <IssueSummary summary={summary} issueKey={issueKey} onMutate={reloadEpics} />
             </Title>
             <ScrollArea.Autosize
                 maxHeight="70vh"
@@ -231,30 +215,10 @@ export function EpicDetailView({
                         <Text fz="sm" color="dimmed">
                           Labels
                         </Text>
-                        <Labels labels={labels} issueKey={issueKey} />
+                        <Labels labels={labels} issueKey={issueKey} onMutate={reloadEpics} />
                       </Group>
                       <ReporterMenu issueKey={issueKey} />
                     </Stack>
-                  </Accordion.Panel>
-                </Accordion.Item>
-              </Accordion>
-              <Accordion variant="contained" mb={20}>
-                <Accordion.Item value="Comments">
-                  <Accordion.Control sx={{ textAlign: "left" }}>
-                    Comments
-                  </Accordion.Control>
-                  <Accordion.Panel>
-                    <CommentSection issueKey={issueKey} comment={comment} />
-                  </Accordion.Panel>
-                </Accordion.Item>
-              </Accordion>
-              <Accordion variant="contained" mb={20}>
-                <Accordion.Item value="Attachments">
-                  <Accordion.Control sx={{ textAlign: "left" }}>
-                    Attachments
-                  </Accordion.Control>
-                  <Accordion.Panel>
-                    <Attachments issueKey={issueKey} attachments={attachments} />
                   </Accordion.Panel>
                 </Accordion.Item>
               </Accordion>
