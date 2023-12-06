@@ -1,13 +1,12 @@
-import {Group, Stack, Text, Title, Flex, ScrollArea, TextInput, Box, Button, Center, Loader} from "@mantine/core";
+import {Group, Stack, Text, Title, ScrollArea, Box, Button, Center, Loader} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import {useCanvasStore} from "../../lib/Store";
 import {useState} from "react";
 import {CreateIssueModal} from "../CreateIssue/CreateIssueModal";
-import {Issue, Priority, Sprint, User} from "../../../types";
+import {Issue} from "../../../types";
 import {EpicWrapper} from "./EpicWrapper";
 import {useQuery} from "@tanstack/react-query";
 import {getEpics} from "./helpers/queryFetchers";
-import {EpicCard} from "./EpicCard";
 
 
 
@@ -124,37 +123,10 @@ export function EpicView() {
             + Create Epic
           </Button>
         </Box>
-
-        <EpicCard
-            issueKey={epic.issueKey}
-            summary={epic.summary}
-            creator={epic.creator}
-            status={epic.status}
-            type={epic.type}
-            description={epic.description}
-            storyPointsEstimate={10}
-            epic={epic.epic}
-            labels={epic.labels}
-            rank={epic.rank}
-            reporter={epic.reporter}
-            projectId={epic.projectId}
-            subtasks={epic.subtasks}
-            created={epic.created}
-            updated={epic.updated}
-            comment={epic.comment}
-            startDate={epic.startDate}
-            dueDate={epic.dueDate}
-            priority={epic.priority}
-            attachments={epic.attachments}
-            index={1}
-        >
-        </EpicCard>
-
         <CreateIssueModal
             opened={createIssueModalOpened}
             setOpened={setCreateIssueModalOpened}
         />
-
       </ScrollArea.Autosize>
     </Stack>
   )
