@@ -10,6 +10,7 @@ import {
   Title,
 } from "@mantine/core"
 import { Attachment, Issue, User } from "types"
+import {useQueryClient} from "@tanstack/react-query";
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
 import { CommentSection } from "../DetailView/Components/CommentSection"
 import { Description } from "../DetailView/Components/Description"
@@ -54,6 +55,7 @@ export function EpicDetailView({
   attachments: Attachment[]
   closeModal: () => void
 }) {
+  const queryClient = useQueryClient()
   const dateFormat = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
     timeStyle: "short",
@@ -86,8 +88,9 @@ export function EpicDetailView({
                 size="h1"
                 sx={{ marginBottom: "-10px" }}
             >
-              {/* TODO find own epic summary here */}
-              <IssueSummary summary={summary} issueKey={issueKey}/>
+              <IssueSummary summary={summary} issueKey={issueKey} onMutate={() => {
+                queryClient.invalidateQueries({ queryKey: ["epics"] })
+              }} />
             </Title>
             <ScrollArea.Autosize
                 maxHeight="70vh"

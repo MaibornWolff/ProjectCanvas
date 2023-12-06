@@ -8,9 +8,11 @@ import { editIssue } from "../helpers/queryFunctions"
 export function IssueSummary({
   summary,
   issueKey,
+  onMutate = () => {},
 }: {
   summary: string
   issueKey: string
+  onMutate?: () => void
 }) {
   const [defaultSummary, setDefaultSummary] = useState(summary)
   const [showSummaryInput, setShowSummaryInput] = useState(false)
@@ -24,11 +26,13 @@ export function IssueSummary({
       })
     },
     onSuccess: () => {
-      if (defaultSummary !== summary)
+      if (defaultSummary !== summary) {
         showNotification({
           message: `The summary of issue ${issueKey} has been modified!`,
           color: "green",
         })
+        onMutate()
+      }
     },
   })
   return (
