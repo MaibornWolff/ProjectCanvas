@@ -3,6 +3,7 @@ import {
     Avatar,
     Badge,
     Box,
+    Paper,
     Center,
     Grid,
     Group,
@@ -17,6 +18,7 @@ import {useState} from "react";
 import {useQueryClient} from "@tanstack/react-query";
 import {IconBolt} from "@tabler/icons";
 import {DeleteButton} from "../BacklogView/Issue/DeleteButton";
+import {EpicDetailView} from "../EpicDetailView/EpicDetailView";
 
 export function EpicCard ({
     issueKey,
@@ -26,6 +28,9 @@ export function EpicCard ({
     epic,
     labels,
     assignee,
+    type,
+    projectId,
+    ...props
 }: Issue) {
     let storyPointsColor: string
     const [opened, setOpened] = useState(false)
@@ -55,9 +60,13 @@ export function EpicCard ({
         default:
             storyPointsColor = "gray.6"
     }
+
     return (
         <>
             <DeleteButton mounted={hovered} issueKey={issueKey} />
+            <Paper
+                onClick={() => setOpened(true)}
+            >
             <Grid
                 columns={100}
                 p={3}
@@ -68,6 +77,7 @@ export function EpicCard ({
                     transition: "background-color .8s ease-out",
                     ":hover": hoverStyles,
                 }}
+                onClick={() => setOpened(true)}
             >
                 <Grid.Col
                     span={8}
@@ -175,6 +185,7 @@ export function EpicCard ({
                     </Box>
                 </Grid.Col>
             </Grid>
+            </Paper>
             <Modal
                 opened={opened}
                 onClose={() => {
@@ -187,7 +198,14 @@ export function EpicCard ({
                 overlayBlur={3}
                 withCloseButton={false}
             >
-              {/* TODO open Epic Detail View */}
+                <EpicDetailView
+                    issueKey={issueKey}
+                    summary={summary}
+                    labels={labels}
+                    assignee={assignee}
+                    closeModal={() => setOpened(false)}
+                    {...props}
+                />
             </Modal>
         </>
     )

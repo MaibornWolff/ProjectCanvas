@@ -72,16 +72,7 @@ export interface Issue {
     comments: [
       {
         id: string
-        author: {
-          accountId: string
-          avatarUrls: {
-            "48x48": string
-            "24x24": string
-            "16x16": string
-            "32x32": string
-          }
-          displayName: string
-        }
+        author: User
         body: string
         created: string
         updated: string

@@ -9,6 +9,7 @@ import {EpicWrapper} from "./EpicWrapper";
 import {getEpics} from "./helpers/queryFetchers";
 
 
+
 export function EpicView() {
   const navigate = useNavigate()
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
@@ -53,7 +54,7 @@ export function EpicView() {
           )}
       </Center>
   )
-  return (
+    return (
     <Stack sx={{ minHeight: "100%"}}>
       <Stack align="left" spacing={0}>
         <Group>

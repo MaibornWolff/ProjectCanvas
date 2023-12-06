@@ -11,7 +11,7 @@ export function EpicWrapper({
     return (
         <Stack spacing="sm">
             {epics.map((epic: Issue) => (
-                <EpicCard {...epic} key={epic.issueKey} />
+                  <EpicCard {...epic} key={epic.issueKey} />
             ))}
         </Stack>
     )
