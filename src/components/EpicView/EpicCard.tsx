@@ -18,7 +18,7 @@ import {DeleteButton} from "../BacklogView/Issue/DeleteButton";
 import {useState} from "react";
 import {useQueryClient} from "@tanstack/react-query";
 import {IconBolt} from "@tabler/icons";
-import { EpicDetailView } from "../EpicDetailView/EpicDetailView"
+import {EpicDetailView} from "../EpicDetailView/EpicDetailView";
 
 export function EpicCard ({
     issueKey,
@@ -61,6 +61,7 @@ export function EpicCard ({
         default:
             storyPointsColor = "gray.6"
     }
+
     return (
         <>
             <DeleteButton mounted={hovered} issueKey={issueKey} />
@@ -77,6 +78,7 @@ export function EpicCard ({
                     transition: "background-color .8s ease-out",
                     ":hover": hoverStyles,
                 }}
+                onClick={() => setOpened(true)}
             >
                 <Grid.Col
                     span={8}

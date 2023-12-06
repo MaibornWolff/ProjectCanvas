@@ -862,6 +862,15 @@ export class JiraCloudProvider implements IProvider {
                 displayName: element.fields.assignee?.displayName,
                 avatarUrls: element.fields.assignee?.avatarUrls,
               },
+              subtasks: element.fields.subtasks,
+              created: element.fields.created,
+              updated: element.fields.updated,
+              comment: element.fields.comment ?? {
+                comments: [],
+              },
+              projectId: element.fields.project.id,
+              sprint: element.fields.sprint,
+              attachments: element.fields.attachment,
             }))
           )
           resolve(epics)
