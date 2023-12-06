@@ -7,7 +7,6 @@ import {
     Grid,
     Group,
     Modal,
-    Paper,
     Stack,
     Text, ThemeIcon,
     Tooltip,
@@ -33,7 +32,7 @@ export function EpicCard ({
     index,
     projectId,
     ...props
-}: Issue & {index : number}) : JSX.Element {
+}: Issue & {index : number}) {
     let storyPointsColor: string
     const [opened, setOpened] = useState(false)
     const queryClient = useQueryClient()
@@ -131,11 +130,6 @@ export function EpicCard ({
                                 ))}
                         </Group>
                         <Text size="lg">{summary}</Text>
-                        <Group align="center" spacing="sm">
-                            <Text size="sm">{type}</Text>
-                            <Text size="sm">•</Text>
-                            <Text size="sm">{status}</Text>
-                        </Group>
                     </Stack>
                 </Grid.Col>
                 <Grid.Col

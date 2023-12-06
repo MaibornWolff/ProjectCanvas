@@ -1,101 +1,70 @@
-import {Group, Stack, Text, Title, Flex, ScrollArea, TextInput, Box, Button} from "@mantine/core";
+import {Group, Stack, Text, Title, Flex, ScrollArea, TextInput, Box, Button, Center, Loader} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import {useCanvasStore} from "../../lib/Store";
 import {useState} from "react";
 import {CreateIssueModal} from "../CreateIssue/CreateIssueModal";
 import {Issue, Priority, Sprint, User} from "../../../types";
+import {EpicWrapper} from "./EpicWrapper";
+import {useQuery} from "@tanstack/react-query";
+import {getEpics} from "./helpers/queryFetchers";
 import {EpicCard} from "./EpicCard";
 
 
 
-export function EpicView() : JSX.Element {
+export function EpicView() {
   const navigate = useNavigate()
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
   const [search, setSearch] = useState("")
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
-  const [searchedissuesWrappers, setSearchedissuesWrappers] = useState(
-      new Map<string, { issues: Issue[]; sprint?: Sprint }>()
+  const projectKey = useCanvasStore((state) => state.selectedProject?.key)
+  const [EpicWrappers, setEpicWrappers] = useState(
+      new Map<string, { issues: Issue[]}>()
+  )
+  const [searchedEpicWrappers, setSearchedepicWrappers] = useState(
+      new Map<string, { issues: Issue[]}>()
   )
 
-  const epic: Issue = {
-    issueKey: 'ISSUE-1',
-    summary: 'Bug fix',
-    creator: 'John Doe',
-    status: 'To Do',
-    type: 'Bug',
-    description: 'This is a bug',
-    storyPointsEstimate: 2,
-    epic: 'Epic-1',
-    labels: ['bug', 'URGENT'],
-    assignee: undefined,
-    rank: 'High',
-    reporter: {
-      id: '2',
-      name: 'Jane Doe',
-      displayName: 'Jane',
-      emailAddress: 'jane.doe@example.com',
-      avatarUrls: {
-        '16x16': 'http://example.com/avatar16.png',
-        '24x24': 'http://example.com/avatar24.png',
-        '32x32': 'http://example.com/avatar32.png',
-        '48x48': 'http://example.com/avatar48.png',
-      },
-    },
-    sprint: undefined,
-    projectId: 'Project-1',
-    subtasks: [
-      {
-        id: 'Subtask-1',
-        key: 'SUB-1',
-        fields: {
-          summary: 'Subtask summary',
-        },
-      },
-    ],
-    created: '2023-01-01T00:00:00',
-    updated: '2023-01-01T00:00:00',
-    comment: {
-      comments: [
-        {
-          id: 'Comment-1',
-          author: {
-            id: '3',
-            name: 'Bob Doe',
-            displayName: 'Bob',
-            emailAddress: 'bob.doe@example.com',
-            avatarUrls: {
-              '16x16': 'http://example.com/avatar16.png',
-              '24x24': 'http://example.com/avatar24.png',
-              '32x32': 'http://example.com/avatar32.png',
-              '48x48': 'http://example.com/avatar48.png',
-            },
-          },
-          body: 'Comment body',
-          created: '2023-01-01T00:00:00',
-          updated: '2023-01-01T00:00:00',
-        },
-      ],
-    },
-    startDate: new Date('2023-01-01T00:00:00'),
-    dueDate: new Date('2023-01-01T00:00:00'),
-    priority: {
-      statusColor: '#FF0000',
-      description: 'High priority',
-      iconUrl: 'http://example.com/icon.png',
-      name: 'High',
-      id: '1',
-      isDefault: false,
-    },
-    attachments: [],
-  };
-
+  const updateEpicWrapper = (
+      key: string,
+      value: { issues: Issue[]}
+  ) => {
+      setEpicWrappers((map) => new Map(map.set(key, value)))
+      setSearchedepicWrappers((map) => new Map(map.set(key, value)))
+  }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentSearch = event.currentTarget.value
     setSearch(currentSearch)
     //TODO implement search
   }
-
+    const { isLoading: isLoadingBacklogIssues, isError: isErrorBacklogIssues } =
+        useQuery({
+            queryKey: ["epics", projectKey],
+            queryFn: () => getEpics(projectKey),
+            enabled: !!projectKey,
+            onSuccess: (epics) => {
+                updateEpicWrapper("EpicView", {
+                    issues:
+                        epics && epics instanceof Array ? epics : []
+                })
+            },
+        })
+    if (isLoadingBacklogIssues)
+    return (
+        <Center style={{ width: "100%", height: "100%" }}>
+            {projectKey ? (
+                <Loader />
+            ) : (
+                <Stack align="center">
+                    <Title>No Project has been selected!</Title>
+                    <Text>
+                        Please go back to the Projects View section and select a project
+                    </Text>
+                    <Button onClick={() => navigate("/projectsview")}>Go back</Button>
+                </Stack>
+            )}
+        </Center>
+    )
     return (
     <Stack sx={{ minHeight: "100%"}}>
       <Stack align="left" spacing={0}>
@@ -127,7 +96,11 @@ export function EpicView() : JSX.Element {
             minWidth: "260px",
           }}
       >
-        TODO wrapper containing Epic Cards (havent seen an Epic Card yet they might need work)
+          {searchedEpicWrappers.get("EpicView") &&(
+        <Box mr="xs">
+            <EpicWrapper epics={searchedEpicWrappers.get("EpicView")!.issues}/>
+        </Box>
+        )}
         <Box mr="xs">
           <Button
               mt="sm"
