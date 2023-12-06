@@ -37,6 +37,7 @@ export function EpicDetailView({
    status,
    closeModal,
    projectId,
+   type,
  }: {
   issueKey: string
   summary: string
@@ -47,6 +48,7 @@ export function EpicDetailView({
   updated: string
   status: string
   projectId: string
+  type: string
   closeModal: () => void
 }) {
   const queryClient = useQueryClient()
