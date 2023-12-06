@@ -13,24 +13,20 @@ import {
     useMantineTheme
 } from "@mantine/core";
 import {useHover} from "@mantine/hooks";
-import {DeleteButton} from "../BacklogView/Issue/DeleteButton";
 import {useState} from "react";
 import {useQueryClient} from "@tanstack/react-query";
 import {IconBolt} from "@tabler/icons";
+import {DeleteButton} from "../BacklogView/Issue/DeleteButton";
 
 export function EpicCard ({
     issueKey,
     summary,
     status,
-    type,
     storyPointsEstimate,
     epic,
     labels,
     assignee,
-    index,
-    projectId,
-    ...props
-}: Issue & {index : number}) {
+}: Issue) {
     let storyPointsColor: string
     const [opened, setOpened] = useState(false)
     const queryClient = useQueryClient()
@@ -191,7 +187,7 @@ export function EpicCard ({
                 overlayBlur={3}
                 withCloseButton={false}
             >
-                //TODO open Epic Detail View
+              {/* TODO open Epic Detail View */}
             </Modal>
         </>
     )
