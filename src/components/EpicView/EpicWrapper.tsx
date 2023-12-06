@@ -9,10 +9,9 @@ export function EpicWrapper({
     epics: Issue[]
 }){
     return (
-        <Stack
-        spacing={"sm"}>
-            {epics.map((epic: Issue, index) => (
-                <EpicCard {...epic} key={epic.issueKey} index={index} />
+        <Stack spacing="sm">
+            {epics.map((epic: Issue) => (
+                <EpicCard {...epic} key={epic.issueKey} />
             ))}
         </Stack>
     )

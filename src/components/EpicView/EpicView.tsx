@@ -1,11 +1,11 @@
 import {Group, Stack, Text, Title, ScrollArea, Box, Button, Center, Loader} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
-import {useCanvasStore} from "../../lib/Store";
 import {useState} from "react";
+import {useQuery} from "@tanstack/react-query";
+import {useCanvasStore} from "../../lib/Store";
 import {CreateIssueModal} from "../CreateIssue/CreateIssueModal";
 import {Issue} from "../../../types";
 import {EpicWrapper} from "./EpicWrapper";
-import {useQuery} from "@tanstack/react-query";
 import {getEpics} from "./helpers/queryFetchers";
 
 
