@@ -2,8 +2,8 @@ import {
   Accordion,
   Box,
   Breadcrumbs,
-  Group, HoverCard,
-  Paper, Progress,
+  Group,
+  Paper,
   ScrollArea,
   Stack,
   Text,
@@ -61,10 +61,6 @@ export function EpicDetailView({
     timeStyle: "short",
   });
 
-  // Hardcoded Progressbar
-  const tasksDone = 3;
-  const tasksOpen = 1;
-
   return (
       <Paper p="xs">
         <Breadcrumbs mb="md">
@@ -101,110 +97,6 @@ export function EpicDetailView({
             </Text>
               <Group sx={{marginLeft: "10px", marginTop: "-7px", marginBottom: "20px"}}>
                 <Description issueKey={issueKey} description={description} />
-              </Group>
-              {/* Add Progressbar here */}
-              <Group align="center">
-                <Progress
-                    radius="md"
-                    size={25}
-                    styles={{
-                      label: {
-                        color: 'black',
-                        fontSize: '14px',
-                        fontWeight: 'normal'
-                      }
-                    }}
-                    sx={{
-                      width: '400px',
-                      marginRight: '5px',
-                      marginBottom: '20px'
-                    }}
-                    sections={[
-                      { value: tasksDone / (tasksDone + tasksOpen) * 100, color: '#10df10', label: `${tasksDone}`, tooltip: `${tasksDone} Done`  },
-                      { value: tasksOpen / (tasksDone + tasksOpen) * 100, color: 'rgb(225,223,223)', label: `${tasksOpen}`, tooltip: `${tasksOpen} ToDo` },
-                    ]}
-                />
-                <HoverCard width="relative" shadow="md" radius="md">
-                  <HoverCard.Target>
-                    <Paper
-                        withBorder
-                        style={{
-                          backgroundColor: '#f2f2f0',
-                          borderColor: '#6e7363',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          width: '26px',
-                          height: '26px',
-                          borderRadius: '50%',
-                          color: 'black',
-                          marginBottom: '20px',
-                        }}
-                    ><Text size="xs">6</Text>
-                    </Paper>
-                  </HoverCard.Target>
-                  <HoverCard.Dropdown>
-                    <Text size="sm" sx={{
-                      marginLeft: '-5px'
-                    }}>
-                      Total story points for <b>Open</b> issues: <b>6</b>
-                    </Text>
-                  </HoverCard.Dropdown>
-                </HoverCard>
-                <HoverCard width="relative" shadow="md" radius="md">
-                  <HoverCard.Target>
-                    <Paper
-                        withBorder
-                        style={{
-                          backgroundColor: '#dbe3ef',
-                          borderColor: '#434fe3',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          width: '26px',
-                          height: '26px',
-                          borderRadius: '50%',
-                          color: 'black',
-                          marginBottom: '20px'
-                        }}
-                    ><Text size="xs">31</Text>
-                    </Paper>
-                  </HoverCard.Target>
-                  <HoverCard.Dropdown>
-                    <Text size="sm" sx={{
-                      marginLeft: '-5px'
-                    }}>
-                      Total story points for <b>In progress</b> issues: <b>31</b>
-                    </Text>
-                  </HoverCard.Dropdown>
-                </HoverCard>
-                <HoverCard width="relative" shadow="md" radius="md">
-                  <HoverCard.Target>
-                    <Paper
-                        withBorder
-                        style={{
-                          backgroundColor: '#D2ECD3',
-                          borderColor: '#10df10',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          width: '26px',
-                          height: '26px',
-                          borderRadius: '50%',
-                          color: 'black',
-                          marginBottom: '20px'
-                        }}
-                    ><Text size="xs">11</Text>
-                    </Paper>
-                  </HoverCard.Target>
-                  <HoverCard.Dropdown>
-                    <Text size="sm" sx={{
-                      marginLeft: '-5px'
-                    }}>
-                      Total story points for <b>Done</b> issues: <b>11</b>
-                    </Text>
-                  </HoverCard.Dropdown>
-                </HoverCard>
               </Group>
             </ScrollArea.Autosize>
           </Stack>
