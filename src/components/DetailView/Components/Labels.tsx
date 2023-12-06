@@ -16,18 +16,20 @@ import { editIssue } from "../helpers/queryFunctions"
 export function Labels({
   labels,
   issueKey,
+  onMutate = () => {}
 }: {
   labels: string[]
   issueKey: string
+  onMutate?: () => void
 }) {
   const theme = useMantineTheme()
-  const [defaultLabels, setdefaultLabels] = useState(labels)
-  const [showLabelsInput, setshowLabelsInput] = useState(false)
+  const [defaultLabels, setDefaultLabels] = useState(labels)
+  const [showLabelsInput, setShowLabelsInput] = useState(false)
   const { data: allLabels } = useQuery({
     queryKey: ["labels"],
     queryFn: () => getLabels(),
   })
-  const mutationLalbels = useMutation({
+  const mutationLabels = useMutation({
     mutationFn: (issue: Issue) => editIssue(issue, issueKey),
     onError: () => {
       showNotification({
@@ -40,6 +42,7 @@ export function Labels({
         message: `Labels for issue ${issueKey} has been modified!`,
         color: "green",
       })
+      onMutate()
     },
   })
   return (
@@ -62,15 +65,15 @@ export function Labels({
           defaultValue={defaultLabels}
           data={allLabels || []}
           onBlur={() => {
-            setshowLabelsInput(false)
-            mutationLalbels.mutate({
+            setShowLabelsInput(false)
+            mutationLabels.mutate({
               labels: defaultLabels,
             } as Issue)
           }}
-          onChange={(value) => setdefaultLabels(value)}
+          onChange={(value) => setDefaultLabels(value)}
         />
       ) : (
-        <Box onClick={() => setshowLabelsInput(true)}>
+        <Box onClick={() => setShowLabelsInput(true)}>
           {defaultLabels.length !== 0 ? (
             <Group spacing={3}>
               {defaultLabels.map((label) => (

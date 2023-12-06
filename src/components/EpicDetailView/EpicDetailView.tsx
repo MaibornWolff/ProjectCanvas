@@ -56,6 +56,8 @@ export function EpicDetailView({
   closeModal: () => void
 }) {
   const queryClient = useQueryClient()
+  const reloadEpics = () => queryClient.invalidateQueries({ queryKey: ["epics"] });
+
   const dateFormat = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
     timeStyle: "short",
@@ -84,9 +86,7 @@ export function EpicDetailView({
                 size="h1"
                 sx={{ marginBottom: "-10px" }}
             >
-              <IssueSummary summary={summary} issueKey={issueKey} onMutate={() => {
-                queryClient.invalidateQueries({ queryKey: ["epics"] })
-              }} />
+              <IssueSummary summary={summary} issueKey={issueKey} onMutate={reloadEpics} />
             </Title>
             <ScrollArea.Autosize
                 maxHeight="70vh"
@@ -123,7 +123,7 @@ export function EpicDetailView({
                         <Text fz="sm" color="dimmed">
                           Labels
                         </Text>
-                        <Labels labels={labels} issueKey={issueKey} />
+                        <Labels labels={labels} issueKey={issueKey} onMutate={reloadEpics} />
                       </Group>
                       <ReporterMenu issueKey={issueKey} />
                     </Stack>
