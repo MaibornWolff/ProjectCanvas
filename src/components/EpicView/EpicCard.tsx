@@ -3,6 +3,7 @@ import {
     Avatar,
     Badge,
     Box,
+    Paper,
     Center,
     Grid,
     Group,
@@ -12,31 +13,29 @@ import {
     Tooltip,
     useMantineTheme
 } from "@mantine/core";
-import {Draggable} from "react-beautiful-dnd";
-import {useHover, useMergedRef} from "@mantine/hooks";
-import {DeleteButton} from "../BacklogView/Issue/DeleteButton";
+import {useHover} from "@mantine/hooks";
 import {useState} from "react";
 import {useQueryClient} from "@tanstack/react-query";
 import {IconBolt} from "@tabler/icons";
+import {DeleteButton} from "../BacklogView/Issue/DeleteButton";
 import {EpicDetailView} from "../EpicDetailView/EpicDetailView";
 
 export function EpicCard ({
     issueKey,
     summary,
     status,
-    type,
     storyPointsEstimate,
     epic,
     labels,
     assignee,
-    index,
+    type,
     projectId,
     ...props
-}: Issue & {index : number}) {
+}: Issue) {
     let storyPointsColor: string
     const [opened, setOpened] = useState(false)
     const queryClient = useQueryClient()
-    const { ref, hovered } = useHover()
+    const {hovered} = useHover()
     const theme = useMantineTheme()
     const hoverStyles =
         theme.colorScheme === "dark"

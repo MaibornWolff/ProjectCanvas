@@ -1,11 +1,11 @@
 import {Group, Stack, Text, Title, ScrollArea, Box, Button, Center, Loader} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
-import {useCanvasStore} from "../../lib/Store";
 import {useState} from "react";
+import {useQuery} from "@tanstack/react-query";
+import {useCanvasStore} from "../../lib/Store";
 import {CreateIssueModal} from "../CreateIssue/CreateIssueModal";
 import {Issue} from "../../../types";
 import {EpicWrapper} from "./EpicWrapper";
-import {useQuery} from "@tanstack/react-query";
 import {getEpics} from "./helpers/queryFetchers";
 
 
@@ -13,13 +13,9 @@ import {getEpics} from "./helpers/queryFetchers";
 export function EpicView() {
   const navigate = useNavigate()
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
-  const [search, setSearch] = useState("")
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
   const [EpicWrappers, setEpicWrappers] = useState(
-      new Map<string, { issues: Issue[]}>()
-  )
-  const [searchedEpicWrappers, setSearchedepicWrappers] = useState(
       new Map<string, { issues: Issue[]}>()
   )
 
@@ -28,42 +24,36 @@ export function EpicView() {
       value: { issues: Issue[]}
   ) => {
       setEpicWrappers((map) => new Map(map.set(key, value)))
-      setSearchedepicWrappers((map) => new Map(map.set(key, value)))
   }
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const currentSearch = event.currentTarget.value
-    setSearch(currentSearch)
-    //TODO implement search
-  }
-    const { isLoading: isLoadingBacklogIssues, isError: isErrorBacklogIssues } =
-        useQuery({
-            queryKey: ["epics", projectKey],
-            queryFn: () => getEpics(projectKey),
-            enabled: !!projectKey,
-            onSuccess: (epics) => {
-                updateEpicWrapper("EpicView", {
-                    issues:
-                        epics && epics instanceof Array ? epics : []
-                })
-            },
-        })
-    if (isLoadingBacklogIssues)
-    return (
-        <Center style={{ width: "100%", height: "100%" }}>
-            {projectKey ? (
-                <Loader />
-            ) : (
-                <Stack align="center">
-                    <Title>No Project has been selected!</Title>
-                    <Text>
-                        Please go back to the Projects View section and select a project
-                    </Text>
-                    <Button onClick={() => navigate("/projectsview")}>Go back</Button>
-                </Stack>
-            )}
-        </Center>
-    )
+  const {isLoading: isLoadingEpics} =
+     useQuery({
+          queryKey: ["epics", projectKey],
+          queryFn: () => getEpics(projectKey),
+          enabled: !!projectKey,
+          onSuccess: (epics) => {
+              updateEpicWrapper("EpicView", {
+                  issues:
+                      epics && epics instanceof Array ? epics : []
+              })
+          },
+     })
+  if (isLoadingEpics)
+  return (
+      <Center style={{ width: "100%", height: "100%" }}>
+          {projectKey ? (
+              <Loader />
+          ) : (
+              <Stack align="center">
+                  <Title>No Project has been selected!</Title>
+                  <Text>
+                      Please go back to the Projects View section and select a project
+                  </Text>
+                  <Button onClick={() => navigate("/projectsview")}>Go back</Button>
+              </Stack>
+          )}
+      </Center>
+  )
     return (
     <Stack sx={{ minHeight: "100%"}}>
       <Stack align="left" spacing={0}>
@@ -95,9 +85,9 @@ export function EpicView() {
             minWidth: "260px",
           }}
       >
-          {searchedEpicWrappers.get("EpicView") &&(
+          {EpicWrappers.get("EpicView") &&(
         <Box mr="xs">
-            <EpicWrapper epics={searchedEpicWrappers.get("EpicView")!.issues}/>
+            <EpicWrapper epics={EpicWrappers.get("EpicView")!.issues}/>
         </Box>
         )}
         <Box mr="xs">
