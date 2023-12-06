@@ -10,3 +10,15 @@ export interface JiraServerUser {
     "48x48": string
   }
 }
+
+export interface JiraServerInfo {
+  baseUrl: string
+  version: string
+  versionNumbers: [number, number, number]
+  buildNumber: number
+  buildDate: string
+  serverTime: string
+  scmInfo: string
+  buildPartnerName: string
+  serverTitle: string
+}

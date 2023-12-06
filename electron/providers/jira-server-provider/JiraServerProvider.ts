@@ -13,7 +13,7 @@ import {
 } from "../../../types"
 import {JiraIssue, JiraIssueType, JiraProject, JiraSprint,} from "../../../types/jira"
 import {IProvider} from "../base-provider"
-import {JiraServerUser} from "./server-types";
+import {JiraServerInfo, JiraServerUser} from "./server-types";
 
 export class JiraServerProvider implements IProvider {
   private loginOptions = {
@@ -22,9 +22,54 @@ export class JiraServerProvider implements IProvider {
     password: "",
   }
 
+  private serverInfo?: JiraServerInfo = undefined
+
   private customFields = new Map<string, string>()
 
   private reversedCustomFields = new Map<string, string>()
+
+  private executeVersioned<R>(functionsByVersionMatcher: { [versionMatcher: string]: (...args: never[]) => R }, ...args: never[]) {
+    if (!this.serverInfo) {
+      throw new Error('Server info not set!')
+    }
+
+    const matches = (matcher: string): boolean => {
+      let match = true
+      matcher.split('.').forEach((matcherPart, index) => {
+        match = match && (
+            matcherPart === '*'
+            || matcherPart === this.serverInfo!.versionNumbers[index].toString()
+        )
+      })
+
+      return match
+    }
+
+    const isAMoreSpecificThanB = (matcherA: string, matcherB: string): boolean => {
+      const matcherBParts = matcherB.split('.')
+      let isMoreSpecific = false;
+      matcherA.split('.').forEach((matcherAPart, index) => {
+        if (matcherBParts[index] === '*' && matcherAPart !== '*') {
+          isMoreSpecific = true;
+        }
+      })
+
+      return isMoreSpecific;
+    }
+
+    let selectedMatcher: string | undefined
+    Object.keys(functionsByVersionMatcher).forEach((matcher) => {
+      if (matches(matcher) && (selectedMatcher === undefined || isAMoreSpecificThanB(matcher, selectedMatcher))) {
+        selectedMatcher = matcher
+      }
+    })
+
+    if (!selectedMatcher) {
+      throw new Error(`No version matcher found for version: ${this.serverInfo.version}`)
+    }
+
+    return functionsByVersionMatcher[selectedMatcher](...args)
+  }
 
   private getAuthHeader() {
     return `Basic ${Buffer.from(
@@ -98,8 +143,29 @@ export class JiraServerProvider implements IProvider {
     this.loginOptions.username = basicLoginOptions.username
     this.loginOptions.password = basicLoginOptions.password
 
+    await this.getServerInfo()
     await this.mapCustomFields()
     return this.isLoggedIn()
+  }
+
+  async getServerInfo(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get('/serverInfo')
+        .then((response: AxiosResponse<JiraServerInfo>) => {
+          this.serverInfo = response.data
+          if (this.serverInfo.versionNumbers[0] < 7) {
+            reject(new Error(
+              `Your Jira server version is unsupported. Minimum major version: 7. Your version: ${this.serverInfo.versionNumbers[0]}`,
+            ))
+          }
+
+          resolve()
+        })
+        .catch((error) => {
+          reject(new Error(`Error in checking server info: ${error}`))
+        })
+    })
   }
 
   async isLoggedIn(): Promise<void> {
@@ -292,16 +358,24 @@ export class JiraServerProvider implements IProvider {
   async moveIssueToSprintAndRank(
     sprint: number,
     issue: string,
+    rankBefore: string,
+    rankAfter: string
   ): Promise<void> {
     return new Promise((resolve, reject) => {
+      const rankCustomField = this.customFields.get("Rank")
       this.getAgileRestApiClient('1.0')
         .post(
           `/sprint/${sprint}/issue`,
-          { issues: [issue] } // Ranking issues in the sprints is not supported by Jira server
+          {
+            rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
+            issues: [issue],
+            ...(rankAfter && { rankAfterIssue: rankAfter }),
+            ...(rankBefore && { rankBeforeIssue: rankBefore }),
+          }
         )
         .then(() => resolve())
         .catch((error) => {
-          reject(new Error(`Error in moving this issue to the Sprint with id ${sprint}: ${JSON.stringify(error.response.data)}`))
+          reject(new Error(`Error in moving this issue to the Sprint with id ${sprint}: ${error}`))
         })
     })
   }
@@ -345,7 +419,7 @@ export class JiraServerProvider implements IProvider {
         .put('/issue/rank', body)
         .then(() => resolve())
         .catch((error) =>
-          reject(new Error(`Error in ranking this issue in the Backlog: ${error}`))
+          reject(new Error(`Error in moving this issue to the Backlog: ${error}`))
         )
     })
   }
@@ -573,6 +647,40 @@ export class JiraServerProvider implements IProvider {
   }
 
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
+    return this.executeVersioned({
+      '7.*': this.getIssueTypesWithFieldsMap_7.bind(this),
+      '*': this.getIssueTypesWithFieldsMap_8and9.bind(this)
+    })
+  }
+
+  getIssueTypesWithFieldsMap_7(): Promise<{ [key: string]: string[] }> {
+    return new Promise((resolve) => {
+      this.getRestApiClient(2)
+        .get('/issue/createmeta?expand=projects.issuetypes.fields')
+        .then(async (response) => {
+          const issueTypeToFieldsMap: { [key: string]: string[] } = {}
+          response.data.projects.forEach(
+            (project: {
+              id: string
+              issuetypes: {
+                fields: {}
+                id: string
+              }[]
+            }) => {
+              project.issuetypes.forEach((issueType) => {
+                const fieldKeys = Object.keys(issueType.fields)
+                issueTypeToFieldsMap[issueType.id] = fieldKeys.map(
+                  (fieldKey) => this.reversedCustomFields.get(fieldKey)!
+                )
+              })
+            }
+          )
+          resolve(issueTypeToFieldsMap)
+        })
+    })
+  }
+
+  getIssueTypesWithFieldsMap_8and9(): Promise<{ [key: string]: string[] }> {
     return new Promise((resolve) => {
       // IMPROVE: This is barely scalable
       this.getProjects()
@@ -583,7 +691,7 @@ export class JiraServerProvider implements IProvider {
             this.getRestApiClient(2)
               .get(`/issue/createmeta/${project.id}/issuetypes`)
               .then(async (response) => {
-                await Promise.all(response.data.values.map((issueType: { id: string }) => 
+                await Promise.all(response.data.values.map((issueType: { id: string }) =>
                   // IMPROVE: This call currently only supports 50 issue types
                   this.getRestApiClient(2)
                     .get(`/issue/createmeta/${project.id}/issuetypes/${issueType.id}`)
