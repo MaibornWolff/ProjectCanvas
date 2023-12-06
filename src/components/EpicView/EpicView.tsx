@@ -12,13 +12,9 @@ import {getEpics} from "./helpers/queryFetchers";
 export function EpicView() {
   const navigate = useNavigate()
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
-  const [search, setSearch] = useState("")
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
   const [EpicWrappers, setEpicWrappers] = useState(
-      new Map<string, { issues: Issue[]}>()
-  )
-  const [searchedEpicWrappers, setSearchedEpicWrappers] = useState(
       new Map<string, { issues: Issue[]}>()
   )
 
@@ -27,15 +23,9 @@ export function EpicView() {
       value: { issues: Issue[]}
   ) => {
       setEpicWrappers((map) => new Map(map.set(key, value)))
-      setSearchedEpicWrappers((map) => new Map(map.set(key, value)))
   }
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const currentSearch = event.currentTarget.value
-    setSearch(currentSearch)
-    //TODO implement search
-  }
-  const { isLoading: isLoadingEpics, isError: isErrorBacklogIssues } =
+  const {isLoading: isLoadingEpics} =
      useQuery({
           queryKey: ["epics", projectKey],
           queryFn: () => getEpics(projectKey),
@@ -94,9 +84,9 @@ export function EpicView() {
             minWidth: "260px",
           }}
       >
-          {searchedEpicWrappers.get("EpicView") &&(
+          {EpicWrappers.get("EpicView") &&(
         <Box mr="xs">
-            <EpicWrapper epics={searchedEpicWrappers.get("EpicView")!.issues}/>
+            <EpicWrapper epics={EpicWrappers.get("EpicView")!.issues}/>
         </Box>
         )}
         <Box mr="xs">
