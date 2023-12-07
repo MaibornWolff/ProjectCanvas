@@ -1,7 +1,7 @@
 {
   "name": "project-canvas",
   "productName": "Project Canvas",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "The better project management tool.",
   "license": "BSD-3-Clause",
   "author": {
@@ -18,10 +18,8 @@
     "lint": "eslint ./src",
     "test": "jest",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview",
     "pree2e": "yarn run package",
     "e2e": "playwright test",
-    "canvas": "yarn --cwd project-canvas start",
     "prepare": "husky install",
     "pre-commit": "lint-staged"
   },
@@ -101,6 +99,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/TU-TeamCanvas/ProjectCanvas"
+    "url": "https://github.com/MaibornWolff/ProjectCanvas"
   }
 }

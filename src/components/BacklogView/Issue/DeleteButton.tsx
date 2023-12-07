@@ -68,7 +68,8 @@ export function DeleteButton({
               }} />
               <DeleteIssueAlert
                 issueKey={issueKey}
-                closeModal={() => setIssuePopoverOpened(false)}
+                cancelAlert={() => setIssuePopoverOpened(false)}
+                confirmAlert={() => setIssuePopoverOpened(false)}
               />
             </Popover.Dropdown>
           </Popover>

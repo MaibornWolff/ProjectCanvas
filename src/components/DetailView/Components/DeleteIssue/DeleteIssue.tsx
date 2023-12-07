@@ -1,5 +1,6 @@
 import { Button, Popover } from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
+import {useState} from "react";
 import { DeleteIssueAlert } from "./DeleteIssueAlert"
 
 export function DeleteIssue({
@@ -9,10 +10,22 @@ export function DeleteIssue({
   issueKey: string
   closeModal: () => void
 }) {
+  const [issuePopoverOpened, setIssuePopoverOpened] = useState(false)
+
   return (
-    <Popover width="40vh" trapFocus position="bottom" withArrow shadow="md">
+    <Popover
+      width="40vh"
+      trapFocus
+      position="bottom"
+      withArrow
+      shadow="md"
+      opened={issuePopoverOpened}
+    >
       <Popover.Target>
-        <Button color="red" rightIcon={<IconTrash size={16} />}>
+        <Button color="red" rightIcon={<IconTrash size={16} />} onClick={(e) => {
+          e.stopPropagation()
+          setIssuePopoverOpened(!issuePopoverOpened)
+        }}>
           Delete
         </Button>
       </Popover.Target>
@@ -22,7 +35,11 @@ export function DeleteIssue({
             theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
         })}
       >
-        <DeleteIssueAlert issueKey={issueKey} closeModal={closeModal} />
+        <DeleteIssueAlert
+          issueKey={issueKey}
+          cancelAlert={() => setIssuePopoverOpened(false)}
+          confirmAlert={closeModal}
+        />
       </Popover.Dropdown>
     </Popover>
   )
