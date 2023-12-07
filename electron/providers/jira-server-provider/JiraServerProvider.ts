@@ -580,8 +580,8 @@ export class JiraServerProvider implements IProvider {
         .then(async (response) => {
           const epics: Promise<Issue[]> = Promise.all(
             response.data.issues.map(async (element: JiraIssue) => {
-              const startDate = element.fields[this.customFields.get("Start date")!];
-              const dueDate = element.fields[this.customFields.get("Due date")!];
+              const startDate = element.fields[this.customFields.get("Start date")!] as string;
+              const dueDate = element.fields[this.customFields.get("Due date")!] as string;
 
               return {
                 issueKey: element.key,

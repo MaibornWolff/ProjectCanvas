@@ -170,7 +170,6 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get('/field')
         .then(async (response) => {
-          console.log(response.data)
           response.data.forEach((field: { name: string; id: string }) => {
             this.customFields.set(field.name, field.id)
             this.reversedCustomFields.set(field.id, field.name)
@@ -748,9 +747,6 @@ export class JiraCloudProvider implements IProvider {
     const offsetStartDate = this.offsetDate(startDate)
     const offsetDueDate = this.offsetDate(dueDate)
 
-    console.log(startDate)
-    console.log(offsetStartDate)
-
     return new Promise((resolve, reject) => {
       this.getRestApiClient(3)
         .put(
@@ -855,8 +851,8 @@ export class JiraCloudProvider implements IProvider {
         .then(async (response) => {
           const epics: Promise<Issue[]> = Promise.all(
             response.data.issues.map(async (element: JiraIssue) => {
-              const startDate = element.fields[this.customFields.get("Start date")!];
-              const dueDate = element.fields[this.customFields.get("Due date")!];
+              const startDate = element.fields[this.customFields.get("Start date")!] as string;
+              const dueDate = element.fields[this.customFields.get("Due date")!] as string;
 
               return {
                 issueKey: element.key,
