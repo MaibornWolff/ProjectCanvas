@@ -579,15 +579,31 @@ export class JiraServerProvider implements IProvider {
         .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}`)
         .then(async (response) => {
           const epics: Promise<Issue[]> = Promise.all(
-            response.data.issues.map(async (element: JiraIssue) => ({
-              issueKey: element.key,
-              summary: element.fields.summary,
-              labels: element.fields.labels,
-              assignee: {
-                displayName: element.fields.assignee?.displayName,
-                avatarUrls: element.fields.assignee?.avatarUrls,
-              },
-            }))
+            response.data.issues.map(async (element: JiraIssue) => {
+              const startDate = element.fields[this.customFields.get("Start date")!];
+              const dueDate = element.fields[this.customFields.get("Due date")!];
+
+              return {
+                issueKey: element.key,
+                summary: element.fields.summary,
+                labels: element.fields.labels,
+                assignee: {
+                  displayName: element.fields.assignee?.displayName,
+                  avatarUrls: element.fields.assignee?.avatarUrls,
+                },
+                subtasks: element.fields.subtasks,
+                created: element.fields.created,
+                updated: element.fields.updated,
+                comment: element.fields.comment ?? {
+                  comments: [],
+                },
+                projectId: element.fields.project.id,
+                sprint: element.fields.sprint,
+                attachments: element.fields.attachment,
+                startDate: startDate ? new Date(startDate) : undefined,
+                dueDate: dueDate ? new Date(dueDate) : undefined,
+              }
+            })
           )
           resolve(epics)
         })

@@ -170,6 +170,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get('/field')
         .then(async (response) => {
+          console.log(response.data)
           response.data.forEach((field: { name: string; id: string }) => {
             this.customFields.set(field.name, field.id)
             this.reversedCustomFields.set(field.id, field.name)
@@ -747,6 +748,9 @@ export class JiraCloudProvider implements IProvider {
     const offsetStartDate = this.offsetDate(startDate)
     const offsetDueDate = this.offsetDate(dueDate)
 
+    console.log(startDate)
+    console.log(offsetStartDate)
+
     return new Promise((resolve, reject) => {
       this.getRestApiClient(3)
         .put(
@@ -793,10 +797,10 @@ export class JiraCloudProvider implements IProvider {
               ...(labels && {
                 labels,
               }),
-              ...(offsetStartDate && {
+              ...(offsetStartDate !== undefined && {
                 [this.customFields.get("Start date")!]: offsetStartDate,
               }),
-              ...(offsetDueDate && {
+              ...(offsetDueDate !== undefined && {
                 [this.customFields.get("Due date")!]: offsetDueDate,
               }),
               ...(sprint && {
@@ -850,24 +854,31 @@ export class JiraCloudProvider implements IProvider {
         .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}`)
         .then(async (response) => {
           const epics: Promise<Issue[]> = Promise.all(
-            response.data.issues.map(async (element: JiraIssue) => ({
-              issueKey: element.key,
-              summary: element.fields.summary,
-              labels: element.fields.labels,
-              assignee: {
-                displayName: element.fields.assignee?.displayName,
-                avatarUrls: element.fields.assignee?.avatarUrls,
-              },
-              subtasks: element.fields.subtasks,
-              created: element.fields.created,
-              updated: element.fields.updated,
-              comment: element.fields.comment ?? {
-                comments: [],
-              },
-              projectId: element.fields.project.id,
-              sprint: element.fields.sprint,
-              attachments: element.fields.attachment,
-            }))
+            response.data.issues.map(async (element: JiraIssue) => {
+              const startDate = element.fields[this.customFields.get("Start date")!];
+              const dueDate = element.fields[this.customFields.get("Due date")!];
+
+              return {
+                issueKey: element.key,
+                summary: element.fields.summary,
+                labels: element.fields.labels,
+                assignee: {
+                  displayName: element.fields.assignee?.displayName,
+                  avatarUrls: element.fields.assignee?.avatarUrls,
+                },
+                subtasks: element.fields.subtasks,
+                created: element.fields.created,
+                updated: element.fields.updated,
+                comment: element.fields.comment ?? {
+                  comments: [],
+                },
+                projectId: element.fields.project.id,
+                sprint: element.fields.sprint,
+                attachments: element.fields.attachment,
+                startDate: startDate ? new Date(startDate) : undefined,
+                dueDate: dueDate ? new Date(dueDate) : undefined,
+              }
+            })
           )
           resolve(epics)
         })
