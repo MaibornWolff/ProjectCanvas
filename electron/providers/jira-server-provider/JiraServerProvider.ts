@@ -894,10 +894,10 @@ export class JiraServerProvider implements IProvider {
               ...(labels && {
                 labels,
               }),
-              ...(offsetStartDate && {
+              ...(offsetStartDate !== undefined && {
                 [this.customFields.get("Start date")!]: offsetStartDate,
               }),
-              ...(offsetDueDate && {
+              ...(offsetDueDate !== undefined && {
                 [this.customFields.get("Due date")!]: offsetDueDate,
               }),
               ...(sprint && {
