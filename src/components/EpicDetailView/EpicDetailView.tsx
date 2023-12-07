@@ -141,6 +141,7 @@ export function EpicDetailView({
                           date={startDate}
                           mutation={useDateMutation('startDate')}
                           placeholder="Pick start date"
+                          {...(dueDate && { maxDate: dueDate })}
                         />
                       </Group>
                       <Group grow>
@@ -151,6 +152,7 @@ export function EpicDetailView({
                           date={dueDate}
                           mutation={useDateMutation('dueDate')}
                           placeholder="Pick due date"
+                          {...(startDate && { minDate: startDate })}
                         />
                       </Group>
                       <ReporterMenu issueKey={issueKey} />
