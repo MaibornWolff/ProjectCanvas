@@ -50,7 +50,8 @@ export function EpicDetailView({
   const reloadEpics = () => queryClient.invalidateQueries({ queryKey: ["epics"] });
 
   const useDateMutation = (property: string) => useMutation({
-    mutationFn: (currentDate: Date | undefined) => editIssue({ [property]: currentDate } as unknown as Issue, issueKey),
+    mutationFn: async (currentDate: Date | null) =>
+      editIssue({ [property]: currentDate } as unknown as Issue, issueKey).then(reloadEpics),
     onError: () => {
       showNotification({
         message: `An error occurred while modifing the date 😢`,
@@ -136,7 +137,6 @@ export function EpicDetailView({
                         <Text fz="sm" color="dimmed">
                           Start date
                         </Text>
-                        {/* TODO fixme also fix using custom fields */}
                         <InlineDatePicker
                           date={startDate}
                           mutation={useDateMutation('startDate')}
