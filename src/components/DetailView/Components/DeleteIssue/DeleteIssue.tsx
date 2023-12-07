@@ -35,12 +35,11 @@ export function DeleteIssue({
             theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
         })}
       >
-        <DeleteIssueAlert issueKey={issueKey}
+        <DeleteIssueAlert
+          issueKey={issueKey}
           cancelAlert={() => setIssuePopoverOpened(false)}
-          confirmAlert={() => {
-          // setIssuePopoverOpened(false)
-          closeModal()
-        }} />
+          confirmAlert={closeModal}
+        />
       </Popover.Dropdown>
     </Popover>
   )
