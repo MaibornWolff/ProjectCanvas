@@ -12,11 +12,12 @@ export function LoginForm({
   onSuccess: () => void
 }) {
   const { t } = useTranslation("login")
+  const metaEnv = import.meta.env
   const form = useForm<LoginFormValues>({
     initialValues: {
-      url: "http://localhost:8080",
-      username: "admin",
-      password: "admin",
+      url: metaEnv.VITE_JIRA_SERVER_DEFAULT_URL ?? '',
+      username: metaEnv.VITE_JIRA_SERVER_DEFAULT_USERNAME ?? '',
+      password: metaEnv.VITE_JIRA_SERVER_DEFAULT_PASSWORD ?? '',
     },
   })
   return (
