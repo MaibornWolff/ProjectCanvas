@@ -3,6 +3,7 @@ import { useForm } from "@mantine/form"
 import { useTranslation } from "react-i18next"
 import { LoginFormValues } from "./LoginFormValues"
 import { loginToJiraServer } from "./loginToJiraServer"
+import { getImportMetaEnv } from "../../../get-meta-env";
 
 export function LoginForm({
   goBack,
@@ -12,7 +13,7 @@ export function LoginForm({
   onSuccess: () => void
 }) {
   const { t } = useTranslation("login")
-  const metaEnv = import.meta.env
+  const metaEnv = getImportMetaEnv()
   const form = useForm<LoginFormValues>({
     initialValues: {
       url: metaEnv.VITE_JIRA_SERVER_DEFAULT_URL ?? '',

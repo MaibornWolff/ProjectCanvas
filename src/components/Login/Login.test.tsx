@@ -3,6 +3,9 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { Login } from "./Login"
 
+jest.mock("../../get-meta-env.ts", () => ({
+  getImportMetaEnv: jest.fn(() => ({})),
+}))
 jest.mock("./jira-cloud/loginToJiraCloud.ts", () => ({
   loginToJiraCloud: jest.fn(),
 }))
