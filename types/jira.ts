@@ -26,12 +26,6 @@ export interface JiraEpic {
     creator: { name: string; displayName: string }
     status: { name: string }
     issuetype: { name: string }
-    // TODO: improve this, let's try not to:
-    //          -hardcode customfields
-    //          -not use | unknown if possible.
-    //    the problem is: change the LHS name of these props in the fields definition
-    //    based on the mapped fields (this.customFields),
-    //    it might change based on the jira instance
     customfield_10107: number
     parent: { id: string; fields: { summary: string } }
     epic: { name: string }
