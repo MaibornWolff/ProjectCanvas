@@ -26,6 +26,7 @@ export const addAttachmentMutation = (queryClient: QueryClient) =>
         color: "green",
       })
       queryClient.invalidateQueries({ queryKey: ["issues"] })
+      queryClient.invalidateQueries({ queryKey: ["epics"] })
     },
   })
 
@@ -51,5 +52,6 @@ export const deleteAttachmentMutation = (queryClient: QueryClient) =>
       })
       queryClient.removeQueries({ queryKey: ["thumbnails"] })
       queryClient.invalidateQueries({ queryKey: ["issues"] })
+      queryClient.invalidateQueries({ queryKey: ["epics"] })
     },
   })
