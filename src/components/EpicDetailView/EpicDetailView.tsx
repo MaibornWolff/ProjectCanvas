@@ -22,6 +22,7 @@ import { ReporterMenu } from "../DetailView/Components/ReporterMenu"
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
+import { ChildIssues } from "./helpers/ChildIssues"
 
 export function EpicDetailView({
   issueKey,
@@ -217,6 +218,12 @@ export function EpicDetailView({
                   </Text>
                 </HoverCard.Dropdown>
               </HoverCard>
+            </Group>
+            <Text color="dimmed" mb="sm" size="md" sx={{ marginLeft: "7px" }}>
+              Child issues
+            </Text>
+            <Group>
+              <ChildIssues summary={summary} />
             </Group>
           </ScrollArea.Autosize>
         </Stack>
