@@ -202,6 +202,9 @@ export function EpicCard ({
                     issueKey={issueKey}
                     summary={summary}
                     labels={labels}
+                    status={status}
+                    type={type}
+                    projectId={projectId}
                     assignee={assignee}
                     closeModal={() => setOpened(false)}
                     {...props}
