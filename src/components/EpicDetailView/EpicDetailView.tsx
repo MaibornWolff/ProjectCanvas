@@ -3,8 +3,10 @@ import {
   Badge,
   Box,
   Breadcrumbs,
+  Center,
   Group,
   HoverCard,
+  Loader,
   Paper,
   Progress,
   ScrollArea,
@@ -13,7 +15,8 @@ import {
   Title,
 } from "@mantine/core"
 import { Issue, User } from "types"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
 import { Description } from "../DetailView/Components/Description"
 import { IssueSummary } from "./Components/IssueSummary"
@@ -23,6 +26,9 @@ import { DeleteIssue } from "../DetailView/Components/DeleteIssue"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
 import { ChildIssues } from "./helpers/ChildIssues"
+import { getBacklogIssues } from "../BacklogView/helpers/queryFetchers"
+import { sortIssuesByRank } from "../BacklogView/helpers/backlogHelpers"
+import { useCanvasStore } from "../../lib/Store"
 
 export function EpicDetailView({
   issueKey,
@@ -52,10 +58,50 @@ export function EpicDetailView({
     timeStyle: "short",
   })
 
+  const projectKey = useCanvasStore((state) => state.selectedProject?.key)
+  const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
+  const currentBoardId = boardIds[0]
+
+  const [childIssuesWrapper, setChildIssuesWrapper] = useState(
+    new Map<string, { issues: Issue[] }>()
+  )
+
+  const updateChildIssuesWrapper = (
+    key: string,
+    value: { issues: Issue[] }
+  ) => {
+    setChildIssuesWrapper((map) => new Map(map.set(key, value)))
+  }
+
+  const { isLoading: isLoadingChildIssues } = useQuery({
+    queryKey: ["issues", projectKey, currentBoardId],
+    queryFn: () => getBacklogIssues(projectKey, currentBoardId),
+    enabled: !!projectKey,
+    onSuccess: (childIssues) => {
+      updateChildIssuesWrapper("childIssues", {
+        issues:
+          childIssues && childIssues instanceof Array
+            ? childIssues
+                .filter((issue: Issue) => issue.epic === summary)
+                .sort((issueA: Issue, issueB: Issue) =>
+                  sortIssuesByRank(issueA, issueB)
+                )
+            : [],
+      })
+    },
+  })
+
   // Hardcoded Progressbar
   const tasksDone = 3
   const tasksOpen = 1
   const tasksInProgress = 6
+
+  if (isLoadingChildIssues)
+    return (
+      <Center style={{ width: "100%", height: "100%" }}>
+        <Loader />
+      </Center>
+    )
 
   return (
     <Paper p="xs">
@@ -219,11 +265,11 @@ export function EpicDetailView({
                 </HoverCard.Dropdown>
               </HoverCard>
             </Group>
-            <Text color="dimmed" mb="sm" size="md" sx={{ marginLeft: "7px" }}>
-              Child issues
-            </Text>
+
             <Group>
-              <ChildIssues summary={summary} />
+              <ChildIssues
+                issues={childIssuesWrapper.get("childIssues")!.issues}
+              />
             </Group>
           </ScrollArea.Autosize>
         </Stack>
