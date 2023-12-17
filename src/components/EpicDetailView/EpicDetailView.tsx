@@ -30,6 +30,10 @@ import { getBacklogIssues } from "../BacklogView/helpers/queryFetchers"
 import { sortIssuesByRank } from "../BacklogView/helpers/backlogHelpers"
 import { useCanvasStore } from "../../lib/Store"
 import { resizeDivider } from "../BacklogView/helpers/resizeDivider"
+import {
+  inProgressAccumulator,
+  storyPointsAccumulator,
+} from "./helpers/storyPointsHelper"
 
 export function EpicDetailView({
   issueKey,
@@ -93,9 +97,24 @@ export function EpicDetailView({
   })
 
   // Hardcoded Progressbar
-  const tasksDone = 3
-  const tasksOpen = 1
-  const tasksInProgress = 6
+  const tasksDone = childIssuesWrapper.get("childIssues")
+    ? inProgressAccumulator(
+        childIssuesWrapper.get("childIssues")!.issues,
+        "Done"
+      )
+    : 0
+  const tasksOpen = childIssuesWrapper.get("childIssues")
+    ? inProgressAccumulator(
+        childIssuesWrapper.get("childIssues")!.issues,
+        "To Do"
+      )
+    : 0
+  const tasksInProgress = childIssuesWrapper.get("childIssues")
+    ? inProgressAccumulator(
+        childIssuesWrapper.get("childIssues")!.issues,
+        "In Progress"
+      )
+    : 0
 
   useEffect(() => {
     resizeDivider()
@@ -205,7 +224,14 @@ export function EpicDetailView({
                       marginBottom: "20px",
                     }}
                   >
-                    <Text size="xs">6</Text>
+                    <Text size="xs">
+                      {childIssuesWrapper.get("childIssues")
+                        ? storyPointsAccumulator(
+                            childIssuesWrapper.get("childIssues")!.issues,
+                            "To Do"
+                          )
+                        : "0"}
+                    </Text>
                   </Badge>
                 </HoverCard.Target>
                 <HoverCard.Dropdown>
@@ -215,7 +241,15 @@ export function EpicDetailView({
                       marginLeft: "-5px",
                     }}
                   >
-                    Total story points for <b>Open</b> issues: <b>6</b>
+                    Total story points for <b>Open</b> issues:{" "}
+                    <b>
+                      {childIssuesWrapper.get("childIssues")
+                        ? storyPointsAccumulator(
+                            childIssuesWrapper.get("childIssues")!.issues,
+                            "To Do"
+                          )
+                        : "0"}
+                    </b>
                   </Text>
                 </HoverCard.Dropdown>
               </HoverCard>
@@ -230,7 +264,14 @@ export function EpicDetailView({
                       marginBottom: "20px",
                     }}
                   >
-                    <Text size="xs">31</Text>
+                    <Text size="xs">
+                      {childIssuesWrapper.get("childIssues")
+                        ? storyPointsAccumulator(
+                            childIssuesWrapper.get("childIssues")!.issues,
+                            "In Progress"
+                          )
+                        : "0"}
+                    </Text>
                   </Badge>
                 </HoverCard.Target>
                 <HoverCard.Dropdown>
@@ -240,7 +281,15 @@ export function EpicDetailView({
                       marginLeft: "-5px",
                     }}
                   >
-                    Total story points for <b>In progress</b> issues: <b>31</b>
+                    Total story points for <b>In progress</b> issues:{" "}
+                    <b>
+                      {childIssuesWrapper.get("childIssues")
+                        ? storyPointsAccumulator(
+                            childIssuesWrapper.get("childIssues")!.issues,
+                            "In Progress"
+                          )
+                        : "0"}
+                    </b>
                   </Text>
                 </HoverCard.Dropdown>
               </HoverCard>
@@ -255,7 +304,14 @@ export function EpicDetailView({
                       marginBottom: "20px",
                     }}
                   >
-                    <Text size="xs">11</Text>
+                    <Text size="xs">
+                      {childIssuesWrapper.get("childIssues")
+                        ? storyPointsAccumulator(
+                            childIssuesWrapper.get("childIssues")!.issues,
+                            "Done"
+                          )
+                        : "0"}
+                    </Text>
                   </Badge>
                 </HoverCard.Target>
                 <HoverCard.Dropdown>
@@ -265,7 +321,15 @@ export function EpicDetailView({
                       marginLeft: "-5px",
                     }}
                   >
-                    Total story points for <b>Done</b> issues: <b>11</b>
+                    Total story points for <b>Done</b> issues:{" "}
+                    <b>
+                      {childIssuesWrapper.get("childIssues")
+                        ? storyPointsAccumulator(
+                            childIssuesWrapper.get("childIssues")!.issues,
+                            "Done"
+                          )
+                        : "0"}
+                    </b>
                   </Text>
                 </HoverCard.Dropdown>
               </HoverCard>
