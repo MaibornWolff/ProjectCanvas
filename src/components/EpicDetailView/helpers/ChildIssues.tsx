@@ -12,12 +12,8 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
   const [issuesWrappers, setIssuesWrappers] = useState(
     new Map<string, { issues: Issue[] }>()
   )
-  const [searchedissuesWrappers, setSearchedissuesWrappers] = useState(
-    new Map<string, { issues: Issue[] }>()
-  )
   const updateIssuesWrapper = (key: string, value: { issues: Issue[] }) => {
     setIssuesWrappers((map) => new Map(map.set(key, value)))
-    setSearchedissuesWrappers((map) => new Map(map.set(key, value)))
   }
 
   return (
@@ -45,11 +41,9 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
               height: 250,
             }}
           >
-            {searchedissuesWrappers.get("Backlog") && (
-              <Box mr="md">
-                <ChildIssueWrapper id="Backlog" issues={issues} />
-              </Box>
-            )}
+            <Box mr="md">
+              <ChildIssueWrapper id="childIssues" issues={issues} />
+            </Box>
             <Box mr="xs">
               <Button
                 mt="sm"

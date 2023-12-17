@@ -16,7 +16,7 @@ import {
 } from "@mantine/core"
 import { Issue, User } from "types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
 import { Description } from "../DetailView/Components/Description"
 import { IssueSummary } from "./Components/IssueSummary"
@@ -29,6 +29,7 @@ import { ChildIssues } from "./helpers/ChildIssues"
 import { getBacklogIssues } from "../BacklogView/helpers/queryFetchers"
 import { sortIssuesByRank } from "../BacklogView/helpers/backlogHelpers"
 import { useCanvasStore } from "../../lib/Store"
+import { resizeDivider } from "../BacklogView/helpers/resizeDivider"
 
 export function EpicDetailView({
   issueKey,
@@ -95,6 +96,10 @@ export function EpicDetailView({
   const tasksDone = 3
   const tasksOpen = 1
   const tasksInProgress = 6
+
+  useEffect(() => {
+    resizeDivider()
+  }, [isLoadingChildIssues])
 
   if (isLoadingChildIssues)
     return (
@@ -267,9 +272,13 @@ export function EpicDetailView({
             </Group>
 
             <Group>
-              <ChildIssues
-                issues={childIssuesWrapper.get("childIssues")!.issues}
-              />
+              {childIssuesWrapper.get("childIssues") && (
+                <Box mr="xs">
+                  <ChildIssues
+                    issues={childIssuesWrapper.get("childIssues")!.issues}
+                  />
+                </Box>
+              )}
             </Group>
           </ScrollArea.Autosize>
         </Stack>
