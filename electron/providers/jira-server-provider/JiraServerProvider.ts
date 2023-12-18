@@ -10,6 +10,7 @@ import {
   Sprint,
   SprintCreate,
   User,
+  Attachment
 } from "../../../types"
 import {JiraIssue, JiraIssueType, JiraProject, JiraSprint,} from "../../../types/jira"
 import {IProvider} from "../base-provider"
@@ -1054,5 +1055,58 @@ export class JiraServerProvider implements IProvider {
     const convertedDate = new Date(date)
     const timezoneOffset = convertedDate.getTimezoneOffset()
     return new Date(convertedDate.getTime() - timezoneOffset * 60 * 1000)
+  }
+
+  uploadAttachment(issueIdOrKey: string, attachment: FormData): Promise<Attachment> {
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .post(
+          `/issue/issue/${issueIdOrKey}/attachments`,
+          attachment,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              "X-Atlassian-Token": "no-check"
+            }
+          }
+        )
+        .then((response) => { resolve(response.data) })
+        .catch((error) => {
+          reject(Error(`Error uploading an attachment in issue ${issueIdOrKey}: ${error}`))
+        })
+    })
+  }
+
+  downloadAttachment(attachmentId: string): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get(`/attachment/content/${attachmentId}`)
+        .then((response) => { resolve(response.data) })
+        .catch((error) => {
+          reject(Error(`Error downloading attachment ${attachmentId}: ${error}`))
+        })
+    })
+  }
+
+  getAttachmentThumbnail(attachmentId: string): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .get(`/attachment/thumbnail/${attachmentId}`)
+        .then((response) => { resolve(response.data) })
+        .catch((error) => {
+          reject(Error(`Error getting thumbnail for attachment ${attachmentId}: ${error}`))
+        })
+    })
+  }
+
+  deleteAttachment(attachmentId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.getRestApiClient(2)
+        .delete(`/attachment/${attachmentId}`)
+        .then(() => { resolve() })
+        .catch((error) => {
+          reject(Error(`Error deleting attachment ${attachmentId}: ${error}`))
+        })
+    })
   }
 }
