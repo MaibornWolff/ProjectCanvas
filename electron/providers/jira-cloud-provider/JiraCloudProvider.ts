@@ -847,7 +847,7 @@ export class JiraCloudProvider implements IProvider {
   async getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(3)
-        .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}`)
+        .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}&fields=*all`)
         .then(async (response) => {
           const epics: Promise<Issue[]> = Promise.all(
             response.data.issues.map(async (element: JiraIssue) => ({
