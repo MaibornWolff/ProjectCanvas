@@ -668,7 +668,7 @@ export class JiraServerProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
         .get(
-          `search?jql=issuetype = Epic AND project = ${projectIdOrKey}&fields=*all`
+          `search?jql=issuetype = Epic AND project = ${projectIdOrKey}&fields=*all}`
         )
         .then(async (response) => {
           const epics: Promise<Issue[]> = Promise.all(
@@ -680,11 +680,23 @@ export class JiraServerProvider implements IProvider {
                 displayName: element.fields.assignee?.displayName,
                 avatarUrls: element.fields.assignee?.avatarUrls,
               },
+              subtasks: element.fields.subtasks,
               created: element.fields.created,
               updated: element.fields.updated,
-              comment: element.fields.comment ?? {
+              comment: {
+                comments: element.fields.comment.comments.map((coelem) => ({
+                  id: coelem.id,
+                  body: coelem.body.content[0].content[0].text,
+                  author: coelem.author,
+                  created: coelem.created,
+                  updated: coelem.updated,
+                })),
+              } ?? {
                 comments: [],
               },
+              projectId: element.fields.project.id,
+              sprint: element.fields.sprint,
+              attachments: element.fields.attachment,
             }))
           )
           resolve(epics)
