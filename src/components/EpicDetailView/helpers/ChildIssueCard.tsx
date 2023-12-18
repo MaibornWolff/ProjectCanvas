@@ -21,18 +21,18 @@ import { IssueIcon } from "../../BacklogView/Issue/IssueIcon"
 import { DeleteButton } from "../../BacklogView/Issue/DeleteButton"
 
 export function ChildIssueCard({
-                            issueKey,
-                            summary,
-                            status,
-                            type,
-                            storyPointsEstimate,
-                            epic,
-                            labels,
-                            assignee,
-                            index,
-                            projectId,
-                            ...props
-                          }: Issue & { index: number }) {
+  issueKey,
+  summary,
+  status,
+  type,
+  storyPointsEstimate,
+  epic,
+  labels,
+  assignee,
+  index,
+  projectId,
+  ...props
+}: Issue & { index: number }) {
   let storyPointsColor: string
   const [opened, setOpened] = useState(false)
   const queryClient = useQueryClient()
@@ -42,13 +42,13 @@ export function ChildIssueCard({
   const hoverStyles =
     theme.colorScheme === "dark"
       ? {
-        backgroundColor: theme.colors.dark[8],
-        transition: "background-color .1s ease-in",
-      }
+          backgroundColor: theme.colors.dark[8],
+          transition: "background-color .1s ease-in",
+        }
       : {
-        backgroundColor: theme.colors.gray[1],
-        transition: "background-color .1s ease-in",
-      }
+          backgroundColor: theme.colors.gray[1],
+          transition: "background-color .1s ease-in",
+        }
 
   switch (status) {
     case "To Do":
@@ -66,10 +66,7 @@ export function ChildIssueCard({
 
   return (
     <>
-      <Paper
-        onClick={() => setOpened(true)}
-        sx={{ position: "relative" }}
-      >
+      <Paper onClick={() => setOpened(true)} sx={{ position: "relative" }}>
         <DeleteButton mounted={hovered} issueKey={issueKey} />
         <Grid
           columns={100}
@@ -94,7 +91,7 @@ export function ChildIssueCard({
               <IssueIcon type={type} />
             </Center>
           </Grid.Col>
-          <Grid.Col span={74}>
+          <Grid.Col span={65}>
             <Stack spacing={0}>
               <Group spacing={2}>
                 <Text
@@ -118,11 +115,7 @@ export function ChildIssueCard({
                 )}
                 {labels?.length !== 0 &&
                   labels.map((label) => (
-                    <Badge
-                      mr={2}
-                      key={`${issueKey}-${label}`}
-                      color="yellow"
-                    >
+                    <Badge mr={2} key={`${issueKey}-${label}`} color="yellow">
                       {label}
                     </Badge>
                   ))}
@@ -134,6 +127,35 @@ export function ChildIssueCard({
                 <Text size="sm">{status}</Text>
               </Group>
             </Stack>
+          </Grid.Col>
+          <Grid.Col
+            span={10}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Box
+              sx={{
+                alignSelf: "flex-start",
+                marginBottom: "5px",
+              }}
+            >
+              <Badge
+                w="24px"
+                p="0px"
+                bg={
+                  storyPointsEstimate !== undefined &&
+                  storyPointsEstimate !== null
+                    ? storyPointsColor
+                    : "transparent"
+                }
+                variant="filled"
+              >
+                {storyPointsEstimate}
+              </Badge>
+            </Box>
           </Grid.Col>
           <Grid.Col
             span={8}
@@ -159,32 +181,9 @@ export function ChildIssueCard({
                   mr={4}
                 />
               ) : (
-                <Avatar
-                  radius="xl"
-                  variant="outline"
-                  size="sm"
-                  ml={4}
-                  mr={4}
-                />
+                <Avatar radius="xl" variant="outline" size="sm" ml={4} mr={4} />
               )}
             </Tooltip>
-          </Grid.Col>
-          <Grid.Col span={3}>
-            <Box sx={{ alignSelf: "flex-start" }}>
-              <Badge
-                w="24px"
-                p="0px"
-                bg={
-                  storyPointsEstimate !== undefined &&
-                  storyPointsEstimate !== null
-                    ? storyPointsColor
-                    : "transparent"
-                }
-                variant="filled"
-              >
-                {storyPointsEstimate}
-              </Badge>
-            </Box>
           </Grid.Col>
         </Grid>
       </Paper>

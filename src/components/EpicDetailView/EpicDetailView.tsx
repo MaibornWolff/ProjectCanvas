@@ -341,7 +341,7 @@ export function EpicDetailView({
               </HoverCard>
             </Group>
 
-            <Group>
+            <Group sx={{ marginLeft: "-10px" }}>
               {childIssuesWrapper.get("childIssues") && (
                 <Box mr="xs">
                   <ChildIssues

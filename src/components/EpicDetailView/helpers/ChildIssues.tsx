@@ -4,7 +4,7 @@ import { Issue } from "types"
 import { CreateIssueModal } from "../../CreateIssue/CreateIssueModal"
 import { ChildIssueWrapper } from "./ChildIssueWrapper"
 
-export function ChildIssues({ issues } : { issues: Issue[] }) {
+export function ChildIssues({ issues }: { issues: Issue[] }) {
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
 
   return (
@@ -20,11 +20,12 @@ export function ChildIssues({ issues } : { issues: Issue[] }) {
           p="sm"
           sx={{
             minWidth: "260px",
+            width: 570,
             height: 250,
           }}
         >
           <Box mr="md">
-            <ChildIssueWrapper id="childIssues" issues={issues} />
+            <ChildIssueWrapper issues={issues} />
           </Box>
           <Box mr="xs">
             <Button
