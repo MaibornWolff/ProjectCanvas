@@ -12,6 +12,7 @@ import {
   User,
 } from "../../../types"
 import {
+  JiraEpic,
   JiraIssue,
   JiraIssueType,
   JiraPriority,
@@ -847,10 +848,10 @@ export class JiraCloudProvider implements IProvider {
   async getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(3)
-        .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}`)
+        .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}&fields=*all`)
         .then(async (response) => {
           const epics: Promise<Issue[]> = Promise.all(
-            response.data.issues.map(async (element: JiraIssue) => ({
+            response.data.issues.map(async (element: JiraEpic) => ({
               issueKey: element.key,
               summary: element.fields.summary,
               labels: element.fields.labels,
@@ -861,7 +862,15 @@ export class JiraCloudProvider implements IProvider {
               subtasks: element.fields.subtasks,
               created: element.fields.created,
               updated: element.fields.updated,
-              comment: element.fields.comment ?? {
+              comment: {
+                comments: element.fields.comment.comments.map((commentElement) => ({
+                  id: commentElement.id,
+                  body: commentElement.body.content[0].content[0].text,
+                  author: commentElement.author,
+                  created: commentElement.created,
+                  updated: commentElement.updated,
+                })),
+              } ?? {
                 comments: [],
               },
               projectId: element.fields.project.id,
