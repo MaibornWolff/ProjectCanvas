@@ -96,7 +96,6 @@ export function EpicDetailView({
     },
   })
 
-  // Hardcoded Progressbar
   const tasksDone = childIssuesWrapper.get("childIssues")
     ? inProgressAccumulator(
         childIssuesWrapper.get("childIssues")!.issues,
@@ -172,7 +171,8 @@ export function EpicDetailView({
             <Group align="center">
               <Progress
                 radius="md"
-                size={25}
+                size={20}
+                label="hello"
                 styles={{
                   label: {
                     color: "black",
@@ -211,15 +211,21 @@ export function EpicDetailView({
                     label: `${tasksOpen}`,
                     tooltip: `${tasksOpen} ToDo`,
                   },
+                  {
+                    value: 100,
+                    color: "rgb(225,223,223)",
+                    label: `0`,
+                    tooltip: "Currently no child issues",
+                  },
                 ]}
               />
               <HoverCard width="relative" shadow="md" radius="md">
                 <HoverCard.Target>
                   <Badge
-                    px="10px"
+                    px="7px"
                     color="gray.6"
                     variant="filled"
-                    size="xl"
+                    size="md"
                     sx={{
                       marginBottom: "20px",
                     }}
@@ -256,10 +262,10 @@ export function EpicDetailView({
               <HoverCard width="relative" shadow="md" radius="md">
                 <HoverCard.Target>
                   <Badge
-                    px="10px"
+                    px="7px"
                     color="blue.8"
                     variant="filled"
-                    size="xl"
+                    size="md"
                     sx={{
                       marginBottom: "20px",
                     }}
@@ -296,10 +302,10 @@ export function EpicDetailView({
               <HoverCard width="relative" shadow="md" radius="md">
                 <HoverCard.Target>
                   <Badge
-                    px="10px"
+                    px="7px"
                     color="green.9"
                     variant="filled"
-                    size="xl"
+                    size="md"
                     sx={{
                       marginBottom: "20px",
                     }}
