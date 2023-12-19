@@ -53,8 +53,8 @@ export interface Issue {
   description: string
   storyPointsEstimate: number
   epic: {
-    issueKey: string,
-    summary: string,
+    issueKey?: string
+    summary?: string
   }
   labels: string[]
   assignee?: User

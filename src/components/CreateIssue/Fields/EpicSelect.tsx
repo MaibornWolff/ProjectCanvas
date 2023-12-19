@@ -68,7 +68,7 @@ export function EpicSelect({
           searchable
           clearable
           withinPortal
-          {...form.getInputProps("epic")}
+          {...form.getInputProps("epic.issueKey")}
         />
       </Box>
     </Tooltip>
