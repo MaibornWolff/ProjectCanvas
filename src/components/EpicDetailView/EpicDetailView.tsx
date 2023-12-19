@@ -54,8 +54,7 @@ export function EpicDetailView({
   closeModal: () => void
 }) {
   const queryClient = useQueryClient()
-  const reloadEpics = () =>
-    queryClient.invalidateQueries({ queryKey: ["epics"] })
+  const reloadEpics = () => queryClient.invalidateQueries({ queryKey: ["epics"] })
 
   const dateFormat = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
@@ -66,47 +65,25 @@ export function EpicDetailView({
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
   const currentBoardId = boardIds[0]
 
-  const [childIssuesWrapper, setChildIssuesWrapper] = useState(
-    new Map<string, { issues: Issue[] }>()
-  )
-
-  const updateChildIssuesWrapper = (
-    key: string,
-    value: { issues: Issue[] }
-  ) => {
-    setChildIssuesWrapper((map) => new Map(map.set(key, value)))
-  }
+  const [childIssues, setChildIssues] = useState<Issue[]>([])
 
   const { isLoading: isLoadingChildIssues } = useQuery({
     queryKey: ["issues", projectKey, currentBoardId],
     queryFn: () => getBacklogIssues(projectKey, currentBoardId),
     enabled: !!projectKey,
-    onSuccess: (childIssues) => {
-      updateChildIssuesWrapper("childIssues", {
-        issues:
-          childIssues && childIssues instanceof Array
-            ? childIssues
-                .filter((issue: Issue) => issue.epic === summary)
-                .sort((issueA: Issue, issueB: Issue) =>
-                  sortIssuesByRank(issueA, issueB)
-                )
-            : [],
-      })
+    onSuccess: (newChildIssues) => {
+      setChildIssues(
+        newChildIssues
+          ?.filter((issue: Issue) => issue.epic === summary)
+          ?.sort((issueA: Issue, issueB: Issue) => sortIssuesByRank(issueA, issueB))
+            ?? [],
+      )
     },
   })
 
-  const tasksOpen = inProgressAccumulator(
-    childIssuesWrapper.get("childIssues")?.issues ?? [],
-    "To Do"
-  )
-  const tasksInProgress = inProgressAccumulator(
-    childIssuesWrapper.get("childIssues")?.issues ?? [],
-    "In Progress"
-  )
-  const tasksDone = inProgressAccumulator(
-    childIssuesWrapper.get("childIssues")?.issues ?? [],
-    "Done"
-  )
+  const tasksOpen = inProgressAccumulator(childIssues, "To Do")
+  const tasksInProgress = inProgressAccumulator(childIssues, "In Progress")
+  const tasksDone = inProgressAccumulator(childIssues, "Done")
 
   useEffect(() => {
     resizeDivider()
@@ -215,34 +192,24 @@ export function EpicDetailView({
               <StoryPointsHoverCard
                 statusType="To Do"
                 color="gray.6"
-                count={storyPointsAccumulator(
-                  childIssuesWrapper.get("childIssues")?.issues ?? [],
-                  "To Do"
-                )} />
+                count={storyPointsAccumulator(childIssues, "To Do")}
+              />
               <StoryPointsHoverCard
                 statusType="In Progress"
                 color="blue.8"
-                count={storyPointsAccumulator(
-                  childIssuesWrapper.get("childIssues")?.issues ?? [],
-                  "In Progress"
-                )} />
+                count={storyPointsAccumulator(childIssues, "In Progress")}
+              />
               <StoryPointsHoverCard
                 statusType="Done"
                 color="green.9"
-                count={storyPointsAccumulator(
-                  childIssuesWrapper.get("childIssues")?.issues ?? [],
-                  "Done"
-                )} />
+                count={storyPointsAccumulator(childIssues, "Done")}
+              />
             </Group>
 
             <Group sx={{ marginLeft: "-10px" }}>
-              {childIssuesWrapper.get("childIssues") && (
-                <Box mr="xs">
-                  <ChildIssues
-                    issues={childIssuesWrapper.get("childIssues")!.issues}
-                  />
-                </Box>
-              )}
+              <Box mr="xs">
+                <ChildIssues issues={childIssues} />
+              </Box>
             </Group>
           </ScrollArea.Autosize>
         </Stack>
