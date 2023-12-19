@@ -518,7 +518,7 @@ export class JiraServerProvider implements IProvider {
               {
                 fields: {
                   summary,
-                  parent: { key: epic },
+                  parent: { key: epic.issueKey },
                   issuetype: { id: type },
                   project: {
                     id: projectId,
@@ -857,8 +857,8 @@ export class JiraServerProvider implements IProvider {
               ...(summary && {
                 summary,
               }),
-              ...(epic && {
-                parent: { key: epic },
+              ...(epic.issueKey && {
+                parent: { key: epic.issueKey },
               }),
               ...(type && {
                 issuetype: { id: type },
