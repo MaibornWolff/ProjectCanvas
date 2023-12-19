@@ -583,6 +583,9 @@ export class JiraServerProvider implements IProvider {
               issueKey: element.key,
               summary: element.fields.summary,
               labels: element.fields.labels,
+              projectId: element.fields.project.id,
+              status: element.fields.status.name,
+              type: element.fields.issuetype.name,
               assignee: {
                 displayName: element.fields.assignee?.displayName,
                 avatarUrls: element.fields.assignee?.avatarUrls,
