@@ -1,11 +1,9 @@
 import {
   Accordion,
-  Badge,
   Box,
   Breadcrumbs,
   Center,
   Group,
-  HoverCard,
   Loader,
   Paper,
   Progress,
@@ -34,6 +32,7 @@ import {
   inProgressAccumulator,
   storyPointsAccumulator,
 } from "./helpers/storyPointsHelper"
+import { StoryPointsHoverCard } from "./Components/StoryPointsHoverCard";
 
 export function EpicDetailView({
   issueKey,
@@ -96,24 +95,18 @@ export function EpicDetailView({
     },
   })
 
-  const tasksDone = childIssuesWrapper.get("childIssues")
-    ? inProgressAccumulator(
-        childIssuesWrapper.get("childIssues")!.issues,
-        "Done"
-      )
-    : 0
-  const tasksOpen = childIssuesWrapper.get("childIssues")
-    ? inProgressAccumulator(
-        childIssuesWrapper.get("childIssues")!.issues,
-        "To Do"
-      )
-    : 0
-  const tasksInProgress = childIssuesWrapper.get("childIssues")
-    ? inProgressAccumulator(
-        childIssuesWrapper.get("childIssues")!.issues,
-        "In Progress"
-      )
-    : 0
+  const tasksOpen = inProgressAccumulator(
+    childIssuesWrapper.get("childIssues")?.issues ?? [],
+    "To Do"
+  )
+  const tasksInProgress = inProgressAccumulator(
+    childIssuesWrapper.get("childIssues")?.issues ?? [],
+    "In Progress"
+  )
+  const tasksDone = inProgressAccumulator(
+    childIssuesWrapper.get("childIssues")?.issues ?? [],
+    "Done"
+  )
 
   useEffect(() => {
     resizeDivider()
@@ -219,126 +212,27 @@ export function EpicDetailView({
                   },
                 ]}
               />
-              <HoverCard width="relative" shadow="md" radius="md">
-                <HoverCard.Target>
-                  <Badge
-                    px="7px"
-                    color="gray.6"
-                    variant="filled"
-                    size="md"
-                    sx={{
-                      marginBottom: "20px",
-                    }}
-                  >
-                    <Text size="xs">
-                      {childIssuesWrapper.get("childIssues")
-                        ? storyPointsAccumulator(
-                            childIssuesWrapper.get("childIssues")!.issues,
-                            "To Do"
-                          )
-                        : "0"}
-                    </Text>
-                  </Badge>
-                </HoverCard.Target>
-                <HoverCard.Dropdown>
-                  <Text
-                    size="sm"
-                    sx={{
-                      marginLeft: "-5px",
-                    }}
-                  >
-                    Total story points for <b>Open</b> issues:{" "}
-                    <b>
-                      {childIssuesWrapper.get("childIssues")
-                        ? storyPointsAccumulator(
-                            childIssuesWrapper.get("childIssues")!.issues,
-                            "To Do"
-                          )
-                        : "0"}
-                    </b>
-                  </Text>
-                </HoverCard.Dropdown>
-              </HoverCard>
-              <HoverCard width="relative" shadow="md" radius="md">
-                <HoverCard.Target>
-                  <Badge
-                    px="7px"
-                    color="blue.8"
-                    variant="filled"
-                    size="md"
-                    sx={{
-                      marginBottom: "20px",
-                    }}
-                  >
-                    <Text size="xs">
-                      {childIssuesWrapper.get("childIssues")
-                        ? storyPointsAccumulator(
-                            childIssuesWrapper.get("childIssues")!.issues,
-                            "In Progress"
-                          )
-                        : "0"}
-                    </Text>
-                  </Badge>
-                </HoverCard.Target>
-                <HoverCard.Dropdown>
-                  <Text
-                    size="sm"
-                    sx={{
-                      marginLeft: "-5px",
-                    }}
-                  >
-                    Total story points for <b>In progress</b> issues:{" "}
-                    <b>
-                      {childIssuesWrapper.get("childIssues")
-                        ? storyPointsAccumulator(
-                            childIssuesWrapper.get("childIssues")!.issues,
-                            "In Progress"
-                          )
-                        : "0"}
-                    </b>
-                  </Text>
-                </HoverCard.Dropdown>
-              </HoverCard>
-              <HoverCard width="relative" shadow="md" radius="md">
-                <HoverCard.Target>
-                  <Badge
-                    px="7px"
-                    color="green.9"
-                    variant="filled"
-                    size="md"
-                    sx={{
-                      marginBottom: "20px",
-                    }}
-                  >
-                    <Text size="xs">
-                      {childIssuesWrapper.get("childIssues")
-                        ? storyPointsAccumulator(
-                            childIssuesWrapper.get("childIssues")!.issues,
-                            "Done"
-                          )
-                        : "0"}
-                    </Text>
-                  </Badge>
-                </HoverCard.Target>
-                <HoverCard.Dropdown>
-                  <Text
-                    size="sm"
-                    sx={{
-                      marginLeft: "-5px",
-                    }}
-                  >
-                    Total story points for <b>Done</b> issues:{" "}
-                    <b>
-                      {childIssuesWrapper.get("childIssues")
-                        ? storyPointsAccumulator(
-                            childIssuesWrapper.get("childIssues")!.issues,
-                            "Done"
-                          )
-                        : "0"}
-                    </b>
-                  </Text>
-                </HoverCard.Dropdown>
-              </HoverCard>
+              <StoryPointsHoverCard
+                statusType="To Do"
+                color="gray.6"
+                count={storyPointsAccumulator(
+                  childIssuesWrapper.get("childIssues")?.issues ?? [],
+                  "To Do"
+                )} />
+              <StoryPointsHoverCard
+                statusType="In Progress"
+                color="blue.8"
+                count={storyPointsAccumulator(
+                  childIssuesWrapper.get("childIssues")?.issues ?? [],
+                  "In Progress"
+                )} />
+              <StoryPointsHoverCard
+                statusType="Done"
+                color="green.9"
+                count={storyPointsAccumulator(
+                  childIssuesWrapper.get("childIssues")?.issues ?? [],
+                  "Done"
+                )} />
             </Group>
 
             <Group sx={{ marginLeft: "-10px" }}>
