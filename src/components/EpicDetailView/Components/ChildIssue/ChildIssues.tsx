@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Flex, ScrollArea, Stack } from "@mantine/core"
 import { useState } from "react"
-import { Issue } from "types"
-import { CreateIssueModal } from "../../CreateIssue/CreateIssueModal"
+import { Issue } from "../../../../../types"
+import { CreateIssueModal } from "../../../CreateIssue/CreateIssueModal"
 import { ChildIssueWrapper } from "./ChildIssueWrapper"
 
 export function ChildIssues({ issues }: { issues: Issue[] }) {

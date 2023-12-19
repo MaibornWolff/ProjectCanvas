@@ -14,11 +14,11 @@ import {
 } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { useQueryClient } from "@tanstack/react-query"
-import { Issue } from "types"
 import { useState } from "react"
-import { DetailView } from "../../DetailView/DetailView"
-import { IssueIcon } from "../../BacklogView/Issue/IssueIcon"
-import { DeleteButton } from "../../BacklogView/Issue/DeleteButton"
+import { Issue } from "../../../../../types"
+import { DetailView } from "../../../DetailView/DetailView"
+import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon"
+import { DeleteButton } from "../../../BacklogView/Issue/DeleteButton"
 
 export function ChildIssueCard({
   issueKey,
