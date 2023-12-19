@@ -52,7 +52,10 @@ export function EpicDetailView({
   closeModal: () => void
 }) {
   const queryClient = useQueryClient()
-  const reloadEpics = () => queryClient.invalidateQueries({ queryKey: ["epics"] });
+  const reloadEpics = () => {
+    queryClient.invalidateQueries({ queryKey: ["issues"] })
+    queryClient.invalidateQueries({ queryKey: ["epics"] })
+  };
 
   const [defaultStatus, setDefaultStatus] = useState(status)
   const statusMutation = useMutation({
