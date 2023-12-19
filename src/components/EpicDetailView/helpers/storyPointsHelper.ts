@@ -2,7 +2,7 @@ import { Issue } from "../../../../types"
 
 export const storyPointsAccumulator = (issues: Issue[], status: string) =>
   issues.reduce(
-    (accumulator, currentValue) => accumulator + (currentValue.status === status ? currentValue.storyPointsEstimate : 0) ?? 0,
+    (accumulator, currentValue) => accumulator + (currentValue.status === status ? currentValue.storyPointsEstimate ?? 0 : 0) ?? 0,
     0,
   )
 
