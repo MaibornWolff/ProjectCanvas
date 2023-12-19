@@ -808,12 +808,11 @@ export class JiraCloudProvider implements IProvider {
               ...(storyPointsEstimate !== undefined && {
                 [this.customFields.get("Story point estimate")!]:
                 storyPointsEstimate,
-            }),
-          },
-        })
-        .then(async () => {
-          resolve()
-        })
+              }),
+            },
+          }
+        )
+        .then(async () => { resolve() })
         .catch((error) => {
           let specificError = error
           if (error.response) {
@@ -824,7 +823,7 @@ export class JiraCloudProvider implements IProvider {
             }
           }
 
-          reject(new Error(`Error creating issue: ${specificError}`))
+          reject(new Error(`Error editing issue: ${specificError}`))
         })
     })
   }
