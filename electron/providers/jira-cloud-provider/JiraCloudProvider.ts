@@ -520,7 +520,10 @@ export class JiraCloudProvider implements IProvider {
           storyPointsEstimate: await this.getIssueStoryPointsEstimate(
             element.key
           ),
-          epic: element.fields.parent?.fields.summary,
+          epic: {
+            issueKey: element.fields.parent?.key,
+            summary: element.fields.parent?.fields.summary,
+          },
           labels: element.fields.labels,
           assignee: {
             displayName: element.fields.assignee?.displayName,

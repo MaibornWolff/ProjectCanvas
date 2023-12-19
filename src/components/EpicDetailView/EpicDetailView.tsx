@@ -74,7 +74,7 @@ export function EpicDetailView({
     onSuccess: (newChildIssues) => {
       setChildIssues(
         newChildIssues
-          ?.filter((issue: Issue) => issue.epic === summary)
+          ?.filter((issue: Issue) => issue.epic.issueKey === issueKey)
           ?.sort((issueA: Issue, issueB: Issue) => sortIssuesByRank(issueA, issueB))
             ?? [],
       )

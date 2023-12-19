@@ -33,7 +33,7 @@ export interface JiraIssue {
     //    based on the mapped fields (this.customFields),
     //    it might change based on the jira instance
     customfield_10107: number
-    parent: { id: string; fields: { summary: string } }
+    parent?: JiraIssue
     epic: { name: string }
     labels: string[]
     assignee: {
@@ -46,13 +46,7 @@ export interface JiraIssue {
       }
     }
     [rankCustomField: string]: string | unknown
-    subtasks: {
-      id: string
-      key: string
-      fields: {
-        summary: string
-      }
-    }[]
+    subtasks: JiraIssue[]
     project: { id: string }
     created: string
     updated: string

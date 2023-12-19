@@ -117,9 +117,9 @@ export function IssueCard({
                     >
                       {issueKey}
                     </Text>
-                    {epic && (
+                    {epic.issueKey && (
                       <Badge mr={5} color="violet">
-                        {epic}
+                        {epic.summary}
                       </Badge>
                     )}
                     {labels?.length !== 0 &&
