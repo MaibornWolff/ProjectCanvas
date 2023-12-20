@@ -474,7 +474,15 @@ export class JiraCloudProvider implements IProvider {
           subtasks: element.fields.subtasks,
           created: element.fields.created,
           updated: element.fields.updated,
-          comment: element.fields.comment,
+          comment: {
+            comments: element.fields.comment.comments.map((commentElement) => ({
+              id: commentElement.id,
+              body: (isAgile ? commentElement.body : commentElement.body[0]?.content[0]?.text),
+              author: commentElement.author,
+              created: commentElement.created,
+              updated: commentElement.updated,
+            })),
+          },
           projectId: element.fields.project.id,
           sprint: element.fields.sprint,
           attachments: element.fields.attachment,

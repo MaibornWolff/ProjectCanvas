@@ -73,7 +73,12 @@ export interface JiraIssue {
             }
             displayName: string
           }
-          body: string
+          body: string & {
+            content: {
+              type: string,
+              text: string
+            }[]
+          }[]
           created: string
           updated: string
         }
