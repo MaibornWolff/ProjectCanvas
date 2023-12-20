@@ -596,8 +596,6 @@ export class JiraServerProvider implements IProvider {
                 displayName: element.fields.assignee?.displayName,
                 avatarUrls: element.fields.assignee?.avatarUrls,
               },
-              created: element.fields.created,
-              updated: element.fields.updated,
             }))
           )
           resolve(epics)
