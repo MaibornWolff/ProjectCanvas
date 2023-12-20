@@ -21,7 +21,16 @@ export interface JiraSprint {
 export interface JiraIssue {
   key: string
   fields: {
-    description: string
+    description: {
+      type: string,
+      version: string,
+      content: string & {
+        content: {
+          type: string,
+          text: string
+        }[]
+      }[]
+    }
     summary: string
     creator: { name: string; displayName: string }
     status: { name: string }
@@ -33,7 +42,7 @@ export interface JiraIssue {
     //    based on the mapped fields (this.customFields),
     //    it might change based on the jira instance
     customfield_10107: number
-    parent: { id: string; fields: { summary: string } }
+    parent?: JiraIssue
     epic: { name: string }
     labels: string[]
     assignee: {
@@ -46,13 +55,7 @@ export interface JiraIssue {
       }
     }
     [rankCustomField: string]: string | unknown
-    subtasks: {
-      id: string
-      key: string
-      fields: {
-        summary: string
-      }
-    }[]
+    subtasks: JiraIssue[]
     project: { id: string }
     created: string
     updated: string
@@ -70,7 +73,12 @@ export interface JiraIssue {
             }
             displayName: string
           }
-          body: string
+          body: string & {
+            content: {
+              type: string,
+              text: string
+            }[]
+          }[]
           created: string
           updated: string
         }
