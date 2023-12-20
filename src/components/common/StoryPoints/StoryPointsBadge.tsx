@@ -10,7 +10,7 @@ export function StoryPointsBadge({
   storyPointsEstimate: number
 }) {
   return (
-    <Box sx={{ lineHeight: 1 }}>
+    <Box style={{ lineHeight: 1 }}>
       <Badge
         px="7px"
         color={getStatusTypeColor(statusType)}

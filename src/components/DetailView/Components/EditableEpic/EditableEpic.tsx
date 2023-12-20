@@ -73,7 +73,7 @@ export function EditableEpic({
         <Group>
           <Text
             onClick={() => setShowEpicInput(true)}
-            sx={{
+            style={{
               ":hover": { textDecoration: "underline", cursor: "pointer" },
             }}
           >

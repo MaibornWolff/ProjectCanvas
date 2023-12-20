@@ -41,7 +41,7 @@ export function AddSubtask({
         w="100%"
         mr="sm"
         placeholder="Add Subtask"
-        sx={{ flex: 10 }}
+        style={{ flex: 10 }}
         onChange={(e) => setSummary(e.target.value)}
         value={summary}
       />

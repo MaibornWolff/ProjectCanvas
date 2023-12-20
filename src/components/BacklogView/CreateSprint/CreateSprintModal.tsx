@@ -68,27 +68,26 @@ export function CreateSprintModal({
       onClose={() => setOpened(false)}
       title="Create Sprint"
       size="70vw"
-      overflow="outside"
-      overlayColor={
-        theme.colorScheme === "dark"
+      overlayProps={{
+        color: theme.colorScheme === "dark"
           ? theme.colors.dark[9]
-          : theme.colors.gray[2]
-      }
-      overlayOpacity={0.55}
-      overlayBlur={3}
+          : theme.colors.gray[2],
+        opacity: 0.55,
+        blur: 3,
+      }}
     >
       <ColorSchemeToggle
         size="34px"
-        sx={{
+        style={{
           position: "absolute",
           top: 19,
           right: 50,
         }}
       />
-      <ScrollArea.Autosize maxHeight="70vh">
+      <ScrollArea.Autosize style={{ maxHeight: "70vh" }}>
         <form
           onSubmit={form.onSubmit((sprint, event) => {
-            event.preventDefault()
+            event?.preventDefault()
             mutation.mutate(sprint)
           })}
         >

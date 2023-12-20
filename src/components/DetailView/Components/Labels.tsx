@@ -47,7 +47,7 @@ export function Labels({
   })
   return (
     <Box
-      sx={{
+      style={{
         ":hover": {
           cursor: "pointer",
           boxShadow: theme.shadows.xs,

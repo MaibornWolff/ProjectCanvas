@@ -81,7 +81,7 @@ export function DetailView({
       </Breadcrumbs>
       <ColorSchemeToggle
         size="34px"
-        sx={{
+        style={{
           position: "absolute",
           top: 19,
           right: 50,

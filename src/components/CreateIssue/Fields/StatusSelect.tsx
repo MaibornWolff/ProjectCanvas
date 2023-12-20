@@ -15,7 +15,6 @@ export function StatusSelect({
     <Select
       label="Status"
       placeholder="Choose status"
-      withinPortal
       searchable
       nothingFound={
         form.getInputProps("type").value === ""

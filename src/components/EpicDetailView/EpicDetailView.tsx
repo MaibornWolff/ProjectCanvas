@@ -13,6 +13,7 @@ import {
   Title,
   Menu,
   Button,
+  Tooltip,
 } from "@mantine/core"
 import { IconCaretDown } from "@tabler/icons"
 import { Attachment, Issue, User } from "types"
@@ -153,7 +154,7 @@ export function EpicDetailView({
       </Breadcrumbs>
       <ColorSchemeToggle
         size="34px"
-        sx={{
+        style={{
           position: "absolute",
           top: 19,
           right: 50,
@@ -180,43 +181,38 @@ export function EpicDetailView({
             <Description issueKey={issueKey} description={description} />
           </Group>
           <Group align="center" p="sm">
-            <Progress
+            <Progress.Root
               radius="md"
               size={20}
-              label="hello"
-              sx={{
+              style={{
                 width: "400px",
                 marginRight: "5px",
                 marginBottom: "20px",
                 flexGrow: 1
               }}
-              sections={[
-                {
-                  value: (tasksDone / totalTaskCount) * 100,
-                  color: getStatusTypeColor(StatusType.DONE),
-                  label: `${tasksDone}`,
-                  tooltip: `${tasksDone} Done`,
-                },
-                {
-                  value: (tasksInProgress / totalTaskCount) * 100,
-                  color: getStatusTypeColor(StatusType.IN_PROGRESS),
-                  label: `${tasksInProgress}`,
-                  tooltip: `${tasksInProgress} In progress`,
-                },
-                {
-                  value: (tasksTodo / totalTaskCount) * 100,
-                  color: getStatusTypeColor(StatusType.TODO),
-                  label: `${tasksTodo}`,
-                  tooltip: `${tasksTodo} ToDo`,
-                },
-                {
-                  value: 100,
-                  color: getStatusTypeColor(StatusType.TODO),
-                  label: `0`,
-                  tooltip: "Currently no child issues",
-                },
-              ]}
-            />
+            >
+              <Tooltip label={`${tasksDone} Done`}>
+                <Progress.Section value={(tasksDone / totalTaskCount) * 100} color={getStatusTypeColor(StatusType.DONE)}>
+                  <Progress.Label>{tasksDone}</Progress.Label>
+                </Progress.Section>
+              </Tooltip>
+              <Tooltip label={`${tasksInProgress} In progress`}>
+                <Progress.Section value={(tasksInProgress / totalTaskCount) * 100} color={getStatusTypeColor(StatusType.IN_PROGRESS)}>
+                  <Progress.Label>{tasksInProgress}</Progress.Label>
+                </Progress.Section>
+              </Tooltip>
+              <Tooltip label={`${tasksTodo} To do`}>
+                <Progress.Section value={(tasksTodo / totalTaskCount) * 100} color={getStatusTypeColor(StatusType.TODO)}>
+                  <Progress.Label>{tasksTodo}</Progress.Label>
+                </Progress.Section>
+              </Tooltip>
+              {totalTaskCount === 0 &&
+                <Tooltip label="Currently no child issues">
+                    <Progress.Section value={100} color={getStatusTypeColor(StatusType.TODO)}>
+                        <Progress.Label>0</Progress.Label>
+                    </Progress.Section>
+                </Tooltip>}
+            </Progress.Root>
             <StoryPointsHoverCard
               statusType={StatusType.TODO}
               count={storyPointsAccumulator(childIssues, StatusType.TODO)}

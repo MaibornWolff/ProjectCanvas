@@ -55,13 +55,13 @@ export function EpicView() {
       </Center>
   )
     return (
-    <Stack sx={{ minHeight: "100%"}}>
+    <Stack style={{ minHeight: "100%"}}>
       <Stack align="left" gap={0}>
         <Group>
           <Group gap="xs" c="dimmed">
             <Text
               onClick={() => navigate("/projectsview")}
-              sx={{
+              style={{
                 ":hover": {
                   textDecoration: "underline",
                   cursor: "pointer",
@@ -78,11 +78,11 @@ export function EpicView() {
       </Stack>
       <ScrollArea.Autosize
           className="main-panel"
-          maxHeight="calc(100vh - 230px)"
           w="100%"
           p="sm"
-          sx={{
+          style={{
             minWidth: "260px",
+            maxHeight: "calc(100vh - 230px)"
           }}
       >
           {EpicWrappers.get("EpicView") &&(
@@ -100,7 +100,7 @@ export function EpicView() {
               display="flex"
               fullWidth
               onClick={() => setCreateIssueModalOpened(true)}
-              sx={(theme) => ({
+              style={(theme) => ({
                 justifyContent: "left",
                 ":hover": {
                   background:

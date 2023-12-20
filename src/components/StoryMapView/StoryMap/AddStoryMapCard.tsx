@@ -7,7 +7,7 @@ export function AddStoryMapCard() {
   const addStoryMap = useStoryMapStore((state) => state.addStoryMap)
   return (
     <BaseCard
-      sx={{
+      style={{
         height: "16em",
         aspectRatio: "9/10",
         background: "transparent",

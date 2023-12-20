@@ -85,7 +85,7 @@ export function IssueSprint(props: {
       ) : (
         <Box
           onClick={() => setshowSprintInput(true)}
-          sx={{
+          style={{
             ":hover": {
               cursor: "pointer",
               boxShadow: theme.shadows.xs,

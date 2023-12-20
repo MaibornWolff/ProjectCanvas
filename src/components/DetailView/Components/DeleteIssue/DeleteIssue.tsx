@@ -30,7 +30,7 @@ export function DeleteIssue({
         </Button>
       </Popover.Target>
       <Popover.Dropdown
-        sx={(theme) => ({
+        style={(theme) => ({
           background:
             theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
         })}

@@ -31,38 +31,38 @@ export function IssueSummary({
         })
     },
   })
+
+  if (!showSummaryInput)
+    return (
+      <Text lineClamp={1} onClick={() => setshowSummaryInput(true)}>
+        {defaultSummary}
+      </Text>
+    )
+
   return (
-    <Text>
-      {showSummaryInput ? (
-        <Textarea
-          value={defaultSummary}
-          onChange={(e) => setdefaultSummary(e.target.value)}
-          onBlur={() => {
-            if (defaultSummary === "")
-              showNotification({
-                message: `The summary of an issue cannot be empty`,
-                color: "red",
-              })
-            else {
-              setshowSummaryInput(false)
-              mutationSummary.mutate({
-                summary: defaultSummary,
-              } as Issue)
-            }
-          }}
-          autosize
-          sx={{
-            textarea: {
-              fontSize: "inherit",
-              fontWeight: "inherit",
-            },
-          }}
-        />
-      ) : (
-        <Text lineClamp={1} onClick={() => setshowSummaryInput(true)}>
-          {defaultSummary}
-        </Text>
-      )}
-    </Text>
+    <Textarea
+      value={defaultSummary}
+      onChange={(e) => setdefaultSummary(e.target.value)}
+      onBlur={() => {
+        if (defaultSummary === "")
+          showNotification({
+            message: `The summary of an issue cannot be empty`,
+            color: "red",
+          })
+        else {
+          setshowSummaryInput(false)
+          mutationSummary.mutate({
+            summary: defaultSummary,
+          } as Issue)
+        }
+      }}
+      autosize
+      style={{
+        textarea: {
+          fontSize: "inherit",
+          fontWeight: "inherit",
+        },
+      }}
+    />
   )
 }

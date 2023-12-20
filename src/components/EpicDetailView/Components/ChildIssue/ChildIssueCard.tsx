@@ -53,12 +53,12 @@ export function ChildIssueCard({
 
   return (
     <>
-      <Paper onClick={() => setOpened(true)} sx={{ position: "relative" }}>
+      <Paper onClick={() => setOpened(true)} style={{ position: "relative" }}>
         <DeleteButton mounted={hovered} issueKey={issueKey} />
         <Grid
           columns={100}
           p={3}
-          sx={{
+          style={{
             borderRadius: theme.radius.sm,
             margin: 0,
             boxShadow: theme.shadows.xs,
@@ -68,7 +68,7 @@ export function ChildIssueCard({
         >
           <Grid.Col
             span={8}
-            sx={{
+            style={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -86,7 +86,7 @@ export function ChildIssueCard({
                   mr={5}
                   color="blue"
                   td={status === StatusType.DONE ? "line-through" : "none"}
-                  sx={{
+                  style={{
                     ":hover": {
                       textDecoration: "underline",
                       cursor: "pointer",
@@ -117,20 +117,20 @@ export function ChildIssueCard({
           </Grid.Col>
           <Grid.Col
             span={10}
-            sx={{
+            style={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
             }}
           >
-            <Box sx={{ alignSelf: "flex-start" }}>
+            <Box style={{ alignSelf: "flex-start" }}>
               {storyPointsEstimate &&
                 <StoryPointsBadge statusType={status as StatusType} storyPointsEstimate={storyPointsEstimate} />}
             </Box>
           </Grid.Col>
           <Grid.Col
             span={8}
-            sx={{
+            style={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -165,9 +165,10 @@ export function ChildIssueCard({
           queryClient.invalidateQueries({ queryKey: ["issues"] })
         }}
         size="90vw"
-        overflow="outside"
-        overlayOpacity={0.55}
-        overlayBlur={3}
+        overlayProps={{
+          opacity: 0.55,
+          blur: 3,
+        }}
         withCloseButton={false}
       >
         <DetailView

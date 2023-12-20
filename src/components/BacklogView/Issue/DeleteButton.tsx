@@ -21,7 +21,7 @@ export function DeleteButton({
   }, [mounted, hovered])
 
   return (
-    <Box ref={ref} sx={{ position: "absolute", bottom: 5, right: 11 }}>
+    <Box ref={ref} style={{ position: "absolute", bottom: 5, right: 11 }}>
       <Transition
         mounted={mounted}
         transition="fade"
@@ -52,7 +52,7 @@ export function DeleteButton({
               </ActionIcon>
             </Popover.Target>
             <Popover.Dropdown
-              sx={(theme) => ({
+              style={(theme) => ({
                 background:
                   theme.colorScheme === "dark"
                     ? theme.colors.dark[7]

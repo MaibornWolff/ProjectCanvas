@@ -70,13 +70,13 @@ export function CommentSection({
         <Button
           variant="subtle"
           color="gray"
-          compact
+          size="compact-sm"
           radius="xs"
           display="flex"
           onClick={() => {
             setShowEditableInputAdd(true)
           }}
-          sx={{
+          style={{
             justifyContent: "left",
           }}
         >
@@ -120,10 +120,10 @@ export function CommentSection({
               <Avatar
                 src={commentBody.author.avatarUrls["24x24"]}
                 size="sm"
-                sx={{ flex: 1 }}
+                style={{ flex: 1 }}
               />
             </Box>
-            <Stack gap={0} sx={{ flex: 15 }}>
+            <Stack gap={0} style={{ flex: 15 }}>
               <Group>
                 <Text fw={500} color="dimmed" fz="sm">
                   {commentBody.author.displayName}

@@ -15,7 +15,7 @@ export function StoryMapCard({ name, id }: StoryMap) {
   const [edit, setEdit] = useState(false)
   return (
     <BaseCard
-      sx={{
+      style={{
         height: "16em",
         aspectRatio: "9/10",
         position: "relative",

@@ -12,14 +12,14 @@ export function StoryPointsHoverCard({
   return (
     <HoverCard width="relative" shadow="md" radius="md">
       <HoverCard.Target>
-        <Box sx={{ marginBottom: "20px" }}>
+        <Box style={{ marginBottom: "20px" }}>
           <StoryPointsBadge statusType={statusType} storyPointsEstimate={count} />
         </Box>
       </HoverCard.Target>
       <HoverCard.Dropdown>
         <Text
           size="sm"
-          sx={{ marginLeft: "-5px" }}
+          style={{ marginLeft: "-5px" }}
         >
           Total story points for <b>{statusType}</b> issues: <b>{count}</b>
         </Text>

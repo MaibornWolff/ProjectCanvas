@@ -18,7 +18,7 @@ export function AddCard({
     <Draggable draggableId={id} index={index} isDragDisabled>
       {(provided) => (
         <BaseCard
-          sx={{
+          style={{
             background: "transparent",
             border: "2px dashed lightgray",
             color: "gray",

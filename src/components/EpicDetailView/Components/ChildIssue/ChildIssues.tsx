@@ -9,7 +9,7 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
 
   return (
     <Stack
-      sx={{
+      style={{
         minHeight: "100%",
         alignItems: "center",
       }}
@@ -17,7 +17,7 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
       <ScrollArea
         className="left-panel"
         p="sm"
-        sx={{
+        style={{
           minWidth: "260px",
           width: "100%",
           height: "50vh",
@@ -36,7 +36,7 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
             display="flex"
             fullWidth
             onClick={() => setCreateIssueModalOpened(true)}
-            sx={(theme) => ({
+            style={(theme) => ({
               justifyContent: "left",
               ":hover": {
                 background:
@@ -57,7 +57,7 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
       <Divider
         mr="xs"
         size="xl"
-        sx={{
+        style={{
           cursor: "col-resize",
         }}
       />

@@ -33,7 +33,7 @@ export function CaseSubActionLevel({
               />
             ))}
           <BaseCard
-            sx={{ cursor: "default", background: "transparent" }}
+            style={{ cursor: "default", background: "transparent" }}
             shadow={undefined}
           />
         </Group>

@@ -1,5 +1,5 @@
 import { Tooltip, Box } from "@mantine/core"
-import { DatePicker } from "@mantine/dates"
+import { DatePickerInput } from "@mantine/dates"
 import { UseFormReturnType } from "@mantine/form"
 import { Issue } from "types"
 
@@ -31,11 +31,10 @@ export function DueDatePicker({
       }}
     >
       <Box>
-        <DatePicker
+        <DatePickerInput
           label="Due Date"
           placeholder="Pick due date"
           minDate={form.getInputProps("startDate").value}
-          withinPortal
           clearable
           disabled={isDisabled}
           {...form.getInputProps("dueDate")}

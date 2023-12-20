@@ -17,7 +17,7 @@ export function IssueIcon({ type }: { type: string }) {
     return `hsl(${hash % 360}, 85%, 35%)`
   }
 
-  let icon: JSX.Element
+  let icon: Jstyle.Element
   let iconGradient1: string
   let iconGradient2: string
   switch (type) {

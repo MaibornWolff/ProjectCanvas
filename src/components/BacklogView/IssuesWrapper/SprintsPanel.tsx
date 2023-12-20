@@ -22,9 +22,9 @@ export function SprintsPanel({
       chevron={<IconChevronRight />}
       chevronPosition="left"
       multiple
-      styles={(theme) => ({
+      style={(theme) => ({
         chevron: {
-          "&[data-rotate]": {
+          "&[dataRotate]": {
             transform: "rotate(90deg)",
           },
         },

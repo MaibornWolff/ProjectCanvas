@@ -64,9 +64,13 @@ export function Attachments(props: {
       deleteAttachmentMutationLocal.mutate({ attachmentId, resource })
   }
 
-  const performUpload = async (f: File): Promise<void> => {
+  const performUpload = async (file: File | null): Promise<void> => {
+    if (!file) {
+      return
+    }
+
     const form = new FormData()
-    form.append("file", f, f.name)
+    form.append("file", file, file.name)
     const issueIdOrKey = props.issueKey
     if (resource)
       addAttachmentMutationLocal.mutate({ issueIdOrKey, resource, form })
@@ -91,8 +95,7 @@ export function Attachments(props: {
                 variant="subtle"
                 color="dark"
                 radius="xs"
-                size="xs"
-                compact
+                size="compact-xs"
               >
                 <IconPlus />
               </Button>
@@ -150,9 +153,11 @@ export function Attachments(props: {
                               <Card.Section>
                                 <Center>
                                   <LoadingOverlay
-                                    overlayOpacity={0.3}
-                                    overlayColor="#c5c5c5"
-                                    exitTransitionDuration={5000}
+                                    overlayProps={{
+                                      opacity: 0.3,
+                                      color: "#c5c5c5",
+                                    }}
+                                    transitionProps={{ exitDuration: 5000 }}
                                     visible={thumbnailsLoading}
                                   />
 
@@ -173,7 +178,7 @@ export function Attachments(props: {
                                         : null
                                     }
                                     alt={`${attachment.filename}`}
-                                    withPlaceholder
+                                    fallbackSrc="https://placehold.co/600x400?text=Placeholder"
                                   />
                                 </Center>
                               </Card.Section>
