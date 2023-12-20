@@ -44,8 +44,8 @@ export function EpicDetailView({
   created,
   updated,
   comment,
-   closeModal,
- }: {
+  closeModal,
+}: {
   issueKey: string
   summary: string
   labels: string[]

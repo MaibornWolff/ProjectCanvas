@@ -22,7 +22,16 @@ export interface JiraSprint {
 export interface JiraEpic {
   key: string
   fields: {
-    description: string
+    description: {
+      type: string,
+      version: string,
+      content: string & {
+        content: {
+          type: string,
+          text: string
+        }[]
+      }[]
+    }
     summary: string
     creator: { name: string; displayName: string }
     status: { name: string }

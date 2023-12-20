@@ -594,8 +594,6 @@ export class JiraServerProvider implements IProvider {
                 avatarUrls: element.fields.assignee?.avatarUrls,
               },
               subtasks: element.fields.subtasks,
-              created: element.fields.created,
-              updated: element.fields.updated,
               comment: {
                 comments: element.fields.comment.comments.map((commentElement) => ({
                   id: commentElement.id,
