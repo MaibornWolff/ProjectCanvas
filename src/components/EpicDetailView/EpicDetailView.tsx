@@ -48,10 +48,10 @@ export function EpicDetailView({
   created,
   updated,
   status,
-   closeModal,
-   projectId,
-   type,
- }: {
+  closeModal,
+  projectId,
+  type,
+}: {
   issueKey: string
   summary: string
   labels: string[]
