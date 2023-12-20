@@ -40,6 +40,7 @@ import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard
 import { CommentSection } from "../DetailView/Components/CommentSection";
 import { getIssueTypes, setStatus } from "../CreateIssue/queryFunctions";
 import { StatusType } from "../../../types/status";
+import { getStatusTypeColor } from "../../common/status-color"
 
 export function EpicDetailView({
   issueKey,
@@ -188,13 +189,6 @@ export function EpicDetailView({
               radius="md"
               size={20}
               label="hello"
-              styles={{
-                label: {
-                  color: "black",
-                  fontSize: "14px",
-                  fontWeight: "normal",
-                },
-              }}
               sx={{
                 width: "400px",
                 marginRight: "5px",
@@ -204,25 +198,25 @@ export function EpicDetailView({
               sections={[
                 {
                   value: (tasksDone / totalTaskCount) * 100,
-                  color: "#10df10",
+                  color: getStatusTypeColor(StatusType.DONE),
                   label: `${tasksDone}`,
                   tooltip: `${tasksDone} Done`,
                 },
                 {
                   value: (tasksInProgress / totalTaskCount) * 100,
-                  color: "#6ba5d8",
+                  color: getStatusTypeColor(StatusType.IN_PROGRESS),
                   label: `${tasksInProgress}`,
                   tooltip: `${tasksInProgress} In progress`,
                 },
                 {
                   value: (tasksTodo / totalTaskCount) * 100,
-                  color: "rgb(225,223,223)",
+                  color: getStatusTypeColor(StatusType.TODO),
                   label: `${tasksTodo}`,
                   tooltip: `${tasksTodo} ToDo`,
                 },
                 {
                   value: 100,
-                  color: "rgb(225,223,223)",
+                  color: getStatusTypeColor(StatusType.TODO),
                   label: `0`,
                   tooltip: "Currently no child issues",
                 },
@@ -242,7 +236,7 @@ export function EpicDetailView({
             />
           </Group>
 
-          <Group sx={{ marginLeft: "-10px"}} grow>
+          <Group sx={{ marginLeft: "-10px" }} grow>
             <ChildIssues issues={childIssues} />
           </Group>
         </Stack>
