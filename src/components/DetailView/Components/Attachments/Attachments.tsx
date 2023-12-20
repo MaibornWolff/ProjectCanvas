@@ -79,11 +79,11 @@ export function Attachments(props: {
 
   return (
     <>
-      <Group position="left" align="flex-start" spacing="xs">
+      <Group justify="left" align="flex-start" gap="xs">
         <Text color="dimmed" mb="sm">
           {label}
         </Text>
-        <Group position="center">
+        <Group justify="center">
           <FileButton onChange={performUpload} accept="*/*">
             {(properties) => (
               <Button
@@ -198,7 +198,7 @@ export function Attachments(props: {
                             </Flex>
                           </HoverCard.Target>
                           <HoverCard.Dropdown p={0}>
-                            <Group spacing={0}>
+                            <Group gap={0}>
                               <ActionIcon
                                 color="dark"
                                 size="lg"

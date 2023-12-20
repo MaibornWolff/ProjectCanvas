@@ -168,13 +168,13 @@ export function BacklogView() {
       </Center>
     )
   return (
-    <Stack sx={{ minHeight: "100%" }}>
-      <Stack align="left" spacing={0}>
+    <Stack style={{ minHeight: "100%" }}>
+      <Stack align="left" gap={0}>
         <Group>
-          <Group spacing="xs" c="dimmed">
+          <Group gap="xs" c="dimmed">
             <Text
               onClick={() => navigate("/projectsview")}
-              sx={{
+              style={{
                 ":hover": {
                   textDecoration: "underline",
                   cursor: "pointer",
@@ -191,13 +191,13 @@ export function BacklogView() {
         <Title mb="sm">Backlog</Title>
         <TextInput
           placeholder="Search by issue summary, key, epic, labels, creator or assignee.."
-          icon={<IconSearch size={14} stroke={1.5} />}
+          leftSection={<IconSearch size={14} stroke={1.5} />}
           value={search}
           onChange={handleSearchChange}
         />
       </Stack>
 
-      <Flex sx={{ flexGrow: 1 }}>
+      <Flex style={{ flexGrow: 1 }}>
         <DragDropContext
           onDragEnd={(dropResult) =>
             onDragEnd({
@@ -209,10 +209,10 @@ export function BacklogView() {
         >
           <ScrollArea.Autosize
             className="left-panel"
-            maxHeight="calc(100vh - 230px)"
             w="50%"
             p="sm"
-            sx={{
+            style={{
+              maxHeight: "calc(100vh - 230px)",
               minWidth: "260px",
             }}
           >
@@ -234,7 +234,7 @@ export function BacklogView() {
                 display="flex"
                 fullWidth
                 onClick={() => setCreateIssueModalOpened(true)}
-                sx={(theme) => ({
+                style={(theme) => ({
                   justifyContent: "left",
                   ":hover": {
                     background:
@@ -257,16 +257,18 @@ export function BacklogView() {
             size="xl"
             className="resize-handle"
             orientation="vertical"
-            sx={{
+            style={{
               cursor: "col-resize",
             }}
           />
           <ScrollArea.Autosize
             className="right-panel"
-            maxHeight="calc(100vh - 230px)"
             w="50%"
             p="xs"
-            sx={{ minWidth: "260px" }}
+            style={{
+              maxHeight: "calc(100vh - 230px)",
+              minWidth: "260px"
+            }}
           >
             <SprintsPanel
               sprintsWithIssues={

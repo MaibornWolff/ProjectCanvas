@@ -56,9 +56,9 @@ export function EpicView() {
   )
     return (
     <Stack sx={{ minHeight: "100%"}}>
-      <Stack align="left" spacing={0}>
+      <Stack align="left" gap={0}>
         <Group>
-          <Group spacing="xs" c="dimmed">
+          <Group gap="xs" c="dimmed">
             <Text
               onClick={() => navigate("/projectsview")}
               sx={{

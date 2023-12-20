@@ -18,7 +18,7 @@ export function Login() {
 
   return (
     <Container
-      sx={{
+      style={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -28,7 +28,7 @@ export function Login() {
       <Paper
         p="lg"
         withBorder
-        sx={(theme) => ({
+        style={(theme) => ({
           width: "30vw",
           display: "flex",
           flexDirection: "column",
@@ -37,14 +37,14 @@ export function Login() {
           borderRadius: theme.radius.lg,
         })}
       >
-        <Group spacing="xs">
+        <Group gap="xs">
           <ColorSchemeToggle ml="auto" />
           <LanguageSelector />
         </Group>
         <Image
           mx="auto"
           src="./project_canvas_logo.svg"
-          sx={(theme) => ({
+          style={(theme) => ({
             maxWidth: "220px",
             backgroundColor:
               theme.colorScheme === "dark"
@@ -70,7 +70,7 @@ export function Login() {
                 to: "primaryGreen.8",
                 deg: 60,
               }}
-              leftIcon={<IconServer size={32} strokeWidth={1.8} />}
+              leftSection={<IconServer size={32} strokeWidth={1.8} />}
               onClick={() => {
                 setProviderLogin("JiraServer")
               }}
@@ -85,7 +85,7 @@ export function Login() {
                 to: "primaryBlue.6",
                 deg: 60,
               }}
-              leftIcon={<IconCloud size={32} strokeWidth={1.8} />}
+              leftSection={<IconCloud size={32} strokeWidth={1.8} />}
               onClick={() => {
                 setProviderLogin("JiraCloud")
                 ipcRenderer.send("start-oauth2")

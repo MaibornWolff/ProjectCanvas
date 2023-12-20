@@ -1,4 +1,4 @@
-import { Anchor, Box, Button, Group, Header, Image } from "@mantine/core"
+import {Anchor, AppShell, Box, Button, Group, Image} from "@mantine/core"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
@@ -7,29 +7,21 @@ import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
 import { LogoutButton } from "./LogoutButton"
 import { StoryMapMenu } from "./StoryMapMenu"
 
+import classes from "./LayoutHeader.module.css"
+
 export function LayoutHeader() {
   const navigate = useNavigate()
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
 
   return (
-    <Header
-      height="60"
-      p="sm"
-      sx={(theme) => ({
-        borderBottom: `1px solid ${
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[4]
-            : theme.colors.gray[2]
-        }`,
-      })}
-    >
+    <AppShell.Header p="sm" className={classes.root} >
       <Box
-        sx={(theme) => ({
+        style={(theme) => ({
           paddingLeft: theme.spacing.xs,
           paddingRight: theme.spacing.xs,
         })}
       >
-        <Group spacing="xl">
+        <Group gap="xl">
           <Image
             src="./project_canvas_logo_sm.svg"
             height={36}
@@ -64,11 +56,10 @@ export function LayoutHeader() {
             opened={createIssueModalOpened}
             setOpened={setCreateIssueModalOpened}
           />
-
           <ColorSchemeToggle size="34px" ml="auto" />
           <LogoutButton />
         </Group>
       </Box>
-    </Header>
+    </AppShell.Header>
   )
 }

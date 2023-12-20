@@ -1,5 +1,4 @@
 import {
-  createStyles,
   UnstyledButton,
   Group,
   Center,
@@ -12,29 +11,7 @@ import {
   IconSelector,
 } from "@tabler/icons"
 
-const useStyles = createStyles((theme) => ({
-  tableheader: {
-    padding: "0 !important",
-  },
-
-  control: {
-    width: "100%",
-    padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
-
-    "&:hover": {
-      backgroundColor:
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[6]
-          : theme.colors.gray[0],
-    },
-  },
-
-  icon: {
-    width: 21,
-    height: 21,
-    borderRadius: 21,
-  },
-}))
+import classes from './TableHeader.module.css'
 
 export function TableHeader({
   children,
@@ -47,17 +24,16 @@ export function TableHeader({
   sorted: boolean
   onSort(): void
 }) {
-  const { classes } = useStyles()
   let Icon: TablerIcon
   if (sorted) {
     if (reversed) Icon = IconChevronUp
     else Icon = IconChevronDown
   } else Icon = IconSelector
   return (
-    <th className={classes.tableheader}>
+    <th className={classes.tableHeader}>
       <UnstyledButton onClick={onSort} className={classes.control}>
-        <Group position="apart">
-          <Text weight={500} size="sm">
+        <Group justify="apart">
+          <Text size="sm" style={{ fontWeight: 500 }}>
             {children}
           </Text>
           <Center className={classes.icon}>

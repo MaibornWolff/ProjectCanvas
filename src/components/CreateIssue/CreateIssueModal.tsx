@@ -5,6 +5,7 @@ import {
   Modal,
   ScrollArea,
   Stack,
+  useComputedColorScheme,
   useMantineTheme,
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
@@ -53,6 +54,7 @@ export function CreateIssueModal({
 }) {
   const queryClient = useQueryClient()
   const theme = useMantineTheme()
+  const computedColorScheme = useComputedColorScheme("light")
   const projects = useCanvasStore((state) => state.projects)
   const selectedProject = useCanvasStore((state) => state.selectedProject)
 
@@ -129,15 +131,12 @@ export function CreateIssueModal({
       opened={opened}
       onClose={() => setOpened(false)}
       title="Create Issue"
-      overflow="outside"
       size="70vw"
-      overlayColor={
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[9]
-          : theme.colors.gray[2]
-      }
-      overlayOpacity={0.55}
-      overlayBlur={3}
+      overlayProps={{
+        color: computedColorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
+        opacity: 0.55,
+        blur: 5,
+      }}
     >
       <ColorSchemeToggle
         size="34px"
@@ -147,14 +146,14 @@ export function CreateIssueModal({
           right: 50,
         }}
       />
-      <ScrollArea.Autosize maxHeight="70vh">
+      <ScrollArea.Autosize style={{ maxHeight: "70vh" }}>
         <form
           onSubmit={form.onSubmit((issue, event) => {
-            event.preventDefault()
+            event?.preventDefault()
             mutation.mutate(issue)
           })}
         >
-          <Stack spacing="md" mr="sm">
+          <Stack gap="md" mr="sm">
             <ProjectSelect
               form={form}
               projects={projects}
@@ -217,7 +216,7 @@ export function CreateIssueModal({
             />
             <LabelsSelect form={form} />
             <AttachementFileInput form={form} />
-            <Group position="right">
+            <Group justify="right">
               <Button
                 variant="light"
                 color="gray"

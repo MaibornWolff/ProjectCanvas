@@ -61,7 +61,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
       <TextInput
         placeholder="Search by any field"
         mb="md"
-        icon={<IconSearch size={14} stroke={1.5} />}
+        leftSection={<IconSearch size={14} stroke={1.5} />}
         value={search}
         onChange={handleSearchChange}
       />
@@ -69,7 +69,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
         highlightOnHover
         horizontalSpacing="md"
         verticalSpacing="xs"
-        sx={{ tableLayout: "fixed", minWidth: 700 }}
+        style={{ tableLayout: "fixed", minWidth: 700 }}
       >
         <thead>
           <tr>
@@ -94,7 +94,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
           ) : (
             <tr>
               <td colSpan={Object.keys(data).length}>
-                <Text weight={500} align="center">
+                <Text style={{ fontWeight: 500, align: "center" }}>
                   Nothing found
                 </Text>
               </td>

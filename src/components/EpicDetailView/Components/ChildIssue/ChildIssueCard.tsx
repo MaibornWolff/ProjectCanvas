@@ -79,8 +79,8 @@ export function ChildIssueCard({
             </Center>
           </Grid.Col>
           <Grid.Col span={65}>
-            <Stack spacing={0}>
-              <Group spacing={2}>
+            <Stack gap={0}>
+              <Group gap={2}>
                 <Text
                   size="sm"
                   mr={5}
@@ -108,7 +108,7 @@ export function ChildIssueCard({
                   ))}
               </Group>
               <Text size="lg">{summary}</Text>
-              <Group align="center" spacing="sm">
+              <Group align="center" gap="sm">
                 <Text size="sm">{type}</Text>
                 <Text size="sm">•</Text>
                 <Text size="sm">{status}</Text>

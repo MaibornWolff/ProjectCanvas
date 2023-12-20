@@ -8,7 +8,7 @@ export function StoryMapDashboard() {
 
   return (
     <Center h="100%">
-      <Stack align="center" spacing="xl">
+      <Stack align="center" gap="xl">
         <Stack align="center">
           <Title>Story Map</Title>
           <Text>Please select a story map or add a new one.</Text>

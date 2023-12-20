@@ -38,7 +38,7 @@ export function StoryMapView() {
       }}
     >
       {storyMapId && storyMap && (
-        <Stack spacing="xl">
+        <Stack gap="xl">
           <Title>{storyMap.name}</Title>
           <Box sx={{ zoom: zoomValue }}>
             <CaseColumns

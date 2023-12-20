@@ -92,12 +92,12 @@ export function CreateSprintModal({
             mutation.mutate(sprint)
           })}
         >
-          <Stack spacing="md" mr="sm">
+          <Stack gap="md" mr="sm">
             <NameInput form={form} />
             <GoalInput form={form} />
             <SprintStartDatePicker form={form} />
             <SprintEndDatePicker form={form} />
-            <Group position="right">
+            <Group justify="right">
               <Button
                 variant="light"
                 color="gray"

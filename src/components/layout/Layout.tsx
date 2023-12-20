@@ -6,7 +6,7 @@ export function Layout() {
   return (
     <AppShell
       padding="md"
-      header={<LayoutHeader />}
+      header={{ height: 60 }}
       styles={(theme) => ({
         main: {
           backgroundColor:
@@ -16,6 +16,7 @@ export function Layout() {
         },
       })}
     >
+      <LayoutHeader />
       <Outlet />
     </AppShell>
   )

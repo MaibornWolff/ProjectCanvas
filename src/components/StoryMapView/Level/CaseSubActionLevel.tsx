@@ -19,7 +19,7 @@ export function CaseSubActionLevel({
           key={`${caseColumn.id}-${levelId}`}
           align="start"
           noWrap
-          spacing={0}
+          gap={0}
         >
           {caseColumn.actions
             .map((_action) => _action.subActionGroups)

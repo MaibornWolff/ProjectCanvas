@@ -13,7 +13,6 @@ import {
   Title,
   Menu,
   Button,
-  createStyles,
 } from "@mantine/core"
 import { IconCaretDown } from "@tabler/icons"
 import { Attachment, Issue, User } from "types"
@@ -42,6 +41,8 @@ import { getIssueTypes, setStatus } from "../CreateIssue/queryFunctions";
 import { StatusType } from "../../../types/status";
 import { getStatusTypeColor } from "../../common/status-color"
 import { Attachments } from "../DetailView/Components/Attachments/Attachments";
+
+import classes from './EpicDetailView.module.css'
 
 export function EpicDetailView({
   issueKey,
@@ -100,16 +101,7 @@ export function EpicDetailView({
     enabled: !!projectId,
   })
 
-  const useStyles = createStyles(
-    (theme, { isOpened }: { isOpened: boolean }) => ({
-      icon: {
-        transition: "transform 150ms ease",
-        transform: isOpened ? "rotate(180deg)" : "rotate(0deg)",
-      },
-    })
-  )
   const [opened, setOpened] = useState(false)
-  const { classes } = useStyles({ isOpened: opened })
 
   const dateFormat = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
@@ -168,19 +160,19 @@ export function EpicDetailView({
         }}
       />
       <Group align="flex-start">
-        <Stack sx={{ flex: 13 }} justify="flex-start">
-          <Title size="h1" sx={{ marginBottom: "-10px" }}>
+        <Stack style={{ flex: 13 }} justify="flex-start">
+          <Title size="h1" style={{ marginBottom: "-10px" }}>
             <IssueSummary
               summary={summary}
               issueKey={issueKey}
               onMutate={reloadEpics}
             />
           </Title>
-          <Text color="dimmed" mb="sm" size="md" sx={{ marginLeft: "7px" }}>
+          <Text color="dimmed" mb="sm" size="md" style={{ marginLeft: "7px" }}>
             Description
           </Text>
           <Group
-            sx={{
+            style={{
               marginLeft: "10px",
               marginTop: "-7px",
             }}
@@ -239,25 +231,20 @@ export function EpicDetailView({
             />
           </Group>
 
-          <Group sx={{ marginLeft: "-10px" }} grow>
+          <Group style={{ marginLeft: "-10px" }} grow>
             <ChildIssues issues={childIssues} />
           </Group>
         </Stack>
-        <ScrollArea.Autosize
-          maxHeight="70vh"
-          sx={{ minWidth: "260px", flex: 10 }}
-        >
+        <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
           <Box>
-            <Group position="apart" mb="sm">
+            <Group justify="apart" mb="sm">
                 <Menu
                   shadow="md"
                   onOpen={() => setOpened(true)}
                   onClose={() => setOpened(false)}
                 >
                   <Menu.Target>
-                    <Button
-                      rightIcon={<IconCaretDown className={classes.icon} />}
-                    >
+                    <Button rightSection={<IconCaretDown className={classes.icon} />}>
                       {defaultStatus}
                     </Button>
                   </Menu.Target>
@@ -284,7 +271,7 @@ export function EpicDetailView({
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
               <Accordion.Item value="Details">
-                <Accordion.Control sx={{ textAlign: "left" }}>
+                <Accordion.Control style={{ textAlign: "left" }}>
                   Details
                 </Accordion.Control>
                 <Accordion.Panel>
@@ -310,7 +297,7 @@ export function EpicDetailView({
             </Accordion>
             <Accordion variant="contained" mb={20}>
               <Accordion.Item value="Comments">
-                <Accordion.Control sx={{ textAlign: "left" }}>
+                <Accordion.Control style={{ textAlign: "left" }}>
                   Comments
                 </Accordion.Control>
                 <Accordion.Panel>
@@ -320,7 +307,7 @@ export function EpicDetailView({
             </Accordion>
             <Accordion variant="contained" mb={20}>
               <Accordion.Item value="Attachments">
-                <Accordion.Control sx={{ textAlign: "left" }}>
+                <Accordion.Control style={{ textAlign: "left" }}>
                   Attachments
                 </Accordion.Control>
                 <Accordion.Panel>

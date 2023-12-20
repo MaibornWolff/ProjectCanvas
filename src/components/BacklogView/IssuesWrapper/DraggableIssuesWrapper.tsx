@@ -17,7 +17,7 @@ export function DraggableIssuesWrapper({
           <Stack
             {...provided.droppableProps}
             ref={provided.innerRef}
-            spacing="sm"
+            gap="sm"
           >
             {issues.map((issue: Issue, index) => (
               <IssueCard {...issue} key={issue.issueKey} index={index} />

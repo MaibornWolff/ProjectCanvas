@@ -87,7 +87,7 @@ export function StoryPointsEstimateMenu({
                 color="dimmed"
                 onClick={() => setShowEditableInput(true)}
                 w="100%"
-                sx={{
+                style={{
                   ":hover": {
                     cursor: "pointer",
                     boxShadow: theme.shadows.xs,
@@ -131,7 +131,7 @@ export function StoryPointsEstimateMenu({
         storyPointsEstimate === undefined &&
         editableFields &&
         editableFields.includes("Story point estimate") && (
-          <Group position="right">
+          <Group justify="right">
             <Box w={70}>
               <NumberInput
                 min={0}

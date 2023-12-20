@@ -4,7 +4,7 @@ import { ChildIssueCard } from "./ChildIssueCard"
 
 export function ChildIssueWrapper({ issues }: { issues: Issue[] }) {
   return (
-    <Stack spacing="sm">
+    <Stack gap="sm">
       {issues.map((issue: Issue, index) => (
         <ChildIssueCard {...issue} key={issue.issueKey} index={index} />
       ))}

@@ -1,6 +1,5 @@
 import {
   Avatar,
-  createStyles,
   Group,
   Menu,
   ScrollArea,
@@ -15,39 +14,7 @@ import { useCanvasStore } from "../../../../lib/Store"
 import { editIssueMutation } from "./queries"
 import { getAssignableUsersByProject } from "./queryFunctions"
 
-const useStyles = createStyles(
-  (theme, { isOpened }: { isOpened: boolean }) => ({
-    control: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      borderRadius: theme.radius.md,
-      padding: "3px",
-      border: `1px solid ${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[6]
-          : theme.colors.gray[2]
-      }`,
-      transition: "background-color 150ms ease",
-      backgroundColor:
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[isOpened ? 5 : 6]
-          : theme.white[isOpened ? 5 : 6],
-
-      "&:hover": {
-        backgroundColor:
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[5]
-            : theme.colors.gray[0],
-      },
-    },
-
-    icon: {
-      transition: "transform 150ms ease",
-      transform: isOpened ? "rotate(180deg)" : "rotate(0deg)",
-    },
-  })
-)
+import classes from './AssigneeMenu.module.css'
 
 export function AssigneeMenu({
   assignee,
@@ -59,7 +26,6 @@ export function AssigneeMenu({
   const selectedProject = useCanvasStore((state) => state.selectedProject)
   const queryClient = useQueryClient()
   const [opened, setOpened] = useState(false)
-  const { classes } = useStyles({ isOpened: opened })
 
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", selectedProject?.key],
@@ -72,7 +38,7 @@ export function AssigneeMenu({
   const displayedAssignees = assignableUsers ? (
     assignableUsers.map((user) => (
       <Menu.Item
-        icon={<Avatar src={user.avatarUrls["24x24"]} size="sm" radius="xl" />}
+        leftSection={<Avatar src={user.avatarUrls["24x24"]} size="sm" radius="xl" />}
         onClick={() =>
           editIssue.mutate({ assignee: user } as Issue)
         }
@@ -96,7 +62,7 @@ export function AssigneeMenu({
           <Menu.Target>
             <UnstyledButton className={classes.control}>
               {assignee && assignee.displayName && assignee.avatarUrls ? (
-                <Group spacing="xs" position="apart">
+                <Group gap="xs" justify="apart">
                   <Avatar
                     src={assignee.avatarUrls["24x24"]}
                     size="sm"
@@ -110,7 +76,7 @@ export function AssigneeMenu({
                   />
                 </Group>
               ) : (
-                <Group spacing="xs" position="apart">
+                <Group gap="xs" justify="apart">
                   <Avatar size="sm" variant="outline" radius="xl" />
                   <Text size="sm" color="dimmed">
                     Unassigned

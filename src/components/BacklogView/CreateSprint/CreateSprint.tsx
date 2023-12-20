@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Box, Button, Group, Loader, TextInput } from "@mantine/core"
+import {Box, Button, useComputedColorScheme} from "@mantine/core"
 import { useState } from "react"
 import { CreateSprintModal } from "./CreateSprintModal"
 
 export function CreateSprint() {
+  const computedColorScheme = useComputedColorScheme("dark")
   const [createSprintModalOpened, setCreateSprintModalOpened] = useState(false)
 
   return (
@@ -17,11 +17,11 @@ export function CreateSprint() {
         display="flex"
         fullWidth
         onClick={() => setCreateSprintModalOpened(true)}
-        sx={(theme) => ({
+        style={(theme) => ({
           justifyContent: "left",
           ":hover": {
             background:
-              theme.colorScheme === "dark"
+              computedColorScheme === "dark"
                 ? theme.colors.dark[4]
                 : theme.colors.gray[4],
           },

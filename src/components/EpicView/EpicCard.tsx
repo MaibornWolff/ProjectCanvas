@@ -86,8 +86,8 @@ export function EpicCard ({
                     </Center>
                 </Grid.Col>
                 <Grid.Col span={74}>
-                    <Stack spacing={0}>
-                        <Group spacing={2}>
+                    <Stack gap={0}>
+                        <Group gap={2}>
                             <Text
                                 size="sm"
                                 mr={5}

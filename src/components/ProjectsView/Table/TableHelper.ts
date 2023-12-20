@@ -1,5 +1,5 @@
 import { Project } from "types"
-import { keys } from "@mantine/utils"
+import { keys } from "@mantine/core"
 
 export function filterData(data: Project[], search: string) {
   const query = search.toLowerCase().trim()

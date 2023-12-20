@@ -3,7 +3,6 @@ import {
   Box,
   Breadcrumbs,
   Button,
-  createStyles,
   Group,
   Menu,
   Paper,
@@ -27,11 +26,13 @@ import { IssueSummary } from "./Components/IssueSummary"
 import { Labels } from "./Components/Labels"
 import { ReporterMenu } from "./Components/ReporterMenu"
 import { StoryPointsEstimateMenu } from "./Components/StoryPointsEstimateMenu"
-import { Subtask } from "./Components/SubTask/Subtask"
+import { Subtask } from "./Components/SubTask"
 import { DeleteIssue } from "./Components/DeleteIssue"
 import { Attachments } from "./Components/Attachments/Attachments"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
+
+import classes from './DetailView.module.css';
 
 export function DetailView({
   issueKey,
@@ -52,16 +53,7 @@ export function DetailView({
   attachments,
   closeModal,
 }: Issue & { closeModal: () => void }) {
-  const useStyles = createStyles(
-    (theme, { isOpened }: { isOpened: boolean }) => ({
-      icon: {
-        transition: "transform 150ms ease",
-        transform: isOpened ? "rotate(180deg)" : "rotate(0deg)",
-      },
-    })
-  )
   const [opened, setOpened] = useState(false)
-  const { classes } = useStyles({ isOpened: opened })
 
   const { data: issueTypes } = useQuery({
     queryKey: ["issueTypes", projectId],
@@ -96,14 +88,13 @@ export function DetailView({
         }}
       />
       <Group>
-        <Stack sx={{ flex: 13 }}>
+        <Stack style={{ flex: 13 }}>
           <Title order={1}>
             <IssueSummary summary={summary} issueKey={issueKey} />
           </Title>
           <ScrollArea.Autosize
-            maxHeight="70vh"
             mr="xs"
-            sx={{ minWidth: "260px" }}
+            style={{ minWidth: "260px", maxHeight: "70vh" }}
           >
             <Text color="dimmed" mb="sm">
               Description
@@ -113,7 +104,7 @@ export function DetailView({
               Child Issues
             </Text>
             <Paper mb="lg" mr="sm">
-              <Stack spacing="xs">
+              <Stack gap="xs">
                 {subtasks.map((subtask) => (
                   <Subtask
                     key={subtask.key}
@@ -129,21 +120,16 @@ export function DetailView({
             <CommentSection issueKey={issueKey} comment={comment} />
           </ScrollArea.Autosize>
         </Stack>
-        <ScrollArea.Autosize
-          maxHeight="70vh"
-          sx={{ minWidth: "260px", flex: 10 }}
-        >
+        <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
           <Box>
-            <Group position="apart" mb="sm">
+            <Group justify="apart" mb="sm">
               <Menu
                 shadow="md"
                 onOpen={() => setOpened(true)}
                 onClose={() => setOpened(false)}
               >
                 <Menu.Target>
-                  <Button
-                    rightIcon={<IconCaretDown className={classes.icon} />}
-                  >
+                  <Button rightSection={<IconCaretDown className={classes.icon} />}>
                     {defaultStatus}
                   </Button>
                 </Menu.Target>
@@ -169,7 +155,7 @@ export function DetailView({
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
               <Accordion.Item value="Details">
-                <Accordion.Control sx={{ textAlign: "left" }}>
+                <Accordion.Control style={{ textAlign: "left" }}>
                   Details
                 </Accordion.Control>
                 <Accordion.Panel>

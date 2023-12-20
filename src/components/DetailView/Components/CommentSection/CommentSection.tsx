@@ -123,7 +123,7 @@ export function CommentSection({
                 sx={{ flex: 1 }}
               />
             </Box>
-            <Stack spacing={0} sx={{ flex: 15 }}>
+            <Stack gap={0} sx={{ flex: 15 }}>
               <Group>
                 <Text fw={500} color="dimmed" fz="sm">
                   {commentBody.author.displayName}
@@ -139,7 +139,7 @@ export function CommentSection({
               editableComments[commentBody.id] === false ? (
                 <Box>
                   <Text fz="xs"> {commentBody.body}</Text>
-                  <Group position="left">
+                  <Group justify="left">
                     <Anchor
                       td="underline"
                       color="dimmed"

@@ -75,7 +75,7 @@ export function Labels({
       ) : (
         <Box onClick={() => setShowLabelsInput(true)}>
           {defaultLabels.length !== 0 ? (
-            <Group spacing={3}>
+            <Group gap={3}>
               {defaultLabels.map((label) => (
                 <Badge key={label} color="yellow">
                   {label}
