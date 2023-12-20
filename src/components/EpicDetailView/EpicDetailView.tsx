@@ -120,97 +120,89 @@ export function EpicDetailView({
               onMutate={reloadEpics}
             />
           </Title>
-          <ScrollArea.Autosize
-            maxHeight="70vh"
-            mr="xs"
-            sx={{ minWidth: "260px" }}
+          <Text color="dimmed" mb="sm" size="md" sx={{ marginLeft: "7px" }}>
+            Description
+          </Text>
+          <Group
+            sx={{
+              marginLeft: "10px",
+              marginTop: "-7px",
+            }}
           >
-            <Text color="dimmed" mb="sm" size="md" sx={{ marginLeft: "7px" }}>
-              Description
-            </Text>
-            <Group
-              sx={{
-                marginLeft: "10px",
-                marginTop: "-7px",
-                marginBottom: "20px",
+            <Description issueKey={issueKey} description={description} />
+          </Group>
+          <Group align="center" p="sm">
+            <Progress
+              radius="md"
+              size={20}
+              label="hello"
+              styles={{
+                label: {
+                  color: "black",
+                  fontSize: "14px",
+                  fontWeight: "normal",
+                },
               }}
-            >
-              <Description issueKey={issueKey} description={description} />
-            </Group>
-            <Group align="center">
-              <Progress
-                radius="md"
-                size={20}
-                label="hello"
-                styles={{
-                  label: {
-                    color: "black",
-                    fontSize: "14px",
-                    fontWeight: "normal",
-                  },
-                }}
-                sx={{
-                  width: "400px",
-                  marginRight: "5px",
-                  marginBottom: "20px",
-                }}
-                sections={[
-                  {
-                    value:
-                      (tasksDone / (tasksDone + tasksOpen + tasksInProgress)) *
-                      100,
-                    color: "#10df10",
-                    label: `${tasksDone}`,
-                    tooltip: `${tasksDone} Done`,
-                  },
-                  {
-                    value:
-                      (tasksInProgress /
-                        (tasksDone + tasksOpen + tasksInProgress)) *
-                      100,
-                    color: "#6ba5d8",
-                    label: `${tasksInProgress}`,
-                    tooltip: `${tasksInProgress} In progress`,
-                  },
-                  {
-                    value:
-                      (tasksOpen / (tasksDone + tasksOpen + tasksInProgress)) *
-                      100,
-                    color: "rgb(225,223,223)",
-                    label: `${tasksOpen}`,
-                    tooltip: `${tasksOpen} ToDo`,
-                  },
-                  {
-                    value: 100,
-                    color: "rgb(225,223,223)",
-                    label: `0`,
-                    tooltip: "Currently no child issues",
-                  },
-                ]}
-              />
-              <StoryPointsHoverCard
-                statusType="To Do"
-                color="gray.6"
-                count={storyPointsAccumulator(childIssues, "To Do")}
-              />
-              <StoryPointsHoverCard
-                statusType="In Progress"
-                color="blue.8"
-                count={storyPointsAccumulator(childIssues, "In Progress")}
-              />
-              <StoryPointsHoverCard
-                statusType="Done"
-                color="green.9"
-                count={storyPointsAccumulator(childIssues, "Done")}
-              />
-            </Group>
+              sx={{
+                width: "400px",
+                marginRight: "5px",
+                marginBottom: "20px",
+                flexGrow: 1
+              }}
+              sections={[
+                {
+                  value:
+                    (tasksDone / (tasksDone + tasksOpen + tasksInProgress)) *
+                    100,
+                  color: "#10df10",
+                  label: `${tasksDone}`,
+                  tooltip: `${tasksDone} Done`,
+                },
+                {
+                  value:
+                    (tasksInProgress /
+                      (tasksDone + tasksOpen + tasksInProgress)) *
+                    100,
+                  color: "#6ba5d8",
+                  label: `${tasksInProgress}`,
+                  tooltip: `${tasksInProgress} In progress`,
+                },
+                {
+                  value:
+                    (tasksOpen / (tasksDone + tasksOpen + tasksInProgress)) *
+                    100,
+                  color: "rgb(225,223,223)",
+                  label: `${tasksOpen}`,
+                  tooltip: `${tasksOpen} ToDo`,
+                },
+                {
+                  value: 100,
+                  color: "rgb(225,223,223)",
+                  label: `0`,
+                  tooltip: "Currently no child issues",
+                },
+              ]}
+            />
+            <StoryPointsHoverCard
+              statusType="To Do"
+              color="gray.6"
+              count={storyPointsAccumulator(childIssues, "To Do")}
+            />
+            <StoryPointsHoverCard
+              statusType="In Progress"
+              color="blue.8"
+              count={storyPointsAccumulator(childIssues, "In Progress")}
+            />
+            <StoryPointsHoverCard
+              statusType="Done"
+              color="green.9"
+              count={storyPointsAccumulator(childIssues, "Done")}
+            />
+          </Group>
 
-            <Group sx={{ marginLeft: "-10px" }}>
-              <Box mr="xs">
-                <ChildIssues issues={childIssues} />
-              </Box>
-            </Group>
-          </ScrollArea.Autosize>
+          <Group sx={{ marginLeft: "-10px"}} grow>
+            <ChildIssues issues={childIssues} />
+          </Group>
         </Stack>
         <ScrollArea.Autosize
           maxHeight="70vh"

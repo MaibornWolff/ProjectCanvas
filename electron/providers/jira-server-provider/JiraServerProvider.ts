@@ -588,6 +588,7 @@ export class JiraServerProvider implements IProvider {
               labels: element.fields.labels,
               created: element.fields.created,
               updated: element.fields.updated,
+              description: element.fields.description.content,
               assignee: {
                 displayName: element.fields.assignee?.displayName,
                 avatarUrls: element.fields.assignee?.avatarUrls,
@@ -859,7 +860,7 @@ export class JiraServerProvider implements IProvider {
               ...(summary && {
                 summary,
               }),
-              ...(epic.issueKey && {
+              ...(epic && epic.issueKey && {
                 parent: { key: epic.issueKey },
               }),
               ...(type && {

@@ -24,7 +24,12 @@ export interface JiraIssue {
     description: {
       type: string,
       version: string,
-      content: string,
+      content: string & {
+        content: {
+          type: string,
+          text: string
+        }[]
+      }[]
     }
     summary: string
     creator: { name: string; displayName: string }

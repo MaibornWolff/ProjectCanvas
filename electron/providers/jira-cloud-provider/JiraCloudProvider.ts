@@ -760,7 +760,7 @@ export class JiraCloudProvider implements IProvider {
               ...(summary && {
                 summary,
               }),
-              ...(epic.issueKey && {
+              ...(epic && epic.issueKey && {
                 parent: { key: epic.issueKey },
               }),
               ...(type && {
@@ -859,6 +859,7 @@ export class JiraCloudProvider implements IProvider {
               summary: element.fields.summary,
               epic: element.fields.epic,
               labels: element.fields.labels,
+              description: element.fields.description.content[0]?.content[0]?.text,
               assignee: {
                 displayName: element.fields.assignee?.displayName,
                 avatarUrls: element.fields.assignee?.avatarUrls,
