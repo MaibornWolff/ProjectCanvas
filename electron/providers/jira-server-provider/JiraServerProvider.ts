@@ -11,7 +11,7 @@ import {
   SprintCreate,
   User,
 } from "../../../types"
-import {JiraIssue, JiraIssueType, JiraProject, JiraSprint,} from "../../../types/jira"
+import {JiraEpic, JiraIssue, JiraIssueType, JiraProject, JiraSprint,} from "../../../types/jira"
 import {IProvider} from "../base-provider"
 import {JiraServerInfo, JiraServerUser} from "./server-types";
 
@@ -579,10 +579,10 @@ export class JiraServerProvider implements IProvider {
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
-        .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}`)
+        .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}&fields=*all`)
         .then(async (response) => {
           const epics: Promise<Issue[]> = Promise.all(
-            response.data.issues.map(async (element: JiraIssue) => ({
+            response.data.issues.map(async (element: JiraEpic) => ({
               issueKey: element.key,
               summary: element.fields.summary,
               labels: element.fields.labels,
@@ -596,6 +596,19 @@ export class JiraServerProvider implements IProvider {
                 displayName: element.fields.assignee?.displayName,
                 avatarUrls: element.fields.assignee?.avatarUrls,
               },
+              subtasks: element.fields.subtasks,
+              comment: {
+                comments: element.fields.comment.comments.map((commentElement) => ({
+                  id: commentElement.id,
+                  body: commentElement.body,
+                  author: commentElement.author,
+                  created: commentElement.created,
+                  updated: commentElement.updated,
+                })),
+              },
+              projectId: element.fields.project.id,
+              sprint: element.fields.sprint,
+              attachments: element.fields.attachment,
             }))
           )
           resolve(epics)
