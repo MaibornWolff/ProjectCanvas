@@ -1,13 +1,12 @@
-import {Text, HoverCard, Badge} from "@mantine/core"
-import {MantineColor} from "@mantine/styles";
+import { Text, HoverCard, Badge } from "@mantine/core"
+import { getStatusTypeColor } from "../../../common/status-color";
+import { StatusType } from "../../../../types/status";
 
 export function StoryPointsHoverCard({
   statusType,
-  color,
   count = 0
  }: {
-  statusType: string
-  color: MantineColor,
+  statusType: StatusType
   count: number
 }) {
   return (
@@ -15,7 +14,7 @@ export function StoryPointsHoverCard({
       <HoverCard.Target>
         <Badge
           px="7px"
-          color={color}
+          color={getStatusTypeColor(statusType)}
           variant="filled"
           size="md"
           sx={{

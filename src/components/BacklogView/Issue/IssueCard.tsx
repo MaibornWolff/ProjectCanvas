@@ -20,6 +20,8 @@ import { Draggable } from "react-beautiful-dnd"
 import { DetailView } from "../../DetailView/DetailView"
 import { IssueIcon } from "./IssueIcon"
 import { DeleteButton } from "./DeleteButton"
+import { getStatusTypeColor } from "../../../common/status-color";
+import { StatusType } from "../../../../types/status";
 
 export function IssueCard({
   issueKey,
@@ -34,7 +36,6 @@ export function IssueCard({
   projectId,
   ...props
 }: Issue & { index: number }) {
-  let storyPointsColor: string
   const [opened, setOpened] = useState(false)
   const queryClient = useQueryClient()
   const { ref, hovered } = useHover()
@@ -50,20 +51,6 @@ export function IssueCard({
           backgroundColor: theme.colors.gray[1],
           transition: "background-color .1s ease-in",
         }
-
-  switch (status) {
-    case "To Do":
-      storyPointsColor = "gray.6"
-      break
-    case "In Progress":
-      storyPointsColor = "blue.8"
-      break
-    case "Done":
-      storyPointsColor = "green.9"
-      break
-    default:
-      storyPointsColor = "gray.6"
-  }
 
   return (
     <>
@@ -107,7 +94,7 @@ export function IssueCard({
                       size="sm"
                       mr={5}
                       color="blue"
-                      td={status === "Done" ? "line-through" : "none"}
+                      td={status === StatusType.DONE ? "line-through" : "none"}
                       sx={{
                         ":hover": {
                           textDecoration: "underline",
@@ -183,7 +170,7 @@ export function IssueCard({
                     bg={
                       storyPointsEstimate !== undefined &&
                       storyPointsEstimate !== null
-                        ? storyPointsColor
+                        ? getStatusTypeColor(status as StatusType)
                         : "transparent"
                     }
                     variant="filled"

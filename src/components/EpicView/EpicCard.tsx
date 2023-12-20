@@ -19,6 +19,8 @@ import {useQueryClient} from "@tanstack/react-query";
 import {IconBolt} from "@tabler/icons";
 import {DeleteButton} from "../BacklogView/Issue/DeleteButton";
 import {EpicDetailView} from "../EpicDetailView/EpicDetailView";
+import {getStatusTypeColor} from "../../common/status-color";
+import {StatusType} from "../../../types/status";
 
 export function EpicCard ({
     issueKey,
@@ -32,7 +34,6 @@ export function EpicCard ({
     projectId,
     ...props
 }: Issue) {
-    let storyPointsColor: string
     const [opened, setOpened] = useState(false)
     const queryClient = useQueryClient()
     const {hovered} = useHover()
@@ -47,19 +48,6 @@ export function EpicCard ({
                 backgroundColor: theme.colors.gray[1],
                 transition: "background-color .1s ease-in",
             }
-    switch (status) {
-        case "To Do":
-            storyPointsColor = "gray.6"
-            break
-        case "In Progress":
-            storyPointsColor = "blue.8"
-            break
-        case "Done":
-            storyPointsColor = "green.9"
-            break
-        default:
-            storyPointsColor = "gray.6"
-    }
 
     return (
         <>
@@ -104,7 +92,7 @@ export function EpicCard ({
                                 size="sm"
                                 mr={5}
                                 color="blue"
-                                td={status === "Done" ? "line-through" : "none"}
+                                td={status === StatusType.DONE ? "line-through" : "none"}
                                 sx={{
                                     ":hover": {
                                         textDecoration: "underline",
@@ -170,7 +158,7 @@ export function EpicCard ({
                             bg={
                                 storyPointsEstimate !== undefined &&
                                 storyPointsEstimate !== null
-                                    ? storyPointsColor
+                                    ? getStatusTypeColor(status as StatusType)
                                     : "transparent"
                             }
                             variant="filled"

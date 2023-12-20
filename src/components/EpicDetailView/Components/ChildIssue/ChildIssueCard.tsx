@@ -19,6 +19,8 @@ import { Issue } from "../../../../../types"
 import { DetailView } from "../../../DetailView/DetailView"
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon"
 import { DeleteButton } from "../../../BacklogView/Issue/DeleteButton"
+import { getStatusTypeColor } from "../../../../common/status-color";
+import { StatusType } from "../../../../../types/status";
 
 export function ChildIssueCard({
   issueKey,
@@ -33,7 +35,6 @@ export function ChildIssueCard({
   projectId,
   ...props
 }: Issue & { index: number }) {
-  let storyPointsColor: string
   const [opened, setOpened] = useState(false)
   const queryClient = useQueryClient()
   const { hovered } = useHover()
@@ -49,20 +50,6 @@ export function ChildIssueCard({
           backgroundColor: theme.colors.gray[1],
           transition: "background-color .1s ease-in",
         }
-
-  switch (status) {
-    case "To Do":
-      storyPointsColor = "gray.6"
-      break
-    case "In Progress":
-      storyPointsColor = "blue.8"
-      break
-    case "Done":
-      storyPointsColor = "green.9"
-      break
-    default:
-      storyPointsColor = "gray.6"
-  }
 
   return (
     <>
@@ -98,7 +85,7 @@ export function ChildIssueCard({
                   size="sm"
                   mr={5}
                   color="blue"
-                  td={status === "Done" ? "line-through" : "none"}
+                  td={status === StatusType.DONE ? "line-through" : "none"}
                   sx={{
                     ":hover": {
                       textDecoration: "underline",
@@ -140,9 +127,8 @@ export function ChildIssueCard({
               <Badge
                 p="7px"
                 bg={
-                  storyPointsEstimate !== undefined &&
-                  storyPointsEstimate !== null
-                    ? storyPointsColor
+                  storyPointsEstimate
+                    ? getStatusTypeColor(status as StatusType)
                     : "transparent"
                 }
                 variant="filled"
