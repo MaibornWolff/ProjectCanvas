@@ -14,7 +14,10 @@ import { Issue } from "types"
 import { Dispatch, SetStateAction } from "react"
 import { useCanvasStore } from "../../lib/Store"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
-import { uploadAttachment } from "../DetailView/Components/Attachments/queryFunctions"
+import {
+  getResource,
+  uploadAttachment,
+} from "../DetailView/Components/Attachments/queryFunctions"
 import {
   ProjectSelect,
   IssueTypeSelect,
@@ -108,7 +111,7 @@ export function CreateIssueModal({
       const filesForm = new FormData()
       if (files) {
         files.forEach((f) => filesForm.append("file", f, f.name))
-        uploadAttachment(issueKey, filesForm)
+        getResource().then((r) => uploadAttachment(issueKey, r, filesForm))
       }
       showNotification({
         message: `The issue ${issueKey} has been created!`,

@@ -1,6 +1,5 @@
 /* eslint-disable max-classes-per-file */
 import {
-  Attachment,
   Issue,
   IssueType,
   Priority,
@@ -84,8 +83,4 @@ export interface IProvider {
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void>
   getResource(): Promise<Resource>
   createSprint(sprint: SprintCreate): Promise<void>
-  uploadAttachment(issueIdOrKey: string, attachment: FormData): Promise<Attachment>
-  downloadAttachment(attachmentId: string): Promise<Blob>
-  getAttachmentThumbnail(attachmentId: string): Promise<Blob>
-  deleteAttachment(attachmentId: string): Promise<void>
 }

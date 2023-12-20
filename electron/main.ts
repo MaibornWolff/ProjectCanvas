@@ -34,10 +34,6 @@ import {
   rankIssueInBacklog,
   refreshAccessToken,
   setTransition,
-  deleteAttachment,
-  downloadAttachment,
-  getAttachmentThumbnail,
-  uploadAttachment
 } from "./provider"
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string
@@ -137,12 +133,6 @@ app.whenReady().then(() => {
   ipcMain.handle("addCommentToIssue", addCommentToIssue)
   ipcMain.handle("editIssueComment", editIssueComment)
   ipcMain.handle("deleteIssueComment", deleteIssueComment)
-
-  ipcMain.handle("uploadAttachment", uploadAttachment)
-  ipcMain.handle("downloadAttachment", downloadAttachment)
-  ipcMain.handle("getAttachmentThumbnail", getAttachmentThumbnail)
-  ipcMain.handle("deleteAttachment", deleteAttachment)
-
   ipcMain.handle("getResource", getResource)
 })
 

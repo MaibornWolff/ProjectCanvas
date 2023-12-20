@@ -53,15 +53,5 @@ window.provider = {
     ipcRenderer.invoke("editIssueComment", ...params),
   deleteIssueComment: (...params) =>
     ipcRenderer.invoke("deleteIssueComment", ...params),
-
-  uploadAttachment: (...params) =>
-    ipcRenderer.invoke("uploadAttachment", params),
-  downloadAttachment: (...params) =>
-    ipcRenderer.invoke("downloadAttachment", ...params),
-  getAttachmentThumbnail: (...params) =>
-    ipcRenderer.invoke("getAttachmentThumbnail", ...params),
-  deleteAttachment: (...params) =>
-    ipcRenderer.invoke("deleteAttachment", ...params),
-
   getResource: () => ipcRenderer.invoke("getResource"),
 }
