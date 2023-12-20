@@ -16,7 +16,7 @@ import {
   createStyles,
 } from "@mantine/core"
 import { IconCaretDown } from "@tabler/icons"
-import { Issue, User } from "types"
+import { Attachment, Issue, User } from "types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
@@ -41,6 +41,7 @@ import { CommentSection } from "../DetailView/Components/CommentSection";
 import { getIssueTypes, setStatus } from "../CreateIssue/queryFunctions";
 import { StatusType } from "../../../types/status";
 import { getStatusTypeColor } from "../../common/status-color"
+import { Attachments } from "../DetailView/Components/Attachments/Attachments";
 
 export function EpicDetailView({
   issueKey,
@@ -50,6 +51,7 @@ export function EpicDetailView({
   description,
   created,
   updated,
+  attachments,
   comment,
   status,
   closeModal,
@@ -63,6 +65,7 @@ export function EpicDetailView({
   description: string
   created: string
   updated: string
+  attachments: Attachment[]
   comment: {
     comments: [
       {
@@ -306,16 +309,26 @@ export function EpicDetailView({
               </Accordion.Item>
             </Accordion>
             <Accordion variant="contained" mb={20}>
-                <Accordion.Item value="Comments">
-                  <Accordion.Control sx={{ textAlign: "left" }}>
-                    Comments
-                  </Accordion.Control>
-                  <Accordion.Panel>
-                    <CommentSection issueKey={issueKey} comment={comment} />
-                  </Accordion.Panel>
-                </Accordion.Item>
-              </Accordion>
-              <Text size="xs" color="dimmed">
+              <Accordion.Item value="Comments">
+                <Accordion.Control sx={{ textAlign: "left" }}>
+                  Comments
+                </Accordion.Control>
+                <Accordion.Panel>
+                  <CommentSection issueKey={issueKey} comment={comment} />
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
+            <Accordion variant="contained" mb={20}>
+              <Accordion.Item value="Attachments">
+                <Accordion.Control sx={{ textAlign: "left" }}>
+                  Attachments
+                </Accordion.Control>
+                <Accordion.Panel>
+                  <Attachments issueKey={issueKey} attachments={attachments} />
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
+            <Text size="xs" color="dimmed">
               Created {dateFormat.format(new Date(created))}
             </Text>
             <Text size="xs" color="dimmed">
