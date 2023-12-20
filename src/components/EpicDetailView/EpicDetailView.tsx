@@ -33,6 +33,7 @@ import {
   storyPointsAccumulator,
 } from "./helpers/storyPointsHelper"
 import { StoryPointsHoverCard } from "./Components/StoryPointsHoverCard";
+import { CommentSection } from "../DetailView/Components/CommentSection";
 
 export function EpicDetailView({
   issueKey,
@@ -42,6 +43,7 @@ export function EpicDetailView({
   description,
   created,
   updated,
+  comment,
   closeModal,
 }: {
   issueKey: string
@@ -51,6 +53,17 @@ export function EpicDetailView({
   description: string
   created: string
   updated: string
+  comment: {
+    comments: [
+      {
+        id: string
+        author: User
+        body: string
+        created: string
+        updated: string
+      }
+    ]
+  }
   closeModal: () => void
 }) {
   const queryClient = useQueryClient()
@@ -238,7 +251,17 @@ export function EpicDetailView({
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>
-            <Text size="xs" color="dimmed">
+            <Accordion variant="contained" mb={20}>
+                <Accordion.Item value="Comments">
+                  <Accordion.Control sx={{ textAlign: "left" }}>
+                    Comments
+                  </Accordion.Control>
+                  <Accordion.Panel>
+                    <CommentSection issueKey={issueKey} comment={comment} />
+                  </Accordion.Panel>
+                </Accordion.Item>
+              </Accordion>
+              <Text size="xs" color="dimmed">
               Created {dateFormat.format(new Date(created))}
             </Text>
             <Text size="xs" color="dimmed">
