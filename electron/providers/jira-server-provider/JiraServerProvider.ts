@@ -10,9 +10,9 @@ import {
   Sprint,
   SprintCreate,
   User,
-  Attachment
+  Attachment,
 } from "../../../types"
-import {JiraIssue, JiraIssueType, JiraProject, JiraSprint,} from "../../../types/jira"
+import {JiraEpic, JiraIssue, JiraIssueType, JiraProject, JiraSprint,} from "../../../types/jira"
 import {IProvider} from "../base-provider"
 import {JiraServerInfo, JiraServerUser} from "./server-types";
 
@@ -295,7 +295,7 @@ export class JiraServerProvider implements IProvider {
   async getIssuesByProject(project: string, boardId: number): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
       this.getAgileRestApiClient('1.0')
-        .get(`/board/${boardId}/issue?jql=project=${project}&maxResults=10000`)
+        .get(`/board/${boardId}/issue?jql=project=${project}&maxResults=10000&fields=*all`)
         .then((response) => resolve(this.fetchIssues(response)))
         .catch((error) => reject(new Error(`Error in fetching issues: ${error}`)))
     })
@@ -337,7 +337,10 @@ export class JiraServerProvider implements IProvider {
         status: element.fields.status.name,
         type: element.fields.issuetype.name,
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(element.key),
-        epic: element.fields.parent?.fields.summary,
+        epic: {
+          issueKey: element.fields.parent?.key,
+          summary: element.fields.parent?.fields.summary,
+        },
         labels: element.fields.labels,
         assignee: {
           displayName: element.fields.assignee?.displayName,
@@ -516,7 +519,7 @@ export class JiraServerProvider implements IProvider {
               {
                 fields: {
                   summary,
-                  parent: { key: epic },
+                  parent: { key: epic.issueKey },
                   issuetype: { id: type },
                   project: {
                     id: projectId,
@@ -580,16 +583,31 @@ export class JiraServerProvider implements IProvider {
         .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}&fields=*all`)
         .then(async (response) => {
           const epics: Promise<Issue[]> = Promise.all(
-            response.data.issues.map(async (element: JiraIssue) => ({
+            response.data.issues.map(async (element: JiraEpic) => ({
               issueKey: element.key,
               summary: element.fields.summary,
               labels: element.fields.labels,
+              projectId: element.fields.project.id,
+              status: element.fields.status.name,
+              type: element.fields.issuetype.name,
               created: element.fields.created,
               updated: element.fields.updated,
+              description: element.fields.description.content,
               assignee: {
                 displayName: element.fields.assignee?.displayName,
                 avatarUrls: element.fields.assignee?.avatarUrls,
               },
+              subtasks: element.fields.subtasks,
+              comment: {
+                comments: element.fields.comment.comments.map((commentElement) => ({
+                  id: commentElement.id,
+                  body: commentElement.body,
+                  author: commentElement.author,
+                  created: commentElement.created,
+                  updated: commentElement.updated,
+                })),
+              },
+              sprint: element.fields.sprint,
               attachments: element.fields.attachment,
             }))
           )
@@ -858,8 +876,8 @@ export class JiraServerProvider implements IProvider {
               ...(summary && {
                 summary,
               }),
-              ...(epic && {
-                parent: { key: epic },
+              ...(epic && epic.issueKey && {
+                parent: { key: epic.issueKey },
               }),
               ...(type && {
                 issuetype: { id: type },

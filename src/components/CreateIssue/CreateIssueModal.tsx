@@ -69,6 +69,7 @@ export function CreateIssueModal({
       status: "To Do",
       reporter: currentUser,
       priority: { id: "" },
+      epic: { issueKey: undefined }
     } as Issue,
   })
 

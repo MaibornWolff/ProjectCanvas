@@ -15,20 +15,22 @@ export function EditableEpic({
 }: {
   projectId: string
   issueKey: string
-  epic: string
+  epic: {
+    issueKey?: string,
+    summary?: string,
+  }
 }) {
-  const [showEpicInput, setshowEpicInput] = useState(false)
+  const [showEpicInput, setShowEpicInput] = useState(false)
   const { data: epics } = useQuery({
     queryKey: ["epics", projectId],
     queryFn: () => getEpicsByProject(projectId),
   })
-  const [selectedEpic, setselectedEpic] = useState(epic)
+  const [selectedEpic, setSelectedEpic] = useState(epic.issueKey)
   const mutationEpic = useMutation({
-    mutationFn: (epicKey: string) =>
-      editIssue({ epic: epicKey } as Issue, issueKey),
+    mutationFn: (epicKey: string) => editIssue({ epic: { issueKey: epicKey } } as Issue, issueKey),
     onError: () => {
       showNotification({
-        message: `An error occured while modifing the Epic 😢`,
+        message: `An error occurred while modifing the Epic 😢`,
         color: "red",
       })
     },
@@ -49,7 +51,7 @@ export function EditableEpic({
           placeholder=""
           nothingFound="No Options"
           data={
-            epics && epics instanceof Array
+            epics
               ? epics.map((epicItem) => ({
                   value: epicItem.issueKey,
                   label: epicItem.summary,
@@ -61,16 +63,16 @@ export function EditableEpic({
           itemComponent={SelectItem}
           value={selectedEpic}
           onChange={(value) => {
-            setselectedEpic(value!)
+            setSelectedEpic(value!)
             mutationEpic.mutate(value!)
-            setshowEpicInput(false)
+            setShowEpicInput(false)
           }}
           w="300px"
         />
       ) : (
         <Group>
           <Text
-            onClick={() => setshowEpicInput(true)}
+            onClick={() => setShowEpicInput(true)}
             sx={{
               ":hover": { textDecoration: "underline", cursor: "pointer" },
             }}

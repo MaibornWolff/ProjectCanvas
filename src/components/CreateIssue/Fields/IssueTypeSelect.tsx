@@ -38,7 +38,7 @@ export function IssueTypeSelect({
         ) {
           form.setFieldValue("sprintId", null as unknown as string)
           form.setFieldValue("storyPointsEstimate", null as unknown as number)
-          form.setFieldValue("epic", null as unknown as string)
+          form.setFieldValue("epic.issueKey", undefined)
         }
         form.setFieldValue("status", "To Do")
         form.setFieldValue("priority.id", null)

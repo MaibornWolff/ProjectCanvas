@@ -13,6 +13,7 @@ import {
   User,
 } from "../../../types"
 import {
+  JiraEpic,
   JiraIssue,
   JiraIssueType,
   JiraPriority,
@@ -410,9 +411,9 @@ export class JiraCloudProvider implements IProvider {
   async getIssuesByProject(project: string): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(3)
-        .get(`/search?jql=project=${project}&maxResults=10000`)
+        .get(`/search?jql=project=${project}&maxResults=10000&fields=*all`)
         .then(async (response) => {
-          resolve(this.fetchIssues(response))
+          resolve(this.fetchIssues(response, false))
         })
         .catch((error) => {
           reject(new Error(`Error fetching issues by project: ${this.handleFetchIssuesError(error)}`))
@@ -425,7 +426,7 @@ export class JiraCloudProvider implements IProvider {
       this.getAgileRestApiClient('1.0')
         .get(`/sprint/${sprintId}/issue`)
         .then(async (response) => {
-          resolve(this.fetchIssues(response))
+          resolve(this.fetchIssues(response, true))
         })
         .catch((error) => {
           reject(new Error(`Error fetching issues by sprint: ${this.handleFetchIssuesError(error)}`))
@@ -441,7 +442,7 @@ export class JiraCloudProvider implements IProvider {
       this.getAgileRestApiClient('1.0')
         .get(`/board/${boardId}/backlog?jql=project=${project}&maxResults=500`)
         .then(async (response) => {
-          resolve(this.fetchIssues(response))
+          resolve(this.fetchIssues(response, true))
         })
         .catch((error) => {
           reject(new Error(`Error fetching issues by project: ${this.handleFetchIssuesError(error)}`))
@@ -449,7 +450,7 @@ export class JiraCloudProvider implements IProvider {
     })
   }
 
-  async fetchIssues(response: AxiosResponse): Promise<Issue[]> {
+  async fetchIssues(response: AxiosResponse, isAgile: boolean): Promise<Issue[]> {
     const rankCustomField = this.customFields.get("Rank") || ""
     return new Promise((resolve) => {
       const issues: Promise<Issue[]> = Promise.all(
@@ -460,18 +461,30 @@ export class JiraCloudProvider implements IProvider {
           status: element.fields.status.name,
           type: element.fields.issuetype.name,
           storyPointsEstimate: await this.getIssueStoryPointsEstimate(element.key),
-          epic: element.fields.parent?.fields.summary,
+          epic: {
+            issueKey: element.fields.parent?.key,
+            summary: element.fields.parent?.fields.summary,
+          },
           labels: element.fields.labels,
           assignee: {
             displayName: element.fields.assignee?.displayName,
             avatarUrls: element.fields.assignee?.avatarUrls,
           },
           rank: element.fields[rankCustomField],
-          description: element.fields.description,
+          // IMPROVE: Remove boolean flag
+          description: (isAgile ? element.fields.description : element.fields.description?.content),
           subtasks: element.fields.subtasks,
           created: element.fields.created,
           updated: element.fields.updated,
-          comment: element.fields.comment,
+          comment: {
+            comments: element.fields.comment.comments.map((commentElement) => ({
+              id: commentElement.id,
+              body: (isAgile ? commentElement.body : commentElement.body[0]?.content[0]?.text),
+              author: commentElement.author,
+              created: commentElement.created,
+              updated: commentElement.updated,
+            })),
+          },
           projectId: element.fields.project.id,
           sprint: element.fields.sprint,
           attachments: element.fields.attachment,
@@ -659,7 +672,7 @@ export class JiraCloudProvider implements IProvider {
           {
             fields: {
               summary,
-              parent: { key: epic },
+              parent: { key: epic.issueKey },
               issuetype: { id: type },
               project: {
                 id: projectId,
@@ -757,8 +770,8 @@ export class JiraCloudProvider implements IProvider {
               ...(summary && {
                 summary,
               }),
-              ...(epic && {
-                parent: { key: epic },
+              ...(epic && epic.issueKey && {
+                parent: { key: epic.issueKey },
               }),
               ...(type && {
                 issuetype: { id: type },
@@ -821,7 +834,7 @@ export class JiraCloudProvider implements IProvider {
             }
           }
 
-          reject(new Error(`Error creating issue: ${specificError}`))
+          reject(new Error(`Error editing issue: ${specificError}`))
         })
     })
   }
@@ -851,10 +864,14 @@ export class JiraCloudProvider implements IProvider {
         .get(`search?jql=issuetype = Epic AND project = ${projectIdOrKey}&fields=*all`)
         .then(async (response) => {
           const epics: Promise<Issue[]> = Promise.all(
-            response.data.issues.map(async (element: JiraIssue) => ({
+            response.data.issues.map(async (element: JiraEpic) => ({
               issueKey: element.key,
               summary: element.fields.summary,
+              epic: element.fields.epic,
               labels: element.fields.labels,
+              status: element.fields.status.name,
+              type: element.fields.issuetype.name,
+              description: element.fields.description.content[0]?.content[0]?.text,
               assignee: {
                 displayName: element.fields.assignee?.displayName,
                 avatarUrls: element.fields.assignee?.avatarUrls,
@@ -862,7 +879,15 @@ export class JiraCloudProvider implements IProvider {
               subtasks: element.fields.subtasks,
               created: element.fields.created,
               updated: element.fields.updated,
-              comment: element.fields.comment ?? {
+              comment: {
+                comments: element.fields.comment.comments.map((commentElement) => ({
+                  id: commentElement.id,
+                  body: commentElement.body.content[0].content[0].text,
+                  author: commentElement.author,
+                  created: commentElement.created,
+                  updated: commentElement.updated,
+                })),
+              } ?? {
                 comments: [],
               },
               projectId: element.fields.project.id,

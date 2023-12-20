@@ -114,11 +114,6 @@ export function EpicCard ({
                             >
                                 {issueKey}
                             </Text>
-                            {epic && (
-                                <Badge mr={5} color="violet">
-                                    {epic}
-                                </Badge>
-                            )}
                             {labels?.length !== 0 &&
                                 labels.map((label) => (
                                     <Badge
@@ -202,6 +197,9 @@ export function EpicCard ({
                     issueKey={issueKey}
                     summary={summary}
                     labels={labels}
+                    status={status}
+                    type={type}
+                    projectId={projectId}
                     assignee={assignee}
                     closeModal={() => setOpened(false)}
                     {...props}
