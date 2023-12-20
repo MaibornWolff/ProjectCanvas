@@ -1,6 +1,6 @@
-import { Text, HoverCard, Badge } from "@mantine/core"
-import { getStatusTypeColor } from "../../../common/status-color";
+import { Text, HoverCard, Box } from "@mantine/core"
 import { StatusType } from "../../../../types/status";
+import { StoryPointsBadge } from "./StoryPointsBadge";
 
 export function StoryPointsHoverCard({
   statusType,
@@ -12,24 +12,14 @@ export function StoryPointsHoverCard({
   return (
     <HoverCard width="relative" shadow="md" radius="md">
       <HoverCard.Target>
-        <Badge
-          px="7px"
-          color={getStatusTypeColor(statusType)}
-          variant="filled"
-          size="md"
-          sx={{
-            marginBottom: "20px",
-          }}
-        >
-          <Text size="xs">{count}</Text>
-        </Badge>
+        <Box sx={{ marginBottom: "20px" }}>
+          <StoryPointsBadge statusType={statusType} storyPointsEstimate={count} />
+        </Box>
       </HoverCard.Target>
       <HoverCard.Dropdown>
         <Text
           size="sm"
-          sx={{
-            marginLeft: "-5px",
-          }}
+          sx={{ marginLeft: "-5px" }}
         >
           Total story points for <b>{statusType}</b> issues: <b>{count}</b>
         </Text>

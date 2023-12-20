@@ -20,8 +20,8 @@ import { Draggable } from "react-beautiful-dnd"
 import { DetailView } from "../../DetailView/DetailView"
 import { IssueIcon } from "./IssueIcon"
 import { DeleteButton } from "./DeleteButton"
-import { getStatusTypeColor } from "../../../common/status-color";
 import { StatusType } from "../../../../types/status";
+import { StoryPointsBadge } from "../../common/StoryPoints/StoryPointsBadge";
 
 export function IssueCard({
   issueKey,
@@ -164,19 +164,8 @@ export function IssueCard({
               </Grid.Col>
               <Grid.Col span={3}>
                 <Box sx={{ alignSelf: "flex-start" }}>
-                  <Badge
-                    w="24px"
-                    p="0px"
-                    bg={
-                      storyPointsEstimate !== undefined &&
-                      storyPointsEstimate !== null
-                        ? getStatusTypeColor(status as StatusType)
-                        : "transparent"
-                    }
-                    variant="filled"
-                  >
-                    {storyPointsEstimate}
-                  </Badge>
+                  {storyPointsEstimate &&
+                    <StoryPointsBadge statusType={status as StatusType} storyPointsEstimate={storyPointsEstimate} />}
                 </Box>
               </Grid.Col>
             </Grid>

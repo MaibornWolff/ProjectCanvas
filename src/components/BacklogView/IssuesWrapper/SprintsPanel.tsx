@@ -8,6 +8,7 @@ import {
 } from "../helpers/backlogHelpers"
 import { DraggableIssuesWrapper } from "./DraggableIssuesWrapper"
 import {StatusType} from "../../../../types/status";
+import {StoryPointsBadge} from "../../common/StoryPoints/StoryPointsBadge";
 
 export function SprintsPanel({
   sprintsWithIssues,
@@ -78,15 +79,18 @@ function SprintAccordionControl({
           </Badge>
         )}
         <Flex gap={4} p="xs" ml="auto">
-          <Badge px="6px" color="gray.6" variant="filled" size="sm">
-            {storyPointsAccumulator(issues, StatusType.TODO)}
-          </Badge>
-          <Badge px="6px" color="blue.8" variant="filled" size="sm">
-            {storyPointsAccumulator(issues, StatusType.IN_PROGRESS)}
-          </Badge>
-          <Badge px="6px" color="green.9" variant="filled" size="sm">
-            {storyPointsAccumulator(issues, StatusType.DONE)}
-          </Badge>
+          <StoryPointsBadge
+            statusType={StatusType.TODO}
+            storyPointsEstimate={storyPointsAccumulator(issues, StatusType.TODO)}
+          />
+          <StoryPointsBadge
+            statusType={StatusType.IN_PROGRESS}
+            storyPointsEstimate={storyPointsAccumulator(issues, StatusType.IN_PROGRESS)}
+          />
+          <StoryPointsBadge
+            statusType={StatusType.DONE}
+            storyPointsEstimate={storyPointsAccumulator(issues, StatusType.DONE)}
+          />
         </Flex>
       </Group>
       <Text size="sm" color="gray.7">

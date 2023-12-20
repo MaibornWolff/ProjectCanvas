@@ -19,8 +19,8 @@ import { Issue } from "../../../../../types"
 import { DetailView } from "../../../DetailView/DetailView"
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon"
 import { DeleteButton } from "../../../BacklogView/Issue/DeleteButton"
-import { getStatusTypeColor } from "../../../../common/status-color";
 import { StatusType } from "../../../../../types/status";
+import { StoryPointsBadge } from "../../../common/StoryPoints/StoryPointsBadge";
 
 export function ChildIssueCard({
   issueKey,
@@ -124,17 +124,8 @@ export function ChildIssueCard({
             }}
           >
             <Box sx={{ alignSelf: "flex-start" }}>
-              <Badge
-                p="7px"
-                bg={
-                  storyPointsEstimate
-                    ? getStatusTypeColor(status as StatusType)
-                    : "transparent"
-                }
-                variant="filled"
-              >
-                {storyPointsEstimate}
-              </Badge>
+              {storyPointsEstimate &&
+                <StoryPointsBadge statusType={status as StatusType} storyPointsEstimate={storyPointsEstimate} />}
             </Box>
           </Grid.Col>
           <Grid.Col

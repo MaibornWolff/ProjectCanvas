@@ -19,8 +19,8 @@ import {useQueryClient} from "@tanstack/react-query";
 import {IconBolt} from "@tabler/icons";
 import {DeleteButton} from "../BacklogView/Issue/DeleteButton";
 import {EpicDetailView} from "../EpicDetailView/EpicDetailView";
-import {getStatusTypeColor} from "../../common/status-color";
 import {StatusType} from "../../../types/status";
+import {StoryPointsBadge} from "../common/StoryPoints/StoryPointsBadge";
 
 export function EpicCard ({
     issueKey,
@@ -152,19 +152,11 @@ export function EpicCard ({
                 </Grid.Col>
                 <Grid.Col span={3}>
                     <Box sx={{ alignSelf: "flex-start" }}>
-                        <Badge
-                            w="24px"
-                            p="0px"
-                            bg={
-                                storyPointsEstimate !== undefined &&
-                                storyPointsEstimate !== null
-                                    ? getStatusTypeColor(status as StatusType)
-                                    : "transparent"
-                            }
-                            variant="filled"
-                        >
-                            {storyPointsEstimate}
-                        </Badge>
+                        {storyPointsEstimate &&
+                            <StoryPointsBadge
+                                statusType={status as StatusType}
+                                storyPointsEstimate={storyPointsEstimate}
+                            />}
                     </Box>
                 </Grid.Col>
             </Grid>
