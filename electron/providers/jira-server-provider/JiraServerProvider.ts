@@ -606,7 +606,6 @@ export class JiraServerProvider implements IProvider {
                   updated: commentElement.updated,
                 })),
               },
-              projectId: element.fields.project.id,
               sprint: element.fields.sprint,
               attachments: element.fields.attachment,
             }))
