@@ -36,7 +36,7 @@ import {
   inProgressAccumulator,
   storyPointsAccumulator,
 } from "./helpers/storyPointsHelper"
-import { StoryPointsHoverCard } from "./Components/StoryPointsHoverCard";
+import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard";
 import { CommentSection } from "../DetailView/Components/CommentSection";
 import { getIssueTypes, setStatus } from "../CreateIssue/queryFunctions";
 import { StatusType } from "../../../types/status";
