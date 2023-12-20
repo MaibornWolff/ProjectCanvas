@@ -136,15 +136,9 @@ export function ChildIssueCard({
               justifyContent: "center",
             }}
           >
-            <Box
-              sx={{
-                alignSelf: "flex-start",
-                marginBottom: "5px",
-              }}
-            >
+            <Box sx={{ alignSelf: "flex-start" }}>
               <Badge
-                w="24px"
-                p="0px"
+                p="7px"
                 bg={
                   storyPointsEstimate !== undefined &&
                   storyPointsEstimate !== null
