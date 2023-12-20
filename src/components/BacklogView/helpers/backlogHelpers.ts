@@ -1,7 +1,8 @@
 import { Issue, Sprint } from "types"
 import { Dispatch, SetStateAction } from "react"
+import { StatusType } from "../../../../types/status";
 
-export const storyPointsAccumulator = (issues: Issue[], status: string) =>
+export const storyPointsAccumulator = (issues: Issue[], status: StatusType) =>
   issues.reduce((accumulator, currentValue) => {
     if (currentValue.storyPointsEstimate && currentValue.status === status) {
       return accumulator + currentValue.storyPointsEstimate

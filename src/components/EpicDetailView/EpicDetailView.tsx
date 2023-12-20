@@ -36,9 +36,11 @@ import {
   inProgressAccumulator,
   storyPointsAccumulator,
 } from "./helpers/storyPointsHelper"
-import { StoryPointsHoverCard } from "./Components/StoryPointsHoverCard";
+import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard";
 import { CommentSection } from "../DetailView/Components/CommentSection";
 import { getIssueTypes, setStatus } from "../CreateIssue/queryFunctions";
+import { StatusType } from "../../../types/status";
+import { getStatusTypeColor } from "../../common/status-color"
 
 export function EpicDetailView({
   issueKey,
@@ -131,9 +133,10 @@ export function EpicDetailView({
     },
   })
 
-  const tasksOpen = inProgressAccumulator(childIssues, "To Do")
-  const tasksInProgress = inProgressAccumulator(childIssues, "In Progress")
-  const tasksDone = inProgressAccumulator(childIssues, "Done")
+  const tasksTodo = inProgressAccumulator(childIssues, StatusType.TODO)
+  const tasksInProgress = inProgressAccumulator(childIssues, StatusType.IN_PROGRESS)
+  const tasksDone = inProgressAccumulator(childIssues, StatusType.DONE)
+  const totalTaskCount = tasksTodo + tasksInProgress + tasksDone
 
   useEffect(() => {
     resizeDivider()
@@ -186,13 +189,6 @@ export function EpicDetailView({
               radius="md"
               size={20}
               label="hello"
-              styles={{
-                label: {
-                  color: "black",
-                  fontSize: "14px",
-                  fontWeight: "normal",
-                },
-              }}
               sx={{
                 width: "400px",
                 marginRight: "5px",
@@ -201,56 +197,46 @@ export function EpicDetailView({
               }}
               sections={[
                 {
-                  value:
-                    (tasksDone / (tasksDone + tasksOpen + tasksInProgress)) *
-                    100,
-                  color: "#10df10",
+                  value: (tasksDone / totalTaskCount) * 100,
+                  color: getStatusTypeColor(StatusType.DONE),
                   label: `${tasksDone}`,
                   tooltip: `${tasksDone} Done`,
                 },
                 {
-                  value:
-                    (tasksInProgress /
-                      (tasksDone + tasksOpen + tasksInProgress)) *
-                    100,
-                  color: "#6ba5d8",
+                  value: (tasksInProgress / totalTaskCount) * 100,
+                  color: getStatusTypeColor(StatusType.IN_PROGRESS),
                   label: `${tasksInProgress}`,
                   tooltip: `${tasksInProgress} In progress`,
                 },
                 {
-                  value:
-                    (tasksOpen / (tasksDone + tasksOpen + tasksInProgress)) *
-                    100,
-                  color: "rgb(225,223,223)",
-                  label: `${tasksOpen}`,
-                  tooltip: `${tasksOpen} ToDo`,
+                  value: (tasksTodo / totalTaskCount) * 100,
+                  color: getStatusTypeColor(StatusType.TODO),
+                  label: `${tasksTodo}`,
+                  tooltip: `${tasksTodo} ToDo`,
                 },
                 {
                   value: 100,
-                  color: "rgb(225,223,223)",
+                  color: getStatusTypeColor(StatusType.TODO),
                   label: `0`,
                   tooltip: "Currently no child issues",
                 },
               ]}
             />
             <StoryPointsHoverCard
-              statusType="To Do"
-              color="gray.6"
-              count={storyPointsAccumulator(childIssues, "To Do")}
+              statusType={StatusType.TODO}
+              count={storyPointsAccumulator(childIssues, StatusType.TODO)}
             />
             <StoryPointsHoverCard
-              statusType="In Progress"
-              color="blue.8"
-              count={storyPointsAccumulator(childIssues, "In Progress")}
+              statusType={StatusType.IN_PROGRESS}
+              count={storyPointsAccumulator(childIssues, StatusType.IN_PROGRESS)}
             />
             <StoryPointsHoverCard
-              statusType="Done"
-              color="green.9"
-              count={storyPointsAccumulator(childIssues, "Done")}
+              statusType={StatusType.DONE}
+              count={storyPointsAccumulator(childIssues, StatusType.DONE)}
             />
           </Group>
 
-          <Group sx={{ marginLeft: "-10px"}} grow>
+          <Group sx={{ marginLeft: "-10px" }} grow>
             <ChildIssues issues={childIssues} />
           </Group>
         </Stack>
