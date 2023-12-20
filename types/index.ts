@@ -52,7 +52,10 @@ export interface Issue {
   type: string
   description: string
   storyPointsEstimate: number
-  epic: string
+  epic: {
+    issueKey?: string
+    summary?: string
+  }
   labels: string[]
   assignee?: User
   rank: string

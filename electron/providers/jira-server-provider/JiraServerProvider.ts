@@ -294,7 +294,7 @@ export class JiraServerProvider implements IProvider {
   async getIssuesByProject(project: string, boardId: number): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
       this.getAgileRestApiClient('1.0')
-        .get(`/board/${boardId}/issue?jql=project=${project}&maxResults=10000`)
+        .get(`/board/${boardId}/issue?jql=project=${project}&maxResults=10000&fields=*all`)
         .then((response) => resolve(this.fetchIssues(response)))
         .catch((error) => reject(new Error(`Error in fetching issues: ${error}`)))
     })
@@ -336,7 +336,10 @@ export class JiraServerProvider implements IProvider {
         status: element.fields.status.name,
         type: element.fields.issuetype.name,
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(element.key),
-        epic: element.fields.parent?.fields.summary,
+        epic: {
+          issueKey: element.fields.parent?.key,
+          summary: element.fields.parent?.fields.summary,
+        },
         labels: element.fields.labels,
         assignee: {
           displayName: element.fields.assignee?.displayName,
@@ -515,7 +518,7 @@ export class JiraServerProvider implements IProvider {
               {
                 fields: {
                   summary,
-                  parent: { key: epic },
+                  parent: { key: epic.issueKey },
                   issuetype: { id: type },
                   project: {
                     id: projectId,
@@ -583,6 +586,9 @@ export class JiraServerProvider implements IProvider {
               issueKey: element.key,
               summary: element.fields.summary,
               labels: element.fields.labels,
+              created: element.fields.created,
+              updated: element.fields.updated,
+              description: element.fields.description.content,
               assignee: {
                 displayName: element.fields.assignee?.displayName,
                 avatarUrls: element.fields.assignee?.avatarUrls,
@@ -869,8 +875,8 @@ export class JiraServerProvider implements IProvider {
               ...(summary && {
                 summary,
               }),
-              ...(epic && {
-                parent: { key: epic },
+              ...(epic && epic.issueKey && {
+                parent: { key: epic.issueKey },
               }),
               ...(type && {
                 issuetype: { id: type },

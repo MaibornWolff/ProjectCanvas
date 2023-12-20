@@ -5,16 +5,18 @@ import { deleteIssueMutation } from "./queries"
 
 export function DeleteIssueAlert({
   issueKey,
-  closeModal,
+  cancelAlert,
+  confirmAlert,
 }: {
   issueKey: string
-  closeModal: () => void
+  cancelAlert: () => void
+  confirmAlert: () => void
 }) {
   const queryClient = useQueryClient()
   const deleteIssue = deleteIssueMutation(queryClient)
 
   return (
-    <Stack onMouseLeave={closeModal}>
+    <Stack onMouseLeave={cancelAlert}>
       <Alert
         icon={<IconAlertCircle size={16} />}
         title="Attention!"
@@ -26,7 +28,7 @@ export function DeleteIssueAlert({
         onClick={(e) => {
           e.stopPropagation()
           deleteIssue.mutate(issueKey)
-          closeModal()
+          confirmAlert()
         }}
       >
         Confirm
