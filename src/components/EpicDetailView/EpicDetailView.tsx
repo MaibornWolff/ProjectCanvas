@@ -137,7 +137,6 @@ export function EpicDetailView({
             >
               <Description issueKey={issueKey} description={description} />
             </Group>
-            {/* Add Progressbar here */}
             <Group align="center">
               <Progress
                 radius="md"
