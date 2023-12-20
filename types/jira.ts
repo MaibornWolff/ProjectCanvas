@@ -21,7 +21,11 @@ export interface JiraSprint {
 export interface JiraIssue {
   key: string
   fields: {
-    description: string
+    description: {
+      type: string,
+      version: string,
+      content: string,
+    }
     summary: string
     creator: { name: string; displayName: string }
     status: { name: string }

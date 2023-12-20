@@ -294,7 +294,7 @@ export class JiraServerProvider implements IProvider {
   async getIssuesByProject(project: string, boardId: number): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
       this.getAgileRestApiClient('1.0')
-        .get(`/board/${boardId}/issue?jql=project=${project}&maxResults=10000`)
+        .get(`/board/${boardId}/issue?jql=project=${project}&maxResults=10000&fields=*all`)
         .then((response) => resolve(this.fetchIssues(response)))
         .catch((error) => reject(new Error(`Error in fetching issues: ${error}`)))
     })

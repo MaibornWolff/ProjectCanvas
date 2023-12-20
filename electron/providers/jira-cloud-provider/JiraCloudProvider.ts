@@ -409,9 +409,9 @@ export class JiraCloudProvider implements IProvider {
   async getIssuesByProject(project: string): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(3)
-        .get(`/search?jql=project=${project}&maxResults=10000`)
+        .get(`/search?jql=project=${project}&maxResults=10000&fields=*all`)
         .then(async (response) => {
-          resolve(this.fetchIssues(response))
+          resolve(this.fetchIssues(response, false))
         })
         .catch((error) => {
           reject(new Error(`Error fetching issues by project: ${this.handleFetchIssuesError(error)}`))
@@ -424,7 +424,7 @@ export class JiraCloudProvider implements IProvider {
       this.getAgileRestApiClient('1.0')
         .get(`/sprint/${sprintId}/issue`)
         .then(async (response) => {
-          resolve(this.fetchIssues(response))
+          resolve(this.fetchIssues(response, true))
         })
         .catch((error) => {
           reject(new Error(`Error fetching issues by sprint: ${this.handleFetchIssuesError(error)}`))
@@ -440,7 +440,7 @@ export class JiraCloudProvider implements IProvider {
       this.getAgileRestApiClient('1.0')
         .get(`/board/${boardId}/backlog?jql=project=${project}&maxResults=500`)
         .then(async (response) => {
-          resolve(this.fetchIssues(response))
+          resolve(this.fetchIssues(response, true))
         })
         .catch((error) => {
           reject(new Error(`Error fetching issues by project: ${this.handleFetchIssuesError(error)}`))
@@ -448,7 +448,7 @@ export class JiraCloudProvider implements IProvider {
     })
   }
 
-  async fetchIssues(response: AxiosResponse): Promise<Issue[]> {
+  async fetchIssues(response: AxiosResponse, isAgile: boolean): Promise<Issue[]> {
     const rankCustomField = this.customFields.get("Rank") || ""
     return new Promise((resolve) => {
       const issues: Promise<Issue[]> = Promise.all(
@@ -469,7 +469,8 @@ export class JiraCloudProvider implements IProvider {
             avatarUrls: element.fields.assignee?.avatarUrls,
           },
           rank: element.fields[rankCustomField],
-          description: element.fields.description,
+          // IMPROVE: Remove boolean flag
+          description: (isAgile ? element.fields.description : element.fields.description?.content),
           subtasks: element.fields.subtasks,
           created: element.fields.created,
           updated: element.fields.updated,

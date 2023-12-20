@@ -24,7 +24,7 @@ import { DeleteIssue } from "../DetailView/Components/DeleteIssue"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
 import { ChildIssues } from "./Components/ChildIssue/ChildIssues"
-import { getBacklogIssues } from "../BacklogView/helpers/queryFetchers"
+import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers"
 import { sortIssuesByRank } from "../BacklogView/helpers/backlogHelpers"
 import { useCanvasStore } from "../../lib/Store"
 import { resizeDivider } from "../BacklogView/helpers/resizeDivider"
@@ -68,8 +68,8 @@ export function EpicDetailView({
   const [childIssues, setChildIssues] = useState<Issue[]>([])
 
   const { isLoading: isLoadingChildIssues } = useQuery({
-    queryKey: ["issues", projectKey, currentBoardId],
-    queryFn: () => getBacklogIssues(projectKey, currentBoardId),
+    queryKey: ["issues", projectKey, currentBoardId, issueKey],
+    queryFn: () => getIssuesByProject(projectKey, currentBoardId),
     enabled: !!projectKey,
     onSuccess: (newChildIssues) => {
       setChildIssues(
