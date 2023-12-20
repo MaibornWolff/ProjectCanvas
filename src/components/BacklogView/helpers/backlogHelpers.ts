@@ -64,7 +64,7 @@ export const searchIssuesFilter = (
       .issues.filter(
         (issue: Issue) =>
           issue.summary.toLowerCase().includes(currentSearch.toLowerCase()) ||
-          issue.epic?.toLowerCase().includes(currentSearch.toLowerCase()) ||
+          issue.epic.summary?.toLowerCase().includes(currentSearch.toLowerCase()) ||
           issue.assignee?.displayName
             ?.toLowerCase()
             .includes(currentSearch.toLowerCase()) ||

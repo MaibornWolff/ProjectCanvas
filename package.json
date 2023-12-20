@@ -18,10 +18,8 @@
     "lint": "eslint ./src",
     "test": "jest",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview",
     "pree2e": "yarn run package",
     "e2e": "playwright test",
-    "canvas": "yarn --cwd project-canvas start",
     "prepare": "husky install",
     "pre-commit": "lint-staged"
   },
@@ -101,6 +99,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/TU-TeamCanvas/ProjectCanvas"
+    "url": "https://github.com/MaibornWolff/ProjectCanvas"
   }
 }
