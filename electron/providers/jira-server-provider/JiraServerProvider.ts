@@ -598,8 +598,6 @@ export class JiraServerProvider implements IProvider {
                   created: commentElement.created,
                   updated: commentElement.updated,
                 })),
-              } ?? {
-                comments: [],
               },
               projectId: element.fields.project.id,
               sprint: element.fields.sprint,
