@@ -12,7 +12,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
   const [sortedData, setSortedData] = useState(data)
   const [sortBy, setSortBy] = useState<keyof Project | null>(null)
   const [reverseSortDirection, setReverseSortDirection] = useState(false)
-  const { setSelectedProject, setselectedProjectBoardIds } = useCanvasStore()
+  const { setSelectedProject, setSelectedProjectBoardIds } = useCanvasStore()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
 
   const onClickRow = async (row: Project) => {
     setSelectedProject(row)
-    setselectedProjectBoardIds(await window.provider.getBoardIds(row.key))
+    setSelectedProjectBoardIds(await window.provider.getBoardIds(row.key))
     navigate("/backlogview")
   }
 
@@ -73,9 +73,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
       >
         <thead>
           <tr>
-            {data &&
-              data != null &&
-              data.length > 0 &&
+            {data && data.length > 0 &&
               Object.keys(data[0]).map((key) => (
                 <TableHeader
                   key={key}
