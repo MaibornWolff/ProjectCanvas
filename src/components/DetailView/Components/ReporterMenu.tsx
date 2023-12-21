@@ -65,12 +65,12 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
     ))
   ) : (
     <Menu.Item>
-      <Text color="dimmed">None</Text>
+      <Text c="dimmed">None</Text>
     </Menu.Item>
   )
   return (
     <Group grow>
-      <Text fz="sm" color="dimmed">
+      <Text fz="sm" c="dimmed">
         Reporter
       </Text>
       {issueReporter && issueReporter.displayName && issueReporter.avatarUrls && (

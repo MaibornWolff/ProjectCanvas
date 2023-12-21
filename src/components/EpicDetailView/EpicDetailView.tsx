@@ -150,7 +150,7 @@ export function EpicDetailView({
               onMutate={reloadEpics}
             />
           </Title>
-          <Text color="dimmed" mb="sm" size="md" style={{ marginLeft: "7px" }}>
+          <Text c="dimmed" mb="sm" size="md" style={{ marginLeft: "7px" }}>
             Description
           </Text>
           <Group
@@ -230,7 +230,7 @@ export function EpicDetailView({
                       issueKey={issueKey}
                     />
                     <Group grow>
-                      <Text fz="sm" color="dimmed">
+                      <Text fz="sm" c="dimmed">
                         Labels
                       </Text>
                       <Labels
@@ -264,10 +264,10 @@ export function EpicDetailView({
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>
-            <Text size="xs" color="dimmed">
+            <Text size="xs" c="dimmed">
               Created {dateFormat.format(new Date(created))}
             </Text>
-            <Text size="xs" color="dimmed">
+            <Text size="xs" c="dimmed">
               Updated {dateFormat.format(new Date(updated))}
             </Text>
           </Box>

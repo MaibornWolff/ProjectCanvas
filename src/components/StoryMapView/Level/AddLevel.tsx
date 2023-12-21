@@ -10,7 +10,7 @@ export function AddLevel({ storyMapId }: { storyMapId: string }) {
   )
   return (
     <Button
-      leftIcon={<IconPlus />}
+      leftSection={<IconPlus />}
       onClick={() => {
         const levelId = `${LEVEL_PREFIX}-${getRndInteger()}`
         addLevel(storyMapId, { id: levelId, title: "New Level" })

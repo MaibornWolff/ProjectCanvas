@@ -70,7 +70,7 @@ export function StoryPointsEstimateMenu({
 
   return editableFields && editableFields.includes("Story point estimate") ? (
     <Group grow>
-      <Text color="dimmed" fz="sm">
+      <Text c="dimmed" fz="sm">
         Story Points Estimate
       </Text>
       {!showEditableInput &&
@@ -84,7 +84,7 @@ export function StoryPointsEstimateMenu({
               </Chip>
             ) : (
               <Text
-                color="dimmed"
+                c="dimmed"
                 onClick={() => setShowEditableInput(true)}
                 w="100%"
                 style={{

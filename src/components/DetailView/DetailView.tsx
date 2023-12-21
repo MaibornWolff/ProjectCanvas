@@ -73,11 +73,11 @@ export function DetailView({
             mr="xs"
             style={{ minWidth: "260px", maxHeight: "70vh" }}
           >
-            <Text color="dimmed" mb="sm">
+            <Text c="dimmed" mb="sm">
               Description
             </Text>
             <Description issueKey={issueKey} description={description} />
-            <Text color="dimmed" mb="sm">
+            <Text c="dimmed" mb="sm">
               Child Issues
             </Text>
             <Paper mb="lg" mr="sm">
@@ -115,13 +115,13 @@ export function DetailView({
                       issueKey={issueKey}
                     />
                     <Group grow>
-                      <Text fz="sm" color="dimmed">
+                      <Text fz="sm" c="dimmed">
                         Labels
                       </Text>
                       <Labels labels={labels} issueKey={issueKey} />
                     </Group>
                     <Group grow>
-                      <Text fz="sm" color="dimmed">
+                      <Text fz="sm" c="dimmed">
                         Sprint
                       </Text>
                       <IssueSprint sprint={sprint} issueKey={issueKey} />
@@ -135,14 +135,14 @@ export function DetailView({
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>
-            <Text size="xs" color="dimmed">
+            <Text size="xs" c="dimmed">
               Created{" "}
               {new Intl.DateTimeFormat("en-GB", {
                 dateStyle: "full",
                 timeStyle: "short",
               }).format(new Date(created))}
             </Text>
-            <Text size="xs" color="dimmed">
+            <Text size="xs" c="dimmed">
               Updated{" "}
               {new Intl.DateTimeFormat("en-GB", {
                 dateStyle: "full",

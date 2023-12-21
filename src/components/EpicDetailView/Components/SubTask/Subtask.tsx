@@ -35,7 +35,7 @@ export function Subtask({
       <ThemeIcon size="sm" style={{ flex: 2 }}>
         <IconBinaryTree2 />
       </ThemeIcon>
-      <Text size="sm" color="blue" span style={{ flex: 15 }} lineClamp={1}>
+      <Text size="sm" c="blue" span style={{ flex: 15 }} lineClamp={1}>
         {subtaskKey}
       </Text>
       <Box style={{ flex: 50 }}>

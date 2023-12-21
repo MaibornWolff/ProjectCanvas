@@ -86,7 +86,7 @@ export function ChildIssueCard({
                 <Text
                   size="sm"
                   mr={5}
-                  color="blue"
+                  c="blue"
                   td={status === StatusType.DONE ? "line-through" : "none"}
                   style={{
                     ":hover": {

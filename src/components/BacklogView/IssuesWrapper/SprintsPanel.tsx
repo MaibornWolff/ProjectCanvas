@@ -74,7 +74,7 @@ function SprintAccordionControl({
     <Accordion.Control>
       <Group>
         <Title size="h5">{sprint.name}</Title>
-        <Text color="dimmed">{pluralize(issues.length, "issue")}</Text>
+        <Text c="dimmed">{pluralize(issues.length, "issue")}</Text>
         {sprint.state === "active" && (
           <Badge px="6px" color="green" variant="filled" size="sm">
             active
@@ -95,7 +95,7 @@ function SprintAccordionControl({
           />
         </Flex>
       </Group>
-      <Text size="sm" color="gray.7">
+      <Text size="sm" c="gray.7">
         {sprint.startDate.toString() === "Invalid Date"
           ? "Dates not defined"
           : sprint.startDate.toString()}

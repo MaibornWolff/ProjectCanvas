@@ -97,7 +97,7 @@ export function IssueSprint(props: {
           {defaultsprint ? (
             <Text>{defaultsprint.name}</Text>
           ) : (
-            <Text color="dimmed">None</Text>
+            <Text c="dimmed">None</Text>
           )}
         </Box>
       )}

@@ -84,7 +84,7 @@ export function Attachments(props: {
   return (
     <>
       <Group justify="left" align="flex-start" gap="xs">
-        <Text color="dimmed" mb="sm">
+        <Text c="dimmed" mb="sm">
           {label}
         </Text>
         <Group justify="center">
@@ -184,13 +184,13 @@ export function Attachments(props: {
                               </Card.Section>
                               <Card.Section p="xs">
                                 <Box>
-                                  <Text size="xs" color="dimmed" truncate>
+                                  <Text size="xs" c="dimmed" truncate>
                                     {attachment.filename}
                                   </Text>
                                   <Text
                                     size="xs"
                                     fw={600}
-                                    color="dimmed"
+                                    c="dimmed"
                                     truncate
                                   >
                                     {new Intl.DateTimeFormat("en-GB", {

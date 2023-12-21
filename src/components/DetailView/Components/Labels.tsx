@@ -83,7 +83,7 @@ export function Labels({
               ))}
             </Group>
           ) : (
-            <Text color="dimmed">None</Text>
+            <Text c="dimmed">None</Text>
           )}
         </Box>
       )}

@@ -77,7 +77,7 @@ export function EditableEpic({
               ":hover": { textDecoration: "underline", cursor: "pointer" },
             }}
           >
-            {selectedEpic || <Text color="dimmed">Add Epic</Text>}
+            {selectedEpic || <Text c="dimmed">Add Epic</Text>}
           </Text>
         </Group>
       )}

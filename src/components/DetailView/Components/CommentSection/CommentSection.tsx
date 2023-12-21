@@ -63,7 +63,7 @@ export function CommentSection({
   return (
     <Stack>
       <Group>
-        <Text color="dimmed">Comments</Text>
+        <Text c="dimmed">Comments</Text>
         {showLoader && <Loader size="xs" />}
       </Group>
       {!showEditableInputAdd ? (
@@ -125,10 +125,10 @@ export function CommentSection({
             </Box>
             <Stack gap={0} style={{ flex: 15 }}>
               <Group>
-                <Text fw={500} color="dimmed" fz="sm">
+                <Text fw={500} c="dimmed" fz="sm">
                   {commentBody.author.displayName}
                 </Text>
-                <Text color="dimmed" fz="xs">
+                <Text c="dimmed" fz="xs">
                   {new Intl.DateTimeFormat("en-GB", {
                     dateStyle: "medium",
                     timeStyle: "short",
@@ -142,7 +142,7 @@ export function CommentSection({
                   <Group justify="left">
                     <Anchor
                       td="underline"
-                      color="dimmed"
+                      c="dimmed"
                       fz="xs"
                       onClick={() => {
                         setEditCommentInputText({
@@ -159,7 +159,7 @@ export function CommentSection({
                     </Anchor>
                     <Anchor
                       td="underline"
-                      color="dimmed"
+                      c="dimmed"
                       fz="xs"
                       onClick={() => {
                         deleteCommentMutationLocal.mutate({

@@ -49,12 +49,12 @@ export function AssigneeMenu({
     ))
   ) : (
     <Menu.Item>
-      <Text color="dimmed">None</Text>
+      <Text c="dimmed">None</Text>
     </Menu.Item>
   )
   return (
     <Group grow>
-      <Text fz="sm" color="dimmed">
+      <Text fz="sm" c="dimmed">
         Assignee
       </Text>
       {displayedAssignees && assignableUsers ? (
@@ -78,7 +78,7 @@ export function AssigneeMenu({
               ) : (
                 <Group gap="xs" justify="apart">
                   <Avatar size="sm" variant="outline" radius="xl" />
-                  <Text size="sm" color="dimmed">
+                  <Text size="sm" c="dimmed">
                     Unassigned
                   </Text>
                   <IconChevronDown
@@ -97,7 +97,7 @@ export function AssigneeMenu({
           </Menu.Dropdown>
         </Menu>
       ) : (
-        <Text color="dimmed">None</Text>
+        <Text c="dimmed">None</Text>
       )}
     </Group>
   )
