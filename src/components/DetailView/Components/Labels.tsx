@@ -2,7 +2,6 @@ import {
   MultiSelect,
   Text,
   Group,
-  Badge,
   Box,
   useMantineTheme,
 } from "@mantine/core"
@@ -12,6 +11,7 @@ import { Issue } from "types"
 import { useState } from "react"
 import { getLabels } from "../../CreateIssue/queryFunctions"
 import { editIssue } from "../helpers/queryFunctions"
+import { IssueLabelBadge } from "../../common/IssueLabelBadge";
 
 export function Labels({
   labels,
@@ -33,7 +33,7 @@ export function Labels({
     mutationFn: (issue: Issue) => editIssue(issue, issueKey),
     onError: () => {
       showNotification({
-        message: `An error occured while modifing the Labels 😢`,
+        message: `An error occurred while modifing the Labels 😢`,
         color: "red",
       })
     },
@@ -76,11 +76,7 @@ export function Labels({
         <Box onClick={() => setShowLabelsInput(true)}>
           {defaultLabels.length !== 0 ? (
             <Group gap={3}>
-              {defaultLabels.map((label) => (
-                <Badge key={label} color="yellow">
-                  {label}
-                </Badge>
-              ))}
+              {defaultLabels.map((label) => (<IssueLabelBadge issueKey={issueKey} label={label} />))}
             </Group>
           ) : (
             <Text c="dimmed">None</Text>

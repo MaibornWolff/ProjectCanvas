@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Badge,
   Center,
   Box,
   Group,
@@ -22,6 +21,8 @@ import { DeleteButton } from "../../../BacklogView/Issue/DeleteButton"
 import { StatusType } from "../../../../../types/status";
 import { StoryPointsBadge } from "../../../common/StoryPoints/StoryPointsBadge";
 import { useColorScheme } from "../../../../common/color-scheme";
+import { IssueEpicBadge } from "../../../common/IssueEpicBadge";
+import { IssueLabelBadge } from "../../../common/IssueLabelBadge";
 
 export function ChildIssueCard({
   issueKey,
@@ -97,17 +98,8 @@ export function ChildIssueCard({
                 >
                   {issueKey}
                 </Text>
-                {epic.issueKey && (
-                  <Badge mr={5} color="violet">
-                    {epic.summary}
-                  </Badge>
-                )}
-                {labels?.length !== 0 &&
-                  labels.map((label) => (
-                    <Badge mr={2} key={`${issueKey}-${label}`} color="yellow">
-                      {label}
-                    </Badge>
-                  ))}
+                {epic.issueKey && (<IssueEpicBadge issueKey={issueKey} epic={epic} />)}
+                {labels && labels.map((label) => (<IssueLabelBadge issueKey={issueKey} label={label} />))}
               </Group>
               <Text size="lg">{summary}</Text>
               <Group align="center" gap="sm">

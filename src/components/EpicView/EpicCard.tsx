@@ -1,7 +1,6 @@
 import {Issue} from "types";
 import {
     Avatar,
-    Badge,
     Box,
     Paper,
     Center,
@@ -22,6 +21,7 @@ import {EpicDetailView} from "../EpicDetailView/EpicDetailView";
 import {StatusType} from "../../../types/status";
 import {StoryPointsBadge} from "../common/StoryPoints/StoryPointsBadge";
 import {useColorScheme} from "../../common/color-scheme";
+import {IssueLabelBadge} from "../common/IssueLabelBadge";
 
 export function EpicCard ({
     issueKey,
@@ -104,16 +104,8 @@ export function EpicCard ({
                             >
                                 {issueKey}
                             </Text>
-                            {labels?.length !== 0 &&
-                                labels.map((label) => (
-                                    <Badge
-                                        mr={2}
-                                        key={`${issueKey}-${label}`}
-                                        color="yellow"
-                                    >
-                                        {label}
-                                    </Badge>
-                                ))}
+                            {labels &&
+                                labels.map((label) => (<IssueLabelBadge issueKey={issueKey} label={label} />))}
                         </Group>
                         <Text size="lg">{summary}</Text>
                     </Stack>
