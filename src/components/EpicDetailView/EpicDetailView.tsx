@@ -11,13 +11,10 @@ import {
   Stack,
   Text,
   Title,
-  Menu,
-  Button,
   Tooltip,
 } from "@mantine/core"
-import { IconCaretDown } from "@tabler/icons"
 import { Attachment, Issue, User } from "types"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
 import { Description } from "../DetailView/Components/Description"
@@ -38,12 +35,10 @@ import {
 } from "./helpers/storyPointsHelper"
 import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard";
 import { CommentSection } from "../DetailView/Components/CommentSection";
-import { getIssueTypes, setStatus } from "../CreateIssue/queryFunctions";
 import { StatusType } from "../../../types/status";
 import { getStatusTypeColor } from "../../common/status-color"
 import { Attachments } from "../DetailView/Components/Attachments/Attachments";
-
-import classes from './EpicDetailView.module.css'
+import { IssueStatusMenu } from "../DetailView/Components/IssueStatusMenu";
 
 export function EpicDetailView({
   issueKey,
@@ -89,20 +84,6 @@ export function EpicDetailView({
     queryClient.invalidateQueries({ queryKey: ["issues"] })
     queryClient.invalidateQueries({ queryKey: ["epics"] })
   };
-
-  const [defaultStatus, setDefaultStatus] = useState(status)
-  const statusMutation = useMutation({
-    mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
-    onSuccess: reloadEpics,
-  })
-
-  const { data: issueTypes } = useQuery({
-    queryKey: ["issueTypes", projectId],
-    queryFn: () => getIssueTypes(projectId),
-    enabled: !!projectId,
-  })
-
-  const [opened, setOpened] = useState(false)
 
   const dateFormat = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
@@ -233,36 +214,8 @@ export function EpicDetailView({
         </Stack>
         <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
           <Box>
-            <Group justify="apart" mb="sm">
-                <Menu
-                  shadow="md"
-                  onOpen={() => setOpened(true)}
-                  onClose={() => setOpened(false)}
-                >
-                  <Menu.Target>
-                    <Button rightSection={<IconCaretDown className={classes.icon} />}>
-                      {defaultStatus}
-                    </Button>
-                  </Menu.Target>
-
-                  <Menu.Dropdown>
-                    <Menu.Label>Status</Menu.Label>
-                    {issueTypes &&
-                      issueTypes
-                        .find((issueType) => issueType.name === type)
-                        ?.statuses?.map((issueStatus) => (
-                        <Menu.Item
-                          key={issueStatus.id}
-                          onClick={() => {
-                            statusMutation.mutate(issueStatus.name)
-                            setDefaultStatus(issueStatus.name)
-                          }}
-                        >
-                          {issueStatus.name}
-                        </Menu.Item>
-                      ))}
-                  </Menu.Dropdown>
-                </Menu>
+            <Group justify="space-between" mb="sm">
+              <IssueStatusMenu projectId={projectId} issueKey={issueKey} type={type} status={status} />
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>

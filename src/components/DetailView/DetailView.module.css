@@ -1,4 +1,0 @@
-.icon {
-    transition: transform 150ms ease;
-    transform: rotate(0deg); /* TODO isOpened ? "rotate(180deg)" : "rotate(0deg)" */
-}
