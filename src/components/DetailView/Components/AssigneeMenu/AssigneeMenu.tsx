@@ -1,20 +1,11 @@
 import {
-  Avatar,
   Group,
-  Menu,
-  ScrollArea,
   Text,
-  UnstyledButton,
 } from "@mantine/core"
-import { IconChevronDown } from "@tabler/icons"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { Issue } from "types"
-import { useState } from "react"
-import { useCanvasStore } from "../../../../lib/Store"
 import { editIssueMutation } from "./queries"
-import { getAssignableUsersByProject } from "./queryFunctions"
-
-import classes from './AssigneeMenu.module.css'
+import { UserSelectMenu } from "../../../common/UserSelect/UserSelectMenu";
 
 export function AssigneeMenu({
   assignee,
@@ -23,82 +14,19 @@ export function AssigneeMenu({
   assignee: Issue["assignee"]
   issueKey: string
 }) {
-  const selectedProject = useCanvasStore((state) => state.selectedProject)
   const queryClient = useQueryClient()
-  const [opened, setOpened] = useState(false)
-
-  const { data: assignableUsers } = useQuery({
-    queryKey: ["assignableUsers", selectedProject?.key],
-    queryFn: () => getAssignableUsersByProject(selectedProject?.key!),
-    enabled: !!assignee && !!selectedProject && !!selectedProject.key,
-  })
-
   const editIssue = editIssueMutation(queryClient, issueKey)
 
-  const displayedAssignees = assignableUsers ? (
-    assignableUsers.map((user) => (
-      <Menu.Item
-        leftSection={<Avatar src={user.avatarUrls["24x24"]} size="sm" radius="xl" />}
-        onClick={() =>
-          editIssue.mutate({ assignee: user } as Issue)
-        }
-        key={user.id}
-      >
-        {user.displayName}
-      </Menu.Item>
-    ))
-  ) : (
-    <Menu.Item>
-      <Text c="dimmed">None</Text>
-    </Menu.Item>
-  )
   return (
     <Group grow>
       <Text fz="sm" c="dimmed">
         Assignee
       </Text>
-      {displayedAssignees && assignableUsers ? (
-        <Menu onOpen={() => setOpened(true)} onClose={() => setOpened(false)}>
-          <Menu.Target>
-            <UnstyledButton className={classes.control}>
-              {assignee && assignee.displayName && assignee.avatarUrls ? (
-                <Group gap="xs" justify="apart">
-                  <Avatar
-                    src={assignee.avatarUrls["24x24"]}
-                    size="sm"
-                    radius="xl"
-                  />
-                  <Text size="sm">{assignee.displayName}</Text>
-                  <IconChevronDown
-                    size={18}
-                    stroke={1.5}
-                    className={classes.icon}
-                  />
-                </Group>
-              ) : (
-                <Group gap="xs" justify="apart">
-                  <Avatar size="sm" variant="outline" radius="xl" />
-                  <Text size="sm" c="dimmed">
-                    Unassigned
-                  </Text>
-                  <IconChevronDown
-                    size={18}
-                    stroke={1.5}
-                    className={classes.icon}
-                  />
-                </Group>
-              )}
-            </UnstyledButton>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <ScrollArea style={{ height: 200 }} type="auto">
-              {displayedAssignees}
-            </ScrollArea>
-          </Menu.Dropdown>
-        </Menu>
-      ) : (
-        <Text c="dimmed">None</Text>
-      )}
+      <UserSelectMenu
+        value={assignee}
+        onChange={(selectedUser) => editIssue.mutate({ assignee: selectedUser } as Issue)}
+        placeholder="Unassigned"
+      />
     </Group>
   )
 }

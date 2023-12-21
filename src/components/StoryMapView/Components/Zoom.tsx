@@ -19,7 +19,7 @@ export function Zoom({
         >
           <IconMinus />
         </ActionIcon>
-        <Text w={36} align="center">
+        <Text w={36} style={{ align: "center" }}>
           {(zoomValue * 100).toFixed()}%
         </Text>
         <ActionIcon
