@@ -16,13 +16,13 @@ export function StatusSelect({
       label="Status"
       placeholder="Choose status"
       searchable
-      nothingFound={
+      nothingFoundMessage={
         form.getInputProps("type").value === ""
           ? "Please select an issue type first"
           : "No Options"
       }
       data={
-        !isLoading && issueTypes && issueTypes instanceof Array
+        !isLoading && issueTypes
           ? issueTypes
               .find(
                 (issueType) => issueType.id === form.getInputProps("type").value

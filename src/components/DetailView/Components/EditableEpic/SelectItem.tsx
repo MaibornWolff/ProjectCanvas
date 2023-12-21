@@ -11,7 +11,7 @@ interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
 export const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
   ({ label, description, ...others }: ItemProps, ref) => (
     <div ref={ref} {...others}>
-      <Group noWrap>
+      <Group wrap="nowrap">
         <IssueIcon type="Epic" />
         <div>
           <Badge size="sm" color="violet">

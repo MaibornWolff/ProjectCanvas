@@ -61,7 +61,7 @@ export function IssueSprint(props: {
     <span>
       {showSprintInput ? (
         <Select
-          nothingFound="No Options"
+          nothingFoundMessage="No Options"
           searchable
           clearable
           defaultValue={props.sprint ? props.sprint.name : ""}

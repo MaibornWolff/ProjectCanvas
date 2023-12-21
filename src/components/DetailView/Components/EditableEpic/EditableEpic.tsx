@@ -49,7 +49,7 @@ export function EditableEpic({
       {showEpicInput ? (
         <Select
           placeholder=""
-          nothingFound="No Options"
+          nothingFoundMessage="No Options"
           data={
             epics
               ? epics.map((epicItem) => ({

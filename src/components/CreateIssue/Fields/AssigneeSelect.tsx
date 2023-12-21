@@ -16,7 +16,7 @@ export function AssigneeSelect({
     <Select
       label="Assignee"
       placeholder="Choose assignee"
-      nothingFound="Please select a project first"
+      nothingFoundMessage="Please select a project first"
       itemComponent={SelectItem}
       data={
         !isLoading && assignableUsers

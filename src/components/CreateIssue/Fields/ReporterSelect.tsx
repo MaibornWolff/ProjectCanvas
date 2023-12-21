@@ -16,7 +16,7 @@ export function ReporterSelect({
     <Select
       label="Reporter"
       placeholder="Choose reporter"
-      nothingFound="Please select a project first"
+      nothingFoundMessage="Please select a project first"
       itemComponent={SelectItem}
       data={
         !isLoading && assignableUsers

@@ -42,23 +42,23 @@ export function EpicSelect({
       }
       position="top-start"
       events={{
-        hover: true && !!isDisabled,
-        focus: false && !!isDisabled,
-        touch: false && !!isDisabled,
+        hover: isDisabled ?? false,
+        focus: false,
+        touch: false,
       }}
     >
       <Box>
         <Select
           label="Epic"
           placeholder="Choose epic"
-          nothingFound={
+          nothingFoundMessage={
             epics && epics.length > 0
               ? "Please select an issue type first"
               : "No epics found"
           }
           disabled={isDisabled}
           data={
-            !isLoading && epics && epics instanceof Array
+            !isLoading && epics
               ? epics.map((epic) => ({
                   value: epic.issueKey,
                   label: epic.summary,
@@ -67,7 +67,6 @@ export function EpicSelect({
           }
           searchable
           clearable
-          withinPortal
           {...form.getInputProps("epic.issueKey")}
         />
       </Box>

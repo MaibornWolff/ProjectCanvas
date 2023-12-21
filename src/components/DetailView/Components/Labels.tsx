@@ -59,7 +59,7 @@ export function Labels({
       {showLabelsInput ? (
         <MultiSelect
           placeholder="Choose labels"
-          nothingFound="No Options"
+          nothingFoundMessage="No Options"
           searchable
           clearable
           defaultValue={defaultLabels}

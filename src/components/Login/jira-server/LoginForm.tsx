@@ -48,7 +48,7 @@ export function LoginForm({
         />
       </Stack>
 
-      <Group position="center" mt="xl">
+      <Group justify="center" mt="xl">
         <Button
           type="submit"
           variant="gradient"

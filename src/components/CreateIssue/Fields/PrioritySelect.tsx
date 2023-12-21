@@ -35,20 +35,20 @@ export function PrioritySelect({
       }
       position="top-start"
       events={{
-        hover: true && !!isDisabled,
-        focus: false && !!isDisabled,
-        touch: false && !!isDisabled,
+        hover: isDisabled ?? false,
+        focus: false,
+        touch: false,
       }}
     >
       <Box>
         <Select
           label="Priority"
           placeholder="Choose priority"
-          nothingFound="Please select an issue type first"
+          nothingFoundMessage="Please select an issue type first"
           itemComponent={SelectItem}
           disabled={isDisabled}
           data={
-            !isLoading && priorities && priorities instanceof Array
+            !isLoading && priorities
               ? priorities.map((priority) => ({
                   image: priority.iconUrl,
                   value: priority.id,

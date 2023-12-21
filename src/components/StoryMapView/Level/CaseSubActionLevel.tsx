@@ -13,12 +13,12 @@ export function CaseSubActionLevel({
   levelId: string
 }) {
   return (
-    <Group align="start" noWrap>
+    <Group align="start" wrap="nowrap">
       {filteredCases.map((caseColumn) => (
         <Group
           key={`${caseColumn.id}-${levelId}`}
           align="start"
-          noWrap
+          wrap="nowrap"
           gap={0}
         >
           {caseColumn.actions

@@ -10,7 +10,7 @@ interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
 export const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
   ({ image, label, value, ...others }: ItemProps, ref) => (
     <Container ref={ref} {...others}>
-      <Group noWrap>
+      <Group wrap="nowrap">
         <Avatar src={image} size="sm" radius="xl" ml={4} mr={4} />
         <Text size="sm">{label}</Text>
       </Group>
