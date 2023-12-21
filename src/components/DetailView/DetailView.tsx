@@ -110,10 +110,7 @@ export function DetailView({
                 </Accordion.Control>
                 <Accordion.Panel>
                   <Stack>
-                    <AssigneeMenu
-                      assignee={assignee as Issue["assignee"]}
-                      issueKey={issueKey}
-                    />
+                    <AssigneeMenu assignee={assignee as Issue["assignee"]} issueKey={issueKey} />
                     <Group grow>
                       <Text fz="sm" c="dimmed">
                         Labels
