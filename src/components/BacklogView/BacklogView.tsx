@@ -32,8 +32,10 @@ import { resizeDivider } from "./helpers/resizeDivider"
 import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper"
 import { SprintsPanel } from "./IssuesWrapper/SprintsPanel"
 import { ReloadButton } from "./ReloadButton"
+import { useColorScheme } from "../../common/color-scheme";
 
 export function BacklogView() {
+  const colorScheme = useColorScheme()
   const navigate = useNavigate()
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
@@ -237,10 +239,7 @@ export function BacklogView() {
                 style={(theme) => ({
                   justifyContent: "left",
                   ":hover": {
-                    background:
-                      theme.colorScheme === "dark"
-                        ? theme.colors.dark[4]
-                        : theme.colors.gray[4],
+                    background: colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[4],
                   },
                 })}
               >

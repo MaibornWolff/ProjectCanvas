@@ -3,8 +3,10 @@ import { useState } from "react"
 import { Issue } from "../../../../../types"
 import { CreateIssueModal } from "../../../CreateIssue/CreateIssueModal"
 import { ChildIssueWrapper } from "./ChildIssueWrapper"
+import { useColorScheme } from "../../../../common/color-scheme";
 
 export function ChildIssues({ issues }: { issues: Issue[] }) {
+  const colorScheme = useColorScheme()
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
 
   return (
@@ -40,7 +42,7 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
               justifyContent: "left",
               ":hover": {
                 background:
-                  theme.colorScheme === "dark"
+                  colorScheme === "dark"
                     ? theme.colors.dark[4]
                     : theme.colors.gray[4],
               },

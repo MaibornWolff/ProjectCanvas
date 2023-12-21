@@ -1,9 +1,10 @@
-import {Box, Button, useComputedColorScheme} from "@mantine/core"
+import { Box, Button } from "@mantine/core"
 import { useState } from "react"
 import { CreateSprintModal } from "./CreateSprintModal"
+import { useColorScheme } from "../../../common/color-scheme";
 
 export function CreateSprint() {
-  const computedColorScheme = useComputedColorScheme("dark")
+  const colorScheme = useColorScheme()
   const [createSprintModalOpened, setCreateSprintModalOpened] = useState(false)
 
   return (
@@ -20,10 +21,7 @@ export function CreateSprint() {
         style={(theme) => ({
           justifyContent: "left",
           ":hover": {
-            background:
-              computedColorScheme === "dark"
-                ? theme.colors.dark[4]
-                : theme.colors.gray[4],
+            background: colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[4],
           },
         })}
       >

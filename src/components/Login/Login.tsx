@@ -1,4 +1,4 @@
-import { Button, Container, Divider, Group, Image, Paper } from "@mantine/core"
+import {Button, Container, Divider, Group, Image, Paper, rgba} from "@mantine/core"
 import { IconCloud, IconServer } from "@tabler/icons"
 import { ipcRenderer } from "electron"
 import { useState } from "react"
@@ -8,6 +8,7 @@ import { LanguageSelector } from "../common/LanguageSelector"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { JiraCloudLogin } from "./jira-cloud/JiraCloudLogin"
 import { JiraServerLogin } from "./jira-server/JiraServerLogin"
+import { useColorScheme } from "../../common/color-scheme";
 
 export function Login() {
   const [providerLogin, setProviderLogin] = useState("")
@@ -15,6 +16,7 @@ export function Login() {
   const onSuccess = () => navigateTo("/projectsview")
   const goBack = () => setProviderLogin("")
   const { t } = useTranslation("login")
+  const colorScheme = useColorScheme()
 
   return (
     <Container
@@ -44,11 +46,11 @@ export function Login() {
         <Image
           mx="auto"
           src="./project_canvas_logo.svg"
-          style={(theme) => ({
+          style={() => ({
             maxWidth: "220px",
             backgroundColor:
-              theme.colorScheme === "dark"
-                ? theme.fn.rgba("#fff", 0.3)
+              colorScheme === "dark"
+                ? rgba("#fff", 0.3)
                 : "transparent",
             borderRadius: "20px",
             padding: "20px",

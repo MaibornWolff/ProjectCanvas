@@ -21,6 +21,7 @@ import {DeleteButton} from "../BacklogView/Issue/DeleteButton";
 import {EpicDetailView} from "../EpicDetailView/EpicDetailView";
 import {StatusType} from "../../../types/status";
 import {StoryPointsBadge} from "../common/StoryPoints/StoryPointsBadge";
+import {useColorScheme} from "../../common/color-scheme";
 
 export function EpicCard ({
     issueKey,
@@ -38,8 +39,9 @@ export function EpicCard ({
     const queryClient = useQueryClient()
     const {hovered} = useHover()
     const theme = useMantineTheme()
+    const colorScheme = useColorScheme()
     const hoverStyles =
-        theme.colorScheme === "dark"
+        colorScheme === "dark"
             ? {
                 backgroundColor: theme.colors.dark[8],
                 transition: "background-color .1s ease-in",

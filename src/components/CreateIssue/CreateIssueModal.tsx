@@ -5,7 +5,6 @@ import {
   Modal,
   ScrollArea,
   Stack,
-  useComputedColorScheme,
   useMantineTheme,
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
@@ -44,6 +43,7 @@ import {
   getIssueTypes,
   getIssueTypesWithFieldsMap,
 } from "./queryFunctions"
+import { useColorScheme } from "../../common/color-scheme";
 
 export function CreateIssueModal({
   opened,
@@ -54,7 +54,7 @@ export function CreateIssueModal({
 }) {
   const queryClient = useQueryClient()
   const theme = useMantineTheme()
-  const computedColorScheme = useComputedColorScheme("light")
+  const colorScheme = useColorScheme()
   const projects = useCanvasStore((state) => state.projects)
   const selectedProject = useCanvasStore((state) => state.selectedProject)
 
@@ -133,7 +133,7 @@ export function CreateIssueModal({
       title="Create Issue"
       size="70vw"
       overlayProps={{
-        color: computedColorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
+        color: colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
         opacity: 0.55,
         blur: 5,
       }}

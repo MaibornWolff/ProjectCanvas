@@ -3,6 +3,7 @@ import { IconTrash } from "@tabler/icons"
 import { useEffect, useState } from "react"
 import { useHover } from "@mantine/hooks";
 import { DeleteIssueAlert } from "../../DetailView/Components/DeleteIssue/DeleteIssueAlert"
+import { useColorScheme } from "../../../common/color-scheme";
 
 export function DeleteButton({
   mounted,
@@ -11,6 +12,7 @@ export function DeleteButton({
   mounted: boolean
   issueKey: string
 }) {
+  const colorScheme = useColorScheme()
   const [issuePopoverOpened, setIssuePopoverOpened] = useState(false)
   const { ref, hovered } = useHover()
 
@@ -53,10 +55,7 @@ export function DeleteButton({
             </Popover.Target>
             <Popover.Dropdown
               style={(theme) => ({
-                background:
-                  theme.colorScheme === "dark"
-                    ? theme.colors.dark[7]
-                    : theme.white,
+                background: colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
               })}
             >
               <div style={{

@@ -1,4 +1,4 @@
-import {Anchor, AppShell, Box, Button, Group, Image} from "@mantine/core"
+import { Anchor, AppShell, Box, Button, Group, Image } from "@mantine/core"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"

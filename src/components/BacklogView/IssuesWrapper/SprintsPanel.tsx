@@ -9,12 +9,15 @@ import {
 import { DraggableIssuesWrapper } from "./DraggableIssuesWrapper"
 import {StatusType} from "../../../../types/status";
 import {StoryPointsBadge} from "../../common/StoryPoints/StoryPointsBadge";
+import {useColorScheme} from "../../../common/color-scheme";
 
 export function SprintsPanel({
   sprintsWithIssues,
 }: {
   sprintsWithIssues: { issues: Issue[]; sprint: Sprint }[]
 }) {
+  const colorScheme = useColorScheme()
+
   return (
     <Accordion
       variant="separated"
@@ -34,8 +37,7 @@ export function SprintsPanel({
         item: {
           border: "solid 1px lightgray",
           "&:hover": {
-            background:
-              theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
+            background: colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
           },
         },
       })}

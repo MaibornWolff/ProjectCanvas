@@ -7,10 +7,12 @@ import {CreateIssueModal} from "../CreateIssue/CreateIssueModal";
 import {Issue} from "../../../types";
 import {EpicWrapper} from "./EpicWrapper";
 import {getEpics} from "./helpers/queryFetchers";
+import {useColorScheme} from "../../common/color-scheme";
 
 
 
 export function EpicView() {
+  const colorScheme = useColorScheme()
   const navigate = useNavigate()
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
@@ -103,10 +105,7 @@ export function EpicView() {
               style={(theme) => ({
                 justifyContent: "left",
                 ":hover": {
-                  background:
-                      theme.colorScheme === "dark"
-                          ? theme.colors.dark[4]
-                          : theme.colors.gray[4],
+                  background: colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[4],
                 },
               })}
           >

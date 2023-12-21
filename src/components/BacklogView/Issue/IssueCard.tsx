@@ -22,6 +22,7 @@ import { IssueIcon } from "./IssueIcon"
 import { DeleteButton } from "./DeleteButton"
 import { StatusType } from "../../../../types/status";
 import { StoryPointsBadge } from "../../common/StoryPoints/StoryPointsBadge";
+import { useColorScheme } from "../../../common/color-scheme";
 
 export function IssueCard({
   issueKey,
@@ -40,9 +41,10 @@ export function IssueCard({
   const queryClient = useQueryClient()
   const { ref, hovered } = useHover()
   const theme = useMantineTheme()
+  const colorScheme = useColorScheme()
 
   const hoverStyles =
-    theme.colorScheme === "dark"
+    colorScheme === "dark"
       ? {
           backgroundColor: theme.colors.dark[8],
           transition: "background-color .1s ease-in",
