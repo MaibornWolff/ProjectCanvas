@@ -16,8 +16,12 @@ export function Layout() {
         },
       })}
     >
-      <LayoutHeader />
-      <Outlet />
+      <AppShell.Header>
+        <LayoutHeader />
+      </AppShell.Header>
+      <AppShell.Main>
+        <Outlet />
+      </AppShell.Main>
     </AppShell>
   )
 }
