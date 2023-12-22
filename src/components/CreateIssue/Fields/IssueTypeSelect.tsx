@@ -22,11 +22,10 @@ export function IssueTypeSelect({
               .filter((issueType) => issueType.name !== "Subtask")
               .map((issueType) => ({
                 value: issueType.id,
-                label: issueType.name,
+                label: issueType.name ?? '*unknown*',
               }))
           : []
       }
-      withinPortal
       searchable
       required
       {...form.getInputProps("type")}

@@ -3,7 +3,7 @@ import { UseFormReturnType } from "@mantine/form"
 import { IconFileUpload } from "@tabler/icons"
 import { Issue } from "types"
 
-export function AttachementFileInput({
+export function AttachmentFileInput({
   form,
 }: {
   form: UseFormReturnType<Issue>
@@ -17,7 +17,7 @@ export function AttachementFileInput({
     <FileInput
       label={<Text>{label}</Text>}
       placeholder="Upload Files"
-      icon={<IconFileUpload />}
+      leftSection={<IconFileUpload />}
       multiple
       clearable
       {...form.getInputProps("attachment")}

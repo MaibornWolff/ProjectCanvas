@@ -23,7 +23,7 @@ import {
   IssueTypeSelect,
   StatusSelect,
   SummaryInput,
-  DiscriptionInput,
+  DescriptionInput,
   AssigneeSelect,
   PrioritySelect,
   SprintSelect,
@@ -33,7 +33,7 @@ import {
   StartDatePicker,
   DueDatePicker,
   LabelsSelect,
-  AttachementFileInput,
+  AttachmentFileInput,
 } from "./Fields"
 
 import {
@@ -171,7 +171,7 @@ export function CreateIssueModal({
               isLoading={isLoading}
             />
             <SummaryInput form={form} />
-            <DiscriptionInput form={form} />
+            <DescriptionInput form={form} />
             <AssigneeSelect
               form={form}
               assignableUsers={assignableUsers}
@@ -215,7 +215,7 @@ export function CreateIssueModal({
               issueTypesWithFieldsMap={issueTypesWithFieldsMap}
             />
             <LabelsSelect form={form} />
-            <AttachementFileInput form={form} />
+            <AttachmentFileInput form={form} />
             <Group justify="right">
               <Button
                 variant="light"

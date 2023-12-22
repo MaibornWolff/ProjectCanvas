@@ -1,4 +1,4 @@
-import { DatePicker } from "@mantine/dates"
+import { DatePickerInput } from "@mantine/dates"
 import { UseFormReturnType } from "@mantine/form"
 import { SprintCreate } from "types"
 
@@ -8,10 +8,9 @@ export function SprintEndDatePicker({
   form: UseFormReturnType<SprintCreate>
 }) {
   return (
-    <DatePicker
+    <DatePickerInput
       label="End Date"
       placeholder="Pick end date"
-      withinPortal
       clearable
       {...form.getInputProps("endDate")}
       onChange={(value) => {

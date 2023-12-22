@@ -29,7 +29,6 @@ export function ReporterSelect({
       }
       required
       searchable
-      withinPortal
       {...form.getInputProps("reporter")}
       value={ form.getInputProps("reporter").value?.id }
       onChange={(value) => {

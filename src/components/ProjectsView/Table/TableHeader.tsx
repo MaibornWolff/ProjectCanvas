@@ -10,6 +10,7 @@ import {
   IconChevronDown,
   IconSelector,
 } from "@tabler/icons"
+import { ReactNode } from "react"
 
 import classes from './TableHeader.module.css'
 
@@ -19,7 +20,7 @@ export function TableHeader({
   sorted,
   onSort,
 }: {
-  children: React.ReactNode
+  children: ReactNode
   reversed: boolean
   sorted: boolean
   onSort(): void

@@ -1,4 +1,4 @@
-import { DatePicker } from "@mantine/dates"
+import { DatePickerInput } from "@mantine/dates"
 import { UseFormReturnType } from "@mantine/form"
 import { SprintCreate } from "types"
 
@@ -8,10 +8,9 @@ export function SprintStartDatePicker({
   form: UseFormReturnType<SprintCreate>
 }) {
   return (
-    <DatePicker
+    <DatePickerInput
       label="Start Date"
       placeholder="Pick start date"
-      withinPortal
       clearable
       {...form.getInputProps("startDate")}
       onChange={(value) => {

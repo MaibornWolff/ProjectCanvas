@@ -29,7 +29,6 @@ export function AssigneeSelect({
       }
       clearable
       searchable
-      withinPortal
       {...form.getInputProps("assignee")}
       value={ form.getInputProps("assignee").value?.id }
       onChange={(value) => {

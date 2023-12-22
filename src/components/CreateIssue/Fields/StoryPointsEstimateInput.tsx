@@ -29,9 +29,9 @@ export function StoryPointsEstimateInput({
       }
       position="top-start"
       events={{
-        hover: true && !!isDisabled,
-        focus: false && !!isDisabled,
-        touch: false && !!isDisabled,
+        hover: isDisabled ?? false,
+        focus: false,
+        touch: false,
       }}
     >
       <Box>

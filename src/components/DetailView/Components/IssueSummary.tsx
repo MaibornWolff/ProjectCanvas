@@ -12,14 +12,14 @@ export function IssueSummary({
   summary: string
   issueKey: string
 }) {
-  const [defaultSummary, setdefaultSummary] = useState(summary)
-  const [showSummaryInput, setshowSummaryInput] = useState(false)
+  const [defaultSummary, setDefaultSummary] = useState(summary)
+  const [showSummaryInput, setShowSummaryInput] = useState(false)
 
   const mutationSummary = useMutation({
     mutationFn: (issue: Issue) => editIssue(issue, issueKey),
     onError: () => {
       showNotification({
-        message: `An error occured while modifing the summary 😢`,
+        message: `An error occurred while modifing the summary 😢`,
         color: "red",
       })
     },
@@ -34,7 +34,7 @@ export function IssueSummary({
 
   if (!showSummaryInput)
     return (
-      <Text lineClamp={1} onClick={() => setshowSummaryInput(true)}>
+      <Text lineClamp={1} onClick={() => setShowSummaryInput(true)}>
         {defaultSummary}
       </Text>
     )
@@ -42,7 +42,7 @@ export function IssueSummary({
   return (
     <Textarea
       value={defaultSummary}
-      onChange={(e) => setdefaultSummary(e.target.value)}
+      onChange={(e) => setDefaultSummary(e.target.value)}
       onBlur={() => {
         if (defaultSummary === "")
           showNotification({
@@ -50,7 +50,7 @@ export function IssueSummary({
             color: "red",
           })
         else {
-          setshowSummaryInput(false)
+          setShowSummaryInput(false)
           mutationSummary.mutate({
             summary: defaultSummary,
           } as Issue)

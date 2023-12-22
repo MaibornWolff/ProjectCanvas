@@ -14,7 +14,7 @@ import {
 } from "@mantine/core"
 import { IconSearch } from "@tabler/icons"
 import { useQueries, useQuery } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useNavigate } from "react-router-dom"
 import { Issue, Sprint } from "types"
@@ -66,7 +66,7 @@ export function BacklogView() {
 
   const sprintsIssuesResults = useQueries({
     queries:
-      !isErrorSprints && sprints && sprints instanceof Array
+      !isErrorSprints && sprints
         ? sprints?.map((sprint) => ({
             queryKey: ["issues", "sprints", projectKey, sprints, sprint.id],
             queryFn: () => getIssuesBySprint(sprint.id),
@@ -142,7 +142,7 @@ export function BacklogView() {
       </Center>
     )
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const currentSearch = event.currentTarget.value
     setSearch(currentSearch)
     searchIssuesFilter(

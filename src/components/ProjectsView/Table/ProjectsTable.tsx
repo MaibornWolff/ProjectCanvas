@@ -1,7 +1,7 @@
 import { ScrollArea, Table, Text, TextInput } from "@mantine/core"
 import { IconSearch } from "@tabler/icons"
 import { Project } from "types"
-import { useEffect, useState } from "react"
+import { useEffect, useState, ChangeEvent } from "react"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../../lib/Store"
 import { TableHeader } from "./TableHeader"
@@ -30,7 +30,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
     setSortedData(sortData(data, { sortBy: field, reversed, search }))
   }
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget
     setSearch(value)
     setSortedData(

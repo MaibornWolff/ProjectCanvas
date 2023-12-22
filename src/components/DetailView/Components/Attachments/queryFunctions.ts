@@ -34,10 +34,10 @@ export const deleteAttachment = (
   }).then(() => {})
 
 export const downloadAttachment = (
-  attachemntId: string,
+  attachmentId: string,
   resource: Resource
 ): Promise<Blob> =>
-  fetch(getDownloadUrl(attachemntId, resource), {
+  fetch(getDownloadUrl(attachmentId, resource), {
     method: "GET",
     headers: {
       Accept: "application/json",

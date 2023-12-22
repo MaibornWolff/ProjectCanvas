@@ -15,8 +15,8 @@ export function IssueSprint(props: {
   issueKey: string
 }) {
   const theme = useMantineTheme()
-  const [defaultsprint, setdefaultsprint] = useState(props.sprint || undefined)
-  const [showSprintInput, setshowSprintInput] = useState(false)
+  const [defaultSprint, setDefaultSprint] = useState(props.sprint || undefined)
+  const [showSprintInput, setShowSprintInput] = useState(false)
 
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
   const currentBoardId = boardIds[0]
@@ -30,7 +30,7 @@ export function IssueSprint(props: {
     mutationFn: (issue: Issue) => editIssue(issue, props.issueKey),
     onError: () => {
       showNotification({
-        message: `An error occured while modifing the sprint 😢`,
+        message: `An error occurred while modifing the sprint 😢`,
         color: "red",
       })
     },
@@ -45,7 +45,7 @@ export function IssueSprint(props: {
     mutationFn: () => moveIssueToBacklog(props.issueKey),
     onError: () => {
       showNotification({
-        message: `An error occured while modifing the sprint 😢`,
+        message: `An error occurred while modifing the sprint 😢`,
         color: "red",
       })
     },
@@ -67,24 +67,24 @@ export function IssueSprint(props: {
           defaultValue={props.sprint ? props.sprint.name : ""}
           data={sprintNames}
           onBlur={() => {
-            setshowSprintInput(false)
-            if (defaultsprint)
+            setShowSprintInput(false)
+            if (defaultSprint)
               mutationSprint.mutate({
-                sprint: defaultsprint,
+                sprint: defaultSprint,
               } as Issue)
             else mutationBacklog.mutate()
           }}
           onChange={(value) => {
-            if (value === "") setdefaultsprint(undefined)
+            if (value === "") setDefaultSprint(undefined)
             else
-              setdefaultsprint(
+              setDefaultSprint(
                 sprints?.find((sprint) => sprint.name === value)!
               )
           }}
         />
       ) : (
         <Box
-          onClick={() => setshowSprintInput(true)}
+          onClick={() => setShowSprintInput(true)}
           style={{
             ":hover": {
               cursor: "pointer",
@@ -94,8 +94,8 @@ export function IssueSprint(props: {
             },
           }}
         >
-          {defaultsprint ? (
-            <Text>{defaultsprint.name}</Text>
+          {defaultSprint ? (
+            <Text>{defaultSprint.name}</Text>
           ) : (
             <Text c="dimmed">None</Text>
           )}

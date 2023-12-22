@@ -1,7 +1,7 @@
 import { Avatar, Container, Group, Text } from "@mantine/core"
-import { forwardRef } from "react"
+import { forwardRef, ComponentPropsWithoutRef } from "react"
 
-interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
+interface ItemProps extends ComponentPropsWithoutRef<"div"> {
   image: string
   label: string
   value: string

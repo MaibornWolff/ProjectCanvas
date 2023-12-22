@@ -107,7 +107,6 @@ export function Attachments(props: {
         {resource && (
           <Group>
             {props.attachments &&
-              props.attachments instanceof Array &&
               props.attachments.map((attachment: Attachment) => {
                 const fetchFile: Promise<Blob> = downloadAttachment(
                   attachment.id,

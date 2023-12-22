@@ -6,15 +6,15 @@ import { useState } from "react"
 import { editIssue } from "../helpers/queryFunctions"
 
 export function Description(props: { issueKey: string; description: string }) {
-  const [defaultdescription, setdefaultdescription] = useState(
+  const [defaultDescription, setDefaultDescription] = useState(
     props.description
   )
-  const [showDescriptionInput, setshowDescriptionInput] = useState(false)
+  const [showDescriptionInput, setShowDescriptionInput] = useState(false)
   const mutationDescription = useMutation({
     mutationFn: (issue: Issue) => editIssue(issue, props.issueKey),
     onError: () => {
       showNotification({
-        message: `An error occured while modifing the Description 😢`,
+        message: `An error occurred while modifing the Description 😢`,
         color: "red",
       })
     },
@@ -29,12 +29,12 @@ export function Description(props: { issueKey: string; description: string }) {
     <span>
       {showDescriptionInput ? (
         <Textarea
-          value={defaultdescription}
-          onChange={(e) => setdefaultdescription(e.target.value)}
+          value={defaultDescription}
+          onChange={(e) => setDefaultDescription(e.target.value)}
           onBlur={() => {
-            setshowDescriptionInput(false)
+            setShowDescriptionInput(false)
             mutationDescription.mutate({
-              description: defaultdescription,
+              description: defaultDescription,
             } as Issue)
           }}
           autosize
@@ -42,9 +42,9 @@ export function Description(props: { issueKey: string; description: string }) {
           mb="xl"
         />
       ) : (
-        <Text onClick={() => setshowDescriptionInput(true)} mb="xl">
-          {defaultdescription !== null && defaultdescription !== ""
-            ? defaultdescription
+        <Text onClick={() => setShowDescriptionInput(true)} mb="xl">
+          {defaultDescription !== null && defaultDescription !== ""
+            ? defaultDescription
             : "Add Description"}
         </Text>
       )}

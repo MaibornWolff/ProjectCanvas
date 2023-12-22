@@ -6,6 +6,7 @@ import {
   IconBolt,
   IconEdit,
 } from "@tabler/icons"
+import { ReactElement } from "react";
 
 export function IssueIcon({ type }: { type: string }) {
   const stringToColor = (value: string) => {
@@ -17,7 +18,7 @@ export function IssueIcon({ type }: { type: string }) {
     return `hsl(${hash % 360}, 85%, 35%)`
   }
 
-  let icon: Jstyle.Element
+  let icon: ReactElement
   let iconGradient1: string
   let iconGradient2: string
   switch (type) {

@@ -1,5 +1,5 @@
 import { Box, Tooltip } from "@mantine/core"
-import { DatePicker } from "@mantine/dates"
+import { DatePickerInput } from "@mantine/dates"
 import { UseFormReturnType } from "@mantine/form"
 import { Issue } from "types"
 
@@ -26,16 +26,15 @@ export function StartDatePicker({
       }
       position="top-start"
       events={{
-        hover: true && !!isDisabled,
-        focus: false && !!isDisabled,
-        touch: false && !!isDisabled,
+        hover: isDisabled ?? false,
+        focus: false,
+        touch: false,
       }}
     >
       <Box>
-        <DatePicker
+        <DatePickerInput
           label="Start Date"
           placeholder="Pick start date"
-          withinPortal
           clearable
           disabled={isDisabled}
           {...form.getInputProps("startDate")}
