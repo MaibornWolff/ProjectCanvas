@@ -25,7 +25,7 @@ export function StoryPointsEstimateMenu({
   const theme = useMantineTheme()
   const timeoutRef = useRef<number | null>(null)
   const [localStoryPtsEstimate, setLocalStoryPtsEstimate] =
-    useState(storyPointsEstimate)
+    useState<number | undefined>(storyPointsEstimate)
   const [showEditableInput, setShowEditableInput] = useState(false)
   const [showLoader, setShowLoader] = useState(false)
 
@@ -64,8 +64,18 @@ export function StoryPointsEstimateMenu({
 
     timeoutRef.current = window.setTimeout(() => {
       setShowEditableInput(false)
-      mutation.mutate({ storyPointsEstimate: currentValue } as Issue)
+      mutation.mutate({ storyPointsEstimate: currentValue ?? null } as Issue)
     }, 2000)
+  }
+
+  function numberInputToOptNumber(val: number | string): number | undefined {
+    if (val === '')
+      return undefined
+
+    if (typeof val === "number")
+      return val
+
+    throw new Error(`Unexpected number input value of type ${typeof val}: ${val}`)
   }
 
   return editableFields && editableFields.includes("Story point estimate") ? (
@@ -107,13 +117,13 @@ export function StoryPointsEstimateMenu({
         editableFields &&
         editableFields.includes("Story point estimate") && (
           <Group>
-            <Box w={60}>
+            <Box w={150}>
               <NumberInput
                 min={0}
-                defaultValue={localStoryPtsEstimate}
+                value={localStoryPtsEstimate}
                 onChange={(val) => {
-                  setLocalStoryPtsEstimate(val!)
-                  handleStoryPointsEstimateChange(val)
+                  setLocalStoryPtsEstimate(numberInputToOptNumber(val))
+                  handleStoryPointsEstimateChange(numberInputToOptNumber(val))
                   setShowLoader(true)
                 }}
                 onBlur={() => setShowEditableInput(false)}
@@ -137,8 +147,8 @@ export function StoryPointsEstimateMenu({
                 min={0}
                 defaultValue={0}
                 onChange={(val) => {
-                  setLocalStoryPtsEstimate(val!)
-                  handleStoryPointsEstimateChange(val)
+                  setLocalStoryPtsEstimate(numberInputToOptNumber(val))
+                  handleStoryPointsEstimateChange(numberInputToOptNumber(val))
                   setShowLoader(true)
                 }}
                 onBlur={() => setShowEditableInput(false)}
