@@ -1,11 +1,12 @@
-import { ScrollArea, Table, Text, TextInput } from "@mantine/core"
-import { IconSearch } from "@tabler/icons"
+import { ScrollArea, Table, Text, TextInput, Center, Group, UnstyledButton } from "@mantine/core"
+import { IconChevronDown, IconChevronUp, IconSearch, IconSelector, TablerIcon } from "@tabler/icons"
 import { Project } from "types"
 import { useEffect, useState, ChangeEvent } from "react"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../../lib/Store"
-import { TableHeader } from "./TableHeader"
 import { sortData } from "./TableHelper"
+
+import classes from "./ProjectsTable.module.css";
 
 export function ProjectsTable({ data }: { data: Project[] }) {
   const [search, setSearch] = useState("")
@@ -44,16 +45,39 @@ export function ProjectsTable({ data }: { data: Project[] }) {
     navigate("/backlogview")
   }
 
+  const header = data && data.length > 0 && Object.keys(data[0]).map((key) => {
+    let Icon: TablerIcon
+    if (sortBy === key) {
+      if (reverseSortDirection) Icon = IconChevronUp
+      else Icon = IconChevronDown
+    } else Icon = IconSelector
+
+    return (
+        <Table.Th key={key}>
+          <UnstyledButton onClick={() => setSorting(key as keyof Project)} className={classes.headerControl}>
+            <Group justify="space-between">
+              <Text size="sm" style={{ fontWeight: 500 }}>
+                {key.toLocaleUpperCase()}
+              </Text>
+              <Center className={classes.headerSortIcon}>
+                <Icon size={14} stroke={1.5} />
+              </Center>
+            </Group>
+          </UnstyledButton>
+        </Table.Th>
+    )
+  })
+
   const rows = sortedData.map((row) => (
-    <tr
+    <Table.Tr
       style={{ cursor: "pointer" }}
       key={row.key}
       onClick={() => onClickRow(row)}
     >
       {Object.keys(row).map((key) => (
-        <td key={key}> {row[key as keyof Project]}</td>
+        <Table.Td key={key}> {row[key as keyof Project]}</Table.Td>
       ))}
-    </tr>
+    </Table.Tr>
   ))
 
   return (
@@ -71,34 +95,24 @@ export function ProjectsTable({ data }: { data: Project[] }) {
         verticalSpacing="xs"
         style={{ tableLayout: "fixed", minWidth: 700 }}
       >
-        <thead>
-          <tr>
-            {data && data.length > 0 &&
-              Object.keys(data[0]).map((key) => (
-                <TableHeader
-                  key={key}
-                  sorted={sortBy === key}
-                  reversed={reverseSortDirection}
-                  onSort={() => setSorting(key as keyof Project)}
-                >
-                  {key.toLocaleUpperCase()}
-                </TableHeader>
-              ))}
-          </tr>
-        </thead>
-        <tbody>
+        <Table.Thead>
+          <Table.Tr>
+            {header}
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
           {rows.length > 0 ? (
             rows
           ) : (
-            <tr>
-              <td colSpan={Object.keys(data).length}>
+            <Table.Tr>
+              <Table.Td colSpan={Object.keys(data).length}>
                 <Text style={{ fontWeight: 500, align: "center" }}>
                   Nothing found
                 </Text>
-              </td>
-            </tr>
+              </Table.Td>
+            </Table.Tr>
           )}
-        </tbody>
+        </Table.Tbody>
       </Table>
     </ScrollArea>
   )
