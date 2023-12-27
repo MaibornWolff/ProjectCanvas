@@ -1,0 +1,103 @@
+import { Combobox, ComboboxProps, InputBase, useCombobox, CloseButton, InputBaseProps } from "@mantine/core"
+import { ForwardRefExoticComponent, RefAttributes, useState } from "react";
+
+export function CustomItemSelect<OptionType extends { value: string, label: string }, RefType>({
+    value,
+    onChange,
+    options,
+    ItemComponent,
+    clearable,
+    searchable,
+    label,
+    nothingFoundMessage,
+    comboboxProps = {},
+    inputBaseProps = {},
+}: {
+    value: string | undefined,
+    onChange: (updatedValue: string | undefined) => void,
+    options: OptionType[],
+    ItemComponent: ForwardRefExoticComponent<OptionType & RefAttributes<RefType>>,
+    clearable?: boolean,
+    searchable?: boolean,
+    label?: string,
+    placeholder?: string,
+    nothingFoundMessage?: string,
+    comboboxProps?: ComboboxProps,
+    inputBaseProps?: Omit<InputBaseProps, "value">
+}){
+    const combobox = useCombobox({
+        onDropdownClose: () => combobox.resetSelectedOption(),
+    });
+
+    const [currentValue, setCurrentValue] = useState<string | null>(value ?? null);
+    const selectedOption = options.find((item) => item.value === currentValue);
+    const [search, setSearch] = useState(selectedOption ? selectedOption.value : '');
+
+    const activeSearch = searchable && options.every((item) => item.value !== search)
+    const filteredOptions = activeSearch ? options.filter((item) =>
+        item.value.toLowerCase().includes(search.toLowerCase().trim()) ||
+            item.label.toLowerCase().includes(search.toLowerCase().trim())
+    ) : options;
+
+    const items = filteredOptions.length > 0 ? filteredOptions.map((item) => (
+        <Combobox.Option value={item.value} key={item.value}>
+            <ItemComponent {...item} />
+        </Combobox.Option>
+    )) : (
+        <Combobox.Empty>{nothingFoundMessage}</Combobox.Empty>
+    );
+
+    return (
+        <Combobox
+            store={combobox}
+            onOptionSubmit={(val) => {
+                setCurrentValue(val);
+                setSearch(val);
+                combobox.closeDropdown();
+                onChange(val);
+            }}
+            {...comboboxProps}
+        >
+            <Combobox.Target>
+                <InputBase
+                    label={label}
+                    value={search}
+                    pointer
+                    rightSection={
+                        clearable && value !== null ? (
+                            <CloseButton
+                                size="sm"
+                                onMouseDown={(event) => event.preventDefault()}
+                                onClick={() => {
+                                    setCurrentValue(null);
+                                    setSearch('');
+                                    combobox.closeDropdown();
+                                    onChange(undefined);
+                                }}
+                                aria-label="Clear value"
+                            />
+                        ) : (
+                            <Combobox.Chevron />
+                        )
+                    }
+                    onChange={(event) => {
+                        combobox.openDropdown()
+                        setSearch(event.currentTarget.value);
+                    }}
+                    onClick={() => combobox.openDropdown()}
+                    onFocus={() => combobox.openDropdown()}
+                    onBlur={() => {
+                        combobox.closeDropdown();
+                        setSearch(currentValue || '');
+                    }}
+                    rightSectionPointerEvents={value === null ? 'none' : 'all'}
+                    {...inputBaseProps}
+                />
+            </Combobox.Target>
+
+            <Combobox.Dropdown>
+                <Combobox.Options>{items}</Combobox.Options>
+            </Combobox.Dropdown>
+        </Combobox>
+    )
+}
