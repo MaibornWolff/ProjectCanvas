@@ -1,10 +1,9 @@
 import { Badge } from "@mantine/core"
 
-export function IssueLabelBadge({ issueKey, label }: { issueKey: string, label: string }) {
+export function IssueLabelBadge({ label }: { label: string }) {
   return (
     <Badge
       mr={2}
-      key={`${issueKey}-${label}`}
       variant="light"
       color="yellow"
     >

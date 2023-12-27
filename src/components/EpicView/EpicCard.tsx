@@ -105,7 +105,7 @@ export function EpicCard ({
                                 {issueKey}
                             </Text>
                             {labels &&
-                                labels.map((label) => (<IssueLabelBadge issueKey={issueKey} label={label} />))}
+                                 labels.map((label) => (<IssueLabelBadge key={`${issueKey}-${label}`} label={label} />))}
                         </Group>
                         <Text size="lg">{summary}</Text>
                     </Stack>

@@ -76,7 +76,7 @@ export function Labels({
         <Box onClick={() => setShowLabelsInput(true)}>
           {defaultLabels.length !== 0 ? (
             <Group gap={3}>
-              {defaultLabels.map((label) => (<IssueLabelBadge issueKey={issueKey} label={label} />))}
+              {defaultLabels.map((label) => (<IssueLabelBadge key={`${issueKey}-${label}`} label={label} />))}
             </Group>
           ) : (
             <Text c="dimmed">None</Text>

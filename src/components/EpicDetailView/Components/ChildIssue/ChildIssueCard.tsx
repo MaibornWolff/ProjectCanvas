@@ -99,7 +99,7 @@ export function ChildIssueCard({
                   {issueKey}
                 </Text>
                 {epic.issueKey && (<IssueEpicBadge issueKey={issueKey} epic={epic} />)}
-                {labels && labels.map((label) => (<IssueLabelBadge issueKey={issueKey} label={label} />))}
+                {labels && labels.map((label) => (<IssueLabelBadge key={`${issueKey}-${label}`} label={label} />))}
               </Group>
               <Text size="lg">{summary}</Text>
               <Group align="center" gap="sm">
