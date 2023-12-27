@@ -9,6 +9,7 @@ export function CustomItemSelect<OptionType extends { value: string, label: stri
     clearable,
     searchable,
     label,
+    placeholder,
     nothingFoundMessage,
     comboboxProps = {},
     inputBaseProps = {},
@@ -31,9 +32,9 @@ export function CustomItemSelect<OptionType extends { value: string, label: stri
 
     const [currentValue, setCurrentValue] = useState<string | null>(value ?? null);
     const selectedOption = options.find((item) => item.value === currentValue);
-    const [search, setSearch] = useState(selectedOption ? selectedOption.value : '');
+    const [search, setSearch] = useState(selectedOption ? selectedOption.label : '');
 
-    const activeSearch = searchable && options.every((item) => item.value !== search)
+    const activeSearch = searchable && options.every((item) => item.label !== search)
     const filteredOptions = activeSearch ? options.filter((item) =>
         item.value.toLowerCase().includes(search.toLowerCase().trim()) ||
             item.label.toLowerCase().includes(search.toLowerCase().trim())
@@ -52,7 +53,8 @@ export function CustomItemSelect<OptionType extends { value: string, label: stri
             store={combobox}
             onOptionSubmit={(val) => {
                 setCurrentValue(val);
-                setSearch(val);
+                const newSelectedOption = options.find((item) => item.value === val);
+                setSearch(newSelectedOption ? newSelectedOption.label : '');
                 combobox.closeDropdown();
                 onChange(val);
             }}
@@ -62,6 +64,7 @@ export function CustomItemSelect<OptionType extends { value: string, label: stri
                 <InputBase
                     label={label}
                     value={search}
+                    placeholder={placeholder}
                     pointer
                     rightSection={
                         clearable && value !== null ? (
@@ -88,7 +91,7 @@ export function CustomItemSelect<OptionType extends { value: string, label: stri
                     onFocus={() => combobox.openDropdown()}
                     onBlur={() => {
                         combobox.closeDropdown();
-                        setSearch(currentValue || '');
+                        setSearch(selectedOption ? selectedOption.label : '');
                     }}
                     rightSectionPointerEvents={value === null ? 'none' : 'all'}
                     {...inputBaseProps}

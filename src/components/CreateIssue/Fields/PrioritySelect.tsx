@@ -1,9 +1,10 @@
-import { Box, Select, Tooltip } from "@mantine/core"
+import { Box, Tooltip } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
 import { useQuery } from "@tanstack/react-query"
 import { Issue } from "types"
 import { getPriorities } from "../queryFunctions"
 import { SelectItem } from "../SelectItem"
+import { CustomItemSelect } from "../../common/CustomItemSelect";
 
 export function PrioritySelect({
   form,
@@ -41,24 +42,23 @@ export function PrioritySelect({
       }}
     >
       <Box>
-        <Select
+        <CustomItemSelect
           label="Priority"
           placeholder="Choose priority"
           nothingFoundMessage="Please select an issue type first"
-          itemComponent={SelectItem}
-          disabled={isDisabled}
-          data={
+          clearable
+          searchable
+          options={
             !isLoading && priorities
               ? priorities.map((priority) => ({
-                  image: priority.iconUrl,
-                  value: priority.id,
-                  label: priority.name,
-                }))
+                image: priority.iconUrl,
+                value: priority.id,
+                label: priority.name,
+              }))
               : []
           }
-          searchable
-          withinPortal
-          clearable
+          ItemComponent={SelectItem}
+          inputBaseProps={{ disabled: isDisabled }}
           {...form.getInputProps("priority.id")}
         />
       </Box>
