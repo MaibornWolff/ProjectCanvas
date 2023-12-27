@@ -1,4 +1,4 @@
-import { Group, Loader, Select, Text } from "@mantine/core"
+import { Box, Group, Loader, Text } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Issue } from "types"
@@ -7,6 +7,7 @@ import { editIssue } from "../../helpers/queryFunctions"
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon"
 import { getEpicsByProject } from "./queryFunctions"
 import { SelectItem } from "./SelectItem"
+import { CustomItemSelect } from "../../../common/CustomItemSelect";
 
 export function EditableEpic({
   projectId,
@@ -47,28 +48,28 @@ export function EditableEpic({
       <IssueIcon type="Epic" />
       {mutationEpic.isLoading && <Loader size="sm" />}
       {showEpicInput ? (
-        <Select
-          placeholder=""
-          nothingFoundMessage="No Options"
-          data={
-            epics
-              ? epics.map((epicItem) => ({
+        <Box w="300px">
+          <CustomItemSelect
+            nothingFoundMessage="No Options"
+            options={
+              epics
+                ? epics.map((epicItem) => ({
                   value: epicItem.issueKey,
                   label: epicItem.summary,
                 }))
-              : []
-          }
-          searchable
-          clearable
-          itemComponent={SelectItem}
-          value={selectedEpic}
-          onChange={(value) => {
-            setSelectedEpic(value!)
-            mutationEpic.mutate(value!)
-            setShowEpicInput(false)
-          }}
-          w="300px"
-        />
+                : []
+            }
+            searchable
+            clearable
+            ItemComponent={SelectItem}
+            value={selectedEpic}
+            onChange={(value) => {
+              setSelectedEpic(value!)
+              mutationEpic.mutate(value!)
+              setShowEpicInput(false)
+            }}
+          />
+        </Box>
       ) : (
         <Group>
           <Text
@@ -76,8 +77,9 @@ export function EditableEpic({
             style={{
               ":hover": { textDecoration: "underline", cursor: "pointer" },
             }}
+            {...(!selectedEpic && { c: "dimmed" })}
           >
-            {selectedEpic || <Text c="dimmed">Add Epic</Text>}
+            {selectedEpic || "Add Epic"}
           </Text>
         </Group>
       )}
