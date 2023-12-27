@@ -69,7 +69,7 @@ export function IssueCard({
             <DeleteButton mounted={hovered} issueKey={issueKey} />
             <Grid
               columns={100}
-              p={3}
+              p={10}
               style={{
                 borderRadius: theme.radius.sm,
                 margin: 0,

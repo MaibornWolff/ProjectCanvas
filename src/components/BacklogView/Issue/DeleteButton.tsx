@@ -23,9 +23,9 @@ export function DeleteButton({
   }, [mounted, hovered])
 
   return (
-    <Box ref={ref} style={{ position: "absolute", bottom: 5, right: 11 }}>
+    <Box style={{ position: "absolute", bottom: 0, right: 11 }}>
       <Transition
-        mounted={mounted}
+        mounted={mounted || hovered}
         transition="fade"
         duration={200}
         timingFunction="ease"
@@ -37,6 +37,7 @@ export function DeleteButton({
             withArrow
             shadow="md"
             opened={issuePopoverOpened}
+            withinPortal={false}
             onChange={setIssuePopoverOpened}
           >
             <Popover.Target>
@@ -58,13 +59,15 @@ export function DeleteButton({
                 background: colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
               })}
             >
-              <div style={{
-                height: "20px",
-                position: "absolute",
-                width: "inherit",
-                left: "0px",
-                top: "-10px",
-              }} />
+              <Box
+                ref={ref}
+                h="20px"
+                w="inherit"
+                left="0px"
+                top="-10px"
+                pos="absolute"
+                onClick={(e) => e.stopPropagation()}
+              />
               <DeleteIssueAlert
                 issueKey={issueKey}
                 cancelAlert={() => setIssuePopoverOpened(false)}
