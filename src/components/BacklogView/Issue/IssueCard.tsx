@@ -64,7 +64,6 @@ export function IssueCard({
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             onClick={() => setOpened(true)}
-            style={{ position: "relative" }}
           >
             <DeleteButton mounted={hovered} issueKey={issueKey} />
             <Grid
