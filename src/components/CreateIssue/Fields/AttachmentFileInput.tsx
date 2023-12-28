@@ -1,6 +1,6 @@
 import { FileInput, Text } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
-import { IconFileUpload } from "@tabler/icons"
+import { IconFileUpload } from "@tabler/icons-react"
 import { Issue } from "types"
 
 export function AttachmentFileInput({

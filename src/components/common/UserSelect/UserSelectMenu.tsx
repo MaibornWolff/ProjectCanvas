@@ -6,7 +6,7 @@ import {
   UnstyledButton,
   ScrollArea,
 } from "@mantine/core"
-import { IconChevronDown } from "@tabler/icons"
+import { IconChevronDown } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { User } from "../../../../types"

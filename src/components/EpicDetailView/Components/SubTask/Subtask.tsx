@@ -1,5 +1,5 @@
 import { Box, Group, Loader, Text, ThemeIcon } from "@mantine/core"
-import { IconBinaryTree2, IconTrash } from "@tabler/icons"
+import { IconBinaryTree2, IconTrash } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
 import { IssueSummary } from "../IssueSummary"
 import { deleteSubtaskMutation } from "./queries"

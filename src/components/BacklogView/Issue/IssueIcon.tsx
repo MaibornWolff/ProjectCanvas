@@ -5,7 +5,7 @@ import {
   IconBug,
   IconBolt,
   IconEdit,
-} from "@tabler/icons"
+} from "@tabler/icons-react"
 import { ReactElement } from "react";
 
 export function IssueIcon({ type }: { type: string }) {

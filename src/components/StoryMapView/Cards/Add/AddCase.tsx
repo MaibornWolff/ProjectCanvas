@@ -1,4 +1,4 @@
-import { IconPlus } from "@tabler/icons"
+import { IconPlus } from "@tabler/icons-react"
 import { MouseEventHandler } from "react"
 import { BaseCard } from "../Base/BaseCard"
 
