@@ -11,14 +11,12 @@ import {
   useMantineTheme,
   Grid,
 } from "@mantine/core"
-import { useHover, useMergedRef } from "@mantine/hooks"
 import { useQueryClient } from "@tanstack/react-query"
 import { Issue } from "types"
 import { useState } from "react"
 import { Draggable } from "@hello-pangea/dnd"
 import { DetailView } from "../../DetailView/DetailView"
 import { IssueIcon } from "./IssueIcon"
-import { DeleteButton } from "./DeleteButton"
 import { StatusType } from "../../../../types/status";
 import { StoryPointsBadge } from "../../common/StoryPoints/StoryPointsBadge";
 import { useColorScheme } from "../../../common/color-scheme";
@@ -40,7 +38,6 @@ export function IssueCard({
 }: Issue & { index: number }) {
   const [opened, setOpened] = useState(false)
   const queryClient = useQueryClient()
-  const { ref, hovered } = useHover()
   const theme = useMantineTheme()
   const colorScheme = useColorScheme()
 
@@ -60,12 +57,12 @@ export function IssueCard({
       <Draggable key={issueKey} draggableId={issueKey} index={index}>
         {(provided) => (
           <Paper
-            ref={useMergedRef(provided.innerRef, ref)}
+            ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             onClick={() => setOpened(true)}
           >
-            <DeleteButton mounted={hovered} issueKey={issueKey} />
+            {/* <DeleteButton mounted={hovered} issueKey={issueKey} /> */}
             <Grid
               columns={100}
               p={10}
