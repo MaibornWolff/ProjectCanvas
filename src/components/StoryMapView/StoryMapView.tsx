@@ -1,6 +1,6 @@
 import { Box, Stack, Title } from "@mantine/core"
 import { useState } from "react"
-import { DragDropContext } from "react-beautiful-dnd"
+import { DragDropContext } from "@hello-pangea/dnd"
 import { useParams } from "react-router-dom"
 import { CaseColumns } from "./Case/CaseColumns"
 import { Zoom } from "./Components/Zoom"

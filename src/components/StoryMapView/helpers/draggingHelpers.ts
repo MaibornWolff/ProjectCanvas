@@ -1,4 +1,4 @@
-import { DropResult } from "react-beautiful-dnd"
+import { DropResult } from "@hello-pangea/dnd"
 import { Case, SubActionGroup } from "../Types"
 import {
   CASE_PREFIX,

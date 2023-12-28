@@ -1,7 +1,7 @@
 import { PaperProps } from "@mantine/core"
 import { useMergedRef } from "@mantine/hooks"
 import { forwardRef, ReactNode } from "react"
-import { Draggable } from "react-beautiful-dnd"
+import { Draggable } from "@hello-pangea/dnd"
 import { BaseCard } from "./BaseCard"
 
 export const DraggableBaseCard = forwardRef<

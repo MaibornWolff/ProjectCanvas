@@ -15,7 +15,7 @@ import {
 import { IconSearch } from "@tabler/icons"
 import { useQueries, useQuery } from "@tanstack/react-query"
 import { ChangeEvent, useEffect, useState } from "react"
-import { DragDropContext } from "react-beautiful-dnd"
+import { DragDropContext } from "@hello-pangea/dnd"
 import { useNavigate } from "react-router-dom"
 import { Issue, Sprint } from "types"
 import { useCanvasStore } from "../../lib/Store"

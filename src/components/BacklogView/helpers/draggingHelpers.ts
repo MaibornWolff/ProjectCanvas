@@ -1,4 +1,4 @@
-import { DropResult } from "react-beautiful-dnd"
+import { DropResult } from "@hello-pangea/dnd"
 import { Issue, Sprint } from "types"
 
 export const onDragEnd = ({
