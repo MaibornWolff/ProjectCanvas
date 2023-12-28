@@ -1,5 +1,5 @@
 import { Affix, Group, ActionIcon, Text } from "@mantine/core"
-import { IconMinus, IconPlus } from "@tabler/icons"
+import { IconMinus, IconPlus } from "@tabler/icons-react"
 
 export function Zoom({
   setZoomValue,

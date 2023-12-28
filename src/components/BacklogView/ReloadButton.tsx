@@ -1,5 +1,5 @@
 import { ActionIcon } from "@mantine/core"
-import { IconReload } from "@tabler/icons"
+import { IconReload } from "@tabler/icons-react"
 import { useQueryClient } from "@tanstack/react-query"
 
 export function ReloadButton({ ...props }) {

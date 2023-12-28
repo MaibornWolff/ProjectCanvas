@@ -1,5 +1,5 @@
 import { ScrollArea, Table, Text, TextInput, Center, Group, UnstyledButton } from "@mantine/core"
-import { IconChevronDown, IconChevronUp, IconSearch, IconSelector, TablerIcon } from "@tabler/icons"
+import { IconChevronDown, IconChevronUp, IconSearch, IconSelector, TablerIcon } from "@tabler/icons-react"
 import { Project } from "types"
 import { useEffect, useState, ChangeEvent } from "react"
 import { useNavigate } from "react-router-dom"

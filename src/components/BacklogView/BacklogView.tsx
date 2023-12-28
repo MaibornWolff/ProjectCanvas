@@ -12,7 +12,7 @@ import {
   TextInput,
   Title,
 } from "@mantine/core"
-import { IconSearch } from "@tabler/icons"
+import { IconSearch } from "@tabler/icons-react"
 import { useQueries, useQuery } from "@tanstack/react-query"
 import { ChangeEvent, useEffect, useState } from "react"
 import { DragDropContext } from "@hello-pangea/dnd"

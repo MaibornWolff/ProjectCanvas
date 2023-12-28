@@ -4,7 +4,7 @@ import {
   IconLayoutDashboard,
   IconMap,
   IconTrash,
-} from "@tabler/icons"
+} from "@tabler/icons-react"
 import { useNavigate } from "react-router-dom"
 import { useStoryMapStore } from "../StoryMapView/StoryMapStore"
 

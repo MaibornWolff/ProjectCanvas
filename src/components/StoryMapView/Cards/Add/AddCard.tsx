@@ -1,5 +1,5 @@
 import { PaperProps } from "@mantine/core"
-import { IconPlus } from "@tabler/icons"
+import { IconPlus } from "@tabler/icons-react"
 import { MouseEventHandler } from "react"
 import { Draggable } from "@hello-pangea/dnd"
 import { BaseCard } from "../Base/BaseCard"
