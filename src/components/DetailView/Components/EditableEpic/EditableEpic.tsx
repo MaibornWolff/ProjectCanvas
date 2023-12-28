@@ -28,7 +28,7 @@ export function EditableEpic({
   })
   const [selectedEpic, setSelectedEpic] = useState(epic.issueKey)
   const mutationEpic = useMutation({
-    mutationFn: (epicKey: string) => editIssue({ epic: { issueKey: epicKey } } as Issue, issueKey),
+    mutationFn: (epicKey: string | null) => editIssue({ epic: { issueKey: epicKey } } as Issue, issueKey),
     onError: () => {
       showNotification({
         message: `An error occurred while modifing the Epic 😢`,
@@ -64,8 +64,8 @@ export function EditableEpic({
             ItemComponent={SelectItem}
             value={selectedEpic}
             onChange={(value) => {
-              setSelectedEpic(value!)
-              mutationEpic.mutate(value!)
+              setSelectedEpic(value)
+              mutationEpic.mutate(value ?? null)
               setShowEpicInput(false)
             }}
           />

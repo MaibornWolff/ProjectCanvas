@@ -769,7 +769,7 @@ export class JiraCloudProvider implements IProvider {
               ...(summary && {
                 summary,
               }),
-              ...(epic && epic.issueKey && {
+              ...(epic && epic.issueKey !== undefined && {
                 parent: { key: epic.issueKey },
               }),
               ...(type && {
