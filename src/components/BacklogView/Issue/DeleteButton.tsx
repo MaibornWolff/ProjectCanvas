@@ -3,6 +3,7 @@ import { IconTrash } from "@tabler/icons"
 import { useEffect, useState } from "react"
 import { useHover } from "@mantine/hooks";
 import { DeleteIssueAlert } from "../../DetailView/Components/DeleteIssue/DeleteIssueAlert"
+import { useColorScheme } from "../../../common/color-scheme";
 
 export function DeleteButton({
   mounted,
@@ -11,6 +12,7 @@ export function DeleteButton({
   mounted: boolean
   issueKey: string
 }) {
+  const colorScheme = useColorScheme()
   const [issuePopoverOpened, setIssuePopoverOpened] = useState(false)
   const { ref, hovered } = useHover()
 
@@ -21,9 +23,9 @@ export function DeleteButton({
   }, [mounted, hovered])
 
   return (
-    <Box ref={ref} sx={{ position: "absolute", bottom: 5, right: 11 }}>
+    <Box style={{ position: "absolute", bottom: 0, right: 11 }}>
       <Transition
-        mounted={mounted}
+        mounted={mounted || hovered}
         transition="fade"
         duration={200}
         timingFunction="ease"
@@ -35,6 +37,7 @@ export function DeleteButton({
             withArrow
             shadow="md"
             opened={issuePopoverOpened}
+            withinPortal={false}
             onChange={setIssuePopoverOpened}
           >
             <Popover.Target>
@@ -52,20 +55,19 @@ export function DeleteButton({
               </ActionIcon>
             </Popover.Target>
             <Popover.Dropdown
-              sx={(theme) => ({
-                background:
-                  theme.colorScheme === "dark"
-                    ? theme.colors.dark[7]
-                    : theme.white,
+              style={(theme) => ({
+                background: colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
               })}
             >
-              <div style={{
-                height: "20px",
-                position: "absolute",
-                width: "inherit",
-                left: "0px",
-                top: "-10px",
-              }} />
+              <Box
+                ref={ref}
+                h="20px"
+                w="inherit"
+                left="0px"
+                top="-10px"
+                pos="absolute"
+                onClick={(e) => e.stopPropagation()}
+              />
               <DeleteIssueAlert
                 issueKey={issueKey}
                 cancelAlert={() => setIssuePopoverOpened(false)}

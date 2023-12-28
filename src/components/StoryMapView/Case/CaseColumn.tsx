@@ -41,8 +41,8 @@ export function CaseColumn({
       >
         {(provided) => (
           <Group
-            spacing={0}
-            noWrap
+            gap={0}
+            wrap="nowrap"
             ref={provided.innerRef}
             {...provided.droppableProps}
           >

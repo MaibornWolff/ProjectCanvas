@@ -23,7 +23,7 @@ import {
   IssueTypeSelect,
   StatusSelect,
   SummaryInput,
-  DiscriptionInput,
+  DescriptionInput,
   AssigneeSelect,
   PrioritySelect,
   SprintSelect,
@@ -33,7 +33,7 @@ import {
   StartDatePicker,
   DueDatePicker,
   LabelsSelect,
-  AttachementFileInput,
+  AttachmentFileInput,
 } from "./Fields"
 
 import {
@@ -43,6 +43,7 @@ import {
   getIssueTypes,
   getIssueTypesWithFieldsMap,
 } from "./queryFunctions"
+import { useColorScheme } from "../../common/color-scheme";
 
 export function CreateIssueModal({
   opened,
@@ -53,6 +54,7 @@ export function CreateIssueModal({
 }) {
   const queryClient = useQueryClient()
   const theme = useMantineTheme()
+  const colorScheme = useColorScheme()
   const projects = useCanvasStore((state) => state.projects)
   const selectedProject = useCanvasStore((state) => state.selectedProject)
 
@@ -129,32 +131,29 @@ export function CreateIssueModal({
       opened={opened}
       onClose={() => setOpened(false)}
       title="Create Issue"
-      overflow="outside"
       size="70vw"
-      overlayColor={
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[9]
-          : theme.colors.gray[2]
-      }
-      overlayOpacity={0.55}
-      overlayBlur={3}
+      overlayProps={{
+        color: colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
+        opacity: 0.55,
+        blur: 5,
+      }}
     >
       <ColorSchemeToggle
         size="34px"
-        sx={{
+        style={{
           position: "absolute",
           top: 19,
           right: 50,
         }}
       />
-      <ScrollArea.Autosize maxHeight="70vh">
+      <ScrollArea.Autosize style={{ maxHeight: "70vh" }}>
         <form
           onSubmit={form.onSubmit((issue, event) => {
-            event.preventDefault()
+            event?.preventDefault()
             mutation.mutate(issue)
           })}
         >
-          <Stack spacing="md" mr="sm">
+          <Stack gap="md" mr="sm">
             <ProjectSelect
               form={form}
               projects={projects}
@@ -172,7 +171,7 @@ export function CreateIssueModal({
               isLoading={isLoading}
             />
             <SummaryInput form={form} />
-            <DiscriptionInput form={form} />
+            <DescriptionInput form={form} />
             <AssigneeSelect
               form={form}
               assignableUsers={assignableUsers}
@@ -216,8 +215,8 @@ export function CreateIssueModal({
               issueTypesWithFieldsMap={issueTypesWithFieldsMap}
             />
             <LabelsSelect form={form} />
-            <AttachementFileInput form={form} />
-            <Group position="right">
+            <AttachmentFileInput form={form} />
+            <Group justify="right">
               <Button
                 variant="light"
                 color="gray"

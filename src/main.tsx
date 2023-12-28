@@ -7,6 +7,10 @@ import { App } from "./App"
 import { ThemeProvider } from "./ThemeProvider"
 import "./i18n/i18n"
 
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
+import '@mantine/notifications/styles.css';
+
 const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

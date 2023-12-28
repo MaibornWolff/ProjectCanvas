@@ -1,7 +1,7 @@
-import { Select } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
 import { Issue, User } from "types"
 import { SelectItem } from "../SelectItem"
+import { CustomItemSelect } from "../../common/CustomItemSelect";
 
 export function AssigneeSelect({
   form,
@@ -13,23 +13,22 @@ export function AssigneeSelect({
   isLoading: boolean
 }) {
   return (
-    <Select
+    <CustomItemSelect
       label="Assignee"
       placeholder="Choose assignee"
-      nothingFound="Please select a project first"
-      itemComponent={SelectItem}
-      data={
-        !isLoading && assignableUsers
-          ? assignableUsers.map((assignableUser) => ({
-              image: assignableUser.avatarUrls["24x24"],
-              value: assignableUser.id,
-              label: assignableUser.displayName,
-            }))
-          : []
-      }
+      nothingFoundMessage="Please select a project first"
       clearable
       searchable
-      withinPortal
+      options={
+        !isLoading && assignableUsers
+          ? assignableUsers.map((assignableUser) => ({
+            image: assignableUser.avatarUrls["24x24"],
+            value: assignableUser.id,
+            label: assignableUser.displayName,
+          }))
+          : []
+      }
+      ItemComponent={SelectItem}
       {...form.getInputProps("assignee")}
       value={ form.getInputProps("assignee").value?.id }
       onChange={(value) => {

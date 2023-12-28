@@ -4,21 +4,21 @@ import { useTranslation } from "react-i18next"
 export function LanguageSelector() {
   const { i18n } = useTranslation()
 
-  const handleLanguageChange = (language: string) => {
-    i18n.changeLanguage(language)
+  const handleLanguageChange = (language: string | null) => {
+    i18n.changeLanguage(language || undefined)
   }
 
   return (
     <Select
       size="xs"
-      sx={{ width: "48px" }}
       onChange={handleLanguageChange}
       data={[
         { value: "en", label: "EN" },
         { value: "de", label: "DE" },
       ]}
       defaultValue="en"
-      styles={{
+      style={{
+        width: "48px",
         input: { padding: "10px" },
         rightSection: { padding: "0px" },
       }}

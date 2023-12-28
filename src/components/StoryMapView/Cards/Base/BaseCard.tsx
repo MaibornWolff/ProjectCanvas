@@ -1,4 +1,4 @@
-import { packSx, Paper, PaperProps } from "@mantine/core"
+import { Paper, PaperProps } from "@mantine/core"
 import { forwardRef, MouseEventHandler, ReactNode } from "react"
 
 export const BaseCard = forwardRef<
@@ -7,9 +7,16 @@ export const BaseCard = forwardRef<
     children?: ReactNode
     onClick?: MouseEventHandler<HTMLDivElement>
   } & PaperProps
->(({ sx, onClick, children, ...props }, ref) => (
+>(({ onClick, children, ...props }, ref) => (
   <Paper
-    sx={[
+    radius="sm"
+    shadow="sm"
+    p="md"
+    m="sm"
+    ref={ref}
+    onClick={onClick}
+    {...props}
+    style={[
       {
         height: "5.5em",
         aspectRatio: "16/8",
@@ -19,15 +26,8 @@ export const BaseCard = forwardRef<
         justifyContent: "center",
         color: "black",
       },
-      ...packSx(sx),
+      props.style,
     ]}
-    radius="sm"
-    shadow="sm"
-    p="md"
-    m="sm"
-    ref={ref}
-    onClick={onClick}
-    {...props}
   >
     {children}
   </Paper>

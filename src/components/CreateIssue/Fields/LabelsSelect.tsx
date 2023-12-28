@@ -14,11 +14,10 @@ export function LabelsSelect({ form }: { form: UseFormReturnType<Issue> }) {
     <MultiSelect
       label="Labels"
       placeholder="Choose labels"
-      nothingFound="No Options"
+      nothingFoundMessage="No Options"
       data={labels ?? []}
       searchable
       clearable
-      withinPortal
       {...form.getInputProps("labels")}
     />
   )

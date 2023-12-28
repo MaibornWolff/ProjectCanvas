@@ -1,0 +1,17 @@
+.headerControl {
+    width: 100%;
+    padding: var(--mantine-spacing-xs) px var(--mantine-spacing-md) px;
+
+    &:hover {
+        background-color: light-dark(
+            var(--mantine-color-gray-0)
+            var(--mantine-color-dark-6)
+        );
+    }
+}
+
+.headerSortIcon {
+    width: 21px;
+    height: 21px;
+    border-radius: 21px;
+}

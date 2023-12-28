@@ -31,7 +31,6 @@ export function SubActionCard({
       index={index}
       m="sm"
       bg="white"
-      pos="relative"
       ref={ref}
       {...props}
     >

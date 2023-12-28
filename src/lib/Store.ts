@@ -8,7 +8,7 @@ export interface CanvasStore {
   issueTypes: IssueType[]
   setProjects: (projects: Project[]) => void
   setSelectedProject: (project: Project) => void
-  setselectedProjectBoardIds: (boards: number[]) => void
+  setSelectedProjectBoardIds: (boards: number[]) => void
   setIssueTypes: (types: IssueType[]) => void
 }
 
@@ -18,7 +18,7 @@ export const useCanvasStore = create<CanvasStore>()((set) => ({
   selectedProjectBoardIds: [],
   issueTypes: [],
   setProjects: (projects: Project[]) => set(() => ({ projects })),
-  setselectedProjectBoardIds: (boards: number[]) =>
+  setSelectedProjectBoardIds: (boards: number[]) =>
     set(() => ({ selectedProjectBoardIds: boards })),
   setSelectedProject: (row: Project | undefined) =>
     set(() => ({ selectedProject: row })),

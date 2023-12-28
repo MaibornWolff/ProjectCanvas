@@ -9,7 +9,7 @@ export function AddCase({
 }) {
   return (
     <BaseCard
-      sx={{
+      style={{
         background: "transparent",
         border: "2px dashed lightgray",
         color: "gray",

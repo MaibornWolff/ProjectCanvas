@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box, Button, Group, Loader, TextInput } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { IconPlus } from "@tabler/icons"
@@ -26,7 +25,7 @@ export function AddSubtask({
     (issueType) => issueType?.subtask === true
   )
 
-  const createSubstask = createSubtaskMutation(
+  const createSubtask = createSubtaskMutation(
     issueKey,
     summary,
     projectId,
@@ -41,7 +40,7 @@ export function AddSubtask({
         w="100%"
         mr="sm"
         placeholder="Add Subtask"
-        sx={{ flex: 10 }}
+        style={{ flex: 10 }}
         onChange={(e) => setSummary(e.target.value)}
         value={summary}
       />
@@ -54,12 +53,12 @@ export function AddSubtask({
                   message: `The summary of an issue cannot be empty!`,
                   color: "red",
                 })
-              else createSubstask.mutate()
+              else createSubtask.mutate()
             }}
           />
         </Button>
       </Box>
-      {createSubstask.isLoading && <Loader size="sm" />}
+      {createSubtask.isLoading && <Loader size="sm" />}
     </Group>
   )
 }

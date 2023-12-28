@@ -1,7 +1,7 @@
 import { PaperProps } from "@mantine/core"
 import { IconPlus } from "@tabler/icons"
 import { MouseEventHandler } from "react"
-import { Draggable } from "react-beautiful-dnd"
+import { Draggable } from "@hello-pangea/dnd"
 import { BaseCard } from "../Base/BaseCard"
 
 export function AddCard({
@@ -18,7 +18,7 @@ export function AddCard({
     <Draggable draggableId={id} index={index} isDragDisabled>
       {(provided) => (
         <BaseCard
-          sx={{
+          style={{
             background: "transparent",
             border: "2px dashed lightgray",
             color: "gray",

@@ -1,6 +1,6 @@
-import { ColorSchemeProvider } from "@mantine/core"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { MantineProvider } from "@mantine/core";
 import { Login } from "./Login"
 
 jest.mock("../../get-meta-env.ts", () => ({
@@ -42,14 +42,10 @@ jest.mock("react-i18next", () => ({
 
 describe("<Login />", () => {
   it("should set providerLogin to JiraCloud after clicking on the Jira Cloud Button", async () => {
-    const toggleColorScheme = () => {}
     const { container, getByTestId } = render(
-      <ColorSchemeProvider
-        colorScheme="light"
-        toggleColorScheme={toggleColorScheme}
-      >
+      <MantineProvider>
         <Login />
-      </ColorSchemeProvider>
+      </MantineProvider>
     )
 
     await userEvent.click(screen.getByRole("button", { name: "Jira Cloud" }))
@@ -63,14 +59,10 @@ describe("<Login />", () => {
   })
 
   it("should set providerLogin to JiraServer after clicking on the Jira Server Button", async () => {
-    const toggleColorScheme = () => {}
     const { container, getByTestId } = render(
-      <ColorSchemeProvider
-        colorScheme="light"
-        toggleColorScheme={toggleColorScheme}
-      >
+      <MantineProvider>
         <Login />
-      </ColorSchemeProvider>
+      </MantineProvider>
     )
 
     await userEvent.click(screen.getByRole("button", { name: "Jira Server" }))

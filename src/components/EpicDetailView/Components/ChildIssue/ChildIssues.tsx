@@ -3,13 +3,15 @@ import { useState } from "react"
 import { Issue } from "../../../../../types"
 import { CreateIssueModal } from "../../../CreateIssue/CreateIssueModal"
 import { ChildIssueWrapper } from "./ChildIssueWrapper"
+import { useColorScheme } from "../../../../common/color-scheme";
 
 export function ChildIssues({ issues }: { issues: Issue[] }) {
+  const colorScheme = useColorScheme()
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
 
   return (
     <Stack
-      sx={{
+      style={{
         minHeight: "100%",
         alignItems: "center",
       }}
@@ -17,7 +19,7 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
       <ScrollArea
         className="left-panel"
         p="sm"
-        sx={{
+        style={{
           minWidth: "260px",
           width: "100%",
           height: "50vh",
@@ -36,11 +38,11 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
             display="flex"
             fullWidth
             onClick={() => setCreateIssueModalOpened(true)}
-            sx={(theme) => ({
+            style={(theme) => ({
               justifyContent: "left",
               ":hover": {
                 background:
-                  theme.colorScheme === "dark"
+                  colorScheme === "dark"
                     ? theme.colors.dark[4]
                     : theme.colors.gray[4],
               },
@@ -57,7 +59,7 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
       <Divider
         mr="xs"
         size="xl"
-        sx={{
+        style={{
           cursor: "col-resize",
         }}
       />

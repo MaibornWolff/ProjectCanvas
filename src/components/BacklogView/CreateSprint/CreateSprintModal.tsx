@@ -18,6 +18,7 @@ import { GoalInput } from "./GoalInput"
 import { SprintEndDatePicker } from "./SprintEndDatePicker"
 import { SprintStartDatePicker } from "./SprintStartDatePicker"
 import { ColorSchemeToggle } from "../../common/ColorSchemeToggle"
+import { useColorScheme } from "../../../common/color-scheme";
 
 export function CreateSprintModal({
   opened,
@@ -28,6 +29,7 @@ export function CreateSprintModal({
 }) {
   const queryClient = useQueryClient()
   const theme = useMantineTheme()
+  const colorScheme = useColorScheme()
   const selectedBoard = useCanvasStore(
     (state) => state.selectedProjectBoardIds[0]
   )
@@ -68,36 +70,35 @@ export function CreateSprintModal({
       onClose={() => setOpened(false)}
       title="Create Sprint"
       size="70vw"
-      overflow="outside"
-      overlayColor={
-        theme.colorScheme === "dark"
+      overlayProps={{
+        color: colorScheme === "dark"
           ? theme.colors.dark[9]
-          : theme.colors.gray[2]
-      }
-      overlayOpacity={0.55}
-      overlayBlur={3}
+          : theme.colors.gray[2],
+        opacity: 0.55,
+        blur: 3,
+      }}
     >
       <ColorSchemeToggle
         size="34px"
-        sx={{
+        style={{
           position: "absolute",
           top: 19,
           right: 50,
         }}
       />
-      <ScrollArea.Autosize maxHeight="70vh">
+      <ScrollArea.Autosize style={{ maxHeight: "70vh" }}>
         <form
           onSubmit={form.onSubmit((sprint, event) => {
-            event.preventDefault()
+            event?.preventDefault()
             mutation.mutate(sprint)
           })}
         >
-          <Stack spacing="md" mr="sm">
+          <Stack gap="md" mr="sm">
             <NameInput form={form} />
             <GoalInput form={form} />
             <SprintStartDatePicker form={form} />
             <SprintEndDatePicker form={form} />
-            <Group position="right">
+            <Group justify="right">
               <Button
                 variant="light"
                 color="gray"

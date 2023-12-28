@@ -47,19 +47,19 @@ export function SprintSelect({
       }
       position="top-start"
       events={{
-        hover: true && !!isDisabled,
-        focus: false && !!isDisabled,
-        touch: false && !!isDisabled,
+        hover: isDisabled ?? false,
+        focus: false,
+        touch: false,
       }}
     >
       <Box>
         <Select
           label="Sprint"
           placeholder="Choose sprint"
-          nothingFound="Please select an issue type first"
+          nothingFoundMessage="Please select an issue type first"
           disabled={isDisabled}
           data={
-            !isLoading && sprints && sprints instanceof Array
+            !isLoading && sprints
               ? sprints.map((sprint) => ({
                   value: sprint.id.toString(),
                   label: sprint.name,
@@ -68,7 +68,6 @@ export function SprintSelect({
           }
           searchable
           clearable
-          withinPortal
           {...form.getInputProps("sprint.id")}
         />
       </Box>

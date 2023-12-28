@@ -1,7 +1,6 @@
 import {Issue} from "types";
 import {
     Avatar,
-    Badge,
     Box,
     Paper,
     Center,
@@ -21,6 +20,8 @@ import {DeleteButton} from "../BacklogView/Issue/DeleteButton";
 import {EpicDetailView} from "../EpicDetailView/EpicDetailView";
 import {StatusType} from "../../../types/status";
 import {StoryPointsBadge} from "../common/StoryPoints/StoryPointsBadge";
+import {useColorScheme} from "../../common/color-scheme";
+import {IssueLabelBadge} from "../common/IssueLabelBadge";
 
 export function EpicCard ({
     issueKey,
@@ -38,8 +39,9 @@ export function EpicCard ({
     const queryClient = useQueryClient()
     const {hovered} = useHover()
     const theme = useMantineTheme()
+    const colorScheme = useColorScheme()
     const hoverStyles =
-        theme.colorScheme === "dark"
+        colorScheme === "dark"
             ? {
                 backgroundColor: theme.colors.dark[8],
                 transition: "background-color .1s ease-in",
@@ -58,7 +60,7 @@ export function EpicCard ({
             <Grid
                 columns={100}
                 p={3}
-                sx={{
+                style={{
                     borderRadius: theme.radius.sm,
                     margin: 0,
                     boxShadow: theme.shadows.xs,
@@ -69,7 +71,7 @@ export function EpicCard ({
             >
                 <Grid.Col
                     span={8}
-                    sx={{
+                    style={{
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "center",
@@ -86,14 +88,14 @@ export function EpicCard ({
                     </Center>
                 </Grid.Col>
                 <Grid.Col span={74}>
-                    <Stack spacing={0}>
-                        <Group spacing={2}>
+                    <Stack gap={0}>
+                        <Group gap={2}>
                             <Text
                                 size="sm"
                                 mr={5}
-                                color="blue"
+                                c="blue"
                                 td={status === StatusType.DONE ? "line-through" : "none"}
-                                sx={{
+                                style={{
                                     ":hover": {
                                         textDecoration: "underline",
                                         cursor: "pointer",
@@ -102,23 +104,15 @@ export function EpicCard ({
                             >
                                 {issueKey}
                             </Text>
-                            {labels?.length !== 0 &&
-                                labels.map((label) => (
-                                    <Badge
-                                        mr={2}
-                                        key={`${issueKey}-${label}`}
-                                        color="yellow"
-                                    >
-                                        {label}
-                                    </Badge>
-                                ))}
+                            {labels &&
+                                 labels.map((label) => (<IssueLabelBadge key={`${issueKey}-${label}`} label={label} />))}
                         </Group>
                         <Text size="lg">{summary}</Text>
                     </Stack>
                 </Grid.Col>
                 <Grid.Col
                     span={8}
-                    sx={{
+                    style={{
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "center",
@@ -151,7 +145,7 @@ export function EpicCard ({
                     </Tooltip>
                 </Grid.Col>
                 <Grid.Col span={3}>
-                    <Box sx={{ alignSelf: "flex-start" }}>
+                    <Box style={{ alignSelf: "flex-start" }}>
                         {storyPointsEstimate &&
                             <StoryPointsBadge
                                 statusType={status as StatusType}
@@ -168,9 +162,10 @@ export function EpicCard ({
                     queryClient.invalidateQueries({ queryKey: ["issues"] })
                 }}
                 size="90vw"
-                overflow="outside"
-                overlayOpacity={0.55}
-                overlayBlur={3}
+                overlayProps={{
+                  opacity: 0.55,
+                  blur: 3,
+                }}
                 withCloseButton={false}
             >
                 <EpicDetailView

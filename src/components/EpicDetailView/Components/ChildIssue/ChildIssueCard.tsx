@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Badge,
   Center,
   Box,
   Group,
@@ -21,6 +20,9 @@ import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon"
 import { DeleteButton } from "../../../BacklogView/Issue/DeleteButton"
 import { StatusType } from "../../../../../types/status";
 import { StoryPointsBadge } from "../../../common/StoryPoints/StoryPointsBadge";
+import { useColorScheme } from "../../../../common/color-scheme";
+import { IssueEpicBadge } from "../../../common/IssueEpicBadge";
+import { IssueLabelBadge } from "../../../common/IssueLabelBadge";
 
 export function ChildIssueCard({
   issueKey,
@@ -39,9 +41,10 @@ export function ChildIssueCard({
   const queryClient = useQueryClient()
   const { hovered } = useHover()
   const theme = useMantineTheme()
+  const colorScheme = useColorScheme()
 
   const hoverStyles =
-    theme.colorScheme === "dark"
+    colorScheme === "dark"
       ? {
           backgroundColor: theme.colors.dark[8],
           transition: "background-color .1s ease-in",
@@ -53,12 +56,12 @@ export function ChildIssueCard({
 
   return (
     <>
-      <Paper onClick={() => setOpened(true)} sx={{ position: "relative" }}>
+      <Paper onClick={() => setOpened(true)} style={{ position: "relative" }}>
         <DeleteButton mounted={hovered} issueKey={issueKey} />
         <Grid
           columns={100}
           p={3}
-          sx={{
+          style={{
             borderRadius: theme.radius.sm,
             margin: 0,
             boxShadow: theme.shadows.xs,
@@ -68,7 +71,7 @@ export function ChildIssueCard({
         >
           <Grid.Col
             span={8}
-            sx={{
+            style={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -79,14 +82,14 @@ export function ChildIssueCard({
             </Center>
           </Grid.Col>
           <Grid.Col span={65}>
-            <Stack spacing={0}>
-              <Group spacing={2}>
+            <Stack gap={0}>
+              <Group gap={2}>
                 <Text
                   size="sm"
                   mr={5}
-                  color="blue"
+                  c="blue"
                   td={status === StatusType.DONE ? "line-through" : "none"}
-                  sx={{
+                  style={{
                     ":hover": {
                       textDecoration: "underline",
                       cursor: "pointer",
@@ -95,20 +98,11 @@ export function ChildIssueCard({
                 >
                   {issueKey}
                 </Text>
-                {epic.issueKey && (
-                  <Badge mr={5} color="violet">
-                    {epic.summary}
-                  </Badge>
-                )}
-                {labels?.length !== 0 &&
-                  labels.map((label) => (
-                    <Badge mr={2} key={`${issueKey}-${label}`} color="yellow">
-                      {label}
-                    </Badge>
-                  ))}
+                {epic.issueKey && (<IssueEpicBadge issueKey={issueKey} epic={epic} />)}
+                {labels && labels.map((label) => (<IssueLabelBadge key={`${issueKey}-${label}`} label={label} />))}
               </Group>
               <Text size="lg">{summary}</Text>
-              <Group align="center" spacing="sm">
+              <Group align="center" gap="sm">
                 <Text size="sm">{type}</Text>
                 <Text size="sm">•</Text>
                 <Text size="sm">{status}</Text>
@@ -117,20 +111,20 @@ export function ChildIssueCard({
           </Grid.Col>
           <Grid.Col
             span={10}
-            sx={{
+            style={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
             }}
           >
-            <Box sx={{ alignSelf: "flex-start" }}>
+            <Box style={{ alignSelf: "flex-start" }}>
               {storyPointsEstimate &&
                 <StoryPointsBadge statusType={status as StatusType} storyPointsEstimate={storyPointsEstimate} />}
             </Box>
           </Grid.Col>
           <Grid.Col
             span={8}
-            sx={{
+            style={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -165,9 +159,10 @@ export function ChildIssueCard({
           queryClient.invalidateQueries({ queryKey: ["issues"] })
         }}
         size="90vw"
-        overflow="outside"
-        overlayOpacity={0.55}
-        overlayBlur={3}
+        overlayProps={{
+          opacity: 0.55,
+          blur: 3,
+        }}
         withCloseButton={false}
       >
         <DetailView

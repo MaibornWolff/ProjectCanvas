@@ -21,7 +21,7 @@ export function StoryMapMenu() {
           component="button"
           type="button"
           onClick={() => navigate("/storymapview")}
-          sx={{
+          style={{
             display: "flex",
           }}
         >
@@ -32,7 +32,7 @@ export function StoryMapMenu() {
       <Menu.Dropdown>
         {storyMaps?.slice(0, 3).map((storyMap) => (
           <Menu.Item
-            icon={<IconMap size={14} />}
+            leftSection={<IconMap size={14} />}
             key={`layout-header-story-map-${storyMap.id}`}
             onClick={() => navigate(`/storymapview/${storyMap.id}`)}
           >
@@ -42,14 +42,14 @@ export function StoryMapMenu() {
 
         {storyMaps?.length > 0 && <Menu.Divider />}
         <Menu.Item
-          icon={<IconLayoutDashboard size={14} />}
+          leftSection={<IconLayoutDashboard size={14} />}
           onClick={() => navigate("/storymapview")}
         >
           View All Story Maps
         </Menu.Item>
         <Menu.Item
           color="red"
-          icon={<IconTrash size={14} />}
+          leftSection={<IconTrash size={14} />}
           onClick={deleteAllStoryMaps}
         >
           Delete All Story Maps

@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Badge,
   Center,
   Box,
   Group,
@@ -12,16 +11,17 @@ import {
   useMantineTheme,
   Grid,
 } from "@mantine/core"
-import { useHover, useMergedRef } from "@mantine/hooks"
 import { useQueryClient } from "@tanstack/react-query"
 import { Issue } from "types"
 import { useState } from "react"
-import { Draggable } from "react-beautiful-dnd"
+import { Draggable } from "@hello-pangea/dnd"
 import { DetailView } from "../../DetailView/DetailView"
 import { IssueIcon } from "./IssueIcon"
-import { DeleteButton } from "./DeleteButton"
 import { StatusType } from "../../../../types/status";
 import { StoryPointsBadge } from "../../common/StoryPoints/StoryPointsBadge";
+import { useColorScheme } from "../../../common/color-scheme";
+import { IssueLabelBadge } from "../../common/IssueLabelBadge";
+import { IssueEpicBadge } from "../../common/IssueEpicBadge";
 
 export function IssueCard({
   issueKey,
@@ -38,11 +38,11 @@ export function IssueCard({
 }: Issue & { index: number }) {
   const [opened, setOpened] = useState(false)
   const queryClient = useQueryClient()
-  const { ref, hovered } = useHover()
   const theme = useMantineTheme()
+  const colorScheme = useColorScheme()
 
   const hoverStyles =
-    theme.colorScheme === "dark"
+    colorScheme === "dark"
       ? {
           backgroundColor: theme.colors.dark[8],
           transition: "background-color .1s ease-in",
@@ -57,17 +57,16 @@ export function IssueCard({
       <Draggable key={issueKey} draggableId={issueKey} index={index}>
         {(provided) => (
           <Paper
-            ref={useMergedRef(provided.innerRef, ref)}
+            ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             onClick={() => setOpened(true)}
-            sx={{ position: "relative" }}
           >
-            <DeleteButton mounted={hovered} issueKey={issueKey} />
+            {/* <DeleteButton mounted={hovered} issueKey={issueKey} /> */}
             <Grid
               columns={100}
-              p={3}
-              sx={{
+              p={10}
+              style={{
                 borderRadius: theme.radius.sm,
                 margin: 0,
                 boxShadow: theme.shadows.xs,
@@ -77,7 +76,7 @@ export function IssueCard({
             >
               <Grid.Col
                 span={8}
-                sx={{
+                style={{
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
@@ -88,14 +87,14 @@ export function IssueCard({
                 </Center>
               </Grid.Col>
               <Grid.Col span={74}>
-                <Stack spacing={0}>
-                  <Group spacing={2}>
+                <Stack gap={0}>
+                  <Group gap={2}>
                     <Text
                       size="sm"
                       mr={5}
-                      color="blue"
+                      c="blue"
                       td={status === StatusType.DONE ? "line-through" : "none"}
-                      sx={{
+                      style={{
                         ":hover": {
                           textDecoration: "underline",
                           cursor: "pointer",
@@ -104,24 +103,11 @@ export function IssueCard({
                     >
                       {issueKey}
                     </Text>
-                    {epic.issueKey && (
-                      <Badge mr={5} color="violet">
-                        {epic.summary}
-                      </Badge>
-                    )}
-                    {labels?.length !== 0 &&
-                      labels.map((label) => (
-                        <Badge
-                          mr={2}
-                          key={`${issueKey}-${label}`}
-                          color="yellow"
-                        >
-                          {label}
-                        </Badge>
-                      ))}
+                    {epic.issueKey && (<IssueEpicBadge issueKey={issueKey} epic={epic} />)}
+                    {labels && labels.map((label) => (<IssueLabelBadge key={`${issueKey}-${label}`} label={label} />))}
                   </Group>
                   <Text size="lg">{summary}</Text>
-                  <Group align="center" spacing="sm">
+                  <Group align="center" gap="sm">
                     <Text size="sm">{type}</Text>
                     <Text size="sm">•</Text>
                     <Text size="sm">{status}</Text>
@@ -130,7 +116,7 @@ export function IssueCard({
               </Grid.Col>
               <Grid.Col
                 span={8}
-                sx={{
+                style={{
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
@@ -163,7 +149,7 @@ export function IssueCard({
                 </Tooltip>
               </Grid.Col>
               <Grid.Col span={3}>
-                <Box sx={{ alignSelf: "flex-start" }}>
+                <Box style={{ alignSelf: "flex-start" }}>
                   {storyPointsEstimate &&
                     <StoryPointsBadge statusType={status as StatusType} storyPointsEstimate={storyPointsEstimate} />}
                 </Box>
@@ -179,9 +165,10 @@ export function IssueCard({
           queryClient.invalidateQueries({ queryKey: ["issues"] })
         }}
         size="90vw"
-        overflow="outside"
-        overlayOpacity={0.55}
-        overlayBlur={3}
+        overlayProps={{
+          opacity: 0.55,
+          blur: 3,
+        }}
         withCloseButton={false}
       >
         <DetailView

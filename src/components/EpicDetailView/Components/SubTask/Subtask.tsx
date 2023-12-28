@@ -21,7 +21,7 @@ export function Subtask({
     <Group
       align="center"
       key={id}
-      sx={(theme) => ({
+      style={(theme) => ({
         borderRadius: theme.radius.sm,
         transition: "background-color .8s ease-out",
         boxShadow: theme.shadows.xs,
@@ -32,13 +32,13 @@ export function Subtask({
       })}
       p="sm"
     >
-      <ThemeIcon size="sm" sx={{ flex: 2 }}>
+      <ThemeIcon size="sm" style={{ flex: 2 }}>
         <IconBinaryTree2 />
       </ThemeIcon>
-      <Text size="sm" color="blue" span sx={{ flex: 15 }} lineClamp={1}>
+      <Text size="sm" c="blue" span style={{ flex: 15 }} lineClamp={1}>
         {subtaskKey}
       </Text>
-      <Box sx={{ flex: 50 }}>
+      <Box style={{ flex: 50 }}>
         <IssueSummary summary={fields.summary} issueKey={subtaskKey} />
       </Box>
       {deleteSubtask.isLoading && <Loader size="sm" />}
@@ -47,7 +47,7 @@ export function Subtask({
         size="sm"
         color="gray"
         ml="auto"
-        sx={{
+        style={{
           flex: 2,
           ":hover": { color: "red", borderColor: "red", cursor: "pointer" },
         }}

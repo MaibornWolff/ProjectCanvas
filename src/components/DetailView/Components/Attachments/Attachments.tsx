@@ -64,9 +64,13 @@ export function Attachments(props: {
       deleteAttachmentMutationLocal.mutate({ attachmentId, resource })
   }
 
-  const performUpload = async (f: File): Promise<void> => {
+  const performUpload = async (file: File | null): Promise<void> => {
+    if (!file) {
+      return
+    }
+
     const form = new FormData()
-    form.append("file", f, f.name)
+    form.append("file", file, file.name)
     const issueIdOrKey = props.issueKey
     if (resource)
       addAttachmentMutationLocal.mutate({ issueIdOrKey, resource, form })
@@ -79,11 +83,11 @@ export function Attachments(props: {
 
   return (
     <>
-      <Group position="left" align="flex-start" spacing="xs">
-        <Text color="dimmed" mb="sm">
+      <Group justify="left" align="flex-start" gap="xs">
+        <Text c="dimmed" mb="sm">
           {label}
         </Text>
-        <Group position="center">
+        <Group justify="center">
           <FileButton onChange={performUpload} accept="*/*">
             {(properties) => (
               <Button
@@ -91,8 +95,7 @@ export function Attachments(props: {
                 variant="subtle"
                 color="dark"
                 radius="xs"
-                size="xs"
-                compact
+                size="compact-xs"
               >
                 <IconPlus />
               </Button>
@@ -104,7 +107,6 @@ export function Attachments(props: {
         {resource && (
           <Group>
             {props.attachments &&
-              props.attachments instanceof Array &&
               props.attachments.map((attachment: Attachment) => {
                 const fetchFile: Promise<Blob> = downloadAttachment(
                   attachment.id,
@@ -150,9 +152,11 @@ export function Attachments(props: {
                               <Card.Section>
                                 <Center>
                                   <LoadingOverlay
-                                    overlayOpacity={0.3}
-                                    overlayColor="#c5c5c5"
-                                    exitTransitionDuration={5000}
+                                    overlayProps={{
+                                      opacity: 0.3,
+                                      color: "#c5c5c5",
+                                    }}
+                                    transitionProps={{ exitDuration: 5000 }}
                                     visible={thumbnailsLoading}
                                   />
 
@@ -173,19 +177,19 @@ export function Attachments(props: {
                                         : null
                                     }
                                     alt={`${attachment.filename}`}
-                                    withPlaceholder
+                                    fallbackSrc="https://placehold.co/600x400?text=Placeholder"
                                   />
                                 </Center>
                               </Card.Section>
                               <Card.Section p="xs">
                                 <Box>
-                                  <Text size="xs" color="dimmed" truncate>
+                                  <Text size="xs" c="dimmed" truncate>
                                     {attachment.filename}
                                   </Text>
                                   <Text
                                     size="xs"
                                     fw={600}
-                                    color="dimmed"
+                                    c="dimmed"
                                     truncate
                                   >
                                     {new Intl.DateTimeFormat("en-GB", {
@@ -198,7 +202,7 @@ export function Attachments(props: {
                             </Flex>
                           </HoverCard.Target>
                           <HoverCard.Dropdown p={0}>
-                            <Group spacing={0}>
+                            <Group gap={0}>
                               <ActionIcon
                                 color="dark"
                                 size="lg"

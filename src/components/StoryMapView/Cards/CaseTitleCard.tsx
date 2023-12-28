@@ -23,7 +23,6 @@ export function CaseTitleCard({
     <BaseCard
       w="100%"
       bg="primaryBlue.0"
-      pos="relative"
       radius="sm"
       m={undefined}
       shadow={undefined}

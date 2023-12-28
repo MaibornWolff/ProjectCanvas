@@ -15,13 +15,12 @@ export function ProjectSelect({
     <Select
       label="Project"
       placeholder="Choose project"
-      nothingFound="No Options"
+      nothingFoundMessage="No Options"
       data={projects.map((project) => ({
         value: project.id?.toString() || "",
         label: `${project.name} (${project.key})`,
       }))}
       searchable
-      withinPortal
       required
       {...form.getInputProps("projectId")}
       onChange={(value) => {

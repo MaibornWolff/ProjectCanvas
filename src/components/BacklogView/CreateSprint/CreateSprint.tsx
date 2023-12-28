@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Box, Button, Group, Loader, TextInput } from "@mantine/core"
+import { Box, Button } from "@mantine/core"
 import { useState } from "react"
 import { CreateSprintModal } from "./CreateSprintModal"
+import { useColorScheme } from "../../../common/color-scheme";
 
 export function CreateSprint() {
+  const colorScheme = useColorScheme()
   const [createSprintModalOpened, setCreateSprintModalOpened] = useState(false)
 
   return (
@@ -17,13 +18,10 @@ export function CreateSprint() {
         display="flex"
         fullWidth
         onClick={() => setCreateSprintModalOpened(true)}
-        sx={(theme) => ({
+        style={(theme) => ({
           justifyContent: "left",
           ":hover": {
-            background:
-              theme.colorScheme === "dark"
-                ? theme.colors.dark[4]
-                : theme.colors.gray[4],
+            background: colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[4],
           },
         })}
       >

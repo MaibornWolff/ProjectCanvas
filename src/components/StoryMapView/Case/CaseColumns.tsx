@@ -16,7 +16,7 @@ export function CaseColumns({
 }) {
   const addCase = useStoryMapStore((state) => state.addCase)
   return (
-    <Group align="start" noWrap>
+    <Group align="start" wrap="nowrap">
       {cases.map((caseColumn) => (
         <CaseColumn
           key={caseColumn.title}

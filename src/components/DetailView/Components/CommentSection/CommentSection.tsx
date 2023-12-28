@@ -63,20 +63,20 @@ export function CommentSection({
   return (
     <Stack>
       <Group>
-        <Text color="dimmed">Comments</Text>
+        <Text c="dimmed">Comments</Text>
         {showLoader && <Loader size="xs" />}
       </Group>
       {!showEditableInputAdd ? (
         <Button
           variant="subtle"
           color="gray"
-          compact
+          size="compact-sm"
           radius="xs"
           display="flex"
           onClick={() => {
             setShowEditableInputAdd(true)
           }}
-          sx={{
+          style={{
             justifyContent: "left",
           }}
         >
@@ -120,15 +120,15 @@ export function CommentSection({
               <Avatar
                 src={commentBody.author.avatarUrls["24x24"]}
                 size="sm"
-                sx={{ flex: 1 }}
+                style={{ flex: 1 }}
               />
             </Box>
-            <Stack spacing={0} sx={{ flex: 15 }}>
+            <Stack gap={0} style={{ flex: 15 }}>
               <Group>
-                <Text fw={500} color="dimmed" fz="sm">
+                <Text fw={500} c="dimmed" fz="sm">
                   {commentBody.author.displayName}
                 </Text>
-                <Text color="dimmed" fz="xs">
+                <Text c="dimmed" fz="xs">
                   {new Intl.DateTimeFormat("en-GB", {
                     dateStyle: "medium",
                     timeStyle: "short",
@@ -139,10 +139,10 @@ export function CommentSection({
               editableComments[commentBody.id] === false ? (
                 <Box>
                   <Text fz="xs"> {commentBody.body}</Text>
-                  <Group position="left">
+                  <Group justify="left">
                     <Anchor
                       td="underline"
-                      color="dimmed"
+                      c="dimmed"
                       fz="xs"
                       onClick={() => {
                         setEditCommentInputText({
@@ -159,7 +159,7 @@ export function CommentSection({
                     </Anchor>
                     <Anchor
                       td="underline"
-                      color="dimmed"
+                      c="dimmed"
                       fz="xs"
                       onClick={() => {
                         deleteCommentMutationLocal.mutate({

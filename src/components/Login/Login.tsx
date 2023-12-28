@@ -1,4 +1,4 @@
-import { Button, Container, Divider, Group, Image, Paper } from "@mantine/core"
+import {Button, Container, Divider, Group, Image, Paper, rgba} from "@mantine/core"
 import { IconCloud, IconServer } from "@tabler/icons"
 import { ipcRenderer } from "electron"
 import { useState } from "react"
@@ -8,6 +8,7 @@ import { LanguageSelector } from "../common/LanguageSelector"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { JiraCloudLogin } from "./jira-cloud/JiraCloudLogin"
 import { JiraServerLogin } from "./jira-server/JiraServerLogin"
+import { useColorScheme } from "../../common/color-scheme";
 
 export function Login() {
   const [providerLogin, setProviderLogin] = useState("")
@@ -15,10 +16,11 @@ export function Login() {
   const onSuccess = () => navigateTo("/projectsview")
   const goBack = () => setProviderLogin("")
   const { t } = useTranslation("login")
+  const colorScheme = useColorScheme()
 
   return (
     <Container
-      sx={{
+      style={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -28,7 +30,7 @@ export function Login() {
       <Paper
         p="lg"
         withBorder
-        sx={(theme) => ({
+        style={(theme) => ({
           width: "30vw",
           display: "flex",
           flexDirection: "column",
@@ -37,18 +39,18 @@ export function Login() {
           borderRadius: theme.radius.lg,
         })}
       >
-        <Group spacing="xs">
+        <Group gap="xs">
           <ColorSchemeToggle ml="auto" />
           <LanguageSelector />
         </Group>
         <Image
           mx="auto"
           src="./project_canvas_logo.svg"
-          sx={(theme) => ({
+          style={() => ({
             maxWidth: "220px",
             backgroundColor:
-              theme.colorScheme === "dark"
-                ? theme.fn.rgba("#fff", 0.3)
+              colorScheme === "dark"
+                ? rgba("#fff", 0.3)
                 : "transparent",
             borderRadius: "20px",
             padding: "20px",
@@ -70,7 +72,7 @@ export function Login() {
                 to: "primaryGreen.8",
                 deg: 60,
               }}
-              leftIcon={<IconServer size={32} strokeWidth={1.8} />}
+              leftSection={<IconServer size={32} strokeWidth={1.8} />}
               onClick={() => {
                 setProviderLogin("JiraServer")
               }}
@@ -85,7 +87,7 @@ export function Login() {
                 to: "primaryBlue.6",
                 deg: 60,
               }}
-              leftIcon={<IconCloud size={32} strokeWidth={1.8} />}
+              leftSection={<IconCloud size={32} strokeWidth={1.8} />}
               onClick={() => {
                 setProviderLogin("JiraCloud")
                 ipcRenderer.send("start-oauth2")

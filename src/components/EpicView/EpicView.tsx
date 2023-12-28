@@ -7,10 +7,12 @@ import {CreateIssueModal} from "../CreateIssue/CreateIssueModal";
 import {Issue} from "../../../types";
 import {EpicWrapper} from "./EpicWrapper";
 import {getEpics} from "./helpers/queryFetchers";
+import {useColorScheme} from "../../common/color-scheme";
 
 
 
 export function EpicView() {
+  const colorScheme = useColorScheme()
   const navigate = useNavigate()
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
@@ -55,13 +57,13 @@ export function EpicView() {
       </Center>
   )
     return (
-    <Stack sx={{ minHeight: "100%"}}>
-      <Stack align="left" spacing={0}>
+    <Stack style={{ minHeight: "100%"}}>
+      <Stack align="left" gap={0}>
         <Group>
-          <Group spacing="xs" c="dimmed">
+          <Group gap="xs" c="dimmed">
             <Text
               onClick={() => navigate("/projectsview")}
-              sx={{
+              style={{
                 ":hover": {
                   textDecoration: "underline",
                   cursor: "pointer",
@@ -78,11 +80,11 @@ export function EpicView() {
       </Stack>
       <ScrollArea.Autosize
           className="main-panel"
-          maxHeight="calc(100vh - 230px)"
           w="100%"
           p="sm"
-          sx={{
+          style={{
             minWidth: "260px",
+            maxHeight: "calc(100vh - 230px)"
           }}
       >
           {EpicWrappers.get("EpicView") &&(
@@ -100,13 +102,10 @@ export function EpicView() {
               display="flex"
               fullWidth
               onClick={() => setCreateIssueModalOpened(true)}
-              sx={(theme) => ({
+              style={(theme) => ({
                 justifyContent: "left",
                 ":hover": {
-                  background:
-                      theme.colorScheme === "dark"
-                          ? theme.colors.dark[4]
-                          : theme.colors.gray[4],
+                  background: colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[4],
                 },
               })}
           >

@@ -11,13 +11,10 @@ import {
   Stack,
   Text,
   Title,
-  Menu,
-  Button,
-  createStyles,
+  Tooltip,
 } from "@mantine/core"
-import { IconCaretDown } from "@tabler/icons"
 import { Attachment, Issue, User } from "types"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
 import { Description } from "../DetailView/Components/Description"
@@ -38,10 +35,10 @@ import {
 } from "./helpers/storyPointsHelper"
 import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard";
 import { CommentSection } from "../DetailView/Components/CommentSection";
-import { getIssueTypes, setStatus } from "../CreateIssue/queryFunctions";
 import { StatusType } from "../../../types/status";
 import { getStatusTypeColor } from "../../common/status-color"
 import { Attachments } from "../DetailView/Components/Attachments/Attachments";
+import { IssueStatusMenu } from "../DetailView/Components/IssueStatusMenu";
 
 export function EpicDetailView({
   issueKey,
@@ -87,29 +84,6 @@ export function EpicDetailView({
     queryClient.invalidateQueries({ queryKey: ["issues"] })
     queryClient.invalidateQueries({ queryKey: ["epics"] })
   };
-
-  const [defaultStatus, setDefaultStatus] = useState(status)
-  const statusMutation = useMutation({
-    mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
-    onSuccess: reloadEpics,
-  })
-
-  const { data: issueTypes } = useQuery({
-    queryKey: ["issueTypes", projectId],
-    queryFn: () => getIssueTypes(projectId),
-    enabled: !!projectId,
-  })
-
-  const useStyles = createStyles(
-    (theme, { isOpened }: { isOpened: boolean }) => ({
-      icon: {
-        transition: "transform 150ms ease",
-        transform: isOpened ? "rotate(180deg)" : "rotate(0deg)",
-      },
-    })
-  )
-  const [opened, setOpened] = useState(false)
-  const { classes } = useStyles({ isOpened: opened })
 
   const dateFormat = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
@@ -161,26 +135,26 @@ export function EpicDetailView({
       </Breadcrumbs>
       <ColorSchemeToggle
         size="34px"
-        sx={{
+        style={{
           position: "absolute",
           top: 19,
           right: 50,
         }}
       />
       <Group align="flex-start">
-        <Stack sx={{ flex: 13 }} justify="flex-start">
-          <Title size="h1" sx={{ marginBottom: "-10px" }}>
+        <Stack style={{ flex: 13 }} justify="flex-start">
+          <Title size="h1" style={{ marginBottom: "-10px" }}>
             <IssueSummary
               summary={summary}
               issueKey={issueKey}
               onMutate={reloadEpics}
             />
           </Title>
-          <Text color="dimmed" mb="sm" size="md" sx={{ marginLeft: "7px" }}>
+          <Text c="dimmed" mb="sm" size="md" style={{ marginLeft: "7px" }}>
             Description
           </Text>
           <Group
-            sx={{
+            style={{
               marginLeft: "10px",
               marginTop: "-7px",
             }}
@@ -188,43 +162,38 @@ export function EpicDetailView({
             <Description issueKey={issueKey} description={description} />
           </Group>
           <Group align="center" p="sm">
-            <Progress
+            <Progress.Root
               radius="md"
               size={20}
-              label="hello"
-              sx={{
+              style={{
                 width: "400px",
                 marginRight: "5px",
                 marginBottom: "20px",
                 flexGrow: 1
               }}
-              sections={[
-                {
-                  value: (tasksDone / totalTaskCount) * 100,
-                  color: getStatusTypeColor(StatusType.DONE),
-                  label: `${tasksDone}`,
-                  tooltip: `${tasksDone} Done`,
-                },
-                {
-                  value: (tasksInProgress / totalTaskCount) * 100,
-                  color: getStatusTypeColor(StatusType.IN_PROGRESS),
-                  label: `${tasksInProgress}`,
-                  tooltip: `${tasksInProgress} In progress`,
-                },
-                {
-                  value: (tasksTodo / totalTaskCount) * 100,
-                  color: getStatusTypeColor(StatusType.TODO),
-                  label: `${tasksTodo}`,
-                  tooltip: `${tasksTodo} ToDo`,
-                },
-                {
-                  value: 100,
-                  color: getStatusTypeColor(StatusType.TODO),
-                  label: `0`,
-                  tooltip: "Currently no child issues",
-                },
-              ]}
-            />
+            >
+              <Tooltip label={`${tasksDone} Done`}>
+                <Progress.Section value={(tasksDone / totalTaskCount) * 100} color={getStatusTypeColor(StatusType.DONE)}>
+                  <Progress.Label>{tasksDone}</Progress.Label>
+                </Progress.Section>
+              </Tooltip>
+              <Tooltip label={`${tasksInProgress} In progress`}>
+                <Progress.Section value={(tasksInProgress / totalTaskCount) * 100} color={getStatusTypeColor(StatusType.IN_PROGRESS)}>
+                  <Progress.Label>{tasksInProgress}</Progress.Label>
+                </Progress.Section>
+              </Tooltip>
+              <Tooltip label={`${tasksTodo} To do`}>
+                <Progress.Section value={(tasksTodo / totalTaskCount) * 100} color={getStatusTypeColor(StatusType.TODO)}>
+                  <Progress.Label>{tasksTodo}</Progress.Label>
+                </Progress.Section>
+              </Tooltip>
+              {totalTaskCount === 0 &&
+                <Tooltip label="Currently no child issues">
+                    <Progress.Section value={100} color={getStatusTypeColor(StatusType.TODO)}>
+                        <Progress.Label>0</Progress.Label>
+                    </Progress.Section>
+                </Tooltip>}
+            </Progress.Root>
             <StoryPointsHoverCard
               statusType={StatusType.TODO}
               count={storyPointsAccumulator(childIssues, StatusType.TODO)}
@@ -239,52 +208,19 @@ export function EpicDetailView({
             />
           </Group>
 
-          <Group sx={{ marginLeft: "-10px" }} grow>
+          <Group style={{ marginLeft: "-10px" }} grow>
             <ChildIssues issues={childIssues} />
           </Group>
         </Stack>
-        <ScrollArea.Autosize
-          maxHeight="70vh"
-          sx={{ minWidth: "260px", flex: 10 }}
-        >
+        <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
           <Box>
-            <Group position="apart" mb="sm">
-                <Menu
-                  shadow="md"
-                  onOpen={() => setOpened(true)}
-                  onClose={() => setOpened(false)}
-                >
-                  <Menu.Target>
-                    <Button
-                      rightIcon={<IconCaretDown className={classes.icon} />}
-                    >
-                      {defaultStatus}
-                    </Button>
-                  </Menu.Target>
-
-                  <Menu.Dropdown>
-                    <Menu.Label>Status</Menu.Label>
-                    {issueTypes &&
-                      issueTypes
-                        .find((issueType) => issueType.name === type)
-                        ?.statuses?.map((issueStatus) => (
-                        <Menu.Item
-                          key={issueStatus.id}
-                          onClick={() => {
-                            statusMutation.mutate(issueStatus.name)
-                            setDefaultStatus(issueStatus.name)
-                          }}
-                        >
-                          {issueStatus.name}
-                        </Menu.Item>
-                      ))}
-                  </Menu.Dropdown>
-                </Menu>
+            <Group justify="space-between" mb="sm">
+              <IssueStatusMenu projectId={projectId} issueKey={issueKey} type={type} status={status} />
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
               <Accordion.Item value="Details">
-                <Accordion.Control sx={{ textAlign: "left" }}>
+                <Accordion.Control style={{ textAlign: "left" }}>
                   Details
                 </Accordion.Control>
                 <Accordion.Panel>
@@ -294,7 +230,7 @@ export function EpicDetailView({
                       issueKey={issueKey}
                     />
                     <Group grow>
-                      <Text fz="sm" color="dimmed">
+                      <Text fz="sm" c="dimmed">
                         Labels
                       </Text>
                       <Labels
@@ -310,7 +246,7 @@ export function EpicDetailView({
             </Accordion>
             <Accordion variant="contained" mb={20}>
               <Accordion.Item value="Comments">
-                <Accordion.Control sx={{ textAlign: "left" }}>
+                <Accordion.Control style={{ textAlign: "left" }}>
                   Comments
                 </Accordion.Control>
                 <Accordion.Panel>
@@ -320,7 +256,7 @@ export function EpicDetailView({
             </Accordion>
             <Accordion variant="contained" mb={20}>
               <Accordion.Item value="Attachments">
-                <Accordion.Control sx={{ textAlign: "left" }}>
+                <Accordion.Control style={{ textAlign: "left" }}>
                   Attachments
                 </Accordion.Control>
                 <Accordion.Panel>
@@ -328,10 +264,10 @@ export function EpicDetailView({
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>
-            <Text size="xs" color="dimmed">
+            <Text size="xs" c="dimmed">
               Created {dateFormat.format(new Date(created))}
             </Text>
-            <Text size="xs" color="dimmed">
+            <Text size="xs" c="dimmed">
               Updated {dateFormat.format(new Date(updated))}
             </Text>
           </Box>

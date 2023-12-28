@@ -31,7 +31,6 @@ export function ActionCard({
       index={index}
       m="sm"
       bg="primaryGreen.0"
-      pos="relative"
       ref={ref}
       {...props}
     >

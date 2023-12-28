@@ -14,8 +14,8 @@ import {
 } from "@mantine/core"
 import { IconSearch } from "@tabler/icons"
 import { useQueries, useQuery } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
-import { DragDropContext } from "react-beautiful-dnd"
+import { ChangeEvent, useEffect, useState } from "react"
+import { DragDropContext } from "@hello-pangea/dnd"
 import { useNavigate } from "react-router-dom"
 import { Issue, Sprint } from "types"
 import { useCanvasStore } from "../../lib/Store"
@@ -32,8 +32,10 @@ import { resizeDivider } from "./helpers/resizeDivider"
 import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper"
 import { SprintsPanel } from "./IssuesWrapper/SprintsPanel"
 import { ReloadButton } from "./ReloadButton"
+import { useColorScheme } from "../../common/color-scheme";
 
 export function BacklogView() {
+  const colorScheme = useColorScheme()
   const navigate = useNavigate()
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
@@ -64,7 +66,7 @@ export function BacklogView() {
 
   const sprintsIssuesResults = useQueries({
     queries:
-      !isErrorSprints && sprints && sprints instanceof Array
+      !isErrorSprints && sprints
         ? sprints?.map((sprint) => ({
             queryKey: ["issues", "sprints", projectKey, sprints, sprint.id],
             queryFn: () => getIssuesBySprint(sprint.id),
@@ -140,7 +142,7 @@ export function BacklogView() {
       </Center>
     )
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const currentSearch = event.currentTarget.value
     setSearch(currentSearch)
     searchIssuesFilter(
@@ -168,13 +170,13 @@ export function BacklogView() {
       </Center>
     )
   return (
-    <Stack sx={{ minHeight: "100%" }}>
-      <Stack align="left" spacing={0}>
+    <Stack style={{ minHeight: "100%" }}>
+      <Stack align="left" gap={0}>
         <Group>
-          <Group spacing="xs" c="dimmed">
+          <Group gap="xs" c="dimmed">
             <Text
               onClick={() => navigate("/projectsview")}
-              sx={{
+              style={{
                 ":hover": {
                   textDecoration: "underline",
                   cursor: "pointer",
@@ -191,13 +193,13 @@ export function BacklogView() {
         <Title mb="sm">Backlog</Title>
         <TextInput
           placeholder="Search by issue summary, key, epic, labels, creator or assignee.."
-          icon={<IconSearch size={14} stroke={1.5} />}
+          leftSection={<IconSearch size={14} stroke={1.5} />}
           value={search}
           onChange={handleSearchChange}
         />
       </Stack>
 
-      <Flex sx={{ flexGrow: 1 }}>
+      <Flex style={{ flexGrow: 1 }}>
         <DragDropContext
           onDragEnd={(dropResult) =>
             onDragEnd({
@@ -209,10 +211,10 @@ export function BacklogView() {
         >
           <ScrollArea.Autosize
             className="left-panel"
-            maxHeight="calc(100vh - 230px)"
             w="50%"
             p="sm"
-            sx={{
+            style={{
+              maxHeight: "calc(100vh - 230px)",
               minWidth: "260px",
             }}
           >
@@ -234,13 +236,10 @@ export function BacklogView() {
                 display="flex"
                 fullWidth
                 onClick={() => setCreateIssueModalOpened(true)}
-                sx={(theme) => ({
+                style={(theme) => ({
                   justifyContent: "left",
                   ":hover": {
-                    background:
-                      theme.colorScheme === "dark"
-                        ? theme.colors.dark[4]
-                        : theme.colors.gray[4],
+                    background: colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[4],
                   },
                 })}
               >
@@ -257,16 +256,18 @@ export function BacklogView() {
             size="xl"
             className="resize-handle"
             orientation="vertical"
-            sx={{
+            style={{
               cursor: "col-resize",
             }}
           />
           <ScrollArea.Autosize
             className="right-panel"
-            maxHeight="calc(100vh - 230px)"
             w="50%"
             p="xs"
-            sx={{ minWidth: "260px" }}
+            style={{
+              maxHeight: "calc(100vh - 230px)",
+              minWidth: "260px"
+            }}
           >
             <SprintsPanel
               sprintsWithIssues={

@@ -1,4 +1,4 @@
-import { Group, Loader, Select, Text } from "@mantine/core"
+import { Box, Group, Loader, Text } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Issue } from "types"
@@ -7,6 +7,7 @@ import { editIssue } from "../../helpers/queryFunctions"
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon"
 import { getEpicsByProject } from "./queryFunctions"
 import { SelectItem } from "./SelectItem"
+import { CustomItemSelect } from "../../../common/CustomItemSelect";
 
 export function EditableEpic({
   projectId,
@@ -27,7 +28,7 @@ export function EditableEpic({
   })
   const [selectedEpic, setSelectedEpic] = useState(epic.issueKey)
   const mutationEpic = useMutation({
-    mutationFn: (epicKey: string) => editIssue({ epic: { issueKey: epicKey } } as Issue, issueKey),
+    mutationFn: (epicKey: string | null) => editIssue({ epic: { issueKey: epicKey } } as Issue, issueKey),
     onError: () => {
       showNotification({
         message: `An error occurred while modifing the Epic 😢`,
@@ -47,37 +48,38 @@ export function EditableEpic({
       <IssueIcon type="Epic" />
       {mutationEpic.isLoading && <Loader size="sm" />}
       {showEpicInput ? (
-        <Select
-          placeholder=""
-          nothingFound="No Options"
-          data={
-            epics
-              ? epics.map((epicItem) => ({
+        <Box w="300px">
+          <CustomItemSelect
+            nothingFoundMessage="No Options"
+            options={
+              epics
+                ? epics.map((epicItem) => ({
                   value: epicItem.issueKey,
                   label: epicItem.summary,
                 }))
-              : []
-          }
-          searchable
-          clearable
-          itemComponent={SelectItem}
-          value={selectedEpic}
-          onChange={(value) => {
-            setSelectedEpic(value!)
-            mutationEpic.mutate(value!)
-            setShowEpicInput(false)
-          }}
-          w="300px"
-        />
+                : []
+            }
+            searchable
+            clearable
+            ItemComponent={SelectItem}
+            value={selectedEpic}
+            onChange={(value) => {
+              setSelectedEpic(value)
+              mutationEpic.mutate(value ?? null)
+              setShowEpicInput(false)
+            }}
+          />
+        </Box>
       ) : (
         <Group>
           <Text
             onClick={() => setShowEpicInput(true)}
-            sx={{
+            style={{
               ":hover": { textDecoration: "underline", cursor: "pointer" },
             }}
+            {...(!selectedEpic && { c: "dimmed" })}
           >
-            {selectedEpic || <Text color="dimmed">Add Epic</Text>}
+            {selectedEpic || "Add Epic"}
           </Text>
         </Group>
       )}

@@ -1,4 +1,4 @@
-import { Accordion, ActionIcon, Group, TextInput } from "@mantine/core"
+import {Accordion, AccordionControlProps, ActionIcon, Center, TextInput} from "@mantine/core"
 import { IconTrash } from "@tabler/icons"
 import { useState } from "react"
 import { useStoryMapStore } from "../StoryMapStore"
@@ -7,16 +7,17 @@ import { SubActionLevel } from "../Types"
 export function LevelControl({
   level,
   storyMapId,
+  ...props
 }: {
   level: SubActionLevel
   storyMapId: string
-}) {
+} & AccordionControlProps) {
   const [edit, toggleEdit] = useState(true)
   const updateLevel = useStoryMapStore((state) => state.updateLevel)
   const deleteLevel = useStoryMapStore((state) => state.deleteLevel)
   return (
-    <Accordion.Control>
-      <Group>
+    <Center>
+      <Accordion.Control {...props}>
         <TextInput
           placeholder="Title"
           {...(edit ? { readOnly: false } : { readOnly: true })}
@@ -37,16 +38,16 @@ export function LevelControl({
           autoFocus
           size="lg"
         />
-        <ActionIcon
-          color="red"
-          size="sm"
-          onClick={() => {
-            deleteLevel(storyMapId, level.id)
-          }}
-        >
-          <IconTrash />
-        </ActionIcon>
-      </Group>
-    </Accordion.Control>
+      </Accordion.Control>
+      <ActionIcon
+        color="red"
+        size="sm"
+        onClick={() => {
+          deleteLevel(storyMapId, level.id)
+        }}
+      >
+        <IconTrash />
+      </ActionIcon>
+    </Center>
   )
 }

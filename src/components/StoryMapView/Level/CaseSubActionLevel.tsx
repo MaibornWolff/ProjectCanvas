@@ -13,13 +13,13 @@ export function CaseSubActionLevel({
   levelId: string
 }) {
   return (
-    <Group align="start" noWrap>
+    <Group align="start" wrap="nowrap">
       {filteredCases.map((caseColumn) => (
         <Group
           key={`${caseColumn.id}-${levelId}`}
           align="start"
-          noWrap
-          spacing={0}
+          wrap="nowrap"
+          gap={0}
         >
           {caseColumn.actions
             .map((_action) => _action.subActionGroups)
@@ -33,7 +33,7 @@ export function CaseSubActionLevel({
               />
             ))}
           <BaseCard
-            sx={{ cursor: "default", background: "transparent" }}
+            style={{ cursor: "default", background: "transparent" }}
             shadow={undefined}
           />
         </Group>

@@ -2,21 +2,14 @@ import {
   Accordion,
   Box,
   Breadcrumbs,
-  Button,
-  createStyles,
   Group,
-  Menu,
   Paper,
   ScrollArea,
   Stack,
   Text,
   Title,
 } from "@mantine/core"
-import { IconCaretDown } from "@tabler/icons"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Issue } from "types"
-import { useState } from "react"
-import { getIssueTypes, setStatus } from "../CreateIssue/queryFunctions"
 import { AddSubtask } from "./Components/AddSubtask"
 import { AssigneeMenu } from "./Components/AssigneeMenu"
 import { EditableEpic } from "./Components/EditableEpic"
@@ -27,11 +20,12 @@ import { IssueSummary } from "./Components/IssueSummary"
 import { Labels } from "./Components/Labels"
 import { ReporterMenu } from "./Components/ReporterMenu"
 import { StoryPointsEstimateMenu } from "./Components/StoryPointsEstimateMenu"
-import { Subtask } from "./Components/SubTask/Subtask"
+import { Subtask } from "./Components/SubTask"
 import { DeleteIssue } from "./Components/DeleteIssue"
 import { Attachments } from "./Components/Attachments/Attachments"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
+import { IssueStatusMenu } from "./Components/IssueStatusMenu";
 
 export function DetailView({
   issueKey,
@@ -52,31 +46,6 @@ export function DetailView({
   attachments,
   closeModal,
 }: Issue & { closeModal: () => void }) {
-  const useStyles = createStyles(
-    (theme, { isOpened }: { isOpened: boolean }) => ({
-      icon: {
-        transition: "transform 150ms ease",
-        transform: isOpened ? "rotate(180deg)" : "rotate(0deg)",
-      },
-    })
-  )
-  const [opened, setOpened] = useState(false)
-  const { classes } = useStyles({ isOpened: opened })
-
-  const { data: issueTypes } = useQuery({
-    queryKey: ["issueTypes", projectId],
-    queryFn: () => getIssueTypes(projectId),
-    enabled: !!projectId,
-  })
-
-  const queryClient = useQueryClient()
-  const [defaultStatus, setDefaultStatus] = useState(status)
-  const statusMutation = useMutation({
-    mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
-    },
-  })
 
   return (
     <Paper p="xs">
@@ -89,31 +58,30 @@ export function DetailView({
       </Breadcrumbs>
       <ColorSchemeToggle
         size="34px"
-        sx={{
+        style={{
           position: "absolute",
           top: 19,
           right: 50,
         }}
       />
       <Group>
-        <Stack sx={{ flex: 13 }}>
+        <Stack style={{ flex: 13 }}>
           <Title order={1}>
             <IssueSummary summary={summary} issueKey={issueKey} />
           </Title>
           <ScrollArea.Autosize
-            maxHeight="70vh"
             mr="xs"
-            sx={{ minWidth: "260px" }}
+            style={{ minWidth: "260px", maxHeight: "70vh" }}
           >
-            <Text color="dimmed" mb="sm">
+            <Text c="dimmed" mb="sm">
               Description
             </Text>
             <Description issueKey={issueKey} description={description} />
-            <Text color="dimmed" mb="sm">
+            <Text c="dimmed" mb="sm">
               Child Issues
             </Text>
             <Paper mb="lg" mr="sm">
-              <Stack spacing="xs">
+              <Stack gap="xs">
                 {subtasks.map((subtask) => (
                   <Subtask
                     key={subtask.key}
@@ -129,63 +97,28 @@ export function DetailView({
             <CommentSection issueKey={issueKey} comment={comment} />
           </ScrollArea.Autosize>
         </Stack>
-        <ScrollArea.Autosize
-          maxHeight="70vh"
-          sx={{ minWidth: "260px", flex: 10 }}
-        >
+        <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
           <Box>
-            <Group position="apart" mb="sm">
-              <Menu
-                shadow="md"
-                onOpen={() => setOpened(true)}
-                onClose={() => setOpened(false)}
-              >
-                <Menu.Target>
-                  <Button
-                    rightIcon={<IconCaretDown className={classes.icon} />}
-                  >
-                    {defaultStatus}
-                  </Button>
-                </Menu.Target>
-
-                <Menu.Dropdown>
-                  {issueTypes &&
-                    issueTypes
-                      .find((issueType) => issueType.name === type)
-                      ?.statuses?.map((issueStatus) => (
-                        <Menu.Item
-                          key={issueStatus.id}
-                          onClick={() => {
-                            statusMutation.mutate(issueStatus.name)
-                            setDefaultStatus(issueStatus.name)
-                          }}
-                        >
-                          {issueStatus.name}
-                        </Menu.Item>
-                      ))}
-                </Menu.Dropdown>
-              </Menu>
+            <Group justify="space-between" mb="sm">
+              <IssueStatusMenu projectId={projectId} issueKey={issueKey} type={type} status={status} />
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
               <Accordion.Item value="Details">
-                <Accordion.Control sx={{ textAlign: "left" }}>
+                <Accordion.Control style={{ textAlign: "left" }}>
                   Details
                 </Accordion.Control>
                 <Accordion.Panel>
                   <Stack>
-                    <AssigneeMenu
-                      assignee={assignee as Issue["assignee"]}
-                      issueKey={issueKey}
-                    />
+                    <AssigneeMenu assignee={assignee as Issue["assignee"]} issueKey={issueKey} />
                     <Group grow>
-                      <Text fz="sm" color="dimmed">
+                      <Text fz="sm" c="dimmed">
                         Labels
                       </Text>
                       <Labels labels={labels} issueKey={issueKey} />
                     </Group>
                     <Group grow>
-                      <Text fz="sm" color="dimmed">
+                      <Text fz="sm" c="dimmed">
                         Sprint
                       </Text>
                       <IssueSprint sprint={sprint} issueKey={issueKey} />
@@ -199,14 +132,14 @@ export function DetailView({
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>
-            <Text size="xs" color="dimmed">
+            <Text size="xs" c="dimmed">
               Created{" "}
               {new Intl.DateTimeFormat("en-GB", {
                 dateStyle: "full",
                 timeStyle: "short",
               }).format(new Date(created))}
             </Text>
-            <Text size="xs" color="dimmed">
+            <Text size="xs" c="dimmed">
               Updated{" "}
               {new Intl.DateTimeFormat("en-GB", {
                 dateStyle: "full",

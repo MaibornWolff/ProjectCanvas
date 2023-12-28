@@ -1,5 +1,5 @@
 export * from "./AssigneeSelect"
-export * from "./AttachementFileInput"
+export * from "./AttachmentFileInput"
 export * from "./DescriptionInput"
 export * from "./DueDatePicker"
 export * from "./EpicSelect"

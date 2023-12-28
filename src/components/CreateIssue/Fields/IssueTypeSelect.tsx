@@ -15,18 +15,17 @@ export function IssueTypeSelect({
     <Select
       label="Issue Type"
       placeholder="Choose issue type"
-      nothingFound="Please select a project first"
+      nothingFoundMessage="Please select a project first"
       data={
-        !isLoading && issueTypes && issueTypes instanceof Array
+        !isLoading && issueTypes
           ? issueTypes
               .filter((issueType) => issueType.name !== "Subtask")
               .map((issueType) => ({
                 value: issueType.id,
-                label: issueType.name,
+                label: issueType.name ?? '*unknown*',
               }))
           : []
       }
-      withinPortal
       searchable
       required
       {...form.getInputProps("type")}

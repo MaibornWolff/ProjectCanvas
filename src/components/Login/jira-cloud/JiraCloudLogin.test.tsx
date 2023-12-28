@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { MantineProvider } from "@mantine/core";
 import { JiraCloudLogin } from "./JiraCloudLogin"
 
 export {}
@@ -29,7 +30,11 @@ describe("<JiraCloudLogin />", () => {
   it("should call goBack when GO BACK button clicked", async () => {
     const goBack = jest.fn()
     const onSuccess = jest.fn()
-    render(<JiraCloudLogin goBack={goBack} onSuccess={onSuccess} />)
+    render(
+      <MantineProvider>
+        <JiraCloudLogin goBack={goBack} onSuccess={onSuccess} />
+      </MantineProvider>
+    )
 
     await userEvent.click(screen.getByRole("button"))
 

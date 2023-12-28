@@ -9,12 +9,15 @@ import {
 import { DraggableIssuesWrapper } from "./DraggableIssuesWrapper"
 import {StatusType} from "../../../../types/status";
 import {StoryPointsBadge} from "../../common/StoryPoints/StoryPointsBadge";
+import {useColorScheme} from "../../../common/color-scheme";
 
 export function SprintsPanel({
   sprintsWithIssues,
 }: {
   sprintsWithIssues: { issues: Issue[]; sprint: Sprint }[]
 }) {
+  const colorScheme = useColorScheme()
+
   return (
     <Accordion
       variant="separated"
@@ -22,9 +25,9 @@ export function SprintsPanel({
       chevron={<IconChevronRight />}
       chevronPosition="left"
       multiple
-      styles={(theme) => ({
+      style={(theme) => ({
         chevron: {
-          "&[data-rotate]": {
+          "&[dataRotate]": {
             transform: "rotate(90deg)",
           },
         },
@@ -34,8 +37,7 @@ export function SprintsPanel({
         item: {
           border: "solid 1px lightgray",
           "&:hover": {
-            background:
-              theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
+            background: colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
           },
         },
       })}
@@ -72,7 +74,7 @@ function SprintAccordionControl({
     <Accordion.Control>
       <Group>
         <Title size="h5">{sprint.name}</Title>
-        <Text color="dimmed">{pluralize(issues.length, "issue")}</Text>
+        <Text c="dimmed">{pluralize(issues.length, "issue")}</Text>
         {sprint.state === "active" && (
           <Badge px="6px" color="green" variant="filled" size="sm">
             active
@@ -93,7 +95,7 @@ function SprintAccordionControl({
           />
         </Flex>
       </Group>
-      <Text size="sm" color="gray.7">
+      <Text size="sm" c="gray.7">
         {sprint.startDate.toString() === "Invalid Date"
           ? "Dates not defined"
           : sprint.startDate.toString()}

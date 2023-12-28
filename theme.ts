@@ -1,6 +1,6 @@
 import type {
   MantineThemeOverride,
-  Tuple,
+  MantineColorsTuple,
   DefaultMantineColor,
 } from "@mantine/core"
 
@@ -16,6 +16,7 @@ export const theme: MantineThemeOverride = {
       "#D0116B",
       "#BB0F60",
       "#A80E56",
+      "#900A48",
     ],
     primaryBlue: [
       "#85E9FF",
@@ -27,6 +28,7 @@ export const theme: MantineThemeOverride = {
       "#00B0D7",
       "#009EC2",
       "#008EAF",
+      "#00718C",
     ],
     primaryGreen: [
       "#C8FECE",
@@ -38,6 +40,7 @@ export const theme: MantineThemeOverride = {
       "#07F520",
       "#06DD1D",
       "#05C71A",
+      "#03B717",
     ],
     secondary: [
       "#2A236E",
@@ -49,12 +52,12 @@ export const theme: MantineThemeOverride = {
       "#17143D",
       "#151237",
       "#131032",
+      "#0C0A1f",
     ],
   },
   primaryColor: "primaryBlue",
   defaultRadius: "sm",
   black: "#131032",
-  colorScheme: "light",
   defaultGradient: { deg: 90, from: "secondary.1", to: "primaryBlue.3" },
   fontFamily: "Poppins",
   headings: { fontFamily: "Poppins", fontWeight: "bold" },
@@ -69,6 +72,6 @@ type ExtendedCustomColors =
 
 declare module "@mantine/core" {
   export interface MantineThemeColorsOverride {
-    colors: Record<ExtendedCustomColors, Tuple<string, 10>>
+    colors: Record<ExtendedCustomColors, MantineColorsTuple>
   }
 }
