@@ -9,15 +9,6 @@ export const BaseCard = forwardRef<
   } & PaperProps
 >(({ onClick, children, ...props }, ref) => (
   <Paper
-    style={{
-      height: "5.5em",
-      aspectRatio: "16/8",
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      color: "black",
-    }}
     radius="sm"
     shadow="sm"
     p="md"
@@ -25,6 +16,18 @@ export const BaseCard = forwardRef<
     ref={ref}
     onClick={onClick}
     {...props}
+    style={[
+      {
+        height: "5.5em",
+        aspectRatio: "16/8",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "black",
+      },
+      props.style,
+    ]}
   >
     {children}
   </Paper>
