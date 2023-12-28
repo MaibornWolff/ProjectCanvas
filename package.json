@@ -44,7 +44,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "fastify": "^4.17.0",
     "file-saver": "^2.0.5",
-    "i18next": "21.10.0",
+    "i18next": "23.7.12",
     "immer": "^9.0.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
