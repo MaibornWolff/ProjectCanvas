@@ -1,7 +1,13 @@
 import { ScrollArea, Table, Text, TextInput, Center, Group, UnstyledButton } from "@mantine/core"
-import { IconChevronDown, IconChevronUp, IconSearch, IconSelector, TablerIcon } from "@tabler/icons-react"
+import {
+  IconChevronDown,
+  IconChevronUp,
+  IconSearch,
+  IconSelector,
+  TablerIconsProps
+} from "@tabler/icons-react"
 import { Project } from "types"
-import { useEffect, useState, ChangeEvent } from "react"
+import { JSX, useEffect, useState, ChangeEvent } from "react"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../../lib/Store"
 import { sortData } from "./TableHelper"
@@ -46,7 +52,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
   }
 
   const header = data && data.length > 0 && Object.keys(data[0]).map((key) => {
-    let Icon: TablerIcon
+    let Icon: (props: TablerIconsProps) => JSX.Element
     if (sortBy === key) {
       if (reverseSortDirection) Icon = IconChevronUp
       else Icon = IconChevronDown
