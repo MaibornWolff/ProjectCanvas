@@ -1,5 +1,5 @@
 import {Accordion, AccordionControlProps, ActionIcon, Center, TextInput} from "@mantine/core"
-import { IconTrash } from "@tabler/icons-react"
+import { IconTrash } from "@tabler/icons"
 import { useState } from "react"
 import { useStoryMapStore } from "../StoryMapStore"
 import { SubActionLevel } from "../Types"

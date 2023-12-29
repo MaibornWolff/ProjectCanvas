@@ -1,5 +1,5 @@
 import { Button, Popover } from "@mantine/core"
-import { IconTrash } from "@tabler/icons-react"
+import { IconTrash } from "@tabler/icons"
 import { useState } from "react";
 import { DeleteIssueAlert } from "./DeleteIssueAlert"
 import { useColorScheme } from "../../../../common/color-scheme";

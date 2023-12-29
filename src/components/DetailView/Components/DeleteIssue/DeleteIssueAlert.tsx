@@ -1,5 +1,5 @@
 import { Button, Stack, Alert } from "@mantine/core"
-import { IconAlertCircle } from "@tabler/icons-react"
+import { IconAlertCircle } from "@tabler/icons"
 import { useQueryClient } from "@tanstack/react-query"
 import { deleteIssueMutation } from "./queries"
 

@@ -1,5 +1,5 @@
 import {Button, Container, Divider, Group, Image, Paper, rgba} from "@mantine/core"
-import { IconCloud, IconServer } from "@tabler/icons-react"
+import { IconCloud, IconServer } from "@tabler/icons"
 import { ipcRenderer } from "electron"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"

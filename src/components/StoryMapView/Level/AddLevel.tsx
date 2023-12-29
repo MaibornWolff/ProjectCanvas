@@ -1,5 +1,5 @@
 import { Button } from "@mantine/core"
-import { IconPlus } from "@tabler/icons-react"
+import { IconPlus } from "@tabler/icons"
 import { getRndInteger, LEVEL_PREFIX } from "../helpers/utils"
 import { useStoryMapStore } from "../StoryMapStore"
 

@@ -1,6 +1,6 @@
 import { Box, Button, Group, Loader, TextInput } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
-import { IconPlus } from "@tabler/icons-react"
+import { IconPlus } from "@tabler/icons"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { createSubtaskMutation } from "./queries"

@@ -1,5 +1,5 @@
 import { Accordion, Badge, Flex, Group, Text, Title } from "@mantine/core"
-import { IconChevronRight } from "@tabler/icons-react"
+import { IconChevronRight } from "@tabler/icons"
 import { Issue, Sprint } from "types"
 import {
   pluralize,

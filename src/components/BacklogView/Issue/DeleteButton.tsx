@@ -1,5 +1,5 @@
 import { ActionIcon, Transition, Popover, Box } from "@mantine/core"
-import { IconTrash } from "@tabler/icons-react"
+import { IconTrash } from "@tabler/icons"
 import { useEffect, useState } from "react"
 import { useHover } from "@mantine/hooks";
 import { DeleteIssueAlert } from "../../DetailView/Components/DeleteIssue/DeleteIssueAlert"

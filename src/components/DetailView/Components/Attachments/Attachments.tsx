@@ -14,7 +14,7 @@ import {
   Center,
   LoadingOverlay,
 } from "@mantine/core"
-import { IconCloudDownload, IconPlus, IconTrash } from "@tabler/icons-react"
+import { IconCloudDownload, IconPlus, IconTrash } from "@tabler/icons"
 import { showNotification } from "@mantine/notifications"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import FileSaver from "file-saver"

@@ -1,11 +1,5 @@
 import { ScrollArea, Table, Text, TextInput, Center, Group, UnstyledButton } from "@mantine/core"
-import {
-  Icon,
-  IconChevronDown,
-  IconChevronUp,
-  IconSearch,
-  IconSelector,
-} from "@tabler/icons-react"
+import { IconChevronDown, IconChevronUp, IconSearch, IconSelector, TablerIcon } from "@tabler/icons"
 import { Project } from "types"
 import { useEffect, useState, ChangeEvent } from "react"
 import { useNavigate } from "react-router-dom"
@@ -52,11 +46,11 @@ export function ProjectsTable({ data }: { data: Project[] }) {
   }
 
   const header = data && data.length > 0 && Object.keys(data[0]).map((key) => {
-    let SortIcon: Icon
+    let Icon: TablerIcon
     if (sortBy === key) {
-      if (reverseSortDirection) SortIcon = IconChevronUp
-      else SortIcon = IconChevronDown
-    } else SortIcon = IconSelector
+      if (reverseSortDirection) Icon = IconChevronUp
+      else Icon = IconChevronDown
+    } else Icon = IconSelector
 
     return (
         <Table.Th key={key}>
@@ -66,7 +60,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
                 {key.toLocaleUpperCase()}
               </Text>
               <Center className={classes.headerSortIcon}>
-                <SortIcon size={14} stroke={1.5} />
+                <Icon size={14} stroke={1.5} />
               </Center>
             </Group>
           </UnstyledButton>

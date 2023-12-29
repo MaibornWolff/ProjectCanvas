@@ -1,5 +1,5 @@
 import { ActionIcon, Transition } from "@mantine/core"
-import { IconTrash } from "@tabler/icons-react"
+import { IconTrash } from "@tabler/icons"
 import { MouseEventHandler } from "react"
 
 export function DeleteButton({
