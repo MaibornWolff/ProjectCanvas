@@ -27,6 +27,7 @@ jobs:
 
       - name: Deactivate Windows Defender
         if: ${{ matrix.os == 'windows-latest' }}
+        shell: powershell
         run: |
           export NODEPATH=$(where.exe node.exe)
           export PROJECTDIR=$(pwd)
