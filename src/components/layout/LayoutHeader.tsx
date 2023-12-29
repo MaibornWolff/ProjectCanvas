@@ -6,6 +6,7 @@ import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
 
 import { LogoutButton } from "./LogoutButton"
 import { StoryMapMenu } from "./StoryMapMenu"
+import { RouteNames } from "../../route-names"
 
 import classes from "./LayoutHeader.module.css"
 
@@ -31,21 +32,21 @@ export function LayoutHeader() {
           <Anchor
             component="button"
             type="button"
-            onClick={() => navigate("/projectsview")}
+            onClick={() => navigate(RouteNames.PROJECTS_VIEW)}
           >
             Projects
           </Anchor>
           <Anchor
             component="button"
             type="button"
-            onClick={() => navigate("/backlogview")}
+            onClick={() => navigate(RouteNames.BACKLOG_VIEW)}
           >
             Backlog
           </Anchor>
           <Anchor
             component="button"
             type="button"
-            onClick={() => navigate("/epicview")}>
+            onClick={() => navigate(RouteNames.EPIC_VIEW)}>
             Epics
           </Anchor>
           <StoryMapMenu />

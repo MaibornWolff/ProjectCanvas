@@ -11,6 +11,7 @@ import { useEffect, useState, ChangeEvent } from "react"
 import { useNavigate } from "react-router-dom"
 import { useCanvasStore } from "../../../lib/Store"
 import { sortData } from "./TableHelper"
+import { RouteNames } from "../../../route-names"
 
 import classes from "./ProjectsTable.module.css";
 
@@ -48,7 +49,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
   const onClickRow = async (row: Project) => {
     setSelectedProject(row)
     setSelectedProjectBoardIds(await window.provider.getBoardIds(row.key))
-    navigate("/backlogview")
+    navigate(RouteNames.BACKLOG_VIEW)
   }
 
   const header = data && data.length > 0 && Object.keys(data[0]).map((key) => {

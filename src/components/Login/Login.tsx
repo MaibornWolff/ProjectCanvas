@@ -9,11 +9,12 @@ import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { JiraCloudLogin } from "./jira-cloud/JiraCloudLogin"
 import { JiraServerLogin } from "./jira-server/JiraServerLogin"
 import { useColorScheme } from "../../common/color-scheme";
+import { RouteNames } from "../../route-names";
 
 export function Login() {
   const [providerLogin, setProviderLogin] = useState("")
   const navigateTo = useNavigate()
-  const onSuccess = () => navigateTo("/projectsview")
+  const onSuccess = () => navigateTo(RouteNames.PROJECTS_VIEW)
   const goBack = () => setProviderLogin("")
   const { t } = useTranslation("login")
   const colorScheme = useColorScheme()

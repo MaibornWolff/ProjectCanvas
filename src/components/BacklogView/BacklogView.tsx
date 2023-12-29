@@ -33,6 +33,7 @@ import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper"
 import { SprintsPanel } from "./IssuesWrapper/SprintsPanel"
 import { ReloadButton } from "./ReloadButton"
 import { useColorScheme } from "../../common/color-scheme";
+import { RouteNames } from "../../route-names";
 
 export function BacklogView() {
   const colorScheme = useColorScheme()
@@ -164,7 +165,7 @@ export function BacklogView() {
             <Text>
               Please go back to the Projects View section and select a project
             </Text>
-            <Button onClick={() => navigate("/projectsview")}>Go back</Button>
+            <Button onClick={() => navigate(RouteNames.PROJECTS_VIEW)}>Go back</Button>
           </Stack>
         )}
       </Center>
@@ -175,7 +176,7 @@ export function BacklogView() {
         <Group>
           <Group gap="xs" c="dimmed">
             <Text
-              onClick={() => navigate("/projectsview")}
+              onClick={() => navigate(RouteNames.PROJECTS_VIEW)}
               style={{
                 ":hover": {
                   textDecoration: "underline",
