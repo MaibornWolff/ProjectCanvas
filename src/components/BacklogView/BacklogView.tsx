@@ -32,7 +32,7 @@ import { resizeDivider } from "./helpers/resizeDivider"
 import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper"
 import { SprintsPanel } from "./IssuesWrapper/SprintsPanel"
 import { ReloadButton } from "./ReloadButton"
-import { useColorScheme } from "../../common/color-scheme";
+import { useColorScheme } from "../../common/color-scheme"
 
 export function BacklogView() {
   const colorScheme = useColorScheme()
@@ -188,7 +188,10 @@ export function BacklogView() {
             <Text>/</Text>
             <Text>{projectName}</Text>
           </Group>
-          <ReloadButton ml="auto" mr="xs" />
+          <Button ml="auto" size="xs">
+            Export
+          </Button>
+          <ReloadButton mr="xs" />
         </Group>
         <Title mb="sm">Backlog</Title>
         <TextInput
@@ -239,7 +242,10 @@ export function BacklogView() {
                 style={(theme) => ({
                   justifyContent: "left",
                   ":hover": {
-                    background: colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[4],
+                    background:
+                      colorScheme === "dark"
+                        ? theme.colors.dark[4]
+                        : theme.colors.gray[4],
                   },
                 })}
               >
@@ -266,7 +272,7 @@ export function BacklogView() {
             p="xs"
             style={{
               maxHeight: "calc(100vh - 230px)",
-              minWidth: "260px"
+              minWidth: "260px",
             }}
           >
             <SprintsPanel
