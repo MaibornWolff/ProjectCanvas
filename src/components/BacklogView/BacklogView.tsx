@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom"
 import { Issue, Sprint } from "types"
 import { useCanvasStore } from "../../lib/Store"
 import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
+import { CreateExportModal } from "../CreateExport/CreateExportModal"
 import { CreateSprint } from "./CreateSprint/CreateSprint"
 import { searchIssuesFilter, sortIssuesByRank } from "./helpers/backlogHelpers"
 import { onDragEnd } from "./helpers/draggingHelpers"
@@ -43,6 +44,7 @@ export function BacklogView() {
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
   const currentBoardId = boardIds[0]
   const [search, setSearch] = useState("")
+  const [createExportModalOpened, setCreateExportModalOpened] = useState(false)
 
   const [issuesWrappers, setIssuesWrappers] = useState(
     new Map<string, { issues: Issue[]; sprint?: Sprint }>()
@@ -188,9 +190,15 @@ export function BacklogView() {
             <Text>/</Text>
             <Text>{projectName}</Text>
           </Group>
-          <Button ml="auto" size="xs">
+          <Button ml="auto" size="xs"
+          onClick={() => setCreateExportModalOpened(true)}
+          >
             Export
           </Button>
+            <CreateExportModal
+              opened={createExportModalOpened}
+              setOpened={setCreateExportModalOpened}
+            />
           <ReloadButton mr="xs" />
         </Group>
         <Title mb="sm">Backlog</Title>
