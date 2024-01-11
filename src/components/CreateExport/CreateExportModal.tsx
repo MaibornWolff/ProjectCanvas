@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {
     Modal,
     Stack,
@@ -9,6 +9,7 @@ import {IconInfoCircle} from "@tabler/icons-react";
 import {useCanvasStore} from "../../lib/Store";
 import {Issue} from "../../../types";
 
+// TODO adapt call to function so that parameter issues contains epics
 export function CreateExportModal({
   opened,
   setOpened,
@@ -20,18 +21,33 @@ export function CreateExportModal({
 }) {
 
     const projectName = useCanvasStore((state) => state.selectedProject?.name);
-    const text = "Only issues with corresponding \n types and status are exported.";
     const theme = createTheme({
         cursorType:'pointer'
     });
-    const includedIssueTypes: string[] = [];
-    const includedIssueStatus: string[] = [];
+    const [includedIssueTypes, setIncludedIssueTypes] = useState<string[]>([]);
+    const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
     const [issuesToExport, setIssuesToExport] = useState<Issue[]>([]);
+
+    // TODO maybe refactor into helper class
+    function calculateIssuesToExport() {
+        setIssuesToExport(issues
+            .filter((element) => includedIssueTypes.includes(element.type))
+            .filter((element) => includedIssueStatus.includes(element.status)));
+    }
+
+    useEffect(() => {
+        calculateIssuesToExport();
+    }, [includedIssueTypes, includedIssueStatus]);
 
     return (
         <Modal
           opened={opened}
-          onClose={() => setOpened(false)}
+          onClose={() => {
+              setIncludedIssueTypes([]);
+              setIncludedIssueStatus([]);
+              setIssuesToExport([]);
+              setOpened(false);
+          }}
           centered
           withCloseButton={false}
         >
@@ -44,7 +60,8 @@ export function CreateExportModal({
             }}>
             <Group c="dimmed" mb="5%">
               <Text>{projectName}</Text>
-                <Tooltip label={text}>
+                {/* TODO Change design of information button */}
+                <Tooltip label="Only issues with corresponding types and status are exported.">
                   <IconInfoCircle
                       size={24}
                       color="blue"
@@ -62,48 +79,48 @@ export function CreateExportModal({
                     <Checkbox
                       c="dimmed"
                       label="Story"
-                      onChange={(event) => {
+                      onChange={() => {
                           const index = includedIssueTypes.indexOf("Story");
                           if(index < 0) {
-                              includedIssueTypes.push("Story");
+                              setIncludedIssueTypes(prevTypes => [...prevTypes, "Story"]);
                           } else {
-                              includedIssueTypes.splice(index, 1);
+                              setIncludedIssueTypes(prevTypes => prevTypes.filter(type => type !== "Story"));
                           }
                       }}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Task"
-                      onChange={(event) => {
+                      onChange={() => {
                           const index = includedIssueTypes.indexOf("Task");
                           if(index < 0) {
-                              includedIssueTypes.push("Task")
+                              setIncludedIssueTypes(prevTypes => [...prevTypes, "Task"]);
                           } else {
-                              includedIssueTypes.splice(index, 1);
+                              setIncludedIssueTypes(prevTypes => prevTypes.filter(type => type !== "Task"));
                           }
                       }}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Bug"
-                      onChange={(event) => {
+                      onChange={() => {
                           const index = includedIssueTypes.indexOf("Bug");
                           if(index < 0) {
-                              includedIssueTypes.push("Bug")
+                              setIncludedIssueTypes(prevTypes => [...prevTypes, "Bug"]);
                           } else {
-                              includedIssueTypes.splice(index, 1);
+                              setIncludedIssueTypes(prevTypes => prevTypes.filter(type => type !== "Bug"));
                           }
                       }}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Epic"
-                      onChange={(event) => {
+                      onChange={() => {
                           const index = includedIssueTypes.indexOf("Epic");
                           if(index < 0) {
-                              includedIssueTypes.push("Epic")
+                              setIncludedIssueTypes(prevTypes => [...prevTypes, "Epic"]);
                           } else {
-                              includedIssueTypes.splice(index, 1);
+                              setIncludedIssueTypes(prevTypes => prevTypes.filter(type => type !== "Epic"));
                           }
                       }}
                     />
@@ -117,36 +134,36 @@ export function CreateExportModal({
                     <Checkbox
                       c="dimmed"
                       label="To Do"
-                      onChange={(event) => {
+                      onChange={() => {
                           const index = includedIssueStatus.indexOf("To Do");
                           if(index < 0) {
-                              includedIssueStatus.push("To Do")
+                            setIncludedIssueStatus(prevStatus => [...prevStatus, "To Do"]);
                           } else {
-                              includedIssueStatus.splice(index, 1);
+                            setIncludedIssueStatus(prevStatus => prevStatus.filter(status => status !== "To Do"));
                           }
                       }}
                     />
                     <Checkbox
                       c="dimmed"
                       label="In Progress"
-                      onChange={(event) => {
+                      onChange={() => {
                           const index = includedIssueStatus.indexOf("In Progress");
                           if(index < 0) {
-                              includedIssueStatus.push("In Progress")
+                            setIncludedIssueStatus(prevStatus => [...prevStatus, "In Progress"]);
                           } else {
-                              includedIssueStatus.splice(index, 1);
+                            setIncludedIssueStatus(prevStatus => prevStatus.filter(status => status !== "In Progress"));
                           }
                       }}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Done"
-                      onChange={(event) => {
+                      onChange={() => {
                           const index = includedIssueStatus.indexOf("Done");
                           if(index < 0) {
-                              includedIssueStatus.push("Done")
+                              setIncludedIssueStatus(prevStatus => [...prevStatus, "Done"]);
                           } else {
-                              includedIssueStatus.splice(index, 1);
+                              setIncludedIssueStatus(prevStatus => prevStatus.filter(status => status !== "Done"));
                           }
                       }}
                     />
@@ -156,17 +173,18 @@ export function CreateExportModal({
             </Group>
             </Paper>
             <Group>
-                <Text size="90%" c="dimmed">
-                  Issues to export: {issuesToExport.length}
+              <Text size="90%" c="dimmed">
+                Issues to export: {issuesToExport.length}
               </Text>
                 <Button
                   ml="auto"
                   size="sm"
-                  onClick={(event) => {
+                  onClick={() => {
                       // TODO implement export as csv
+                      // Filtered issues are stored in issuesToExport
                   }}
                 >
-                    Export CSV
+                  Export CSV
                 </Button>
             </Group>
           </Stack>
