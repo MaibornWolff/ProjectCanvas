@@ -3,9 +3,8 @@ import {
     Modal,
     Stack,
     Group,
-    Text, Button, Checkbox, Tooltip, Paper, MantineProvider, createTheme
+    Text, Button, Checkbox, Tooltip, Paper, MantineProvider, createTheme, Box
 } from "@mantine/core"
-import {IconInfoCircle} from "@tabler/icons-react";
 import {useCanvasStore} from "../../lib/Store";
 import {Issue} from "../../../types";
 import {exportIssues} from "./exportHelper";
@@ -61,16 +60,34 @@ export function CreateExportModal({
             }}>
             <Group c="dimmed" mb="5%">
               <Text>{projectName}</Text>
-                {/* TODO Change design of information button */}
-                <Tooltip label="Only issues with corresponding types and status are exported.">
-                  <IconInfoCircle
-                      size={24}
-                      color="blue"
-                      style={{marginLeft: "auto"}}
-                    />
+                <Tooltip
+                    withArrow
+                    multiline
+                    w={150}
+                    fz={14}
+                    fw={500}
+                    openDelay={200}
+                    closeDelay={200}
+                    ta="center"
+                    color="#00B0D7"
+                    label="Only issues with corresponding  types and status are exported.">
+                  <Box
+                     w={22}
+                     h={22}
+                     fz={16}
+                     fw={900}
+                     ff="BlinkMacSystemFont"
+                     ta="center"
+                     ml="auto"
+                     bg="#00B0D7"
+                     c="white"
+                     style={{borderRadius: "44px"}}
+                  >
+                    i
+                  </Box>
                 </Tooltip>
             </Group>
-            <Paper shadow="md" radius="md" withBorder mb="5%" color="lightblue">
+            <Paper shadow="md" radius="md" withBorder mb="5%">
             <Group align ="top" justify="center" mb="5%">
               <Stack align="center" mr="5%">
                 <Text size="md" fw={450} mt="7%" mb="10%" >Include Issue Types</Text>
