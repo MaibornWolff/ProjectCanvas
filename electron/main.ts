@@ -1,5 +1,6 @@
-import { ipcMain, shell, app, BrowserWindow } from "electron"
+import { ipcMain, shell, app, BrowserWindow, dialog } from "electron"
 import path from "path"
+import fs from "fs";
 import { handleOAuth2 } from "./OAuthHelper"
 import {
   addCommentToIssue,
@@ -134,6 +135,25 @@ app.whenReady().then(() => {
   ipcMain.handle("editIssueComment", editIssueComment)
   ipcMain.handle("deleteIssueComment", deleteIssueComment)
   ipcMain.handle("getResource", getResource)
+
+  ipcMain.on("exportIssues", (event, data) => {
+    dialog.showSaveDialog(mainWindow!, {
+    title: "export Issues to CSV",
+    defaultPath: app.getPath("downloads"),
+    filters: [{name: 'CSV file', extensions: ['csv']}],
+    properties: []
+  }).then(
+    file=> {
+      if (file.canceled) {
+        event.reply("exportIssuesReply", "canceled");
+        return
+      }
+      fs.writeFile(
+        file.filePath?.toString()?? app.getPath('downloads'),
+        data,
+        (err) =>{if(err) throw err;})
+    }
+  ).catch(() => {event.reply("exportIssuesReply", "an error occurred")});})
 })
 
 app.whenReady().then(() => {

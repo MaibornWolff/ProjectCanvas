@@ -8,6 +8,7 @@ import {
 import {IconInfoCircle} from "@tabler/icons-react";
 import {useCanvasStore} from "../../lib/Store";
 import {Issue} from "../../../types";
+import {exportIssues} from "./exportHelper";
 
 // TODO adapt call to function so that parameter issues contains epics
 export function CreateExportModal({
@@ -179,10 +180,7 @@ export function CreateExportModal({
                 <Button
                   ml="auto"
                   size="sm"
-                  onClick={() => {
-                      // TODO implement export as csv
-                      // Filtered issues are stored in issuesToExport
-                  }}
+                  onClick={() => { exportIssues(issuesToExport) }}
                 >
                   Export CSV
                 </Button>
