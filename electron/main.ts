@@ -152,6 +152,7 @@ app.whenReady().then(() => {
         file.filePath?.toString()?? app.getPath('downloads'),
         data,
         (err) =>{if(err) throw err;})
+      event.reply("exportIssuesReply", "success")
     }
   ).catch(() => {event.reply("exportIssuesReply", "an error occurred")});})
 })
