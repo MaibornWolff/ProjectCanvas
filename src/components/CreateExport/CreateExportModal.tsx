@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import { Dispatch, SetStateAction, useEffect,  useState } from "react"
 import {
     Modal,
     Stack,
@@ -9,7 +9,7 @@ import {useCanvasStore} from "../../lib/Store";
 import {Issue} from "../../../types";
 import {exportIssues} from "./exportHelper";
 
-// TODO adapt call to function so that parameter issues contains epics
+
 export function CreateExportModal({
   opened,
   setOpened,
@@ -27,8 +27,28 @@ export function CreateExportModal({
     const [includedIssueTypes, setIncludedIssueTypes] = useState<string[]>([]);
     const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
     const [issuesToExport, setIssuesToExport] = useState<Issue[]>([]);
+    const [selectAllpressed , setSelectAll] = useState(false);
+
 
     // TODO maybe refactor into helper class
+
+    function setIssueTypearray(type : string) {
+      const index = includedIssueTypes.indexOf(type);
+      if(index < 0) {
+        setIncludedIssueTypes(prevTypes => [...prevTypes, type]);
+      } else {
+          setIncludedIssueTypes(prevTypes => prevTypes.filter(type => type !== type));
+      }
+    }
+
+    function setIssueStatusarray(status : string){
+      const index = includedIssueStatus.indexOf(status);
+      if(index < 0) {
+        setIncludedIssueStatus(prevStatus => [...prevStatus, status]);
+      } else {
+        setIncludedIssueStatus(prevStatus => prevStatus.filter(status => status !== status));
+      }
+    }
     function calculateIssuesToExport() {
         setIssuesToExport(issues
             .filter((element) => includedIssueTypes.includes(element.type))
@@ -37,7 +57,9 @@ export function CreateExportModal({
 
     useEffect(() => {
         calculateIssuesToExport();
-    }, [includedIssueTypes, includedIssueStatus]);
+    }, [includedIssueTypes, includedIssueStatus, selectAllpressed]);
+
+
 
     return (
         <Modal
@@ -97,49 +119,42 @@ export function CreateExportModal({
                     <Checkbox
                       c="dimmed"
                       label="Story"
+                      checked = {selectAllpressed ||includedIssueTypes.includes('Story')}
                       onChange={() => {
-                          const index = includedIssueTypes.indexOf("Story");
-                          if(index < 0) {
-                              setIncludedIssueTypes(prevTypes => [...prevTypes, "Story"]);
-                          } else {
-                              setIncludedIssueTypes(prevTypes => prevTypes.filter(type => type !== "Story"));
+                          if(!selectAllpressed) {
+                            setIssueTypearray('Story');
                           }
                       }}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Task"
+                      checked = {selectAllpressed || includedIssueTypes.includes('Task')}
                       onChange={() => {
-                          const index = includedIssueTypes.indexOf("Task");
-                          if(index < 0) {
-                              setIncludedIssueTypes(prevTypes => [...prevTypes, "Task"]);
-                          } else {
-                              setIncludedIssueTypes(prevTypes => prevTypes.filter(type => type !== "Task"));
-                          }
+                        if(!selectAllpressed) {
+                          setIssueTypearray("Task");
+                        }
                       }}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Bug"
+                      checked = {selectAllpressed || includedIssueTypes.includes('Bug')}
                       onChange={() => {
-                          const index = includedIssueTypes.indexOf("Bug");
-                          if(index < 0) {
-                              setIncludedIssueTypes(prevTypes => [...prevTypes, "Bug"]);
-                          } else {
-                              setIncludedIssueTypes(prevTypes => prevTypes.filter(type => type !== "Bug"));
-                          }
+                        if(!selectAllpressed) {
+                          setIssueTypearray("Bug");
+                        }
                       }}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Epic"
+                      checked = {selectAllpressed || includedIssueTypes.includes('Epic')}
+                      align = "top"
                       onChange={() => {
-                          const index = includedIssueTypes.indexOf("Epic");
-                          if(index < 0) {
-                              setIncludedIssueTypes(prevTypes => [...prevTypes, "Epic"]);
-                          } else {
-                              setIncludedIssueTypes(prevTypes => prevTypes.filter(type => type !== "Epic"));
-                          }
+                        if(!selectAllpressed) {
+                          setIssueTypearray("Epic");
+                        }
                       }}
                     />
                   </MantineProvider>
@@ -152,41 +167,64 @@ export function CreateExportModal({
                     <Checkbox
                       c="dimmed"
                       label="To Do"
+                      checked= {selectAllpressed || includedIssueStatus.includes('To Do')}
                       onChange={() => {
-                          const index = includedIssueStatus.indexOf("To Do");
-                          if(index < 0) {
-                            setIncludedIssueStatus(prevStatus => [...prevStatus, "To Do"]);
-                          } else {
-                            setIncludedIssueStatus(prevStatus => prevStatus.filter(status => status !== "To Do"));
-                          }
+                        if(!selectAllpressed) {
+                          setIssueStatusarray("To Do");
+                        }
                       }}
                     />
                     <Checkbox
                       c="dimmed"
                       label="In Progress"
+                      checked= {selectAllpressed ||includedIssueStatus.includes('In Progress')}
                       onChange={() => {
-                          const index = includedIssueStatus.indexOf("In Progress");
-                          if(index < 0) {
-                            setIncludedIssueStatus(prevStatus => [...prevStatus, "In Progress"]);
-                          } else {
-                            setIncludedIssueStatus(prevStatus => prevStatus.filter(status => status !== "In Progress"));
-                          }
+                        if(!selectAllpressed) {
+                          setIssueStatusarray("In Progress");
+                        }
                       }}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Done"
+                      checked= {selectAllpressed ||includedIssueStatus.includes('Done')}
                       onChange={() => {
-                          const index = includedIssueStatus.indexOf("Done");
-                          if(index < 0) {
-                              setIncludedIssueStatus(prevStatus => [...prevStatus, "Done"]);
-                          } else {
-                              setIncludedIssueStatus(prevStatus => prevStatus.filter(status => status !== "Done"));
-                          }
+                        if(!selectAllpressed) {
+                          setIssueStatusarray("Done");
+                        }
                       }}
                     />
                   </MantineProvider>
                   </Stack>
+              </Stack>
+              <Stack align="center">
+                <Stack mt="-12%">
+                  <MantineProvider theme={theme}>
+                    <Checkbox
+                      c="dimmed"
+                      label="Select All"
+                      onChange={() => {
+                        if(!selectAllpressed) {
+                          setIncludedIssueStatus([]);
+                          setIncludedIssueTypes([]);
+                          setIssueTypearray('Story');
+                          setIssueTypearray('Epic');
+                          setIssueTypearray('Bug');
+                          setIssueTypearray('Task');
+                          setIssueStatusarray('To Do');
+                          setIssueStatusarray('In Progress');
+                          setIssueStatusarray('Done');
+                          setSelectAll(true);
+                        }
+                        else {
+                          setIncludedIssueStatus([]);
+                          setIncludedIssueTypes([]);
+                          setSelectAll(false);
+                        }
+                      }}
+                    />
+                  </MantineProvider>
+                </Stack>
               </Stack>
             </Group>
             </Paper>

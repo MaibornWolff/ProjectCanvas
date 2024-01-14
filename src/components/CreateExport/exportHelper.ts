@@ -10,3 +10,4 @@ export const exportIssues = (issues : Issue[]) => {
   ipcRenderer.send("exportIssues", data)
   ipcRenderer.on("exportIssuesReply", (event, message) => {console.log(message)}) // TODO maybe popup? (returns "cancelled" or "an error occurred" or "success"
 }
+

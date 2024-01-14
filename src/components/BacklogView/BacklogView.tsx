@@ -112,7 +112,7 @@ export function BacklogView() {
               ? backlogIssues
                   .filter(
                     (issue: Issue) =>
-                      issue.type !== "Epic" && issue.type !== "Subtask"
+                      issue.type !== "Subtask"
                   )
                   .sort((issueA: Issue, issueB: Issue) =>
                     sortIssuesByRank(issueA, issueB)
@@ -234,7 +234,7 @@ export function BacklogView() {
               <Box mr="xs">
                 <DraggableIssuesWrapper
                   id="Backlog"
-                  issues={searchedissuesWrappers.get("Backlog")!.issues}
+                  issues={searchedissuesWrappers.get("Backlog")!.issues.filter(issue => issue.type !== "Epic")}
                 />
               </Box>
             )}
