@@ -204,16 +204,9 @@ export function CreateExportModal({
                       c="dimmed"
                       label="Select All"
                       onChange={() => {
-                        if(!selectAllpressed) {
-                          setIncludedIssueStatus([]);
-                          setIncludedIssueTypes([]);
-                          setIssueTypearray('Story');
-                          setIssueTypearray('Epic');
-                          setIssueTypearray('Bug');
-                          setIssueTypearray('Task');
-                          setIssueStatusarray('To Do');
-                          setIssueStatusarray('In Progress');
-                          setIssueStatusarray('Done');
+                       if(!selectAllpressed) {
+                          setIncludedIssueTypes(['Story', 'Epic', 'Task', 'Bug']);
+                          setIncludedIssueStatus(['To Do', 'In Progress', 'Done']);
                           setSelectAll(true);
                         }
                         else {
