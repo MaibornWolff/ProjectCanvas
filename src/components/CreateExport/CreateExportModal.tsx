@@ -6,6 +6,7 @@ import {
     Text, Button, Checkbox, Tooltip, Paper, MantineProvider, createTheme, Box
 } from "@mantine/core"
 import {isEqual} from "lodash";
+import {useQuery} from "@tanstack/react-query";
 import {useCanvasStore} from "../../lib/Store";
 import {Issue} from "../../../types";
 import {exportIssues} from "./exportHelper";
@@ -19,19 +20,24 @@ export function CreateExportModal({
     setOpened: Dispatch<SetStateAction<boolean>>
     issues: Issue[]
 }) {
-    const allIssueTypes = ['Story', 'Epic', 'Task', 'Bug'];
+    const project = useCanvasStore((state) => state.selectedProject);
+
+    const { data: issueTypes } = useQuery({
+      queryKey: ["issueTypes", project?.key],
+      queryFn: () => project && window.provider.getIssueTypesByProject(project.key),
+      enabled: !!project?.key,
+      initialData: [],
+    });
+
+    const allIssueTypeNames = issueTypes ? issueTypes.map((issueType) => issueType.name!) : [];
     const allStatus = ['To Do', 'In Progress', 'Done'];
 
-    const projectName = useCanvasStore((state) => state.selectedProject?.name);
-    const theme = createTheme({
-        cursorType:'pointer'
-    });
+    const theme = createTheme({ cursorType: 'pointer' });
     const [includedIssueTypes, setIncludedIssueTypes] = useState<string[]>([]);
     const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
     const [issuesToExport, setIssuesToExport] = useState<Issue[]>([]);
 
-    const allTypesAndStatusSelected = isEqual(includedIssueTypes, allIssueTypes) && isEqual(includedIssueStatus, allStatus);
-
+    const allTypesAndStatusSelected = isEqual(includedIssueTypes, allIssueTypeNames) && isEqual(includedIssueStatus, allStatus);
 
     // TODO maybe refactor into helper class
 
@@ -54,8 +60,8 @@ export function CreateExportModal({
     }
     function calculateIssuesToExport() {
         setIssuesToExport(issues
-            .filter((element) => includedIssueTypes.includes(element.type))
-            .filter((element) => includedIssueStatus.includes(element.status)));
+            .filter((issue) => includedIssueTypes.includes(issue.type))
+            .filter((issue) => includedIssueStatus.includes(issue.status)));
     }
 
     useEffect(() => {
@@ -82,7 +88,7 @@ export function CreateExportModal({
               minWidth: "100%",
             }}>
             <Group c="dimmed" mb="5%">
-              <Text>{projectName}</Text>
+              <Text>{project?.name}</Text>
                 <Tooltip
                     withArrow
                     multiline
@@ -115,33 +121,17 @@ export function CreateExportModal({
               <Stack align="center" mr="5%">
                 <Text size="md" fw={450} mt="7%" mb="10%" >Include Issue Types</Text>
                   <Stack mt="-12%">
-                  <MantineProvider theme={theme}>
-                      {/* TODO maybe implement with CheckboxWrapper for generic use */}
-                    <Checkbox
-                      c="dimmed"
-                      label="Story"
-                      checked={includedIssueTypes.includes('Story')}
-                      onChange={() => setIssueTypeArray("Story")}
-                    />
-                    <Checkbox
-                      c="dimmed"
-                      label="Task"
-                      checked={includedIssueTypes.includes('Task')}
-                      onChange={() => setIssueTypeArray("Task")}
-                    />
-                    <Checkbox
-                      c="dimmed"
-                      label="Bug"
-                      checked={includedIssueTypes.includes('Bug')}
-                      onChange={() => setIssueTypeArray("Bug")}
-                    />
-                    <Checkbox
-                      c="dimmed"
-                      label="Epic"
-                      checked={includedIssueTypes.includes('Epic')}
-                      onChange={() => setIssueTypeArray("Epic")}
-                    />
-                  </MantineProvider>
+                    <MantineProvider theme={theme}>
+                      {issueTypes && issueTypes.map((issueType) => (
+                        <Checkbox
+                          c="dimmed"
+                          key={issueType.id}
+                          label={issueType.name}
+                          checked={includedIssueTypes.includes(issueType.name!)}
+                          onChange={() => setIssueTypeArray(issueType.name!)}
+                        />
+                      ))}
+                    </MantineProvider>
                   </Stack>
               </Stack>
               <Stack align="center">
@@ -182,7 +172,7 @@ export function CreateExportModal({
                           setIncludedIssueStatus([]);
                           setIncludedIssueTypes([]);
                         } else {
-                          setIncludedIssueTypes(allIssueTypes);
+                          setIncludedIssueTypes(allIssueTypeNames);
                           setIncludedIssueStatus(allStatus);
                         }
                       }}
