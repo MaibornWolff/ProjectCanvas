@@ -195,11 +195,13 @@ export function BacklogView() {
           >
             Export
           </Button>
-            <CreateExportModal
-              opened={createExportModalOpened}
-              setOpened={setCreateExportModalOpened}
-              issues={searchedissuesWrappers.get("Backlog")!.issues}
-            />
+            {searchedissuesWrappers.get("Backlog") && (
+              <CreateExportModal
+                opened={createExportModalOpened}
+                setOpened={setCreateExportModalOpened}
+                issues={searchedissuesWrappers.get("Backlog")!.issues}
+              />
+            )}
           <ReloadButton mr="xs" />
         </Group>
         <Title mb="sm">Backlog</Title>
