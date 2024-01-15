@@ -39,25 +39,13 @@ export function CreateExportModal({
 
     const allTypesAndStatusSelected = isEqual(includedIssueTypes, allIssueTypeNames) && isEqual(includedIssueStatus, allStatus);
 
-    // TODO maybe refactor into helper class
-
-    function setIssueTypeArray(setType : string) {
-      const index = includedIssueTypes.indexOf(setType);
-      if(index < 0) {
-        setIncludedIssueTypes(prevTypes => [...prevTypes, setType]);
-      } else {
-        setIncludedIssueTypes(prevTypes => prevTypes.filter(type => type !== setType));
-      }
+    function toggleInList(list: string[], value: string): string[] {
+        const index = list.indexOf(value);
+        return index < 0 ? [...list, value] : list.filter(containedValue => containedValue !== value);
     }
+    const toggleIssueType = (type : string) => setIncludedIssueTypes(toggleInList(includedIssueTypes, type))
+    const toggleIssueStatus = (status : string) => setIncludedIssueStatus(toggleInList(includedIssueStatus, status))
 
-    function setIssueStatusArray(setStatus : string){
-      const index = includedIssueStatus.indexOf(setStatus);
-      if(index < 0) {
-        setIncludedIssueStatus(prevStatus => [...prevStatus, setStatus]);
-      } else {
-        setIncludedIssueStatus(prevStatus => prevStatus.filter(status => status !== setStatus));
-      }
-    }
     function calculateIssuesToExport() {
         setIssuesToExport(issues
             .filter((issue) => includedIssueTypes.includes(issue.type))
@@ -128,7 +116,7 @@ export function CreateExportModal({
                           key={issueType.id}
                           label={issueType.name}
                           checked={includedIssueTypes.includes(issueType.name!)}
-                          onChange={() => setIssueTypeArray(issueType.name!)}
+                          onChange={() => toggleIssueType(issueType.name!)}
                         />
                       ))}
                     </MantineProvider>
@@ -142,19 +130,19 @@ export function CreateExportModal({
                       c="dimmed"
                       label="To Do"
                       checked= {includedIssueStatus.includes('To Do')}
-                      onChange={() => setIssueStatusArray("To Do")}
+                      onChange={() => toggleIssueStatus("To Do")}
                     />
                     <Checkbox
                       c="dimmed"
                       label="In Progress"
                       checked= {includedIssueStatus.includes('In Progress')}
-                      onChange={() => setIssueStatusArray("In Progress")}
+                      onChange={() => toggleIssueStatus("In Progress")}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Done"
                       checked= {includedIssueStatus.includes('Done')}
-                      onChange={() => setIssueStatusArray("Done")}
+                      onChange={() => toggleIssueStatus("Done")}
                     />
                   </MantineProvider>
                   </Stack>
