@@ -86,8 +86,9 @@ export function CreateExportModal({
                   openDelay={200}
                   closeDelay={200}
                   ta="center"
-                  color="#00B0D7"
-                  label="Only issues with corresponding types and status are exported."
+                  color="primaryBlue"
+                  variant="filled"
+                  label="Only issues with corresponding types and status are exported"
                 >
                   <ActionIcon variant="subtle" ml="auto">
                     <IconInfoCircle />
