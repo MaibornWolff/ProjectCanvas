@@ -1,12 +1,13 @@
 import { Dispatch, SetStateAction, useEffect,  useState } from "react"
 import {
-    Modal,
-    Stack,
-    Group,
-    Text, Button, Checkbox, Tooltip, Paper, MantineProvider, createTheme, Box
+  Modal,
+  Stack,
+  Group,
+  Text, Button, Checkbox, Tooltip, Paper, MantineProvider, createTheme, ActionIcon
 } from "@mantine/core"
 import {isEqual} from "lodash";
 import {useQuery} from "@tanstack/react-query";
+import {IconInfoCircle} from "@tabler/icons-react";
 import {useCanvasStore} from "../../lib/Store";
 import {Issue} from "../../../types";
 import {exportIssues} from "./exportHelper";
@@ -77,30 +78,20 @@ export function CreateExportModal({
             <Group c="dimmed" mb="5%">
               <Text>{project?.name}</Text>
                 <Tooltip
-                    withArrow
-                    multiline
-                    w={150}
-                    fz={14}
-                    fw={500}
-                    openDelay={200}
-                    closeDelay={200}
-                    ta="center"
-                    color="#00B0D7"
-                    label="Only issues with corresponding  types and status are exported.">
-                  <Box
-                     w={22}
-                     h={22}
-                     fz={16}
-                     fw={900}
-                     ff="BlinkMacSystemFont"
-                     ta="center"
-                     ml="auto"
-                     bg="#00B0D7"
-                     c="white"
-                     style={{borderRadius: "44px"}}
-                  >
-                    i
-                  </Box>
+                  withArrow
+                  multiline
+                  w={150}
+                  fz={14}
+                  fw={500}
+                  openDelay={200}
+                  closeDelay={200}
+                  ta="center"
+                  color="#00B0D7"
+                  label="Only issues with corresponding types and status are exported."
+                >
+                  <ActionIcon variant="subtle" ml="auto">
+                    <IconInfoCircle />
+                  </ActionIcon>
                 </Tooltip>
             </Group>
             <Paper shadow="md" radius="md" withBorder mb="5%">
