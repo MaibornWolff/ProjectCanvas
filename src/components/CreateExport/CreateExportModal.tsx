@@ -5,10 +5,10 @@ import {
     Group,
     Text, Button, Checkbox, Tooltip, Paper, MantineProvider, createTheme, Box
 } from "@mantine/core"
+import {isEqual} from "lodash";
 import {useCanvasStore} from "../../lib/Store";
 import {Issue} from "../../../types";
 import {exportIssues} from "./exportHelper";
-
 
 export function CreateExportModal({
   opened,
@@ -19,6 +19,8 @@ export function CreateExportModal({
     setOpened: Dispatch<SetStateAction<boolean>>
     issues: Issue[]
 }) {
+    const allIssueTypes = ['Story', 'Epic', 'Task', 'Bug'];
+    const allStatus = ['To Do', 'In Progress', 'Done'];
 
     const projectName = useCanvasStore((state) => state.selectedProject?.name);
     const theme = createTheme({
@@ -27,26 +29,27 @@ export function CreateExportModal({
     const [includedIssueTypes, setIncludedIssueTypes] = useState<string[]>([]);
     const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
     const [issuesToExport, setIssuesToExport] = useState<Issue[]>([]);
-    const [selectAllpressed , setSelectAll] = useState(false);
+
+    const allTypesAndStatusSelected = isEqual(includedIssueTypes, allIssueTypes) && isEqual(includedIssueStatus, allStatus);
 
 
     // TODO maybe refactor into helper class
 
-    function setIssueTypearray(type : string) {
-      const index = includedIssueTypes.indexOf(type);
+    function setIssueTypeArray(setType : string) {
+      const index = includedIssueTypes.indexOf(setType);
       if(index < 0) {
-        setIncludedIssueTypes(prevTypes => [...prevTypes, type]);
+        setIncludedIssueTypes(prevTypes => [...prevTypes, setType]);
       } else {
-          setIncludedIssueTypes(prevTypes => prevTypes.filter(type => type !== type));
+        setIncludedIssueTypes(prevTypes => prevTypes.filter(type => type !== setType));
       }
     }
 
-    function setIssueStatusarray(status : string){
-      const index = includedIssueStatus.indexOf(status);
+    function setIssueStatusArray(setStatus : string){
+      const index = includedIssueStatus.indexOf(setStatus);
       if(index < 0) {
-        setIncludedIssueStatus(prevStatus => [...prevStatus, status]);
+        setIncludedIssueStatus(prevStatus => [...prevStatus, setStatus]);
       } else {
-        setIncludedIssueStatus(prevStatus => prevStatus.filter(status => status !== status));
+        setIncludedIssueStatus(prevStatus => prevStatus.filter(status => status !== setStatus));
       }
     }
     function calculateIssuesToExport() {
@@ -57,9 +60,7 @@ export function CreateExportModal({
 
     useEffect(() => {
         calculateIssuesToExport();
-    }, [includedIssueTypes, includedIssueStatus, selectAllpressed]);
-
-
+    }, [includedIssueTypes, includedIssueStatus]);
 
     return (
         <Modal
@@ -119,43 +120,26 @@ export function CreateExportModal({
                     <Checkbox
                       c="dimmed"
                       label="Story"
-                      checked = {selectAllpressed ||includedIssueTypes.includes('Story')}
-                      onChange={() => {
-                          if(!selectAllpressed) {
-                            setIssueTypearray('Story');
-                          }
-                      }}
+                      checked={includedIssueTypes.includes('Story')}
+                      onChange={() => setIssueTypeArray("Story")}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Task"
-                      checked = {selectAllpressed || includedIssueTypes.includes('Task')}
-                      onChange={() => {
-                        if(!selectAllpressed) {
-                          setIssueTypearray("Task");
-                        }
-                      }}
+                      checked={includedIssueTypes.includes('Task')}
+                      onChange={() => setIssueTypeArray("Task")}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Bug"
-                      checked = {selectAllpressed || includedIssueTypes.includes('Bug')}
-                      onChange={() => {
-                        if(!selectAllpressed) {
-                          setIssueTypearray("Bug");
-                        }
-                      }}
+                      checked={includedIssueTypes.includes('Bug')}
+                      onChange={() => setIssueTypeArray("Bug")}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Epic"
-                      checked = {selectAllpressed || includedIssueTypes.includes('Epic')}
-                      align = "top"
-                      onChange={() => {
-                        if(!selectAllpressed) {
-                          setIssueTypearray("Epic");
-                        }
-                      }}
+                      checked={includedIssueTypes.includes('Epic')}
+                      onChange={() => setIssueTypeArray("Epic")}
                     />
                   </MantineProvider>
                   </Stack>
@@ -167,32 +151,20 @@ export function CreateExportModal({
                     <Checkbox
                       c="dimmed"
                       label="To Do"
-                      checked= {selectAllpressed || includedIssueStatus.includes('To Do')}
-                      onChange={() => {
-                        if(!selectAllpressed) {
-                          setIssueStatusarray("To Do");
-                        }
-                      }}
+                      checked= {includedIssueStatus.includes('To Do')}
+                      onChange={() => setIssueStatusArray("To Do")}
                     />
                     <Checkbox
                       c="dimmed"
                       label="In Progress"
-                      checked= {selectAllpressed ||includedIssueStatus.includes('In Progress')}
-                      onChange={() => {
-                        if(!selectAllpressed) {
-                          setIssueStatusarray("In Progress");
-                        }
-                      }}
+                      checked= {includedIssueStatus.includes('In Progress')}
+                      onChange={() => setIssueStatusArray("In Progress")}
                     />
                     <Checkbox
                       c="dimmed"
                       label="Done"
-                      checked= {selectAllpressed ||includedIssueStatus.includes('Done')}
-                      onChange={() => {
-                        if(!selectAllpressed) {
-                          setIssueStatusarray("Done");
-                        }
-                      }}
+                      checked= {includedIssueStatus.includes('Done')}
+                      onChange={() => setIssueStatusArray("Done")}
                     />
                   </MantineProvider>
                   </Stack>
@@ -203,16 +175,15 @@ export function CreateExportModal({
                     <Checkbox
                       c="dimmed"
                       label="Select All"
+                      checked={allTypesAndStatusSelected}
+                      indeterminate={!allTypesAndStatusSelected && (includedIssueStatus.length > 0 || includedIssueTypes.length > 0)}
                       onChange={() => {
-                       if(!selectAllpressed) {
-                          setIncludedIssueTypes(['Story', 'Epic', 'Task', 'Bug']);
-                          setIncludedIssueStatus(['To Do', 'In Progress', 'Done']);
-                          setSelectAll(true);
-                        }
-                        else {
+                        if (allTypesAndStatusSelected) {
                           setIncludedIssueStatus([]);
                           setIncludedIssueTypes([]);
-                          setSelectAll(false);
+                        } else {
+                          setIncludedIssueTypes(allIssueTypes);
+                          setIncludedIssueStatus(allStatus);
                         }
                       }}
                     />
