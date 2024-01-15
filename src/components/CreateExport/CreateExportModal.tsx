@@ -49,7 +49,7 @@ export function CreateExportModal({
     function calculateIssuesToExport() {
         setIssuesToExport(issues
             .filter((issue) => includedIssueTypes.includes(issue.type))
-            .filter((issue) => includedIssueStatus.includes(issue.status)));
+            .filter((issue) => !includedIssueStatus.includes(issue.status)));
     }
 
     useEffect(() => {
@@ -60,10 +60,9 @@ export function CreateExportModal({
         <Modal
           opened={opened}
           onClose={() => {
-              setIncludedIssueTypes([]);
-              setIncludedIssueStatus([]);
-              setIssuesToExport([]);
-              setOpened(false);
+            setIncludedIssueTypes([]);
+            setIncludedIssueStatus([]);
+            setOpened(false);
           }}
           centered
           withCloseButton={false}
@@ -112,7 +111,7 @@ export function CreateExportModal({
                     <MantineProvider theme={theme}>
                       {issueTypes && issueTypes.map((issueType) => (
                         <Checkbox
-                          c="dimmed"
+                          {...(!includedIssueTypes.includes(issueType.name!) && { c: "dimmed" })}
                           key={issueType.id}
                           label={issueType.name}
                           checked={includedIssueTypes.includes(issueType.name!)}
@@ -125,26 +124,17 @@ export function CreateExportModal({
               <Stack align="center">
                 <Text size="md" fw={450} mt="7%" mb="10%">Include Issue Status</Text>
                   <Stack mt="-12%">
-                  <MantineProvider theme={theme}>
-                    <Checkbox
-                      c="dimmed"
-                      label="To Do"
-                      checked= {includedIssueStatus.includes('To Do')}
-                      onChange={() => toggleIssueStatus("To Do")}
-                    />
-                    <Checkbox
-                      c="dimmed"
-                      label="In Progress"
-                      checked= {includedIssueStatus.includes('In Progress')}
-                      onChange={() => toggleIssueStatus("In Progress")}
-                    />
-                    <Checkbox
-                      c="dimmed"
-                      label="Done"
-                      checked= {includedIssueStatus.includes('Done')}
-                      onChange={() => toggleIssueStatus("Done")}
-                    />
-                  </MantineProvider>
+                    <MantineProvider theme={theme}>
+                      {allStatus && allStatus.map((status) => (
+                        <Checkbox
+                          {...(!includedIssueStatus.includes(status) && { c: "dimmed" })}
+                          key={status}
+                          label={status}
+                          checked={includedIssueStatus.includes(status)}
+                          onChange={() => toggleIssueStatus(status)}
+                        />
+                      ))}
+                    </MantineProvider>
                   </Stack>
               </Stack>
               <Stack align="center">
