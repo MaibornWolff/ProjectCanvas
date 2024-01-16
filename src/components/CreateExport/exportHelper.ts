@@ -3,13 +3,31 @@ import {showNotification} from "@mantine/notifications";
 import {Issue} from "../../../types";
 import {ExportReply, ExportStatus} from "../../../electron/export-issues";
 
-export type ExportableIssue = Issue & { startDate: Date, endDate: Date, workingDays: number }
+type ExportableIssue = Issue & { startDate: Date, endDate: Date, workingDays: number }
 
-export const exportIssues = (issues: ExportableIssue[]) => {
-  const data = ['"ID","Name","Start Date","End Date","Working days"']
+const addExportedTimeProperties = (issue: Issue): ExportableIssue => ({
+   ...issue,
+    startDate: new Date(),
+    endDate: new Date(),
+    workingDays: 0,
+})
+
+
+export const exportIssues = (issues: Issue[]) => {
+  const header = ["ID", "Name", "Start Date", "End Date", "Working days"]
+  const data = [header.map((h) => `"${h}"`).join(",")]
 
   issues.forEach((issue) => {
-    data.push(`"${issue.issueKey}","${issue.summary}","${issue.startDate?.toISOString()}","${issue.endDate?.toISOString()}",${issue.workingDays}`)
+    const exportableIssue = addExportedTimeProperties(issue);
+    const exportedValues = [
+      `"${exportableIssue.issueKey}"`,
+      `"${exportableIssue.summary}"`,
+      `"${exportableIssue.startDate?.toISOString()}"`,
+      `"${exportableIssue.endDate?.toISOString()}"`,
+      exportableIssue.workingDays,
+    ]
+
+    data.push(exportedValues.join(','))
   });
 
   ipcRenderer.send("exportIssues", data.join("\n"));
