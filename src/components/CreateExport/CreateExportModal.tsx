@@ -103,7 +103,7 @@ export function CreateExportModal({
                   ta="center"
                   color="primaryBlue"
                   variant="filled"
-                  label="Only issues with corresponding types and a 'Done' status are exported"
+                  label="Only issues with corresponding types and a 'Done' status are exported. The remaining status influence the date calculations."
                 >
                   <ActionIcon variant="subtle" ml="auto">
                     <IconInfoCircle />
