@@ -1,4 +1,4 @@
-import {Attachment, Priority} from "."
+import {Attachment, Priority, User} from "."
 
 export interface JiraProject {
   projectTypeKey: string
@@ -16,6 +16,27 @@ export interface JiraSprint {
   id: number
   state: string
   name: string
+}
+
+export interface JiraChangelogHistoryItem {
+  field: string
+  fieldtype: string
+  fieldId: string
+  from: unknown | null
+  fromString: string | null
+  to: unknown | null
+  toString: string | null
+}
+
+export interface JiraChangelogHistory {
+  author: User
+  id: string
+  created: string
+  items: JiraChangelogHistoryItem[]
+}
+
+export interface JiraChangelog {
+  histories: JiraChangelogHistory[]
 }
 
 // EpicIssue structure differs from normal Issue structure
@@ -102,6 +123,7 @@ export interface JiraEpic {
 
 export interface JiraIssue {
   key: string
+  changelog: JiraChangelog
   fields: {
     description: {
       type: string,
