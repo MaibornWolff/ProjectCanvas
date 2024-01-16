@@ -11,17 +11,24 @@ import {IconInfoCircle} from "@tabler/icons-react";
 import {useCanvasStore} from "../../lib/Store";
 import {Issue} from "../../../types";
 import {exportIssues} from "./exportHelper";
+import {getIssuesByProject} from "../BacklogView/helpers/queryFetchers";
 
 export function CreateExportModal({
   opened,
   setOpened,
-  issues,
 }: {
     opened: boolean
     setOpened: Dispatch<SetStateAction<boolean>>
-    issues: Issue[]
 }) {
     const project = useCanvasStore((state) => state.selectedProject);
+    const boardId = useCanvasStore((state) => state.selectedProjectBoardIds)[0]
+
+    const { data: issues } = useQuery<unknown, unknown, Issue[]>({
+      queryKey: ["issues", project?.key],
+      queryFn: () => project && getIssuesByProject(project.key, boardId),
+      enabled: !!project?.key,
+      initialData: [],
+    });
 
     const { data: issueTypes } = useQuery({
       queryKey: ["issueTypes", project?.key],
