@@ -22,6 +22,7 @@ import { StoryPointsBadge } from "../../common/StoryPoints/StoryPointsBadge";
 import { useColorScheme } from "../../../common/color-scheme";
 import { IssueLabelBadge } from "../../common/IssueLabelBadge";
 import { IssueEpicBadge } from "../../common/IssueEpicBadge";
+import {useCanvasStore} from "../../../lib/Store";
 
 export function IssueCard({
   issueKey,
@@ -40,6 +41,7 @@ export function IssueCard({
   const queryClient = useQueryClient()
   const theme = useMantineTheme()
   const colorScheme = useColorScheme()
+  const { issueStatusCategoryByStatusName: statusNameToCategory } = useCanvasStore();
 
   const hoverStyles =
     colorScheme === "dark"
@@ -93,7 +95,7 @@ export function IssueCard({
                       size="sm"
                       mr={5}
                       c="blue"
-                      td={status === StatusType.DONE ? "line-through" : "none"}
+                      td={statusNameToCategory[status] === StatusType.DONE ? "line-through" : "none"}
                       style={{
                         ":hover": {
                           textDecoration: "underline",
@@ -151,7 +153,7 @@ export function IssueCard({
               <Grid.Col span={3}>
                 <Box style={{ alignSelf: "flex-start" }}>
                   {storyPointsEstimate &&
-                    <StoryPointsBadge statusType={status as StatusType} storyPointsEstimate={storyPointsEstimate} />}
+                    <StoryPointsBadge statusType={statusNameToCategory[status]} storyPointsEstimate={storyPointsEstimate} />}
                 </Box>
               </Grid.Col>
             </Grid>

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Modal, Stack, Group, Text, Button, Tooltip, Paper, ActionIcon } from "@mantine/core"
-import { uniqWith, sortBy } from "lodash";
+import { sortBy } from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { useCanvasStore } from "../../lib/Store";
@@ -17,7 +17,7 @@ export function CreateExportModal({
     opened: boolean
     setOpened: Dispatch<SetStateAction<boolean>>
 }) {
-    const project = useCanvasStore((state) => state.selectedProject);
+    const { selectedProject: project, issueStatusByCategory, issueTypes, issueStatus } = useCanvasStore();
     const boardId = useCanvasStore((state) => state.selectedProjectBoardIds)[0]
 
     const { data: issues } = useQuery<unknown, unknown, Issue[]>({
@@ -27,29 +27,7 @@ export function CreateExportModal({
       initialData: [],
     });
 
-    const { data: issueTypes } = useQuery({
-      queryKey: ["issueTypes", project?.key],
-      queryFn: () => project && window.provider.getIssueTypesByProject(project.key),
-      enabled: !!project?.key,
-      initialData: [],
-    });
-
-    const allStatus = sortBy(
-      uniqWith(
-        issueTypes?.flatMap((issueType) => issueType.statuses ?? []),
-        (statusA, statusB) => statusA.id === statusB.id,
-      ),
-      [
-        (status) => Object.values(StatusType).indexOf(status.statusCategory.name as StatusType),
-        'name',
-      ],
-    )
-
-    const allStatusNamesByCategory: { [key: string]: string[] } = {};
-    allStatus.forEach((status) => {
-        allStatusNamesByCategory[status.statusCategory.name] ??= [];
-        allStatusNamesByCategory[status.statusCategory.name].push(status.name);
-    });
+    const doneStatusNames = issueStatusByCategory[StatusType.DONE]?.map((s) => s.name) ?? []
 
     const [includedIssueTypes, setIncludedIssueTypes] = useState<string[]>([]);
     const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
@@ -61,7 +39,7 @@ export function CreateExportModal({
                 issues
                     .filter((issue) => includedIssueTypes.includes(issue.type))
                     .filter((issue) => includedIssueStatus.includes(issue.status)
-                        && allStatusNamesByCategory[StatusType.DONE].includes(issue.status)),
+                        && doneStatusNames.includes(issue.status)),
                 ['issueKey']
             )
         );
@@ -126,9 +104,9 @@ export function CreateExportModal({
                 </Stack>
                 <Stack align="center">
                   <Text size="md" fw={450} mt="7%" mb="10%">Include Issue Status</Text>
-                  {allStatus && (
+                  {issueStatus && (
                     <CheckboxStack
-                      data={allStatus.map((status) => ({
+                      data={issueStatus.map((status) => ({
                         value: status.name,
                         label: status.name,
                       }))}
