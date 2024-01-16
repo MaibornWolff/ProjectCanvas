@@ -5,13 +5,19 @@ import {
   Group,
   Text, Button, Checkbox, Tooltip, Paper, MantineProvider, createTheme, ActionIcon
 } from "@mantine/core"
-import {isEqual} from "lodash";
+import {isEqual, uniqWith, sortBy} from "lodash";
 import {useQuery} from "@tanstack/react-query";
 import {IconInfoCircle} from "@tabler/icons-react";
 import {useCanvasStore} from "../../lib/Store";
 import {Issue} from "../../../types";
 import {exportIssues} from "./exportHelper";
 import {getIssuesByProject} from "../BacklogView/helpers/queryFetchers";
+
+const StatusCategory = {
+  TODO: 'To Do',
+  IN_PROGRESS: 'In Progress',
+  DONE: 'Done',
+};
 
 export function CreateExportModal({
   opened,
@@ -37,15 +43,33 @@ export function CreateExportModal({
       initialData: [],
     });
 
+    const allStatus = sortBy(
+      uniqWith(
+        issueTypes?.flatMap((issueType) => issueType.statuses ?? []),
+        (statusA, statusB) => statusA.id === statusB.id,
+      ),
+      [
+        (status) => Object.values(StatusCategory).indexOf(status.statusCategory.name),
+        'name',
+      ],
+    )
+    const allStatusNames = allStatus.map((status) => status.name);
+
+    const allStatusNamesByCategory: { [key: string]: string[] } = {};
+    allStatus.forEach((status) => {
+        allStatusNamesByCategory[status.statusCategory.name] ??= [];
+        allStatusNamesByCategory[status.statusCategory.name].push(status.name);
+    });
+
     const allIssueTypeNames = issueTypes ? issueTypes.map((issueType) => issueType.name!) : [];
-    const allStatus = ['To Do', 'In Progress', 'Done'];
 
     const theme = createTheme({ cursorType: 'pointer' });
     const [includedIssueTypes, setIncludedIssueTypes] = useState<string[]>([]);
     const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
     const [issuesToExport, setIssuesToExport] = useState<Issue[]>([]);
 
-    const allTypesAndStatusSelected = isEqual(includedIssueTypes, allIssueTypeNames) && isEqual(includedIssueStatus, allStatus);
+    const allTypesAndStatusSelected = isEqual(includedIssueTypes, allIssueTypeNames)
+        && isEqual(includedIssueStatus, allStatusNames);
 
     function toggleInList(list: string[], value: string): string[] {
         const index = list.indexOf(value);
@@ -57,7 +81,8 @@ export function CreateExportModal({
     function calculateIssuesToExport() {
         setIssuesToExport(issues
             .filter((issue) => includedIssueTypes.includes(issue.type))
-            .filter((issue) => issue.status === 'Done' && includedIssueStatus.includes(issue.status)));
+            .filter((issue) => includedIssueStatus.includes(issue.status)
+                && allStatusNamesByCategory[StatusCategory.DONE].includes(issue.status)));
     }
 
     useEffect(() => {
@@ -126,11 +151,11 @@ export function CreateExportModal({
                     <MantineProvider theme={theme}>
                       {allStatus && allStatus.map((status) => (
                         <Checkbox
-                          {...(!includedIssueStatus.includes(status) && { c: "dimmed" })}
-                          key={status}
-                          label={status}
-                          checked={includedIssueStatus.includes(status)}
-                          onChange={() => toggleIssueStatus(status)}
+                          {...(!includedIssueStatus.includes(status.name) && { c: "dimmed" })}
+                          key={status.id}
+                          label={status.name}
+                          checked={includedIssueStatus.includes(status.name)}
+                          onChange={() => toggleIssueStatus(status.name)}
                         />
                       ))}
                     </MantineProvider>
@@ -150,7 +175,7 @@ export function CreateExportModal({
                           setIncludedIssueTypes([]);
                         } else {
                           setIncludedIssueTypes(allIssueTypeNames);
-                          setIncludedIssueStatus(allStatus);
+                          setIncludedIssueStatus(allStatusNames);
                         }
                       }}
                     />
