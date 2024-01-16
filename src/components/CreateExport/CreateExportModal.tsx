@@ -50,7 +50,7 @@ export function CreateExportModal({
     function calculateIssuesToExport() {
         setIssuesToExport(issues
             .filter((issue) => includedIssueTypes.includes(issue.type))
-            .filter((issue) => !includedIssueStatus.includes(issue.status)));
+            .filter((issue) => issue.status === 'Done' && includedIssueStatus.includes(issue.status)));
     }
 
     useEffect(() => {
