@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom"
 import { Issue, Sprint } from "types"
 import { useCanvasStore } from "../../lib/Store"
 import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
+import { CreateExportModal } from "../CreateExport/CreateExportModal"
 import { CreateSprint } from "./CreateSprint/CreateSprint"
 import { searchIssuesFilter, sortIssuesByRank } from "./helpers/backlogHelpers"
 import { onDragEnd } from "./helpers/draggingHelpers"
@@ -32,7 +33,7 @@ import { resizeDivider } from "./helpers/resizeDivider"
 import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper"
 import { SprintsPanel } from "./IssuesWrapper/SprintsPanel"
 import { ReloadButton } from "./ReloadButton"
-import { useColorScheme } from "../../common/color-scheme";
+import { useColorScheme } from "../../common/color-scheme"
 
 export function BacklogView() {
   const colorScheme = useColorScheme()
@@ -43,6 +44,7 @@ export function BacklogView() {
   const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
   const currentBoardId = boardIds[0]
   const [search, setSearch] = useState("")
+  const [createExportModalOpened, setCreateExportModalOpened] = useState(false)
 
   const [issuesWrappers, setIssuesWrappers] = useState(
     new Map<string, { issues: Issue[]; sprint?: Sprint }>()
@@ -110,7 +112,7 @@ export function BacklogView() {
               ? backlogIssues
                   .filter(
                     (issue: Issue) =>
-                      issue.type !== "Epic" && issue.type !== "Subtask"
+                      issue.type !== "Subtask"
                   )
                   .sort((issueA: Issue, issueB: Issue) =>
                     sortIssuesByRank(issueA, issueB)
@@ -188,7 +190,16 @@ export function BacklogView() {
             <Text>/</Text>
             <Text>{projectName}</Text>
           </Group>
-          <ReloadButton ml="auto" mr="xs" />
+          <Button ml="auto" size="xs"
+          onClick={() => setCreateExportModalOpened(true)}
+          >
+            Export
+          </Button>
+          <CreateExportModal
+            opened={createExportModalOpened}
+            setOpened={setCreateExportModalOpened}
+          />
+          <ReloadButton mr="xs" />
         </Group>
         <Title mb="sm">Backlog</Title>
         <TextInput
@@ -222,7 +233,7 @@ export function BacklogView() {
               <Box mr="xs">
                 <DraggableIssuesWrapper
                   id="Backlog"
-                  issues={searchedissuesWrappers.get("Backlog")!.issues}
+                  issues={searchedissuesWrappers.get("Backlog")!.issues.filter(issue => issue.type !== "Epic")}
                 />
               </Box>
             )}
@@ -239,7 +250,10 @@ export function BacklogView() {
                 style={(theme) => ({
                   justifyContent: "left",
                   ":hover": {
-                    background: colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[4],
+                    background:
+                      colorScheme === "dark"
+                        ? theme.colors.dark[4]
+                        : theme.colors.gray[4],
                   },
                 })}
               >
@@ -266,7 +280,7 @@ export function BacklogView() {
             p="xs"
             style={{
               maxHeight: "calc(100vh - 230px)",
-              minWidth: "260px"
+              minWidth: "260px",
             }}
           >
             <SprintsPanel

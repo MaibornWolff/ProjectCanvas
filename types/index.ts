@@ -88,10 +88,15 @@ export interface Issue {
   attachments: Attachment[]
 }
 
-interface IssueStatus {
+export interface IssueStatus {
   description?: string
   id: string
   name: string
+  statusCategory: {
+    id: number,
+    key: string,
+    name: string,
+  }
 }
 
 export interface IssueType {
