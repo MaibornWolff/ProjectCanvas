@@ -123,7 +123,7 @@ export function CreateExportModal({
               <Button
                 ml="auto"
                 size="sm"
-                onClick={() => { exportIssues(issuesToExport, allStatus) }}
+                onClick={() => { exportIssues(issuesToExport, issueStatus) }}
               >
                 Export CSV
               </Button>
