@@ -3,7 +3,7 @@ import {
   Modal,
   Stack,
   Group,
-  Text, Button, Checkbox, Tooltip, Paper, MantineProvider, createTheme, ActionIcon
+  Text, Button, Checkbox, Tooltip, Paper, MantineProvider, createTheme, ActionIcon,
 } from "@mantine/core"
 import {isEqual, uniqWith, sortBy} from "lodash";
 import {useQuery} from "@tanstack/react-query";
@@ -12,12 +12,7 @@ import {useCanvasStore} from "../../lib/Store";
 import {Issue} from "../../../types";
 import {exportIssues} from "./exportHelper";
 import {getIssuesByProject} from "../BacklogView/helpers/queryFetchers";
-
-const StatusCategory = {
-  TODO: 'To Do',
-  IN_PROGRESS: 'In Progress',
-  DONE: 'Done',
-};
+import {StatusType} from "../../../types/status";
 
 export function CreateExportModal({
   opened,
@@ -49,7 +44,7 @@ export function CreateExportModal({
         (statusA, statusB) => statusA.id === statusB.id,
       ),
       [
-        (status) => Object.values(StatusCategory).indexOf(status.statusCategory.name),
+        (status) => Object.values(StatusType).indexOf(status.statusCategory.name as StatusType),
         'name',
       ],
     )
@@ -68,8 +63,8 @@ export function CreateExportModal({
     const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
     const [issuesToExport, setIssuesToExport] = useState<Issue[]>([]);
 
-    const allTypesAndStatusSelected = isEqual(includedIssueTypes, allIssueTypeNames)
-        && isEqual(includedIssueStatus, allStatusNames);
+    const allTypesAndStatusSelected = isEqual(includedIssueTypes.sort(), allIssueTypeNames.sort())
+        && isEqual(includedIssueStatus.sort(), allStatusNames.sort());
 
     function toggleInList(list: string[], value: string): string[] {
         const index = list.indexOf(value);
@@ -82,7 +77,7 @@ export function CreateExportModal({
         setIssuesToExport(issues
             .filter((issue) => includedIssueTypes.includes(issue.type))
             .filter((issue) => includedIssueStatus.includes(issue.status)
-                && allStatusNamesByCategory[StatusCategory.DONE].includes(issue.status)));
+                && allStatusNamesByCategory[StatusType.DONE].includes(issue.status)));
     }
 
     useEffect(() => {
