@@ -1,6 +1,6 @@
-import { ipcMain, shell, app, BrowserWindow, dialog } from "electron"
+import { ipcMain, shell, app, BrowserWindow } from "electron"
+import * as electron from 'electron'
 import path from "path"
-import fs from "fs";
 import { handleOAuth2 } from "./OAuthHelper"
 import {
   addCommentToIssue,
@@ -36,6 +36,7 @@ import {
   refreshAccessToken,
   setTransition,
 } from "./provider"
+import { getExportIssuesHandler } from "./export-issues";
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string
 declare const MAIN_WINDOW_VITE_NAME: string
@@ -136,26 +137,7 @@ app.whenReady().then(() => {
   ipcMain.handle("deleteIssueComment", deleteIssueComment)
   ipcMain.handle("getResource", getResource)
 
-  ipcMain.on("exportIssues", (event, data: string) => {
-    dialog.showSaveDialog(mainWindow!, {
-    title: "export Issues to CSV",
-    defaultPath: app.getPath("downloads"),
-    filters: [{name: 'CSV file', extensions: ['csv']}],
-    properties: []
-  }).then(
-    file=> {
-      if (file.canceled) {
-        event.reply("exportIssuesReply", {message: "canceled export", color: "red"});
-        return
-      }
-      fs.writeFile(
-        file.filePath?.toString()?? app.getPath('downloads'),
-        data,
-        (err) =>{if(err) throw err;})
-      event.reply("exportIssuesReply", {message: "successfully exported", color: "green"});
-    });
-    // enters catch on opening saveDialog which triggers notification with once listener
-  })
+  ipcMain.on("exportIssues", getExportIssuesHandler(electron, mainWindow!))
 })
 
 app.whenReady().then(() => {
