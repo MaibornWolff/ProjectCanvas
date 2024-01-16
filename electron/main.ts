@@ -136,7 +136,7 @@ app.whenReady().then(() => {
   ipcMain.handle("deleteIssueComment", deleteIssueComment)
   ipcMain.handle("getResource", getResource)
 
-  ipcMain.on("exportIssues", (event, data) => {
+  ipcMain.on("exportIssues", (event, data: string) => {
     dialog.showSaveDialog(mainWindow!, {
     title: "export Issues to CSV",
     defaultPath: app.getPath("downloads"),
@@ -145,16 +145,17 @@ app.whenReady().then(() => {
   }).then(
     file=> {
       if (file.canceled) {
-        event.reply("exportIssuesReply", "canceled");
+        event.reply("exportIssuesReply", {message: "canceled export", color: "red"});
         return
       }
       fs.writeFile(
         file.filePath?.toString()?? app.getPath('downloads'),
         data,
         (err) =>{if(err) throw err;})
-      event.reply("exportIssuesReply", "success")
-    }
-  ).catch(() => {event.reply("exportIssuesReply", "an error occurred")});})
+      event.reply("exportIssuesReply", {message: "successfully exported", color: "green"});
+    });
+    // enters catch on opening saveDialog which triggers notification with once listener
+  })
 })
 
 app.whenReady().then(() => {

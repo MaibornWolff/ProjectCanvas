@@ -1,4 +1,5 @@
 import {ipcRenderer} from "electron";
+import {NotificationData, showNotification} from "@mantine/notifications";
 import {Issue} from "../../../types";
 
 export const exportIssues = (issues : Issue[]) => {
@@ -7,7 +8,9 @@ export const exportIssues = (issues : Issue[]) => {
     (issue) => {
       data = data.concat(`"${issue.issueKey}","${issue.summary}","${issue.startDate}"\n`) // TODO more fields
     });
-  ipcRenderer.send("exportIssues", data)
-  ipcRenderer.on("exportIssuesReply", (_, message) => {console.log(message)}) // TODO maybe popup? (returns "cancelled" or "an error occurred" or "success"
+  ipcRenderer.send("exportIssues", data);
+  ipcRenderer.once(
+    "exportIssuesReply",
+    (_, notification: NotificationData) => { showNotification(notification) });
 }
 
