@@ -55,12 +55,16 @@ export function CreateExportModal({
     const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
     const [issuesToExport, setIssuesToExport] = useState<Issue[]>([]);
 
-
     function calculateIssuesToExport() {
-        setIssuesToExport(issues
-            .filter((issue) => includedIssueTypes.includes(issue.type))
-            .filter((issue) => includedIssueStatus.includes(issue.status)
-                && allStatusNamesByCategory[StatusType.DONE].includes(issue.status)));
+        setIssuesToExport(
+            sortBy(
+                issues
+                    .filter((issue) => includedIssueTypes.includes(issue.type))
+                    .filter((issue) => includedIssueStatus.includes(issue.status)
+                        && allStatusNamesByCategory[StatusType.DONE].includes(issue.status)),
+                ['issueKey']
+            )
+        );
     }
 
     useEffect(() => {
