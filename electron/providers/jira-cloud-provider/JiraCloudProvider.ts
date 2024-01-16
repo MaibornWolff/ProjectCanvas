@@ -410,7 +410,7 @@ export class JiraCloudProvider implements IProvider {
   async getIssuesByProject(project: string): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(3)
-        .get(`/search?jql=project=${project}&maxResults=10000&fields=*all`)
+        .get(`/search?jql=project=${project}&maxResults=10000&fields=*all&expand=changelog`)
         .then(async (response) => {
           resolve(this.fetchIssues(response, false))
         })
@@ -487,6 +487,7 @@ export class JiraCloudProvider implements IProvider {
           projectId: element.fields.project.id,
           sprint: element.fields.sprint,
           attachments: element.fields.attachment,
+          changelog: element.changelog,
         }))
       )
       resolve(issues)
