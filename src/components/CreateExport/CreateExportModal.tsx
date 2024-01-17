@@ -3,6 +3,8 @@ import { Modal, Stack, Group, Text, Button, Tooltip, Paper, ActionIcon } from "@
 import { sortBy } from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { IconInfoCircle } from "@tabler/icons-react";
+import { DateInput } from "@mantine/dates";
+import dayjs from "dayjs";
 import { useCanvasStore } from "../../lib/Store";
 import { Issue } from "../../../types";
 import { exportIssues } from "./exportHelper";
@@ -32,6 +34,8 @@ export function CreateExportModal({
     const [includedIssueTypes, setIncludedIssueTypes] = useState<string[]>([]);
     const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
     const [issuesToExport, setIssuesToExport] = useState<Issue[]>([]);
+    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [endDate, setEndDate] = useState<Date | null>(null);
 
     function calculateIssuesToExport() {
         setIssuesToExport(
@@ -39,7 +43,9 @@ export function CreateExportModal({
                 issues
                     .filter((issue) => includedIssueTypes.includes(issue.type))
                     .filter((issue) => includedIssueStatus.includes(issue.status)
-                        && doneStatusNames.includes(issue.status)),
+                        && doneStatusNames.includes(issue.status))
+                    .filter((issue) => !startDate || dayjs(startDate).isBefore(dayjs(issue.created)))
+                    .filter((issue) => !endDate || dayjs(endDate).isAfter(dayjs(issue.created))),
                 ['issueKey']
             )
         );
@@ -47,7 +53,7 @@ export function CreateExportModal({
 
     useEffect(() => {
         calculateIssuesToExport();
-    }, [includedIssueTypes, includedIssueStatus]);
+    }, [includedIssueTypes, includedIssueStatus, startDate, endDate]);
 
     return (
         <Modal
@@ -59,7 +65,7 @@ export function CreateExportModal({
           }}
           centered
           withCloseButton={false}
-          size="40vw"
+          size="60vw"
         >
           <Stack
             align="left"
@@ -68,7 +74,7 @@ export function CreateExportModal({
               minHeight: "100%",
               minWidth: "100%",
             }}>
-            <Group c="dimmed" mb="5%">
+            <Group c="dimmed" mb="xs">
               <Text>{project?.name}</Text>
                 <Tooltip
                   withArrow
@@ -88,8 +94,8 @@ export function CreateExportModal({
                   </ActionIcon>
                 </Tooltip>
             </Group>
-            <Paper shadow="md" radius="md" withBorder mb="5%">
-              <Group align ="top" justify="center" mb="5%">
+            <Paper shadow="md" radius="md" withBorder mb="xs">
+              <Group align="top" justify="center" mb="5%">
                 <Stack align="center" mr="5%">
                   <Text size="md" fw={450} mt="7%" mb="10%" >Include Issue Types</Text>
                   {issueTypes && (
@@ -113,6 +119,23 @@ export function CreateExportModal({
                       onChange={(includedStatus) => setIncludedIssueStatus(includedStatus)}
                     />
                   )}
+                </Stack>
+                <Stack align="center" mt="xs" w="40%">
+                  <Text size="md" fw={450}>Creation date range</Text>
+                  <DateInput
+                    label="Start Date"
+                    clearable
+                    value={startDate}
+                    onChange={setStartDate}
+                    {...(endDate && { maxDate: endDate })}
+                  />
+                  <DateInput
+                    label="End Date"
+                    clearable
+                    value={endDate}
+                    onChange={setEndDate}
+                    {...(startDate && { minDate: startDate })}
+                  />
                 </Stack>
               </Group>
             </Paper>
