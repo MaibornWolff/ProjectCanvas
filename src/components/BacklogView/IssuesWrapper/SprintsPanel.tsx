@@ -4,12 +4,13 @@ import { Issue, Sprint } from "types"
 import {
   pluralize,
   sortSprintsByActive,
-  storyPointsAccumulator,
 } from "../helpers/backlogHelpers"
 import { DraggableIssuesWrapper } from "./DraggableIssuesWrapper"
 import {StatusType} from "../../../../types/status";
 import {StoryPointsBadge} from "../../common/StoryPoints/StoryPointsBadge";
 import {useColorScheme} from "../../../common/color-scheme";
+import {storyPointsAccumulator} from "../../common/StoryPoints/status-accumulator";
+import {useCanvasStore} from "../../../lib/Store";
 
 export function SprintsPanel({
   sprintsWithIssues,
@@ -70,6 +71,10 @@ function SprintAccordionControl({
   issues: Issue[]
   sprint: Sprint
 }) {
+  const { issueStatusByCategory } = useCanvasStore();
+
+  const getStatusNamesInCategory = (category: StatusType) => issueStatusByCategory[category]?.map((s) => (s.name)) ?? []
+
   return (
     <Accordion.Control>
       <Group>
@@ -83,15 +88,15 @@ function SprintAccordionControl({
         <Flex gap={4} p="xs" ml="auto">
           <StoryPointsBadge
             statusType={StatusType.TODO}
-            storyPointsEstimate={storyPointsAccumulator(issues, StatusType.TODO)}
+            storyPointsEstimate={storyPointsAccumulator(issues, getStatusNamesInCategory(StatusType.TODO))}
           />
           <StoryPointsBadge
             statusType={StatusType.IN_PROGRESS}
-            storyPointsEstimate={storyPointsAccumulator(issues, StatusType.IN_PROGRESS)}
+            storyPointsEstimate={storyPointsAccumulator(issues, getStatusNamesInCategory(StatusType.IN_PROGRESS))}
           />
           <StoryPointsBadge
             statusType={StatusType.DONE}
-            storyPointsEstimate={storyPointsAccumulator(issues, StatusType.DONE)}
+            storyPointsEstimate={storyPointsAccumulator(issues, getStatusNamesInCategory(StatusType.DONE))}
           />
         </Flex>
       </Group>

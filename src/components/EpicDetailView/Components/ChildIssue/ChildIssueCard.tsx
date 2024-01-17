@@ -23,6 +23,7 @@ import { StoryPointsBadge } from "../../../common/StoryPoints/StoryPointsBadge";
 import { useColorScheme } from "../../../../common/color-scheme";
 import { IssueEpicBadge } from "../../../common/IssueEpicBadge";
 import { IssueLabelBadge } from "../../../common/IssueLabelBadge";
+import {useCanvasStore} from "../../../../lib/Store";
 
 export function ChildIssueCard({
   issueKey,
@@ -42,6 +43,7 @@ export function ChildIssueCard({
   const { hovered } = useHover()
   const theme = useMantineTheme()
   const colorScheme = useColorScheme()
+  const { issueStatusCategoryByStatusName: statusNameToCategory } = useCanvasStore();
 
   const hoverStyles =
     colorScheme === "dark"
@@ -88,7 +90,7 @@ export function ChildIssueCard({
                   size="sm"
                   mr={5}
                   c="blue"
-                  td={status === StatusType.DONE ? "line-through" : "none"}
+                  td={statusNameToCategory[status] === StatusType.DONE ? "line-through" : "none"}
                   style={{
                     ":hover": {
                       textDecoration: "underline",
@@ -119,7 +121,7 @@ export function ChildIssueCard({
           >
             <Box style={{ alignSelf: "flex-start" }}>
               {storyPointsEstimate &&
-                <StoryPointsBadge statusType={status as StatusType} storyPointsEstimate={storyPointsEstimate} />}
+                <StoryPointsBadge statusType={statusNameToCategory[status]} storyPointsEstimate={storyPointsEstimate} />}
             </Box>
           </Grid.Col>
           <Grid.Col
