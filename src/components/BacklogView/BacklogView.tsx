@@ -18,6 +18,7 @@ import { ChangeEvent, useEffect, useState } from "react"
 import { DragDropContext } from "@hello-pangea/dnd"
 import { useNavigate } from "react-router-dom"
 import { Issue, Sprint } from "types"
+import { UseQueryOptions } from "@tanstack/react-query/src/types";
 import { useCanvasStore } from "../../lib/Store"
 import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
 import { CreateExportModal } from "../CreateExport/CreateExportModal"
@@ -49,7 +50,7 @@ export function BacklogView() {
   const [issuesWrappers, setIssuesWrappers] = useState(
     new Map<string, { issues: Issue[]; sprint?: Sprint }>()
   )
-  const [searchedissuesWrappers, setSearchedissuesWrappers] = useState(
+  const [searchedIssuesWrappers, setSearchedIssuesWrappers] = useState(
     new Map<string, { issues: Issue[]; sprint?: Sprint }>()
   )
   const updateIssuesWrapper = (
@@ -57,7 +58,7 @@ export function BacklogView() {
     value: { issues: Issue[]; sprint?: Sprint }
   ) => {
     setIssuesWrappers((map) => new Map(map.set(key, value)))
-    setSearchedissuesWrappers((map) => new Map(map.set(key, value)))
+    setSearchedIssuesWrappers((map) => new Map(map.set(key, value)))
   }
 
   const { data: sprints, isError: isErrorSprints } = useQuery({
@@ -69,7 +70,7 @@ export function BacklogView() {
   const sprintsIssuesResults = useQueries({
     queries:
       !isErrorSprints && sprints
-        ? sprints?.map((sprint) => ({
+        ? sprints?.map((sprint): UseQueryOptions => ({
             queryKey: ["issues", "sprints", projectKey, sprints, sprint.id],
             queryFn: () => getIssuesBySprint(sprint.id),
             enabled: !!projectKey && !!sprints,
@@ -77,13 +78,8 @@ export function BacklogView() {
               updateIssuesWrapper(sprint.name, {
                 sprint,
                 issues: issues
-                  .filter(
-                    (issue: Issue) =>
-                      issue.type !== "Epic" && issue.type !== "Subtask"
-                  )
-                  .sort((issueA: Issue, issueB: Issue) =>
-                    sortIssuesByRank(issueA, issueB)
-                  ),
+                  .filter((issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask")
+                  .sort((issueA: Issue, issueB: Issue) => sortIssuesByRank(issueA, issueB)),
               })
               searchIssuesFilter(
                 search,
@@ -108,22 +104,17 @@ export function BacklogView() {
         updateIssuesWrapper("Backlog", {
           sprint: undefined,
           issues:
-            backlogIssues && backlogIssues instanceof Array
+            backlogIssues
               ? backlogIssues
-                  .filter(
-                    (issue: Issue) =>
-                      issue.type !== "Subtask"
-                  )
-                  .sort((issueA: Issue, issueB: Issue) =>
-                    sortIssuesByRank(issueA, issueB)
-                  )
+                  .filter((issue: Issue) => issue.type !== "Subtask")
+                  .sort((issueA: Issue, issueB: Issue) => sortIssuesByRank(issueA, issueB))
               : [],
         })
         searchIssuesFilter(
           search,
           issuesWrappers,
-          searchedissuesWrappers,
-          setSearchedissuesWrappers
+          searchedIssuesWrappers,
+          setSearchedIssuesWrappers
         )
       },
     })
@@ -150,8 +141,8 @@ export function BacklogView() {
     searchIssuesFilter(
       currentSearch,
       issuesWrappers,
-      searchedissuesWrappers,
-      setSearchedissuesWrappers
+      searchedIssuesWrappers,
+      setSearchedIssuesWrappers
     )
   }
 
@@ -229,11 +220,11 @@ export function BacklogView() {
               minWidth: "260px",
             }}
           >
-            {searchedissuesWrappers.get("Backlog") && (
+            {searchedIssuesWrappers.get("Backlog") && (
               <Box mr="xs">
                 <DraggableIssuesWrapper
                   id="Backlog"
-                  issues={searchedissuesWrappers.get("Backlog")!.issues.filter(issue => issue.type !== "Epic")}
+                  issues={searchedIssuesWrappers.get("Backlog")!.issues.filter(issue => issue.type !== "Epic")}
                 />
               </Box>
             )}
@@ -285,12 +276,9 @@ export function BacklogView() {
           >
             <SprintsPanel
               sprintsWithIssues={
-                Array.from(searchedissuesWrappers.values()).filter(
-                  (issuesWrapper) => issuesWrapper.sprint !== undefined
-                ) as unknown as {
-                  issues: Issue[]
-                  sprint: Sprint
-                }[]
+                Array.from(searchedIssuesWrappers.values()).filter(
+                  (issuesWrapper) => issuesWrapper.sprint
+                ) as { issues: Issue[], sprint: Sprint }[]
               }
             />
             <CreateSprint />

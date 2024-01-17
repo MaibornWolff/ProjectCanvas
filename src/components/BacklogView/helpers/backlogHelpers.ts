@@ -19,33 +19,11 @@ export const sortIssuesByRank = (issueA: Issue, issueB: Issue) =>
 
 export const searchIssuesFilter = (
   currentSearch: string,
-  issuesWrappers: Map<
-    string,
-    {
-      issues: Issue[]
-      sprint?: Sprint | undefined
-    }
-  >,
-  searchedissueWrapper: Map<
-    string,
-    {
-      issues: Issue[]
-      sprint?: Sprint | undefined
-    }
-  >,
-  setSearchedissueWrapper: Dispatch<
-    SetStateAction<
-      Map<
-        string,
-        {
-          issues: Issue[]
-          sprint?: Sprint | undefined
-        }
-      >
-    >
-  >
+  issuesWrappers: Map<string, { issues: Issue[], sprint?: Sprint }>,
+  searchedIssueWrapper: Map<string, { issues: Issue[], sprint?: Sprint }>,
+  setSearchedIssueWrapper: Dispatch<SetStateAction<Map<string, { issues: Issue[], sprint?: Sprint }>>>
 ) => {
-  searchedissueWrapper.forEach((issueWrapper, issueWrapperKey) => {
+  searchedIssueWrapper.forEach((issueWrapper, issueWrapperKey) => {
     const newIssueWrapper: {
       issues: Issue[]
       sprint?: Sprint | undefined
@@ -67,8 +45,6 @@ export const searchIssuesFilter = (
           ) ||
           currentSearch === ""
       )
-    setSearchedissueWrapper(
-      (map) => new Map(map.set(issueWrapperKey, newIssueWrapper))
-    )
+    setSearchedIssueWrapper((map) => new Map(map.set(issueWrapperKey, newIssueWrapper)))
   })
 }
