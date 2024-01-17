@@ -44,6 +44,27 @@ export interface Attachment {
   content: string
 }
 
+export interface ChangelogHistoryItem {
+  field: string
+  fieldtype: string
+  fieldId: string
+  from: unknown | null
+  fromString: string | null
+  to: unknown | null
+  toString: string | null
+}
+
+export interface ChangelogHistory {
+  author: User
+  id: string
+  created: string
+  items: ChangelogHistoryItem[]
+}
+
+export interface Changelog {
+  histories: ChangelogHistory[]
+}
+
 export interface Issue {
   issueKey: string
   summary: string
@@ -86,12 +107,18 @@ export interface Issue {
   dueDate: Date
   priority: Priority
   attachments: Attachment[]
+  changelog: Changelog
 }
 
-interface IssueStatus {
+export interface IssueStatus {
   description?: string
   id: string
   name: string
+  statusCategory: {
+    id: number,
+    key: string,
+    name: string,
+  }
 }
 
 export interface IssueType {

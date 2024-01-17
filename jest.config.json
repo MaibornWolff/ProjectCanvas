@@ -4,7 +4,7 @@
     "^.+\\.tsx?$": "ts-jest"
   },
   "setupFilesAfterEnv": [
-    "@testing-library/jest-dom/extend-expect",
+    "./src/test/setup-jest.ts",
     "./src/test/setup-undefined-jsdom-properties.ts"
   ],
   "modulePathIgnorePatterns": ["/e2e"]

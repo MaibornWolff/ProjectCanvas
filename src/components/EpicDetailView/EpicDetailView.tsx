@@ -30,9 +30,9 @@ import { sortIssuesByRank } from "../BacklogView/helpers/backlogHelpers"
 import { useCanvasStore } from "../../lib/Store"
 import { resizeDivider } from "../BacklogView/helpers/resizeDivider"
 import {
-  inProgressAccumulator,
+  issueCountAccumulator,
   storyPointsAccumulator,
-} from "./helpers/storyPointsHelper"
+} from "../common/StoryPoints/status-accumulator"
 import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard";
 import { CommentSection } from "../DetailView/Components/CommentSection";
 import { StatusType } from "../../../types/status";
@@ -90,8 +90,8 @@ export function EpicDetailView({
     timeStyle: "short",
   })
 
+  const { issueStatusByCategory, selectedProjectBoardIds: boardIds } = useCanvasStore();
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
-  const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
   const currentBoardId = boardIds[0]
 
   const [childIssues, setChildIssues] = useState<Issue[]>([])
@@ -110,9 +110,14 @@ export function EpicDetailView({
     },
   })
 
-  const tasksTodo = inProgressAccumulator(childIssues, StatusType.TODO)
-  const tasksInProgress = inProgressAccumulator(childIssues, StatusType.IN_PROGRESS)
-  const tasksDone = inProgressAccumulator(childIssues, StatusType.DONE)
+  const getStatusNamesInCategory = (category: StatusType) => issueStatusByCategory[category]?.map((s) => (s.name)) ?? []
+  const validTodoStatus = getStatusNamesInCategory(StatusType.TODO)
+  const validInProgressStatus = getStatusNamesInCategory(StatusType.IN_PROGRESS)
+  const validDoneStatus = getStatusNamesInCategory(StatusType.DONE)
+
+  const tasksTodo = issueCountAccumulator(childIssues, validTodoStatus)
+  const tasksInProgress = issueCountAccumulator(childIssues, validInProgressStatus)
+  const tasksDone = issueCountAccumulator(childIssues, validDoneStatus)
   const totalTaskCount = tasksTodo + tasksInProgress + tasksDone
 
   useEffect(() => {
@@ -196,15 +201,15 @@ export function EpicDetailView({
             </Progress.Root>
             <StoryPointsHoverCard
               statusType={StatusType.TODO}
-              count={storyPointsAccumulator(childIssues, StatusType.TODO)}
+              count={storyPointsAccumulator(childIssues, validTodoStatus)}
             />
             <StoryPointsHoverCard
               statusType={StatusType.IN_PROGRESS}
-              count={storyPointsAccumulator(childIssues, StatusType.IN_PROGRESS)}
+              count={storyPointsAccumulator(childIssues, validInProgressStatus)}
             />
             <StoryPointsHoverCard
               statusType={StatusType.DONE}
-              count={storyPointsAccumulator(childIssues, StatusType.DONE)}
+              count={storyPointsAccumulator(childIssues, validDoneStatus)}
             />
           </Group>
 
