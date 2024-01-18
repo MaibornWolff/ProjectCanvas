@@ -65,7 +65,7 @@ export function BacklogView() {
           BacklogKey,
           {
             issues: backlogIssues
-              .filter((issue: Issue) => issue.type !== "Subtask")
+              .filter((issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask")
               .sort(sortIssuesByRank),
             sprintId: undefined
           },
@@ -194,7 +194,7 @@ export function BacklogView() {
               <Box mr="xs">
                 <DraggableIssuesWrapper
                   id="Backlog"
-                  issues={searchedIssuesWrapper.get(BacklogKey)!.filter(issue => issue.type !== "Epic")}
+                  issues={searchedIssuesWrapper.get(BacklogKey)!}
                 />
               </Box>
             )}
