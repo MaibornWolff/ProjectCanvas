@@ -55,10 +55,7 @@ export function BacklogView() {
     initialData: [],
   })
 
-  const issueQueries = useQueries<
-    Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>,
-    Array<[string, IssuesState]>
-  >({
+  const issueQueries = useQueries<Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>>({
     queries: [
       {
         queryKey: ["issues", projectKey, currentBoardId], // IMPROVE: Change this issue key to contain "backlog"
@@ -92,14 +89,14 @@ export function BacklogView() {
       }))),
     ],
     combine: (results: QueriesResults<Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>>) =>
-      results.map(result => result.data!)
+      results.map(result => result)
   })
 
   const [issuesWrapper, setIssuesWrapper] = useState(new Map<string, IssuesState>());
-  // Generally, useEffect to sync state should be avoided. But since we need our state to be assignable AND reactive AND
-  // derivable, we found no other solution than to use useEffect.
   useEffect(() => {
-    setIssuesWrapper(new Map<string, IssuesState>(issueQueries.map((data) => data)))
+    // Generally, using useEffect to sync state should be avoided. But since we need our state to be assignable AND
+    // reactive AND derivable, we found no other solution than to use useEffect.
+    setIssuesWrapper(new Map<string, IssuesState>(issueQueries.map((query) => query.data!)))
   }, [issueQueries])
   const updateIssuesWrapper = (key: string, newState: IssuesState) => setIssuesWrapper(new Map(issuesWrapper.set(key, newState)))
   const searchedIssuesWrapper = useMemo(() => new Map<string, Issue[]>(
@@ -111,7 +108,7 @@ export function BacklogView() {
 
   useEffect(resizeDivider, [issueQueries]);
 
-  if (isErrorSprints || issueQueries.length === 0)
+  if (isErrorSprints || issueQueries.some(query => query.isError))
     return (
       <Center style={{ width: "100%", height: "100%" }}>
         <Text w="300">
@@ -123,7 +120,8 @@ export function BacklogView() {
       </Center>
     )
 
-  if (false)
+  // This check might be broken. It does not trigger everytime we think it does. Might need to force a rerender.
+  if (issueQueries.some(query => query.isPending))
     return (
       <Center style={{ width: "100%", height: "100%" }}>
         {projectKey ? (
