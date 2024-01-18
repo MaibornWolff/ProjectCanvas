@@ -13,7 +13,7 @@ import {
   Title,
 } from "@mantine/core"
 import { IconSearch } from "@tabler/icons-react"
-import { useQueries, useQuery } from "@tanstack/react-query"
+import {QueriesResults, useQueries, useQuery} from "@tanstack/react-query"
 import { ChangeEvent, useEffect, useMemo, useState } from "react"
 import { DragDropContext } from "@hello-pangea/dnd"
 import { useNavigate } from "react-router-dom"
@@ -55,7 +55,10 @@ export function BacklogView() {
     initialData: [],
   })
 
-  const issueQueries = useQueries<Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>>({
+  const issueQueries = useQueries<
+    Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>,
+    Array<[string, IssuesState]>
+  >({
     queries: [
       {
         queryKey: ["issues", projectKey, currentBoardId], // IMPROVE: Change this issue key to contain "backlog"
@@ -88,11 +91,16 @@ export function BacklogView() {
         initialData: [],
       }))),
     ],
+    combine: (results: QueriesResults<Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>>) =>
+      results.map(result => result.data!)
   })
 
-  const [issuesWrapper, setIssuesWrapper] = useState(new Map<string, IssuesState>(
-    issueQueries.map((query) => query.data!),
-  ));
+  const [issuesWrapper, setIssuesWrapper] = useState(new Map<string, IssuesState>());
+  // Generally, useEffect to sync state should be avoided. But since we need our state to be assignable AND reactive AND
+  // derivable, we found no other solution than to use useEffect.
+  useEffect(() => {
+    setIssuesWrapper(new Map<string, IssuesState>(issueQueries.map((data) => data)))
+  }, [issueQueries])
   const updateIssuesWrapper = (key: string, newState: IssuesState) => setIssuesWrapper(new Map(issuesWrapper.set(key, newState)))
   const searchedIssuesWrapper = useMemo(() => new Map<string, Issue[]>(
     Array.from(issuesWrapper.keys()).map((key) => [
@@ -101,10 +109,9 @@ export function BacklogView() {
     ]),
   ), [issuesWrapper, search])
 
-  const isLoadingBacklogIssues = issueQueries[0].isLoading;
-  useEffect(resizeDivider, [isLoadingBacklogIssues]);
+  useEffect(resizeDivider, [issueQueries]);
 
-  if (isErrorSprints || issueQueries.some(({ isError }) => isError))
+  if (isErrorSprints || issueQueries.length === 0)
     return (
       <Center style={{ width: "100%", height: "100%" }}>
         <Text w="300">
@@ -116,7 +123,7 @@ export function BacklogView() {
       </Center>
     )
 
-  if (isLoadingBacklogIssues)
+  if (false)
     return (
       <Center style={{ width: "100%", height: "100%" }}>
         {projectKey ? (
