@@ -14,7 +14,7 @@ import {
 } from "@mantine/core"
 import { IconSearch } from "@tabler/icons-react"
 import { useQueries, useQuery } from "@tanstack/react-query"
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useMemo, useState } from "react"
 import { DragDropContext } from "@hello-pangea/dnd"
 import { useNavigate } from "react-router-dom"
 import { Issue, Sprint } from "types"
@@ -55,13 +55,6 @@ export function BacklogView() {
     initialData: [],
   })
 
-  const useIssueState = (initialIssues: Issue[], sprintId: number | undefined): IssuesState => {
-    const state = { issues: initialIssues, sprintId } as Partial<IssuesState>
-    state.setIssues = (issues) => { state.issues = issues; }
-
-    return state as IssuesState;
-  }
-
   const issueQueries = useQueries<Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>>({
     queries: [
       {
@@ -70,34 +63,43 @@ export function BacklogView() {
         enabled: !!projectKey,
         select: (backlogIssues: Issue[]): [string, IssuesState] => [
           BacklogKey,
-          useIssueState(backlogIssues
-            .filter((issue: Issue) => issue.type !== "Subtask")
-            .sort(sortIssuesByRank), undefined),
+          {
+            issues: backlogIssues
+              .filter((issue: Issue) => issue.type !== "Subtask")
+              .sort(sortIssuesByRank),
+            sprintId: undefined
+          },
         ],
         initialData: [],
       },
-      ...(Object.values(sprints).map((sprint) => ({
+      ...(Object.values(sprints).map((sprint): UseQueryOptions<Issue[], unknown, [string, IssuesState]> => ({
         queryKey: ["issues", "sprints", projectKey, Object.keys(sprints), sprint.id], // IMPROVE: Change this issue key to not contain sprints
         queryFn: () => getIssuesBySprint(sprint.id),
         enabled: !!projectKey && !!sprints && !isErrorSprints,
         select: (issues: Issue[]) => [
           sprint.name,
-          useIssueState(issues
-            .filter((issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask")
-            .sort(sortIssuesByRank), sprint.id),
+          {
+            issues: issues
+              .filter((issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask")
+              .sort(sortIssuesByRank),
+            sprintId: sprint.id
+          },
         ],
         initialData: [],
-      } as UseQueryOptions<Issue[], unknown, [string, IssuesState]>))),
+      }))),
     ],
   })
-  const issuesWrapper = new Map<string, IssuesState>(issueQueries.map((query) => query.data!));
 
-  const searchedIssuesWrapper = new Map<string, Issue[]>(
+  const [issuesWrapper, setIssuesWrapper] = useState(new Map<string, IssuesState>(
+    issueQueries.map((query) => query.data!),
+  ));
+  const updateIssuesWrapper = (key: string, newState: IssuesState) => setIssuesWrapper(new Map(issuesWrapper.set(key, newState)))
+  const searchedIssuesWrapper = useMemo(() => new Map<string, Issue[]>(
     Array.from(issuesWrapper.keys()).map((key) => [
       key,
       issuesWrapper.get(key)!.issues.filter((i) => searchMatchesIssue(search, i)),
     ]),
-  )
+  ), [issuesWrapper, search])
 
   const isLoadingBacklogIssues = issueQueries[0].isLoading;
   useEffect(resizeDivider, [isLoadingBacklogIssues]);
@@ -175,6 +177,7 @@ export function BacklogView() {
             onDragEnd({
               ...dropResult,
               issuesWrapper,
+              updateIssuesWrapper,
             })
           }
         >

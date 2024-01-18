@@ -1,38 +1,29 @@
 import { DropResult } from "@hello-pangea/dnd"
-import { Issue, Sprint } from "types"
+import { Issue } from "types"
+import { BacklogKey, IssuesState } from "./backlogHelpers";
 
 export const onDragEnd = ({
   source,
   destination,
-  issuesWrappers,
+  issuesWrapper,
   updateIssuesWrapper,
 }: DropResult & {
-  issuesWrappers: Map<string, { issues: Issue[]; sprint?: Sprint }>
-  updateIssuesWrapper: (
-    key: string,
-    value: { issues: Issue[]; sprint?: Sprint }
-  ) => void
-}) => {
-  if (destination === undefined || destination === null) return null
+  issuesWrapper: Map<string, IssuesState>
+  updateIssuesWrapper: (key: string, newState: IssuesState) => void
+}): void => {
+  if (!destination)
+    return
+  if (source.droppableId === destination.droppableId && destination.index === source.index)
+    return
 
-  if (
-    source.droppableId === destination.droppableId &&
-    destination.index === source.index
-  )
-    return null
+  const startState = issuesWrapper.get(source.droppableId)!
+  const endState = issuesWrapper.get(destination.droppableId)!
+  const movedIssueKey = startState.issues[source.index].issueKey
+  const destinationSprintId = endState.sprintId
 
-  const start = issuesWrappers.get(source.droppableId)!
-  const startId = source.droppableId
-  const end = issuesWrappers.get(destination.droppableId)!
-  const endId = destination.droppableId
-  const movedIssueKey = start.issues[source.index].issueKey
-  const destinationSprintId = end.sprint?.id
-
-  if (start === end) {
-    const newList = start.issues.filter(
-      (_: Issue, idx: number) => idx !== source.index
-    )
-    newList.splice(destination.index, 0, start.issues[source.index])
+  if (startState.sprintId === endState.sprintId) {
+    const newList = startState.issues.filter((_: Issue, idx: number) => idx !== source.index)
+    newList.splice(destination.index, 0, startState.issues[source.index])
 
     const keyOfIssueRankedBefore =
       destination.index === 0 ? "" : newList[destination.index - 1].issueKey
@@ -56,24 +47,17 @@ export const onDragEnd = ({
       )
     }
 
-    updateIssuesWrapper(startId, {
-      ...start,
-      issues: newList,
-    })
-    return null
+    updateIssuesWrapper(source.droppableId, { ...startState, issues: newList })
+
+    return
   }
 
-  const newStartIssues = start.issues.filter(
-    (_: Issue, idx: number) => idx !== source.index
-  )
-  const newEndIssues = end.issues.slice()
-  newEndIssues.splice(destination.index, 0, start.issues[source.index])
+  const newStartIssues = startState.issues.filter((_: Issue, idx: number) => idx !== source.index)
+  const newEndIssues = endState.issues.slice()
+  newEndIssues.splice(destination.index, 0, startState.issues[source.index])
 
-  updateIssuesWrapper(startId, {
-    ...start,
-    issues: newStartIssues,
-  })
-  updateIssuesWrapper(endId, { ...end, issues: newEndIssues })
+  updateIssuesWrapper(source.droppableId, { ...startState, issues: newStartIssues })
+  updateIssuesWrapper(destination.droppableId, { ...endState, issues: newEndIssues })
 
   const keyOfIssueRankedBefore =
     destination.index === 0 ? "" : newEndIssues[destination.index - 1].issueKey
@@ -89,7 +73,7 @@ export const onDragEnd = ({
       keyOfIssueRankedAfter,
       keyOfIssueRankedBefore
     )
-  } else if (destination.droppableId === "Backlog") {
+  } else if (destination.droppableId === BacklogKey) {
     window.provider.moveIssueToBacklog(movedIssueKey).then(() => {
       window.provider.rankIssueInBacklog(
         movedIssueKey,
@@ -98,6 +82,4 @@ export const onDragEnd = ({
       )
     })
   }
-
-  return null
 }

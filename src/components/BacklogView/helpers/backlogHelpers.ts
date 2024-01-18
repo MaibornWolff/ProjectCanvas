@@ -1,7 +1,7 @@
 import { Issue, Sprint } from "types"
 
 export const BacklogKey = "Backlog";
-export type IssuesState = { issues: Issue[], setIssues: (issues: Issue[]) => void, sprintId?: number };
+export type IssuesState = { issues: Issue[], sprintId?: number };
 
 export const pluralize = (count: number, noun: string, suffix = "s") =>
   `${count} ${noun}${count !== 1 ? suffix : ""}`
