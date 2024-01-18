@@ -23,7 +23,7 @@ import { useCanvasStore } from "../../lib/Store"
 import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
 import { CreateExportModal } from "../CreateExport/CreateExportModal"
 import { CreateSprint } from "./CreateSprint/CreateSprint"
-import { searchIssuesFilter, sortIssuesByRank } from "./helpers/backlogHelpers"
+import { BacklogKey, IssuesState, searchMatchesIssue, sortIssuesByRank } from "./helpers/backlogHelpers"
 import { onDragEnd } from "./helpers/draggingHelpers"
 import {
   getBacklogIssues,
@@ -47,83 +47,62 @@ export function BacklogView() {
   const [search, setSearch] = useState("")
   const [createExportModalOpened, setCreateExportModalOpened] = useState(false)
 
-  const [issuesWrappers, setIssuesWrappers] = useState(
-    new Map<string, { issues: Issue[]; sprint?: Sprint }>()
-  )
-  const [searchedIssuesWrappers, setSearchedIssuesWrappers] = useState(
-    new Map<string, { issues: Issue[]; sprint?: Sprint }>()
-  )
-  const updateIssuesWrapper = (
-    key: string,
-    value: { issues: Issue[]; sprint?: Sprint }
-  ) => {
-    setIssuesWrappers((map) => new Map(map.set(key, value)))
-    setSearchedIssuesWrappers((map) => new Map(map.set(key, value)))
-  }
-
   const { data: sprints, isError: isErrorSprints } = useQuery({
     queryKey: ["sprints", currentBoardId],
     queryFn: () => getSprints(currentBoardId),
     enabled: !!currentBoardId,
+    select: (fetchedSprints: Sprint[]) => Object.fromEntries(fetchedSprints.map((s) => [s.id, s])),
+    initialData: [],
   })
 
-  const sprintsIssuesResults = useQueries({
-    queries:
-      !isErrorSprints && sprints
-        ? sprints?.map((sprint): UseQueryOptions => ({
-            queryKey: ["issues", "sprints", projectKey, sprints, sprint.id],
-            queryFn: () => getIssuesBySprint(sprint.id),
-            enabled: !!projectKey && !!sprints,
-            onSuccess: (issues: Issue[]) => {
-              updateIssuesWrapper(sprint.name, {
-                sprint,
-                issues: issues
-                  .filter((issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask")
-                  .sort((issueA: Issue, issueB: Issue) => sortIssuesByRank(issueA, issueB)),
-              })
-              searchIssuesFilter(
-                search,
-                issuesWrappers,
-                searchedissuesWrappers,
-                setSearchedissuesWrappers
-              )
-            },
-          }))
-        : [],
+  const useIssueState = (initialIssues: Issue[], sprintId: number | undefined): IssuesState => {
+    const state = { issues: initialIssues, sprintId } as Partial<IssuesState>
+    state.setIssues = (issues) => { state.issues = issues; }
+
+    return state as IssuesState;
+  }
+
+  const issueQueries = useQueries<Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>>({
+    queries: [
+      {
+        queryKey: ["issues", projectKey, currentBoardId], // IMPROVE: Change this issue key to contain "backlog"
+        queryFn: () => getBacklogIssues(projectKey, currentBoardId),
+        enabled: !!projectKey,
+        select: (backlogIssues: Issue[]): [string, IssuesState] => [
+          BacklogKey,
+          useIssueState(backlogIssues
+            .filter((issue: Issue) => issue.type !== "Subtask")
+            .sort(sortIssuesByRank), undefined),
+        ],
+        initialData: [],
+      },
+      ...(Object.values(sprints).map((sprint) => ({
+        queryKey: ["issues", "sprints", projectKey, Object.keys(sprints), sprint.id], // IMPROVE: Change this issue key to not contain sprints
+        queryFn: () => getIssuesBySprint(sprint.id),
+        enabled: !!projectKey && !!sprints && !isErrorSprints,
+        select: (issues: Issue[]) => [
+          sprint.name,
+          useIssueState(issues
+            .filter((issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask")
+            .sort(sortIssuesByRank), sprint.id),
+        ],
+        initialData: [],
+      } as UseQueryOptions<Issue[], unknown, [string, IssuesState]>))),
+    ],
   })
-  const isErrorSprintsIssues = sprintsIssuesResults.some(
-    ({ isError }) => isError
+  const issuesWrapper = new Map<string, IssuesState>(issueQueries.map((query) => query.data!));
+
+  const searchedIssuesWrapper = new Map<string, Issue[]>(
+    Array.from(issuesWrapper.keys()).map((key) => [
+      key,
+      issuesWrapper.get(key)!.issues.filter((i) => searchMatchesIssue(search, i)),
+    ]),
   )
 
-  const { isLoading: isLoadingBacklogIssues, isError: isErrorBacklogIssues } =
-    useQuery({
-      queryKey: ["issues", projectKey, currentBoardId],
-      queryFn: () => getBacklogIssues(projectKey, currentBoardId),
-      enabled: !!projectKey,
-      onSuccess: (backlogIssues) => {
-        updateIssuesWrapper("Backlog", {
-          sprint: undefined,
-          issues:
-            backlogIssues
-              ? backlogIssues
-                  .filter((issue: Issue) => issue.type !== "Subtask")
-                  .sort((issueA: Issue, issueB: Issue) => sortIssuesByRank(issueA, issueB))
-              : [],
-        })
-        searchIssuesFilter(
-          search,
-          issuesWrappers,
-          searchedIssuesWrappers,
-          setSearchedIssuesWrappers
-        )
-      },
-    })
+  const isLoadingBacklogIssues = issueQueries[0].isLoading;
+  useEffect(resizeDivider, [isLoadingBacklogIssues]);
 
-  useEffect(() => {
-    resizeDivider()
-  }, [isLoadingBacklogIssues])
-
-  if (isErrorSprints || isErrorBacklogIssues || isErrorSprintsIssues)
+  if (isErrorSprints || issueQueries.some(({ isError }) => isError))
     return (
       <Center style={{ width: "100%", height: "100%" }}>
         <Text w="300">
@@ -134,17 +113,6 @@ export function BacklogView() {
         </Text>
       </Center>
     )
-
-  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const currentSearch = event.currentTarget.value
-    setSearch(currentSearch)
-    searchIssuesFilter(
-      currentSearch,
-      issuesWrappers,
-      searchedIssuesWrappers,
-      setSearchedIssuesWrappers
-    )
-  }
 
   if (isLoadingBacklogIssues)
     return (
@@ -197,7 +165,7 @@ export function BacklogView() {
           placeholder="Search by issue summary, key, epic, labels, creator or assignee.."
           leftSection={<IconSearch size={14} stroke={1.5} />}
           value={search}
-          onChange={handleSearchChange}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => { setSearch(event.currentTarget.value) }}
         />
       </Stack>
 
@@ -206,8 +174,7 @@ export function BacklogView() {
           onDragEnd={(dropResult) =>
             onDragEnd({
               ...dropResult,
-              issuesWrappers,
-              updateIssuesWrapper,
+              issuesWrapper,
             })
           }
         >
@@ -220,11 +187,11 @@ export function BacklogView() {
               minWidth: "260px",
             }}
           >
-            {searchedIssuesWrappers.get("Backlog") && (
+            {searchedIssuesWrapper.get(BacklogKey) && ( // IMPROVE: Maybe this check can be removed entirely, please evaluate
               <Box mr="xs">
                 <DraggableIssuesWrapper
                   id="Backlog"
-                  issues={searchedIssuesWrappers.get("Backlog")!.issues.filter(issue => issue.type !== "Epic")}
+                  issues={searchedIssuesWrapper.get(BacklogKey)!.filter(issue => issue.type !== "Epic")}
                 />
               </Box>
             )}
@@ -275,10 +242,11 @@ export function BacklogView() {
             }}
           >
             <SprintsPanel
-              sprintsWithIssues={
-                Array.from(searchedIssuesWrappers.values()).filter(
-                  (issuesWrapper) => issuesWrapper.sprint
-                ) as { issues: Issue[], sprint: Sprint }[]
+              sprints={sprints}
+              issueWrapper={
+                Object.fromEntries(Array.from(searchedIssuesWrapper.keys())
+                  .filter((key) => key !== BacklogKey)
+                  .map((key) => [issuesWrapper.get(key)!.sprintId, searchedIssuesWrapper.get(key)!]))
               }
             />
             <CreateSprint />

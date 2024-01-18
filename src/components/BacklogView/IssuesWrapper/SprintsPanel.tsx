@@ -13,9 +13,11 @@ import {storyPointsAccumulator} from "../../common/StoryPoints/status-accumulato
 import {useCanvasStore} from "../../../lib/Store";
 
 export function SprintsPanel({
-  sprintsWithIssues,
+  sprints,
+  issueWrapper,
 }: {
-  sprintsWithIssues: { issues: Issue[]; sprint: Sprint }[]
+  sprints: { [_: string]: Sprint }
+  issueWrapper: { [_: string]: Issue[] }
 }) {
   const colorScheme = useColorScheme()
 
@@ -43,10 +45,12 @@ export function SprintsPanel({
         },
       })}
     >
-      {sprintsWithIssues
-        .sort(({ sprint: sprintA }, { sprint: sprintB }) =>
-          sortSprintsByActive(sprintA, sprintB)
-        )
+      {Object.keys(issueWrapper)
+        .map((sprintId) => ({
+          issues: issueWrapper[sprintId],
+          sprint: sprints[sprintId]
+        }))
+        .sort(({ sprint: sprintA }, { sprint: sprintB }) => sortSprintsByActive(sprintA, sprintB))
         .map(({ issues, sprint }) => (
           <Accordion.Item
             key={`accordion-item-key-${sprint.name}`}
