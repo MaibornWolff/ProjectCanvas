@@ -58,7 +58,7 @@ export function AddSubtask({
           />
         </Button>
       </Box>
-      {createSubtask.isLoading && <Loader size="sm" />}
+      {createSubtask.isPending && <Loader size="sm" />}
     </Group>
   )
 }

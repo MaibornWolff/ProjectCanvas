@@ -4,12 +4,9 @@ import {useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {useCanvasStore} from "../../lib/Store";
 import {CreateIssueModal} from "../CreateIssue/CreateIssueModal";
-import {Issue} from "../../../types";
 import {EpicWrapper} from "./EpicWrapper";
 import {getEpics} from "./helpers/queryFetchers";
 import {useColorScheme} from "../../common/color-scheme";
-
-
 
 export function EpicView() {
   const colorScheme = useColorScheme()
@@ -17,29 +14,13 @@ export function EpicView() {
   const projectName = useCanvasStore((state) => state.selectedProject?.name)
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
-  const [EpicWrappers, setEpicWrappers] = useState(
-      new Map<string, { issues: Issue[]}>()
-  )
 
-  const updateEpicWrapper = (
-      key: string,
-      value: { issues: Issue[]}
-  ) => {
-      setEpicWrappers((map) => new Map(map.set(key, value)))
-  }
-
-  const {isLoading: isLoadingEpics} =
-     useQuery({
-          queryKey: ["epics", projectKey],
-          queryFn: () => getEpics(projectKey),
-          enabled: !!projectKey,
-          onSuccess: (epics) => {
-              updateEpicWrapper("EpicView", {
-                  issues:
-                      epics && epics instanceof Array ? epics : []
-              })
-          },
-     })
+  const { isLoading: isLoadingEpics, data: epics} = useQuery({
+      queryKey: ["epics", projectKey],
+      queryFn: () => getEpics(projectKey),
+      enabled: !!projectKey,
+      initialData: [],
+  })
   if (isLoadingEpics)
   return (
       <Center style={{ width: "100%", height: "100%" }}>
@@ -87,11 +68,9 @@ export function EpicView() {
             maxHeight: "calc(100vh - 230px)"
           }}
       >
-          {EpicWrappers.get("EpicView") &&(
         <Box mr="xs">
-            <EpicWrapper epics={EpicWrappers.get("EpicView")!.issues}/>
+          <EpicWrapper epics={epics}/>
         </Box>
-        )}
         <Box mr="xs">
           <Button
               mt="sm"

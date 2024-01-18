@@ -41,7 +41,7 @@ export function Subtask({
       <Box style={{ flex: 50 }}>
         <IssueSummary summary={fields.summary} issueKey={subtaskKey} />
       </Box>
-      {deleteSubtask.isLoading && <Loader size="sm" />}
+      {deleteSubtask.isPending && <Loader size="sm" />}
       <ThemeIcon
         variant="outline"
         size="sm"

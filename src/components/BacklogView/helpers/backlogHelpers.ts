@@ -1,5 +1,7 @@
 import { Issue, Sprint } from "types"
-import { Dispatch, SetStateAction } from "react"
+
+export const BacklogKey = "Backlog";
+export type IssuesState = { issues: Issue[], sprintId?: number };
 
 export const pluralize = (count: number, noun: string, suffix = "s") =>
   `${count} ${noun}${count !== 1 ? suffix : ""}`
@@ -17,58 +19,11 @@ export const sortSprintsByActive = (sprintA: Sprint, sprintB: Sprint) => {
 export const sortIssuesByRank = (issueA: Issue, issueB: Issue) =>
   issueA.rank.localeCompare(issueB.rank)
 
-export const searchIssuesFilter = (
-  currentSearch: string,
-  issuesWrappers: Map<
-    string,
-    {
-      issues: Issue[]
-      sprint?: Sprint | undefined
-    }
-  >,
-  searchedissueWrapper: Map<
-    string,
-    {
-      issues: Issue[]
-      sprint?: Sprint | undefined
-    }
-  >,
-  setSearchedissueWrapper: Dispatch<
-    SetStateAction<
-      Map<
-        string,
-        {
-          issues: Issue[]
-          sprint?: Sprint | undefined
-        }
-      >
-    >
-  >
-) => {
-  searchedissueWrapper.forEach((issueWrapper, issueWrapperKey) => {
-    const newIssueWrapper: {
-      issues: Issue[]
-      sprint?: Sprint | undefined
-    } = { issues: [], sprint: issueWrapper.sprint }
-    newIssueWrapper.sprint = issueWrapper.sprint
-    newIssueWrapper.issues = issuesWrappers
-      .get(issueWrapperKey)!
-      .issues.filter(
-        (issue: Issue) =>
-          issue.summary.toLowerCase().includes(currentSearch.toLowerCase()) ||
-          issue.epic.summary?.toLowerCase().includes(currentSearch.toLowerCase()) ||
-          issue.assignee?.displayName
-            ?.toLowerCase()
-            .includes(currentSearch.toLowerCase()) ||
-          issue.issueKey.toLowerCase().includes(currentSearch.toLowerCase()) ||
-          issue.creator?.toLowerCase().includes(currentSearch.toLowerCase()) ||
-          issue.labels?.some((label: string) =>
-            label.toLowerCase().includes(currentSearch.toLowerCase())
-          ) ||
-          currentSearch === ""
-      )
-    setSearchedissueWrapper(
-      (map) => new Map(map.set(issueWrapperKey, newIssueWrapper))
-    )
-  })
-}
+export const searchMatchesIssue = (search: string, issue: Issue) =>
+  search === "" ||
+    issue.summary.toLowerCase().includes(search.toLowerCase()) ||
+    issue.epic.summary?.toLowerCase().includes(search.toLowerCase()) ||
+    issue.assignee?.displayName?.toLowerCase().includes(search.toLowerCase()) ||
+    issue.issueKey.toLowerCase().includes(search.toLowerCase()) ||
+    issue.creator?.toLowerCase().includes(search.toLowerCase()) ||
+    issue.labels?.some((label: string) => label.toLowerCase().includes(search.toLowerCase()))

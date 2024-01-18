@@ -15,7 +15,7 @@ import {
 } from "@mantine/core"
 import { Attachment, Issue, User } from "types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
 import { Description } from "../DetailView/Components/Description"
 import { IssueSummary } from "./Components/IssueSummary"
@@ -94,20 +94,15 @@ export function EpicDetailView({
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
   const currentBoardId = boardIds[0]
 
-  const [childIssues, setChildIssues] = useState<Issue[]>([])
-
-  const { isLoading: isLoadingChildIssues } = useQuery({
+  const { isLoading: isLoadingChildIssues, data: childIssues } = useQuery({
     queryKey: ["issues", projectKey, currentBoardId, issueKey],
     queryFn: () => getIssuesByProject(projectKey, currentBoardId),
     enabled: !!projectKey,
-    onSuccess: (newChildIssues) => {
-      setChildIssues(
-        newChildIssues
-          ?.filter((issue: Issue) => issue.epic.issueKey === issueKey)
-          ?.sort((issueA: Issue, issueB: Issue) => sortIssuesByRank(issueA, issueB))
-            ?? [],
-      )
-    },
+    initialData: [],
+    select: (newChildIssues) =>
+      newChildIssues
+        ?.filter((issue: Issue) => issue.epic.issueKey === issueKey)
+        ?.sort((issueA: Issue, issueB: Issue) => sortIssuesByRank(issueA, issueB)) ?? [],
   })
 
   const getStatusNamesInCategory = (category: StatusType) => issueStatusByCategory[category]?.map((s) => (s.name)) ?? []

@@ -46,7 +46,7 @@ export function EditableEpic({
   return (
     <Group>
       <IssueIcon type="Epic" />
-      {mutationEpic.isLoading && <Loader size="sm" />}
+      {mutationEpic.isPending && <Loader size="sm" />}
       {showEpicInput ? (
         <Box w="300px">
           <CustomItemSelect
