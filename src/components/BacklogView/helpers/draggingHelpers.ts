@@ -21,50 +21,23 @@ export const onDragEnd = ({
   const movedIssueKey = startState.issues[source.index].issueKey
   const destinationSprintId = endState.sprintId
 
+  let newEndList;
   if (startState.sprintId === endState.sprintId) {
-    const newList = startState.issues.filter((_: Issue, idx: number) => idx !== source.index)
-    newList.splice(destination.index, 0, startState.issues[source.index])
+    newEndList = startState.issues.filter((_: Issue, idx: number) => idx !== source.index)
+    newEndList.splice(destination.index, 0, startState.issues[source.index])
 
-    const keyOfIssueRankedBefore =
-      destination.index === 0 ? "" : newList[destination.index - 1].issueKey
-    const keyOfIssueRankedAfter =
-      destination.index === newList.length - 1
-        ? ""
-        : newList[destination.index + 1].issueKey
+    updateIssuesWrapper(source.droppableId, { ...startState, issues: newEndList })
+  } else {
+    const newStartList = startState.issues.filter((_: Issue, idx: number) => idx !== source.index)
+    newEndList = endState.issues.slice()
+    newEndList.splice(destination.index, 0, startState.issues[source.index])
 
-    if (destinationSprintId) {
-      window.provider.moveIssueToSprintAndRank(
-        destinationSprintId,
-        movedIssueKey,
-        keyOfIssueRankedAfter,
-        keyOfIssueRankedBefore
-      )
-    } else if (destination.droppableId === "Backlog") {
-      window.provider.rankIssueInBacklog(
-        movedIssueKey,
-        keyOfIssueRankedAfter,
-        keyOfIssueRankedBefore
-      )
-    }
-
-    updateIssuesWrapper(source.droppableId, { ...startState, issues: newList })
-
-    return
+    updateIssuesWrapper(source.droppableId, { ...startState, issues: newStartList })
+    updateIssuesWrapper(destination.droppableId, { ...endState, issues: newEndList })
   }
 
-  const newStartIssues = startState.issues.filter((_: Issue, idx: number) => idx !== source.index)
-  const newEndIssues = endState.issues.slice()
-  newEndIssues.splice(destination.index, 0, startState.issues[source.index])
-
-  updateIssuesWrapper(source.droppableId, { ...startState, issues: newStartIssues })
-  updateIssuesWrapper(destination.droppableId, { ...endState, issues: newEndIssues })
-
-  const keyOfIssueRankedBefore =
-    destination.index === 0 ? "" : newEndIssues[destination.index - 1].issueKey
-  const keyOfIssueRankedAfter =
-    destination.index === newEndIssues.length - 1
-      ? ""
-      : newEndIssues[destination.index + 1].issueKey
+  const keyOfIssueRankedBefore = destination.index === 0 ? "" : newEndList[destination.index - 1].issueKey
+  const keyOfIssueRankedAfter = destination.index === newEndList.length - 1 ? "" : newEndList[destination.index + 1].issueKey
 
   if (destinationSprintId) {
     window.provider.moveIssueToSprintAndRank(
