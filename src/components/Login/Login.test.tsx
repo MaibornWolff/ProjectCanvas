@@ -27,19 +27,6 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockedUsedNavigate,
 }))
 
-jest.mock("react-i18next", () => ({
-  useTranslation: () => ({
-    t: (str: string) => str,
-    i18n: {
-      changeLanguage: () => new Promise(() => {}),
-    },
-  }),
-  initReactI18next: {
-    type: "3rdParty",
-    init: () => {},
-  },
-}))
-
 describe("<Login />", () => {
   it("should set providerLogin to JiraCloud after clicking on the Jira Cloud Button", async () => {
     const { container, getByTestId } = render(

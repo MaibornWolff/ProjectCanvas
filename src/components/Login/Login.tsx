@@ -1,10 +1,8 @@
-import {Button, Container, Divider, Group, Image, Paper, rgba} from "@mantine/core"
+import { Button, Container, Divider, Image, Paper, rgba } from "@mantine/core"
 import { IconCloud, IconServer } from "@tabler/icons-react"
 import { ipcRenderer } from "electron"
 import { useState } from "react"
-import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { LanguageSelector } from "../common/LanguageSelector"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { JiraCloudLogin } from "./jira-cloud/JiraCloudLogin"
 import { JiraServerLogin } from "./jira-server/JiraServerLogin"
@@ -15,7 +13,6 @@ export function Login() {
   const navigateTo = useNavigate()
   const onSuccess = () => navigateTo("/projectsview")
   const goBack = () => setProviderLogin("")
-  const { t } = useTranslation("login")
   const colorScheme = useColorScheme()
 
   return (
@@ -39,10 +36,7 @@ export function Login() {
           borderRadius: theme.radius.lg,
         })}
       >
-        <Group gap="xs">
-          <ColorSchemeToggle ml="auto" />
-          <LanguageSelector />
-        </Group>
+        <ColorSchemeToggle ml="auto" />
         <Image
           mx="auto"
           src="./project_canvas_logo.svg"
@@ -61,7 +55,7 @@ export function Login() {
           <>
             <Divider
               my="lg"
-              label={t("choseProvider")}
+              label="Please choose a Provider"
               labelPosition="center"
             />
             <Button
