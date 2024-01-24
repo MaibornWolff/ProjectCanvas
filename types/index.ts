@@ -115,9 +115,9 @@ export interface IssueStatus {
   id: string
   name: string
   statusCategory: {
-    id: number,
-    key: string,
-    name: string,
+    id: number
+    key: string
+    name: string
   }
 }
 

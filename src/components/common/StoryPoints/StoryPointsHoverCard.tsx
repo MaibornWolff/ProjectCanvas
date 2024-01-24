@@ -1,11 +1,11 @@
 import { Text, HoverCard, Box } from "@mantine/core"
-import { StatusType } from "../../../../types/status";
-import { StoryPointsBadge } from "./StoryPointsBadge";
+import { StatusType } from "../../../../types/status"
+import { StoryPointsBadge } from "./StoryPointsBadge"
 
 export function StoryPointsHoverCard({
   statusType,
-  count = 0
- }: {
+  count = 0,
+}: {
   statusType: StatusType
   count: number
 }) {
@@ -13,14 +13,14 @@ export function StoryPointsHoverCard({
     <HoverCard width="relative" shadow="md" radius="md">
       <HoverCard.Target>
         <Box style={{ marginBottom: "20px" }}>
-          <StoryPointsBadge statusType={statusType} storyPointsEstimate={count} />
+          <StoryPointsBadge
+            statusType={statusType}
+            storyPointsEstimate={count}
+          />
         </Box>
       </HoverCard.Target>
       <HoverCard.Dropdown>
-        <Text
-          size="sm"
-          style={{ marginLeft: "-5px" }}
-        >
+        <Text size="sm" style={{ marginLeft: "-5px" }}>
           Total story points for <b>{statusType}</b> issues: <b>{count}</b>
         </Text>
       </HoverCard.Dropdown>

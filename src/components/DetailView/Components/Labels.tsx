@@ -1,22 +1,16 @@
-import {
-  MultiSelect,
-  Text,
-  Group,
-  Box,
-  useMantineTheme,
-} from "@mantine/core"
+import { MultiSelect, Text, Group, Box, useMantineTheme } from "@mantine/core"
 import { showNotification } from "@mantine/notifications"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Issue } from "types"
 import { useState } from "react"
 import { getLabels } from "../../CreateIssue/queryFunctions"
 import { editIssue } from "../helpers/queryFunctions"
-import { IssueLabelBadge } from "../../common/IssueLabelBadge";
+import { IssueLabelBadge } from "../../common/IssueLabelBadge"
 
 export function Labels({
   labels,
   issueKey,
-  onMutate = () => {}
+  onMutate = () => {},
 }: {
   labels: string[]
   issueKey: string
@@ -76,7 +70,9 @@ export function Labels({
         <Box onClick={() => setShowLabelsInput(true)}>
           {defaultLabels.length !== 0 ? (
             <Group gap={3}>
-              {defaultLabels.map((label) => (<IssueLabelBadge key={`${issueKey}-${label}`} label={label} />))}
+              {defaultLabels.map((label) => (
+                <IssueLabelBadge key={`${issueKey}-${label}`} label={label} />
+              ))}
             </Group>
           ) : (
             <Text c="dimmed">None</Text>

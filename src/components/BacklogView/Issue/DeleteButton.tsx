@@ -1,9 +1,9 @@
 import { ActionIcon, Transition, Popover, Box } from "@mantine/core"
 import { IconTrash } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
-import { useHover } from "@mantine/hooks";
+import { useHover } from "@mantine/hooks"
 import { DeleteIssueAlert } from "../../DetailView/Components/DeleteIssue/DeleteIssueAlert"
-import { useColorScheme } from "../../../common/color-scheme";
+import { useColorScheme } from "../../../common/color-scheme"
 
 export function DeleteButton({
   mounted,
@@ -56,7 +56,8 @@ export function DeleteButton({
             </Popover.Target>
             <Popover.Dropdown
               style={(theme) => ({
-                background: colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+                background:
+                  colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
               })}
             >
               <Box

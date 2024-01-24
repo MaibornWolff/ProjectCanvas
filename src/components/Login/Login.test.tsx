@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { MantineProvider } from "@mantine/core";
+import { MantineProvider } from "@mantine/core"
 import { Login } from "./Login"
 
 jest.mock("../../get-meta-env.ts", () => ({

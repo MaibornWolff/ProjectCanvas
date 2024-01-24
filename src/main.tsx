@@ -6,9 +6,9 @@ import { HashRouter } from "react-router-dom"
 import { App } from "./App"
 import { ThemeProvider } from "./ThemeProvider"
 
-import '@mantine/core/styles.css';
-import '@mantine/dates/styles.css';
-import '@mantine/notifications/styles.css';
+import "@mantine/core/styles.css"
+import "@mantine/dates/styles.css"
+import "@mantine/notifications/styles.css"
 
 const queryClient = new QueryClient()
 

@@ -14,11 +14,7 @@ export function DraggableIssuesWrapper({
     <StrictModeDroppable droppableId={id}>
       {(provided) =>
         issues.length !== 0 ? (
-          <Stack
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-            gap="sm"
-          >
+          <Stack {...provided.droppableProps} ref={provided.innerRef} gap="sm">
             {issues.map((issue: Issue, index) => (
               <IssueCard {...issue} key={issue.issueKey} index={index} />
             ))}

@@ -15,7 +15,7 @@ export function LayoutHeader() {
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
 
   return (
-    <AppShell.Header p="sm" className={classes.root} >
+    <AppShell.Header p="sm" className={classes.root}>
       <Box
         style={(theme) => ({
           paddingLeft: theme.spacing.xs,
@@ -46,7 +46,8 @@ export function LayoutHeader() {
           <Anchor
             component="button"
             type="button"
-            onClick={() => navigate(RouteNames.EPIC_VIEW)}>
+            onClick={() => navigate(RouteNames.EPIC_VIEW)}
+          >
             Epics
           </Anchor>
           <StoryMapMenu />

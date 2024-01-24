@@ -6,7 +6,8 @@ export const getSprints = (boardId: number): Promise<Sprint[]> =>
 export const getIssuesByProject = (
   projectKey: string | undefined,
   boardId: number
-): Promise<Issue[]> => window.provider.getIssuesByProject(projectKey || "", boardId)
+): Promise<Issue[]> =>
+  window.provider.getIssuesByProject(projectKey || "", boardId)
 
 export const getIssuesBySprint = (
   sprintId: number | undefined

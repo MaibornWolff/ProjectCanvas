@@ -6,7 +6,7 @@ import {
   IconBolt,
   IconEdit,
 } from "@tabler/icons-react"
-import { ReactElement } from "react";
+import { ReactElement } from "react"
 
 export function IssueIcon({ type }: { type: string }) {
   const stringToColor = (value: string) => {

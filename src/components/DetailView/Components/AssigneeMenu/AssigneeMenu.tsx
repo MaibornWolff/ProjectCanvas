@@ -1,11 +1,8 @@
-import {
-  Group,
-  Text,
-} from "@mantine/core"
+import { Group, Text } from "@mantine/core"
 import { useQueryClient } from "@tanstack/react-query"
 import { Issue } from "types"
 import { editIssueMutation } from "./queries"
-import { UserSelectMenu } from "../../../common/UserSelect/UserSelectMenu";
+import { UserSelectMenu } from "../../../common/UserSelect/UserSelectMenu"
 
 export function AssigneeMenu({
   assignee,
@@ -24,7 +21,9 @@ export function AssigneeMenu({
       </Text>
       <UserSelectMenu
         value={assignee}
-        onChange={(selectedUser) => editIssue.mutate({ assignee: selectedUser } as Issue)}
+        onChange={(selectedUser) =>
+          editIssue.mutate({ assignee: selectedUser } as Issue)
+        }
         placeholder="Unassigned"
       />
     </Group>

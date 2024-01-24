@@ -18,12 +18,12 @@ import { Issue } from "../../../../../types"
 import { DetailView } from "../../../DetailView/DetailView"
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon"
 import { DeleteButton } from "../../../BacklogView/Issue/DeleteButton"
-import { StatusType } from "../../../../../types/status";
-import { StoryPointsBadge } from "../../../common/StoryPoints/StoryPointsBadge";
-import { useColorScheme } from "../../../../common/color-scheme";
-import { IssueEpicBadge } from "../../../common/IssueEpicBadge";
-import { IssueLabelBadge } from "../../../common/IssueLabelBadge";
-import {useCanvasStore} from "../../../../lib/Store";
+import { StatusType } from "../../../../../types/status"
+import { StoryPointsBadge } from "../../../common/StoryPoints/StoryPointsBadge"
+import { useColorScheme } from "../../../../common/color-scheme"
+import { IssueEpicBadge } from "../../../common/IssueEpicBadge"
+import { IssueLabelBadge } from "../../../common/IssueLabelBadge"
+import { useCanvasStore } from "../../../../lib/Store"
 
 export function ChildIssueCard({
   issueKey,
@@ -43,7 +43,8 @@ export function ChildIssueCard({
   const { hovered } = useHover()
   const theme = useMantineTheme()
   const colorScheme = useColorScheme()
-  const { issueStatusCategoryByStatusName: statusNameToCategory } = useCanvasStore();
+  const { issueStatusCategoryByStatusName: statusNameToCategory } =
+    useCanvasStore()
 
   const hoverStyles =
     colorScheme === "dark"
@@ -90,7 +91,11 @@ export function ChildIssueCard({
                   size="sm"
                   mr={5}
                   c="blue"
-                  td={statusNameToCategory[status] === StatusType.DONE ? "line-through" : "none"}
+                  td={
+                    statusNameToCategory[status] === StatusType.DONE
+                      ? "line-through"
+                      : "none"
+                  }
                   style={{
                     ":hover": {
                       textDecoration: "underline",
@@ -100,8 +105,16 @@ export function ChildIssueCard({
                 >
                   {issueKey}
                 </Text>
-                {epic.issueKey && (<IssueEpicBadge issueKey={issueKey} epic={epic} />)}
-                {labels && labels.map((label) => (<IssueLabelBadge key={`${issueKey}-${label}`} label={label} />))}
+                {epic.issueKey && (
+                  <IssueEpicBadge issueKey={issueKey} epic={epic} />
+                )}
+                {labels &&
+                  labels.map((label) => (
+                    <IssueLabelBadge
+                      key={`${issueKey}-${label}`}
+                      label={label}
+                    />
+                  ))}
               </Group>
               <Text size="lg">{summary}</Text>
               <Group align="center" gap="sm">
@@ -120,8 +133,12 @@ export function ChildIssueCard({
             }}
           >
             <Box style={{ alignSelf: "flex-start" }}>
-              {storyPointsEstimate &&
-                <StoryPointsBadge statusType={statusNameToCategory[status]} storyPointsEstimate={storyPointsEstimate} />}
+              {storyPointsEstimate && (
+                <StoryPointsBadge
+                  statusType={statusNameToCategory[status]}
+                  storyPointsEstimate={storyPointsEstimate}
+                />
+              )}
             </Box>
           </Grid.Col>
           <Grid.Col

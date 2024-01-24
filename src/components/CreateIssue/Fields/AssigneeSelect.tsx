@@ -1,7 +1,7 @@
 import { UseFormReturnType } from "@mantine/form"
 import { Issue, User } from "types"
 import { SelectItem } from "../SelectItem"
-import { CustomItemSelect } from "../../common/CustomItemSelect";
+import { CustomItemSelect } from "../../common/CustomItemSelect"
 
 export function AssigneeSelect({
   form,
@@ -22,17 +22,19 @@ export function AssigneeSelect({
       options={
         !isLoading && assignableUsers
           ? assignableUsers.map((assignableUser) => ({
-            image: assignableUser.avatarUrls["24x24"],
-            value: assignableUser.id,
-            label: assignableUser.displayName,
-          }))
+              image: assignableUser.avatarUrls["24x24"],
+              value: assignableUser.id,
+              label: assignableUser.displayName,
+            }))
           : []
       }
       ItemComponent={SelectItem}
       {...form.getInputProps("assignee")}
-      value={ form.getInputProps("assignee").value?.id }
+      value={form.getInputProps("assignee").value?.id}
       onChange={(value) => {
-        form.getInputProps("assignee").onChange(assignableUsers?.find((user) => user.id === value))
+        form
+          .getInputProps("assignee")
+          .onChange(assignableUsers?.find((user) => user.id === value))
       }}
     />
   )

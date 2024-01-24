@@ -22,7 +22,7 @@ export function IssueTypeSelect({
               .filter((issueType) => issueType.name !== "Subtask")
               .map((issueType) => ({
                 value: issueType.id,
-                label: issueType.name ?? '*unknown*',
+                label: issueType.name ?? "*unknown*",
               }))
           : []
       }

@@ -1,4 +1,4 @@
-import {Attachment, Priority, User} from "."
+import { Attachment, Priority, User } from "."
 
 export interface JiraProject {
   projectTypeKey: string
@@ -44,14 +44,15 @@ export interface JiraEpic {
   key: string
   fields: {
     description: {
-      type: string,
-      version: string,
-      content: string & {
-        content: {
-          type: string,
-          text: string
+      type: string
+      version: string
+      content: string &
+        {
+          content: {
+            type: string
+            text: string
+          }[]
         }[]
-      }[]
     }
     summary: string
     creator: { name: string; displayName: string }
@@ -126,14 +127,15 @@ export interface JiraIssue {
   changelog: JiraChangelog
   fields: {
     description: {
-      type: string,
-      version: string,
-      content: string & {
-        content: {
-          type: string,
-          text: string
+      type: string
+      version: string
+      content: string &
+        {
+          content: {
+            type: string
+            text: string
+          }[]
         }[]
-      }[]
     }
     summary: string
     creator: { name: string; displayName: string }
@@ -177,12 +179,13 @@ export interface JiraIssue {
             }
             displayName: string
           }
-          body: string & {
-            content: {
-              type: string,
-              text: string
+          body: string &
+            {
+              content: {
+                type: string
+                text: string
+              }[]
             }[]
-          }[]
           created: string
           updated: string
         }

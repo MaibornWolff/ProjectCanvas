@@ -18,7 +18,7 @@ import { GoalInput } from "./GoalInput"
 import { SprintEndDatePicker } from "./SprintEndDatePicker"
 import { SprintStartDatePicker } from "./SprintStartDatePicker"
 import { ColorSchemeToggle } from "../../common/ColorSchemeToggle"
-import { useColorScheme } from "../../../common/color-scheme";
+import { useColorScheme } from "../../../common/color-scheme"
 
 export function CreateSprintModal({
   opened,
@@ -71,9 +71,8 @@ export function CreateSprintModal({
       title="Create Sprint"
       size="70vw"
       overlayProps={{
-        color: colorScheme === "dark"
-          ? theme.colors.dark[9]
-          : theme.colors.gray[2],
+        color:
+          colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
         opacity: 0.55,
         blur: 3,
       }}

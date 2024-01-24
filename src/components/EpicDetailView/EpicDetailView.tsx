@@ -33,12 +33,12 @@ import {
   issueCountAccumulator,
   storyPointsAccumulator,
 } from "../common/StoryPoints/status-accumulator"
-import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard";
-import { CommentSection } from "../DetailView/Components/CommentSection";
-import { StatusType } from "../../../types/status";
+import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard"
+import { CommentSection } from "../DetailView/Components/CommentSection"
+import { StatusType } from "../../../types/status"
 import { getStatusTypeColor } from "../../common/status-color"
-import { Attachments } from "../DetailView/Components/Attachments/Attachments";
-import { IssueStatusMenu } from "../DetailView/Components/IssueStatusMenu";
+import { Attachments } from "../DetailView/Components/Attachments/Attachments"
+import { IssueStatusMenu } from "../DetailView/Components/IssueStatusMenu"
 
 export function EpicDetailView({
   issueKey,
@@ -83,14 +83,15 @@ export function EpicDetailView({
   const reloadEpics = () => {
     queryClient.invalidateQueries({ queryKey: ["issues"] })
     queryClient.invalidateQueries({ queryKey: ["epics"] })
-  };
+  }
 
   const dateFormat = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
     timeStyle: "short",
   })
 
-  const { issueStatusByCategory, selectedProjectBoardIds: boardIds } = useCanvasStore();
+  const { issueStatusByCategory, selectedProjectBoardIds: boardIds } =
+    useCanvasStore()
   const projectKey = useCanvasStore((state) => state.selectedProject?.key)
   const currentBoardId = boardIds[0]
 
@@ -102,16 +103,22 @@ export function EpicDetailView({
     select: (newChildIssues) =>
       newChildIssues
         ?.filter((issue: Issue) => issue.epic.issueKey === issueKey)
-        ?.sort((issueA: Issue, issueB: Issue) => sortIssuesByRank(issueA, issueB)) ?? [],
+        ?.sort((issueA: Issue, issueB: Issue) =>
+          sortIssuesByRank(issueA, issueB)
+        ) ?? [],
   })
 
-  const getStatusNamesInCategory = (category: StatusType) => issueStatusByCategory[category]?.map((s) => (s.name)) ?? []
+  const getStatusNamesInCategory = (category: StatusType) =>
+    issueStatusByCategory[category]?.map((s) => s.name) ?? []
   const validTodoStatus = getStatusNamesInCategory(StatusType.TODO)
   const validInProgressStatus = getStatusNamesInCategory(StatusType.IN_PROGRESS)
   const validDoneStatus = getStatusNamesInCategory(StatusType.DONE)
 
   const tasksTodo = issueCountAccumulator(childIssues, validTodoStatus)
-  const tasksInProgress = issueCountAccumulator(childIssues, validInProgressStatus)
+  const tasksInProgress = issueCountAccumulator(
+    childIssues,
+    validInProgressStatus
+  )
   const tasksDone = issueCountAccumulator(childIssues, validDoneStatus)
   const totalTaskCount = tasksTodo + tasksInProgress + tasksDone
 
@@ -169,30 +176,43 @@ export function EpicDetailView({
                 width: "400px",
                 marginRight: "5px",
                 marginBottom: "20px",
-                flexGrow: 1
+                flexGrow: 1,
               }}
             >
               <Tooltip label={`${tasksDone} Done`}>
-                <Progress.Section value={(tasksDone / totalTaskCount) * 100} color={getStatusTypeColor(StatusType.DONE)}>
+                <Progress.Section
+                  value={(tasksDone / totalTaskCount) * 100}
+                  color={getStatusTypeColor(StatusType.DONE)}
+                >
                   <Progress.Label>{tasksDone}</Progress.Label>
                 </Progress.Section>
               </Tooltip>
               <Tooltip label={`${tasksInProgress} In progress`}>
-                <Progress.Section value={(tasksInProgress / totalTaskCount) * 100} color={getStatusTypeColor(StatusType.IN_PROGRESS)}>
+                <Progress.Section
+                  value={(tasksInProgress / totalTaskCount) * 100}
+                  color={getStatusTypeColor(StatusType.IN_PROGRESS)}
+                >
                   <Progress.Label>{tasksInProgress}</Progress.Label>
                 </Progress.Section>
               </Tooltip>
               <Tooltip label={`${tasksTodo} To do`}>
-                <Progress.Section value={(tasksTodo / totalTaskCount) * 100} color={getStatusTypeColor(StatusType.TODO)}>
+                <Progress.Section
+                  value={(tasksTodo / totalTaskCount) * 100}
+                  color={getStatusTypeColor(StatusType.TODO)}
+                >
                   <Progress.Label>{tasksTodo}</Progress.Label>
                 </Progress.Section>
               </Tooltip>
-              {totalTaskCount === 0 &&
+              {totalTaskCount === 0 && (
                 <Tooltip label="Currently no child issues">
-                    <Progress.Section value={100} color={getStatusTypeColor(StatusType.TODO)}>
-                        <Progress.Label>0</Progress.Label>
-                    </Progress.Section>
-                </Tooltip>}
+                  <Progress.Section
+                    value={100}
+                    color={getStatusTypeColor(StatusType.TODO)}
+                  >
+                    <Progress.Label>0</Progress.Label>
+                  </Progress.Section>
+                </Tooltip>
+              )}
             </Progress.Root>
             <StoryPointsHoverCard
               statusType={StatusType.TODO}
@@ -212,10 +232,17 @@ export function EpicDetailView({
             <ChildIssues issues={childIssues} />
           </Group>
         </Stack>
-        <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
+        <ScrollArea.Autosize
+          style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}
+        >
           <Box>
             <Group justify="space-between" mb="sm">
-              <IssueStatusMenu projectId={projectId} issueKey={issueKey} type={type} status={status} />
+              <IssueStatusMenu
+                projectId={projectId}
+                issueKey={issueKey}
+                type={type}
+                status={status}
+              />
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>

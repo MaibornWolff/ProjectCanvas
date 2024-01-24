@@ -5,7 +5,7 @@ import { Issue } from "types"
 import { getIssueReporter } from "../../CreateIssue/queryFunctions"
 import { editIssue } from "../helpers/queryFunctions"
 
-import { UserSelectMenu } from "../../common/UserSelect/UserSelectMenu";
+import { UserSelectMenu } from "../../common/UserSelect/UserSelectMenu"
 
 export function ReporterMenu({ issueKey }: { issueKey: string }) {
   const queryClient = useQueryClient()
@@ -35,13 +35,19 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
 
   return (
     <Group grow>
-      <Text fz="sm" c="dimmed">Reporter</Text>
-      {issueReporter && issueReporter.displayName && issueReporter.avatarUrls && (
-        <UserSelectMenu
-          value={issueReporter}
-          onChange={(selectedUser) => mutation.mutate({ reporter: selectedUser } as Issue)}
-        />
-      )}
+      <Text fz="sm" c="dimmed">
+        Reporter
+      </Text>
+      {issueReporter &&
+        issueReporter.displayName &&
+        issueReporter.avatarUrls && (
+          <UserSelectMenu
+            value={issueReporter}
+            onChange={(selectedUser) =>
+              mutation.mutate({ reporter: selectedUser } as Issue)
+            }
+          />
+        )}
     </Group>
   )
 }

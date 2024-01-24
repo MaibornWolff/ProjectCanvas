@@ -1,4 +1,12 @@
-import { ScrollArea, Table, Text, TextInput, Center, Group, UnstyledButton } from "@mantine/core"
+import {
+  ScrollArea,
+  Table,
+  Text,
+  TextInput,
+  Center,
+  Group,
+  UnstyledButton,
+} from "@mantine/core"
 import {
   Icon,
   IconChevronDown,
@@ -13,14 +21,15 @@ import { useCanvasStore } from "../../../lib/Store"
 import { sortData } from "./TableHelper"
 import { RouteNames } from "../../../route-names"
 
-import classes from "./ProjectsTable.module.css";
+import classes from "./ProjectsTable.module.css"
 
 export function ProjectsTable({ data }: { data: Project[] }) {
   const [search, setSearch] = useState("")
   const [sortedData, setSortedData] = useState(data)
   const [sortBy, setSortBy] = useState<keyof Project | null>(null)
   const [reverseSortDirection, setReverseSortDirection] = useState(false)
-  const { setSelectedProject, setSelectedProjectBoardIds, setIssueTypes } = useCanvasStore()
+  const { setSelectedProject, setSelectedProjectBoardIds, setIssueTypes } =
+    useCanvasStore()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -53,16 +62,22 @@ export function ProjectsTable({ data }: { data: Project[] }) {
     navigate(RouteNames.BACKLOG_VIEW)
   }
 
-  const header = data && data.length > 0 && Object.keys(data[0]).map((key) => {
-    let SortIcon: Icon
-    if (sortBy === key) {
-      if (reverseSortDirection) SortIcon = IconChevronUp
-      else SortIcon = IconChevronDown
-    } else SortIcon = IconSelector
+  const header =
+    data &&
+    data.length > 0 &&
+    Object.keys(data[0]).map((key) => {
+      let SortIcon: Icon
+      if (sortBy === key) {
+        if (reverseSortDirection) SortIcon = IconChevronUp
+        else SortIcon = IconChevronDown
+      } else SortIcon = IconSelector
 
-    return (
+      return (
         <Table.Th key={key}>
-          <UnstyledButton onClick={() => setSorting(key as keyof Project)} className={classes.headerControl}>
+          <UnstyledButton
+            onClick={() => setSorting(key as keyof Project)}
+            className={classes.headerControl}
+          >
             <Group justify="space-between">
               <Text size="sm" style={{ fontWeight: 500 }}>
                 {key.toLocaleUpperCase()}
@@ -73,8 +88,8 @@ export function ProjectsTable({ data }: { data: Project[] }) {
             </Group>
           </UnstyledButton>
         </Table.Th>
-    )
-  })
+      )
+    })
 
   const rows = sortedData.map((row) => (
     <Table.Tr
@@ -104,9 +119,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
         style={{ tableLayout: "fixed", minWidth: 700 }}
       >
         <Table.Thead>
-          <Table.Tr>
-            {header}
-          </Table.Tr>
+          <Table.Tr>{header}</Table.Tr>
         </Table.Thead>
         <Table.Tbody>
           {rows.length > 0 ? (

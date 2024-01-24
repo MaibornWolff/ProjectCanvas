@@ -6,7 +6,7 @@ import { BacklogView } from "./components/BacklogView"
 import { EpicView } from "./components/EpicView"
 import { StoryMapView } from "./components/StoryMapView"
 import { StoryMapDashboard } from "./components/StoryMapView/StoryMapDashboard"
-import { RouteNames } from "./route-names";
+import { RouteNames } from "./route-names"
 
 export function App() {
   return (

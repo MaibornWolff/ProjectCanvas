@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Issue } from "types"
 import { getPriorities } from "../queryFunctions"
 import { SelectItem } from "../SelectItem"
-import { CustomItemSelect } from "../../common/CustomItemSelect";
+import { CustomItemSelect } from "../../common/CustomItemSelect"
 
 export function PrioritySelect({
   form,
@@ -51,10 +51,10 @@ export function PrioritySelect({
           options={
             !isLoading && priorities
               ? priorities.map((priority) => ({
-                image: priority.iconUrl,
-                value: priority.id,
-                label: priority.name,
-              }))
+                  image: priority.iconUrl,
+                  value: priority.id,
+                  label: priority.name,
+                }))
               : []
           }
           ItemComponent={SelectItem}

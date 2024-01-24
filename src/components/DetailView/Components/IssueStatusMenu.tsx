@@ -1,9 +1,9 @@
 import { Box, Button, Menu } from "@mantine/core"
 import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { IconCaretDown } from "@tabler/icons-react";
-import { getIssueTypes, setStatus } from "../../CreateIssue/queryFunctions";
-import classes from "./IssueStatusMenu.module.css";
+import { IconCaretDown } from "@tabler/icons-react"
+import { getIssueTypes, setStatus } from "../../CreateIssue/queryFunctions"
+import classes from "./IssueStatusMenu.module.css"
 
 export function IssueStatusMenu({
   projectId,

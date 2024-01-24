@@ -27,7 +27,7 @@ export const addCommentMutation = (queryClient: QueryClient) =>
         color: "green",
       })
       queryClient.invalidateQueries({ queryKey: ["issues"] })
-      queryClient.invalidateQueries({queryKey: ["epics"]})
+      queryClient.invalidateQueries({ queryKey: ["epics"] })
     },
   })
 
@@ -54,7 +54,7 @@ export const editCommentMutation = (queryClient: QueryClient) =>
         color: "green",
       })
       queryClient.invalidateQueries({ queryKey: ["issues"] })
-      queryClient.invalidateQueries({queryKey: ["epics"]})
+      queryClient.invalidateQueries({ queryKey: ["epics"] })
     },
   })
 
@@ -79,6 +79,6 @@ export const deleteCommentMutation = (queryClient: QueryClient) =>
         color: "green",
       })
       queryClient.invalidateQueries({ queryKey: ["issues"] })
-      queryClient.invalidateQueries({queryKey: ["epics"]})
+      queryClient.invalidateQueries({ queryKey: ["epics"] })
     },
   })

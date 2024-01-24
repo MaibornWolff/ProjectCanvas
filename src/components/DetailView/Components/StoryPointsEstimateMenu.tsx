@@ -24,8 +24,9 @@ export function StoryPointsEstimateMenu({
   const queryClient = useQueryClient()
   const theme = useMantineTheme()
   const timeoutRef = useRef<number | null>(null)
-  const [localStoryPtsEstimate, setLocalStoryPtsEstimate] =
-    useState<number | undefined>(storyPointsEstimate)
+  const [localStoryPtsEstimate, setLocalStoryPtsEstimate] = useState<
+    number | undefined
+  >(storyPointsEstimate)
   const [showEditableInput, setShowEditableInput] = useState(false)
   const [showLoader, setShowLoader] = useState(false)
 
@@ -69,13 +70,13 @@ export function StoryPointsEstimateMenu({
   }
 
   function numberInputToOptNumber(val: number | string): number | undefined {
-    if (val === '')
-      return undefined
+    if (val === "") return undefined
 
-    if (typeof val === "number")
-      return val
+    if (typeof val === "number") return val
 
-    throw new Error(`Unexpected number input value of type ${typeof val}: ${val}`)
+    throw new Error(
+      `Unexpected number input value of type ${typeof val}: ${val}`
+    )
   }
 
   return editableFields && editableFields.includes("Story point estimate") ? (

@@ -186,12 +186,7 @@ export function Attachments(props: {
                                   <Text size="xs" c="dimmed" truncate>
                                     {attachment.filename}
                                   </Text>
-                                  <Text
-                                    size="xs"
-                                    fw={600}
-                                    c="dimmed"
-                                    truncate
-                                  >
+                                  <Text size="xs" fw={600} c="dimmed" truncate>
                                     {new Intl.DateTimeFormat("en-GB", {
                                       dateStyle: "short",
                                       timeStyle: "short",

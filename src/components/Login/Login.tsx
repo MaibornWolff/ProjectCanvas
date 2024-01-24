@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { JiraCloudLogin } from "./jira-cloud/JiraCloudLogin"
 import { JiraServerLogin } from "./jira-server/JiraServerLogin"
-import { useColorScheme } from "../../common/color-scheme";
-import { RouteNames } from "../../route-names";
+import { useColorScheme } from "../../common/color-scheme"
+import { RouteNames } from "../../route-names"
 
 export function Login() {
   const [providerLogin, setProviderLogin] = useState("")
@@ -44,9 +44,7 @@ export function Login() {
           style={() => ({
             maxWidth: "220px",
             backgroundColor:
-              colorScheme === "dark"
-                ? rgba("#fff", 0.3)
-                : "transparent",
+              colorScheme === "dark" ? rgba("#fff", 0.3) : "transparent",
             borderRadius: "20px",
             padding: "20px",
           })}

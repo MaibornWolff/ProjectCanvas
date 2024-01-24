@@ -43,7 +43,7 @@ import {
   getIssueTypes,
   getIssueTypesWithFieldsMap,
 } from "./queryFunctions"
-import { useColorScheme } from "../../common/color-scheme";
+import { useColorScheme } from "../../common/color-scheme"
 
 export function CreateIssueModal({
   opened,
@@ -74,7 +74,7 @@ export function CreateIssueModal({
       status: "To Do",
       reporter: currentUser,
       priority: { id: "" },
-      epic: { issueKey: undefined }
+      epic: { issueKey: undefined },
     } as Issue,
   })
 
@@ -87,8 +87,9 @@ export function CreateIssueModal({
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", form.getInputProps("projectId").value],
     queryFn: () => {
-      const relevantProject = projects
-        .find((project) => project.id === form.getInputProps("projectId").value!)!
+      const relevantProject = projects.find(
+        (project) => project.id === form.getInputProps("projectId").value!
+      )!
 
       return getAssignableUsersByProject(relevantProject.key)
     },
@@ -133,7 +134,8 @@ export function CreateIssueModal({
       title="Create Issue"
       size="70vw"
       overlayProps={{
-        color: colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
+        color:
+          colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
         opacity: 0.55,
         blur: 5,
       }}

@@ -25,7 +25,7 @@ import { DeleteIssue } from "./Components/DeleteIssue"
 import { Attachments } from "./Components/Attachments/Attachments"
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
-import { IssueStatusMenu } from "./Components/IssueStatusMenu";
+import { IssueStatusMenu } from "./Components/IssueStatusMenu"
 
 export function DetailView({
   issueKey,
@@ -46,7 +46,6 @@ export function DetailView({
   attachments,
   closeModal,
 }: Issue & { closeModal: () => void }) {
-
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
@@ -97,10 +96,17 @@ export function DetailView({
             <CommentSection issueKey={issueKey} comment={comment} />
           </ScrollArea.Autosize>
         </Stack>
-        <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
+        <ScrollArea.Autosize
+          style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}
+        >
           <Box>
             <Group justify="space-between" mb="sm">
-              <IssueStatusMenu projectId={projectId} issueKey={issueKey} type={type} status={status} />
+              <IssueStatusMenu
+                projectId={projectId}
+                issueKey={issueKey}
+                type={type}
+                status={status}
+              />
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
@@ -110,7 +116,10 @@ export function DetailView({
                 </Accordion.Control>
                 <Accordion.Panel>
                   <Stack>
-                    <AssigneeMenu assignee={assignee as Issue["assignee"]} issueKey={issueKey} />
+                    <AssigneeMenu
+                      assignee={assignee as Issue["assignee"]}
+                      issueKey={issueKey}
+                    />
                     <Group grow>
                       <Text fz="sm" c="dimmed">
                         Labels

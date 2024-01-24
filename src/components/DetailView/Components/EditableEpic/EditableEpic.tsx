@@ -7,7 +7,7 @@ import { editIssue } from "../../helpers/queryFunctions"
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon"
 import { getEpicsByProject } from "./queryFunctions"
 import { SelectItem } from "./SelectItem"
-import { CustomItemSelect } from "../../../common/CustomItemSelect";
+import { CustomItemSelect } from "../../../common/CustomItemSelect"
 
 export function EditableEpic({
   projectId,
@@ -17,8 +17,8 @@ export function EditableEpic({
   projectId: string
   issueKey: string
   epic: {
-    issueKey?: string,
-    summary?: string,
+    issueKey?: string
+    summary?: string
   }
 }) {
   const [showEpicInput, setShowEpicInput] = useState(false)
@@ -28,7 +28,8 @@ export function EditableEpic({
   })
   const [selectedEpic, setSelectedEpic] = useState(epic.issueKey)
   const mutationEpic = useMutation({
-    mutationFn: (epicKey: string | null) => editIssue({ epic: { issueKey: epicKey } } as Issue, issueKey),
+    mutationFn: (epicKey: string | null) =>
+      editIssue({ epic: { issueKey: epicKey } } as Issue, issueKey),
     onError: () => {
       showNotification({
         message: `An error occurred while modifing the Epic 😢`,
@@ -54,9 +55,9 @@ export function EditableEpic({
             options={
               epics
                 ? epics.map((epicItem) => ({
-                  value: epicItem.issueKey,
-                  label: epicItem.summary,
-                }))
+                    value: epicItem.issueKey,
+                    label: epicItem.summary,
+                  }))
                 : []
             }
             searchable

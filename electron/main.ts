@@ -1,5 +1,5 @@
 import { ipcMain, shell, app, BrowserWindow } from "electron"
-import * as electron from 'electron'
+import * as electron from "electron"
 import path from "path"
 import { handleOAuth2 } from "./OAuthHelper"
 import {
@@ -36,7 +36,7 @@ import {
   refreshAccessToken,
   setTransition,
 } from "./provider"
-import { getExportIssuesHandler } from "./export-issues";
+import { getExportIssuesHandler } from "./export-issues"
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string
 declare const MAIN_WINDOW_VITE_NAME: string
