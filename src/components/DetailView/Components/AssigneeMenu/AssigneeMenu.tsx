@@ -21,9 +21,7 @@ export function AssigneeMenu({
       </Text>
       <UserSelectMenu
         value={assignee}
-        onChange={(selectedUser) =>
-          editIssue.mutate({ assignee: selectedUser } as Issue)
-        }
+        onChange={(selectedUser) => editIssue.mutate({ assignee: selectedUser } as Issue)}
         placeholder="Unassigned"
       />
     </Group>

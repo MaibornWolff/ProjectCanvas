@@ -12,7 +12,6 @@ module.exports = {
         "airbnb",
         "airbnb-typescript",
         "plugin:react/jsx-runtime",
-        "prettier",
       ],
       files: ["*.ts", "*.tsx"],
       rules: {
@@ -38,6 +37,9 @@ module.exports = {
           { packageDir: ["project-canvas/electron/main"] },
         ],
         "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/quotes": "off",
+        quotes: ["error", "double"],
+        "max-len": "off",
       },
     },
   ],

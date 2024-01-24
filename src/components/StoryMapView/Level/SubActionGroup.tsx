@@ -37,12 +37,10 @@ export function SubActionGroup({
           <AddCard
             id={`subAction-add-${subActionGroupId}`}
             index={subActions.length}
-            onClick={() =>
-              addSubAction(storyMapId, subActionGroupId, {
-                id: `${SUB_ACTION_PREFIX}-${getRndInteger()}`,
-                title: "New SubAction",
-              })
-            }
+            onClick={() => addSubAction(storyMapId, subActionGroupId, {
+              id: `${SUB_ACTION_PREFIX}-${getRndInteger()}`,
+              title: "New SubAction",
+            })}
           />
           {provided.placeholder}
         </Stack>

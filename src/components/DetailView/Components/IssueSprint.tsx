@@ -1,4 +1,6 @@
-import { Text, Box, Select, useMantineTheme } from "@mantine/core";
+import {
+  Text, Box, Select, useMantineTheme,
+} from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Issue, Sprint } from "types";
@@ -30,7 +32,7 @@ export function IssueSprint(props: {
     mutationFn: (issue: Issue) => editIssue(issue, props.issueKey),
     onError: () => {
       showNotification({
-        message: `An error occurred while modifing the sprint 😢`,
+        message: "An error occurred while modifing the sprint 😢",
         color: "red",
       });
     },
@@ -45,7 +47,7 @@ export function IssueSprint(props: {
     mutationFn: () => moveIssueToBacklog(props.issueKey),
     onError: () => {
       showNotification({
-        message: `An error occurred while modifing the sprint 😢`,
+        message: "An error occurred while modifing the sprint 😢",
         color: "red",
       });
     },
@@ -68,18 +70,19 @@ export function IssueSprint(props: {
           data={sprintNames}
           onBlur={() => {
             setShowSprintInput(false);
-            if (defaultSprint)
+            if (defaultSprint) {
               mutationSprint.mutate({
                 sprint: defaultSprint,
               } as Issue);
-            else mutationBacklog.mutate();
+            } else mutationBacklog.mutate();
           }}
           onChange={(value) => {
             if (value === "") setDefaultSprint(undefined);
-            else
+            else {
               setDefaultSprint(
-                sprints?.find((sprint) => sprint.name === value)!
+                sprints?.find((sprint) => sprint.name === value)!,
               );
+            }
           }}
         />
       ) : (

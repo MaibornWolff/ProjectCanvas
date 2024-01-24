@@ -14,7 +14,9 @@ import {
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { QueriesResults, useQueries, useQuery } from "@tanstack/react-query";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import {
+  ChangeEvent, useEffect, useMemo, useState,
+} from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
 import { Issue, Sprint } from "types";
@@ -57,13 +59,12 @@ export function BacklogView() {
     queryKey: ["sprints", currentBoardId],
     queryFn: () => getSprints(currentBoardId),
     enabled: !!currentBoardId,
-    select: (fetchedSprints: Sprint[]) =>
-      Object.fromEntries(fetchedSprints.map((s) => [s.id, s])),
+    select: (fetchedSprints: Sprint[]) => Object.fromEntries(fetchedSprints.map((s) => [s.id, s])),
     initialData: [],
   });
 
   const issueQueries = useQueries<
-    Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>
+  Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>
   >({
     queries: [
       {
@@ -75,8 +76,7 @@ export function BacklogView() {
           {
             issues: backlogIssues
               .filter(
-                (issue: Issue) =>
-                  issue.type !== "Epic" && issue.type !== "Subtask"
+                (issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask",
               )
               .sort(sortIssuesByRank),
             sprintId: undefined,
@@ -100,65 +100,65 @@ export function BacklogView() {
             {
               issues: issues
                 .filter(
-                  (issue: Issue) =>
-                    issue.type !== "Epic" && issue.type !== "Subtask"
+                  (issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask",
                 )
                 .sort(sortIssuesByRank),
               sprintId: sprint.id,
             },
           ],
           initialData: [],
-        })
+        }),
       ),
     ],
     combine: (
       results: QueriesResults<
-        Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>
-      >
+      Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>
+      >,
     ) => results.map((result) => result),
   });
 
   const [issuesWrapper, setIssuesWrapper] = useState(
-    new Map<string, IssuesState>()
+    new Map<string, IssuesState>(),
   );
   useEffect(() => {
     // Generally, using useEffect to sync state should be avoided. But since we need our state to be assignable AND
     // reactive AND derivable, we found no other solution than to use useEffect.
     setIssuesWrapper(
-      new Map<string, IssuesState>(issueQueries.map((query) => query.data!))
+      new Map<string, IssuesState>(issueQueries.map((query) => query.data!)),
     );
   }, [issueQueries]);
-  const updateIssuesWrapper = (key: string, newState: IssuesState) =>
-    setIssuesWrapper(new Map(issuesWrapper.set(key, newState)));
+  const updateIssuesWrapper = (key: string, newState: IssuesState) => setIssuesWrapper(new Map(issuesWrapper.set(key, newState)));
   const searchedIssuesWrapper = useMemo(
-    () =>
-      new Map<string, Issue[]>(
-        Array.from(issuesWrapper.keys()).map((key) => [
-          key,
-          issuesWrapper
-            .get(key)!
-            .issues.filter((i) => searchMatchesIssue(search, i)),
-        ])
-      ),
-    [issuesWrapper, search]
+    () => new Map<string, Issue[]>(
+      Array.from(issuesWrapper.keys()).map((key) => [
+        key,
+        issuesWrapper
+          .get(key)!
+          .issues.filter((i) => searchMatchesIssue(search, i)),
+      ]),
+    ),
+    [issuesWrapper, search],
   );
 
   useEffect(resizeDivider, [issueQueries]);
 
-  if (isErrorSprints || issueQueries.some((query) => query.isError))
+  if (isErrorSprints || issueQueries.some((query) => query.isError)) {
     return (
       <Center style={{ width: "100%", height: "100%" }}>
         <Text w="300">
           An error has occurred while loading. This is due to an internal error.
-          Please report this behavior to the developers. <br />
+          Please report this behavior to the developers.
+          {" "}
+          <br />
           (This is a placeholder and will be replaced with better error
           messages)
         </Text>
       </Center>
     );
+  }
 
   // This check might be broken. It does not trigger everytime we think it does. Might need to force a rerender.
-  if (issueQueries.some((query) => query.isPending))
+  if (issueQueries.some((query) => query.isPending)) {
     return (
       <Center style={{ width: "100%", height: "100%" }}>
         {projectKey ? (
@@ -176,6 +176,7 @@ export function BacklogView() {
         )}
       </Center>
     );
+  }
   return (
     <Stack style={{ minHeight: "100%" }}>
       <Stack align="left" gap={0}>
@@ -221,13 +222,11 @@ export function BacklogView() {
 
       <Flex style={{ flexGrow: 1 }}>
         <DragDropContext
-          onDragEnd={(dropResult) =>
-            onDragEnd({
-              ...dropResult,
-              issuesWrapper,
-              updateIssuesWrapper,
-            })
-          }
+          onDragEnd={(dropResult) => onDragEnd({
+            ...dropResult,
+            issuesWrapper,
+            updateIssuesWrapper,
+          })}
         >
           <ScrollArea.Autosize
             className="left-panel"
@@ -300,7 +299,7 @@ export function BacklogView() {
                   .map((key) => [
                     issuesWrapper.get(key)!.sprintId,
                     searchedIssuesWrapper.get(key)!,
-                  ])
+                  ]),
               )}
             />
             <CreateSprint />

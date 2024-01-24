@@ -41,16 +41,15 @@ export function EpicCard({
   const { hovered } = useHover();
   const theme = useMantineTheme();
   const colorScheme = useColorScheme();
-  const hoverStyles =
-    colorScheme === "dark"
-      ? {
-          backgroundColor: theme.colors.dark[8],
-          transition: "background-color .1s ease-in",
-        }
-      : {
-          backgroundColor: theme.colors.gray[1],
-          transition: "background-color .1s ease-in",
-        };
+  const hoverStyles = colorScheme === "dark"
+    ? {
+      backgroundColor: theme.colors.dark[8],
+      transition: "background-color .1s ease-in",
+    }
+    : {
+      backgroundColor: theme.colors.gray[1],
+      transition: "background-color .1s ease-in",
+    };
 
   return (
     <>
@@ -103,8 +102,8 @@ export function EpicCard({
                 >
                   {issueKey}
                 </Text>
-                {labels &&
-                  labels.map((label) => (
+                {labels
+                  && labels.map((label) => (
                     <IssueLabelBadge
                       key={`${issueKey}-${label}`}
                       label={label}

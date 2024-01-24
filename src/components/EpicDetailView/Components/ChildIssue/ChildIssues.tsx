@@ -1,4 +1,6 @@
-import { Box, Button, Divider, ScrollArea, Stack } from "@mantine/core";
+import {
+  Box, Button, Divider, ScrollArea, Stack,
+} from "@mantine/core";
 import { useState } from "react";
 import { Issue } from "../../../../../types";
 import { CreateIssueModal } from "../../../CreateIssue/CreateIssueModal";

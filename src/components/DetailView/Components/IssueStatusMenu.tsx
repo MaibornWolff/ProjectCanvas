@@ -47,8 +47,8 @@ export function IssueStatusMenu({
         </Menu.Target>
 
         <Menu.Dropdown>
-          {issueTypes &&
-            issueTypes
+          {issueTypes
+            && issueTypes
               .find((issueType) => issueType.name === type)
               ?.statuses?.map((issueStatus) => (
                 <Menu.Item

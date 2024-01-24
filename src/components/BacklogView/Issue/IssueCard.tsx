@@ -41,19 +41,17 @@ export function IssueCard({
   const queryClient = useQueryClient();
   const theme = useMantineTheme();
   const colorScheme = useColorScheme();
-  const { issueStatusCategoryByStatusName: statusNameToCategory } =
-    useCanvasStore();
+  const { issueStatusCategoryByStatusName: statusNameToCategory } = useCanvasStore();
 
-  const hoverStyles =
-    colorScheme === "dark"
-      ? {
-          backgroundColor: theme.colors.dark[8],
-          transition: "background-color .1s ease-in",
-        }
-      : {
-          backgroundColor: theme.colors.gray[1],
-          transition: "background-color .1s ease-in",
-        };
+  const hoverStyles = colorScheme === "dark"
+    ? {
+      backgroundColor: theme.colors.dark[8],
+      transition: "background-color .1s ease-in",
+    }
+    : {
+      backgroundColor: theme.colors.gray[1],
+      transition: "background-color .1s ease-in",
+    };
 
   return (
     <>
@@ -113,8 +111,8 @@ export function IssueCard({
                     {epic.issueKey && (
                       <IssueEpicBadge issueKey={issueKey} epic={epic} />
                     )}
-                    {labels &&
-                      labels.map((label) => (
+                    {labels
+                      && labels.map((label) => (
                         <IssueLabelBadge
                           key={`${issueKey}-${label}`}
                           label={label}

@@ -1,4 +1,6 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch, SetStateAction, useEffect, useState,
+} from "react";
 import {
   Modal,
   Stack,
@@ -43,8 +45,7 @@ export function CreateExportModal({
     initialData: [],
   });
 
-  const doneStatusNames =
-    issueStatusByCategory[StatusType.DONE]?.map((s) => s.name) ?? [];
+  const doneStatusNames = issueStatusByCategory[StatusType.DONE]?.map((s) => s.name) ?? [];
 
   const [includedIssueTypes, setIncludedIssueTypes] = useState<string[]>([]);
   const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
@@ -58,19 +59,17 @@ export function CreateExportModal({
         issues
           .filter((issue) => includedIssueTypes.includes(issue.type))
           .filter(
-            (issue) =>
-              includedIssueStatus.includes(issue.status) &&
-              doneStatusNames.includes(issue.status)
+            (issue) => includedIssueStatus.includes(issue.status)
+              && doneStatusNames.includes(issue.status),
           )
           .filter(
-            (issue) =>
-              !startDate || dayjs(startDate).isBefore(dayjs(issue.created))
+            (issue) => !startDate || dayjs(startDate).isBefore(dayjs(issue.created)),
           )
           .filter(
-            (issue) => !endDate || dayjs(endDate).isAfter(dayjs(issue.created))
+            (issue) => !endDate || dayjs(endDate).isAfter(dayjs(issue.created)),
           ),
-        ["issueKey"]
-      )
+        ["issueKey"],
+      ),
     );
   }
 
@@ -130,9 +129,7 @@ export function CreateExportModal({
                     value: issueType.name!,
                     label: issueType.name!,
                   }))}
-                  onChange={(includedTypes) =>
-                    setIncludedIssueTypes(includedTypes)
-                  }
+                  onChange={(includedTypes) => setIncludedIssueTypes(includedTypes)}
                 />
               )}
             </Stack>
@@ -146,9 +143,7 @@ export function CreateExportModal({
                     value: status.name,
                     label: status.name,
                   }))}
-                  onChange={(includedStatus) =>
-                    setIncludedIssueStatus(includedStatus)
-                  }
+                  onChange={(includedStatus) => setIncludedIssueStatus(includedStatus)}
                 />
               )}
             </Stack>
@@ -175,7 +170,9 @@ export function CreateExportModal({
         </Paper>
         <Group>
           <Text size="90%" c="dimmed">
-            Issues to export: {issuesToExport.length}
+            Issues to export:
+            {" "}
+            {issuesToExport.length}
           </Text>
           <Button
             ml="auto"
@@ -183,7 +180,7 @@ export function CreateExportModal({
             onClick={() => {
               exportIssues(
                 issuesToExport,
-                issueStatus.filter((s) => includedIssueStatus.includes(s.name))
+                issueStatus.filter((s) => includedIssueStatus.includes(s.name)),
               );
             }}
           >

@@ -28,11 +28,11 @@ export function CommentSection({
 }) {
   const [addCommentInputText, setAddCommentInputText] = useState("");
   const [editCommentInputText, setEditCommentInputText] = useState<
-    Record<string, string>
+  Record<string, string>
   >({});
   const [showEditableInputAdd, setShowEditableInputAdd] = useState(false);
   const [editableComments, setEditableComments] = useState<
-    Record<string, boolean>
+  Record<string, boolean>
   >({});
   const [showLoader, setShowLoader] = useState(false);
   const queryClient = useQueryClient();
@@ -45,14 +45,14 @@ export function CommentSection({
   }, [comment]);
 
   const handleAddCommentInputChange = (
-    event: ChangeEvent<HTMLTextAreaElement>
+    event: ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setAddCommentInputText(event.target.value);
   };
 
   const handleEditCommentInputChange = (
     event: ChangeEvent<HTMLTextAreaElement>,
-    commentId: string
+    commentId: string,
   ) => {
     setEditCommentInputText({
       ...editCommentInputText,
@@ -135,10 +135,13 @@ export function CommentSection({
                   }).format(new Date(commentBody.created))}
                 </Text>
               </Group>
-              {editableComments[commentBody.id] === undefined ||
-              editableComments[commentBody.id] === false ? (
+              {editableComments[commentBody.id] === undefined
+              || editableComments[commentBody.id] === false ? (
                 <Box>
-                  <Text fz="xs"> {commentBody.body}</Text>
+                  <Text fz="xs">
+                    {" "}
+                    {commentBody.body}
+                  </Text>
                   <Group justify="left">
                     <Anchor
                       td="underline"
@@ -173,52 +176,50 @@ export function CommentSection({
                     </Anchor>
                   </Group>
                 </Box>
-              ) : (
-                <Stack>
-                  <Textarea
-                    placeholder="Type here..."
-                    value={editCommentInputText[commentBody.id]}
-                    autosize
-                    onChange={(event) =>
-                      handleEditCommentInputChange(event, commentBody.id)
-                    }
-                  />
-                  <Group>
-                    <Button
-                      size="xs"
-                      onClick={() => {
-                        editCommentMutationLocal.mutate({
-                          issueKey,
-                          commentId: commentBody.id,
-                          commentText: editCommentInputText[commentBody.id],
-                        });
-                        setShowLoader(true);
-                        setEditableComments({
-                          ...editableComments,
-                          [commentBody.id]: false,
-                        });
-                      }}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      size="xs"
-                      onClick={() => {
-                        setEditCommentInputText({
-                          ...editCommentInputText,
-                          [commentBody.id]: "",
-                        });
-                        setEditableComments({
-                          ...editableComments,
-                          [commentBody.id]: false,
-                        });
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </Group>
-                </Stack>
-              )}
+                ) : (
+                  <Stack>
+                    <Textarea
+                      placeholder="Type here..."
+                      value={editCommentInputText[commentBody.id]}
+                      autosize
+                      onChange={(event) => handleEditCommentInputChange(event, commentBody.id)}
+                    />
+                    <Group>
+                      <Button
+                        size="xs"
+                        onClick={() => {
+                          editCommentMutationLocal.mutate({
+                            issueKey,
+                            commentId: commentBody.id,
+                            commentText: editCommentInputText[commentBody.id],
+                          });
+                          setShowLoader(true);
+                          setEditableComments({
+                            ...editableComments,
+                            [commentBody.id]: false,
+                          });
+                        }}
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        size="xs"
+                        onClick={() => {
+                          setEditCommentInputText({
+                            ...editCommentInputText,
+                            [commentBody.id]: "",
+                          });
+                          setEditableComments({
+                            ...editableComments,
+                            [commentBody.id]: false,
+                          });
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </Group>
+                  </Stack>
+                )}
             </Stack>
           </Group>
         </Paper>

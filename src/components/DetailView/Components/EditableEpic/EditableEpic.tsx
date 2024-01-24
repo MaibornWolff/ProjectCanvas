@@ -1,4 +1,6 @@
-import { Box, Group, Loader, Text } from "@mantine/core";
+import {
+  Box, Group, Loader, Text,
+} from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Issue } from "types";
@@ -28,11 +30,10 @@ export function EditableEpic({
   });
   const [selectedEpic, setSelectedEpic] = useState(epic.issueKey);
   const mutationEpic = useMutation({
-    mutationFn: (epicKey: string | null) =>
-      editIssue({ epic: { issueKey: epicKey } } as Issue, issueKey),
+    mutationFn: (epicKey: string | null) => editIssue({ epic: { issueKey: epicKey } } as Issue, issueKey),
     onError: () => {
       showNotification({
-        message: `An error occurred while modifing the Epic 😢`,
+        message: "An error occurred while modifing the Epic 😢",
         color: "red",
       });
     },
@@ -55,9 +56,9 @@ export function EditableEpic({
             options={
               epics
                 ? epics.map((epicItem) => ({
-                    value: epicItem.issueKey,
-                    label: epicItem.summary,
-                  }))
+                  value: epicItem.issueKey,
+                  label: epicItem.summary,
+                }))
                 : []
             }
             searchable

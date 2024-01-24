@@ -16,11 +16,10 @@ export function SprintEndDatePicker({
       onChange={(value) => {
         form.getInputProps("endDate").onChange(value);
         if (
-          value &&
-          form.getInputProps("startDate").value &&
-          form.getInputProps("startDate").value > value
-        )
-          form.setFieldValue("startDate", null as unknown as Date);
+          value
+          && form.getInputProps("startDate").value
+          && form.getInputProps("startDate").value > value
+        ) form.setFieldValue("startDate", null as unknown as Date);
       }}
     />
   );

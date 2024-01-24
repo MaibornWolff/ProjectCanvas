@@ -15,14 +15,12 @@ export function AddStoryMapCard() {
         color: "gray",
       }}
       shadow={undefined}
-      onClick={() =>
-        addStoryMap({
-          id: `${STORY_MAP_PREFIX}-${getRndInteger()}`,
-          name: "New Story Map",
-          cases: [],
-          levels: [],
-        })
-      }
+      onClick={() => addStoryMap({
+        id: `${STORY_MAP_PREFIX}-${getRndInteger()}`,
+        name: "New Story Map",
+        cases: [],
+        levels: [],
+      })}
     >
       <IconPlus />
     </BaseCard>

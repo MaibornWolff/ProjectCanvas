@@ -13,10 +13,9 @@ export const onDragEnd = ({
 }): void => {
   if (!destination) return;
   if (
-    source.droppableId === destination.droppableId &&
-    destination.index === source.index
-  )
-    return;
+    source.droppableId === destination.droppableId
+    && destination.index === source.index
+  ) return;
 
   const startState = issuesWrapper.get(source.droppableId)!;
   const endState = issuesWrapper.get(destination.droppableId)!;
@@ -26,7 +25,7 @@ export const onDragEnd = ({
   let newEndList;
   if (startState.sprintId === endState.sprintId) {
     newEndList = startState.issues.filter(
-      (_: Issue, idx: number) => idx !== source.index
+      (_: Issue, idx: number) => idx !== source.index,
     );
     newEndList.splice(destination.index, 0, startState.issues[source.index]);
 
@@ -36,7 +35,7 @@ export const onDragEnd = ({
     });
   } else {
     const newStartList = startState.issues.filter(
-      (_: Issue, idx: number) => idx !== source.index
+      (_: Issue, idx: number) => idx !== source.index,
     );
     newEndList = endState.issues.slice();
     newEndList.splice(destination.index, 0, startState.issues[source.index]);
@@ -51,26 +50,24 @@ export const onDragEnd = ({
     });
   }
 
-  const keyOfIssueRankedBefore =
-    destination.index === 0 ? "" : newEndList[destination.index - 1].issueKey;
-  const keyOfIssueRankedAfter =
-    destination.index === newEndList.length - 1
-      ? ""
-      : newEndList[destination.index + 1].issueKey;
+  const keyOfIssueRankedBefore = destination.index === 0 ? "" : newEndList[destination.index - 1].issueKey;
+  const keyOfIssueRankedAfter = destination.index === newEndList.length - 1
+    ? ""
+    : newEndList[destination.index + 1].issueKey;
 
   if (destinationSprintId) {
     window.provider.moveIssueToSprintAndRank(
       destinationSprintId,
       movedIssueKey,
       keyOfIssueRankedAfter,
-      keyOfIssueRankedBefore
+      keyOfIssueRankedBefore,
     );
   } else if (destination.droppableId === BacklogKey) {
     window.provider.moveIssueToBacklog(movedIssueKey).then(() => {
       window.provider.rankIssueInBacklog(
         movedIssueKey,
         keyOfIssueRankedAfter,
-        keyOfIssueRankedBefore
+        keyOfIssueRankedBefore,
       );
     });
   }

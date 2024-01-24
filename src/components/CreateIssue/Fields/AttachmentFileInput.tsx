@@ -11,8 +11,7 @@ export function AttachmentFileInput({
   const numbFiles: number = form.getInputProps("attachment").value
     ? (form.getInputProps("attachment").value as []).length
     : 0;
-  const label: string =
-    numbFiles === 0 ? "Attachments" : `Attachments (${numbFiles})`;
+  const label: string = numbFiles === 0 ? "Attachments" : `Attachments (${numbFiles})`;
   return (
     <FileInput
       label={<Text>{label}</Text>}

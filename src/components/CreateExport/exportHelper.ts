@@ -13,7 +13,7 @@ type ExportableIssue = Omit<Issue, "startDate"> & {
 
 const addExportedTimeProperties = (
   issue: Issue,
-  inProgressStatusNames: string[]
+  inProgressStatusNames: string[],
 ): ExportableIssue => {
   const statusItems = issue.changelog.histories
     .reverse()
@@ -22,30 +22,28 @@ const addExportedTimeProperties = (
 
       return statusItem
         ? {
-            ...statusItem,
-            date: dayjs(history.created),
-          }
+          ...statusItem,
+          date: dayjs(history.created),
+        }
         : undefined;
     })
     .filter((i) => i) as (ChangelogHistoryItem & { date: Dayjs })[];
 
   const enterEdges = statusItems.filter(
-    (item) =>
-      item.toString &&
-      inProgressStatusNames.includes(item.toString) &&
-      item.fromString &&
-      !inProgressStatusNames.includes(item.fromString)
+    (item) => item.toString
+      && inProgressStatusNames.includes(item.toString)
+      && item.fromString
+      && !inProgressStatusNames.includes(item.fromString),
   );
   const leaveEdges = statusItems.filter(
-    (item) =>
-      item.fromString &&
-      inProgressStatusNames.includes(item.fromString) &&
-      item.toString &&
-      !inProgressStatusNames.includes(item.toString)
+    (item) => item.fromString
+      && inProgressStatusNames.includes(item.fromString)
+      && item.toString
+      && !inProgressStatusNames.includes(item.toString),
   );
   if (enterEdges.length !== leaveEdges.length) {
     throw new Error(
-      `Inconsistent in-progress changelog history encountered. Enter edge count: ${enterEdges.length}. Leave edge count: ${leaveEdges.length}`
+      `Inconsistent in-progress changelog history encountered. Enter edge count: ${enterEdges.length}. Leave edge count: ${leaveEdges.length}`,
     );
   }
 
@@ -76,7 +74,7 @@ const addExportedTimeProperties = (
 
 export const exportIssues = (
   issues: Issue[],
-  includedStatus: IssueStatus[]
+  includedStatus: IssueStatus[],
 ) => {
   const header = ["ID", "Name", "Start Date", "End Date", "Working days"];
   const data = [header.map((h) => `"${h}"`).join(",")];
@@ -88,7 +86,7 @@ export const exportIssues = (
   issues.forEach((issue) => {
     const exportableIssue = addExportedTimeProperties(
       issue,
-      inProgressStatusNames
+      inProgressStatusNames,
     );
     const exportedValues = [
       `"${exportableIssue.issueKey}"`,

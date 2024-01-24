@@ -21,7 +21,7 @@ describe("<JiraCloudLogin />", () => {
     render(
       <MantineProvider>
         <JiraCloudLogin goBack={goBack} onSuccess={onSuccess} />
-      </MantineProvider>
+      </MantineProvider>,
     );
 
     await userEvent.click(screen.getByRole("button"));

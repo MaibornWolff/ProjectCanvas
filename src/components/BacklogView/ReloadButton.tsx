@@ -7,9 +7,7 @@ export function ReloadButton({ ...props }) {
   return (
     <ActionIcon
       variant="default"
-      onClick={() =>
-        queryClient.invalidateQueries({ queryKey: ["issues", "sprints"] })
-      }
+      onClick={() => queryClient.invalidateQueries({ queryKey: ["issues", "sprints"] })}
       size={30}
       {...props}
     >

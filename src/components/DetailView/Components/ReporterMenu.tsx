@@ -20,7 +20,7 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
     mutationFn: (issue: Issue) => editIssue(issue, issueKey),
     onError: () => {
       showNotification({
-        message: `The issue couldn't be modified! 😢`,
+        message: "The issue couldn't be modified! 😢",
         color: "red",
       });
     },
@@ -38,16 +38,14 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
       <Text fz="sm" c="dimmed">
         Reporter
       </Text>
-      {issueReporter &&
-        issueReporter.displayName &&
-        issueReporter.avatarUrls && (
+      {issueReporter
+        && issueReporter.displayName
+        && issueReporter.avatarUrls && (
           <UserSelectMenu
             value={issueReporter}
-            onChange={(selectedUser) =>
-              mutation.mutate({ reporter: selectedUser } as Issue)
-            }
+            onChange={(selectedUser) => mutation.mutate({ reporter: selectedUser } as Issue)}
           />
-        )}
+      )}
     </Group>
   );
 }

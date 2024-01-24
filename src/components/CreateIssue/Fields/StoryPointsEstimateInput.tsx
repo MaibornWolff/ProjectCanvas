@@ -11,14 +11,13 @@ export function StoryPointsEstimateInput({
   issueTypes?: IssueType[];
   issueTypesWithFieldsMap?: Map<string, string[]>;
 }) {
-  const isDisabled =
-    issueTypesWithFieldsMap &&
-    issueTypesWithFieldsMap.size > 0 &&
-    (!issueTypesWithFieldsMap
+  const isDisabled = issueTypesWithFieldsMap
+    && issueTypesWithFieldsMap.size > 0
+    && (!issueTypesWithFieldsMap
       .get(form.getInputProps("type").value)
-      ?.includes("Story point estimate") ||
-      form.getInputProps("type").value ===
-        issueTypes?.find((issueType) => issueType.name === "Epic")?.id);
+      ?.includes("Story point estimate")
+      || form.getInputProps("type").value
+        === issueTypes?.find((issueType) => issueType.name === "Epic")?.id);
 
   return (
     <Tooltip

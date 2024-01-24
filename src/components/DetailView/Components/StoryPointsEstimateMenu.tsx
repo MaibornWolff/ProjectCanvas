@@ -25,7 +25,7 @@ export function StoryPointsEstimateMenu({
   const theme = useMantineTheme();
   const timeoutRef = useRef<number | null>(null);
   const [localStoryPtsEstimate, setLocalStoryPtsEstimate] = useState<
-    number | undefined
+  number | undefined
   >(storyPointsEstimate);
   const [showEditableInput, setShowEditableInput] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
@@ -75,7 +75,7 @@ export function StoryPointsEstimateMenu({
     if (typeof val === "number") return val;
 
     throw new Error(
-      `Unexpected number input value of type ${typeof val}: ${val}`
+      `Unexpected number input value of type ${typeof val}: ${val}`,
     );
   }
 
@@ -84,10 +84,10 @@ export function StoryPointsEstimateMenu({
       <Text c="dimmed" fz="sm">
         Story Points Estimate
       </Text>
-      {!showEditableInput &&
-        storyPointsEstimate !== undefined &&
-        editableFields &&
-        editableFields.includes("Story point estimate") && (
+      {!showEditableInput
+        && storyPointsEstimate !== undefined
+        && editableFields
+        && editableFields.includes("Story point estimate") && (
           <Group>
             {localStoryPtsEstimate ? (
               <Chip onClick={() => setShowEditableInput(true)}>
@@ -112,11 +112,11 @@ export function StoryPointsEstimateMenu({
             )}
             {showLoader && <Loader size="sm" />}
           </Group>
-        )}
-      {showEditableInput &&
-        storyPointsEstimate !== undefined &&
-        editableFields &&
-        editableFields.includes("Story point estimate") && (
+      )}
+      {showEditableInput
+        && storyPointsEstimate !== undefined
+        && editableFields
+        && editableFields.includes("Story point estimate") && (
           <Group>
             <Box w={150}>
               <NumberInput
@@ -132,16 +132,16 @@ export function StoryPointsEstimateMenu({
             </Box>
             {showLoader && <Loader size="sm" />}
           </Group>
-        )}
-      {storyPointsEstimate === undefined &&
-        editableFields &&
-        !editableFields.includes("Story point estimate") && (
+      )}
+      {storyPointsEstimate === undefined
+        && editableFields
+        && !editableFields.includes("Story point estimate") && (
           <NumberInput width={100} min={0} defaultValue={0} disabled />
-        )}
-      {showEditableInput &&
-        storyPointsEstimate === undefined &&
-        editableFields &&
-        editableFields.includes("Story point estimate") && (
+      )}
+      {showEditableInput
+        && storyPointsEstimate === undefined
+        && editableFields
+        && editableFields.includes("Story point estimate") && (
           <Group justify="right">
             <Box w={70}>
               <NumberInput
@@ -157,7 +157,7 @@ export function StoryPointsEstimateMenu({
             </Box>
             {showLoader && <Loader size="sm" />}
           </Group>
-        )}
+      )}
     </Group>
   ) : null;
 }

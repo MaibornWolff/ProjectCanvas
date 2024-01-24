@@ -3,9 +3,7 @@ import { keys } from "@mantine/core";
 
 export function filterData(data: Project[], search: string) {
   const query = search.toLowerCase().trim();
-  return data.filter((item) =>
-    keys(data[0]).some((key) => item[key]!.toLowerCase().includes(query))
-  );
+  return data.filter((item) => keys(data[0]).some((key) => item[key]!.toLowerCase().includes(query)));
 }
 
 export function sortData(
@@ -14,7 +12,7 @@ export function sortData(
     sortBy: keyof Project | null;
     reversed: boolean;
     search: string;
-  }
+  },
 ) {
   const { sortBy } = payload;
 
@@ -33,6 +31,6 @@ export function sortData(
       }
       return 0;
     }),
-    payload.search
+    payload.search,
   );
 }

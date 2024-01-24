@@ -1,8 +1,7 @@
 export function resizeDivider() {
   const leftPanel: HTMLElement | null = document.querySelector(".left-panel");
   const rightPanel: HTMLElement | null = document.querySelector(".right-panel");
-  const resizeHandle: HTMLElement | null =
-    document.querySelector(".resize-handle");
+  const resizeHandle: HTMLElement | null = document.querySelector(".resize-handle");
 
   let isDragging = false;
   let currentX: number;

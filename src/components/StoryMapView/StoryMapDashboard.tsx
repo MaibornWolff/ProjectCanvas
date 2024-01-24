@@ -1,4 +1,6 @@
-import { Center, Group, Stack, Text, Title } from "@mantine/core";
+import {
+  Center, Group, Stack, Text, Title,
+} from "@mantine/core";
 import { AddStoryMapCard } from "./StoryMap/AddStoryMapCard";
 import { StoryMapCard } from "./StoryMap/StoryMapCard";
 import { useStoryMapStore } from "./StoryMapStore";

@@ -28,15 +28,14 @@ export function ProjectsTable({ data }: { data: Project[] }) {
   const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<keyof Project | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
-  const { setSelectedProject, setSelectedProjectBoardIds, setIssueTypes } =
-    useCanvasStore();
+  const { setSelectedProject, setSelectedProjectBoardIds, setIssueTypes } = useCanvasStore();
   const navigate = useNavigate();
 
   useEffect(() => {
     // Initialize sortedData with the sorted and filtered data
     //  when the component is first rendered
     setSortedData(
-      sortData(data, { sortBy, reversed: reverseSortDirection, search })
+      sortData(data, { sortBy, reversed: reverseSortDirection, search }),
     );
   }, [data, sortBy, reverseSortDirection, search]);
 
@@ -51,7 +50,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
     const { value } = event.currentTarget;
     setSearch(value);
     setSortedData(
-      sortData(data, { sortBy, reversed: reverseSortDirection, search: value })
+      sortData(data, { sortBy, reversed: reverseSortDirection, search: value }),
     );
   };
 
@@ -62,10 +61,9 @@ export function ProjectsTable({ data }: { data: Project[] }) {
     navigate(RouteNames.BACKLOG_VIEW);
   };
 
-  const header =
-    data &&
-    data.length > 0 &&
-    Object.keys(data[0]).map((key) => {
+  const header = data
+    && data.length > 0
+    && Object.keys(data[0]).map((key) => {
       let SortIcon: Icon;
       if (sortBy === key) {
         if (reverseSortDirection) SortIcon = IconChevronUp;
@@ -98,7 +96,10 @@ export function ProjectsTable({ data }: { data: Project[] }) {
       onClick={() => onClickRow(row)}
     >
       {Object.keys(row).map((key) => (
-        <Table.Td key={key}> {row[key as keyof Project]}</Table.Td>
+        <Table.Td key={key}>
+          {" "}
+          {row[key as keyof Project]}
+        </Table.Td>
       ))}
     </Table.Tr>
   ));

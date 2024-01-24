@@ -22,10 +22,10 @@ export function AssigneeSelect({
       options={
         !isLoading && assignableUsers
           ? assignableUsers.map((assignableUser) => ({
-              image: assignableUser.avatarUrls["24x24"],
-              value: assignableUser.id,
-              label: assignableUser.displayName,
-            }))
+            image: assignableUser.avatarUrls["24x24"],
+            value: assignableUser.id,
+            label: assignableUser.displayName,
+          }))
           : []
       }
       ItemComponent={SelectItem}

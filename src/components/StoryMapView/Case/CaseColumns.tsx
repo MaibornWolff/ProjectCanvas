@@ -26,13 +26,11 @@ export function CaseColumns({
         />
       ))}
       <AddCase
-        onClick={() =>
-          addCase(storyMapId, {
-            id: `${CASE_PREFIX}-${getRndInteger()}`,
-            title: "New Case",
-            actions: [],
-          })
-        }
+        onClick={() => addCase(storyMapId, {
+          id: `${CASE_PREFIX}-${getRndInteger()}`,
+          title: "New Case",
+          actions: [],
+        })}
       />
     </Group>
   );

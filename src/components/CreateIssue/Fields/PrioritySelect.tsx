@@ -20,10 +20,9 @@ export function PrioritySelect({
     queryFn: () => getPriorities(),
   });
 
-  const isDisabled =
-    issueTypesWithFieldsMap &&
-    issueTypesWithFieldsMap.size > 0 &&
-    !issueTypesWithFieldsMap
+  const isDisabled = issueTypesWithFieldsMap
+    && issueTypesWithFieldsMap.size > 0
+    && !issueTypesWithFieldsMap
       .get(form.getInputProps("type").value)
       ?.includes("Priority");
 
@@ -51,10 +50,10 @@ export function PrioritySelect({
           options={
             !isLoading && priorities
               ? priorities.map((priority) => ({
-                  image: priority.iconUrl,
-                  value: priority.id,
-                  label: priority.name,
-                }))
+                image: priority.iconUrl,
+                value: priority.id,
+                label: priority.name,
+              }))
               : []
           }
           ItemComponent={SelectItem}

@@ -60,17 +60,15 @@ export function CaseColumn({
             <AddCard
               id={`action-add-${caseColumn.id}`}
               index={caseColumn.actions.length}
-              onClick={() =>
-                addAction(storyMapId, caseColumn.id, {
-                  id: `${ACTION_PREFIX}-${getRndInteger()}`,
-                  title: "New Action",
-                  subActionGroups: levels.map((level) => ({
-                    id: `${SUB_ACTION_GROUP_PREFIX}-${getRndInteger()}`,
-                    levelId: level.id,
-                    subActions: [],
-                  })),
-                })
-              }
+              onClick={() => addAction(storyMapId, caseColumn.id, {
+                id: `${ACTION_PREFIX}-${getRndInteger()}`,
+                title: "New Action",
+                subActionGroups: levels.map((level) => ({
+                  id: `${SUB_ACTION_GROUP_PREFIX}-${getRndInteger()}`,
+                  levelId: level.id,
+                  subActions: [],
+                })),
+              })}
             />
             {provided.placeholder}
           </Group>

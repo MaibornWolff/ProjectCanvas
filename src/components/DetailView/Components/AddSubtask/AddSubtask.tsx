@@ -1,4 +1,6 @@
-import { Box, Button, Group, Loader, TextInput } from "@mantine/core";
+import {
+  Box, Button, Group, Loader, TextInput,
+} from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -22,7 +24,7 @@ export function AddSubtask({
   });
 
   const issueTypeWithSubTask = issueTypes?.find(
-    (issueType) => issueType?.subtask === true
+    (issueType) => issueType?.subtask === true,
   );
 
   const createSubtask = createSubtaskMutation(
@@ -31,7 +33,7 @@ export function AddSubtask({
     projectId,
     queryClient,
     `${issueTypeWithSubTask?.id.toString()}`,
-    () => setSummary("")
+    () => setSummary(""),
   );
 
   return (
@@ -48,12 +50,12 @@ export function AddSubtask({
         <Button p="5px">
           <IconPlus
             onClick={() => {
-              if (summary === "")
+              if (summary === "") {
                 showNotification({
-                  message: `The summary of an issue cannot be empty!`,
+                  message: "The summary of an issue cannot be empty!",
                   color: "red",
                 });
-              else createSubtask.mutate();
+              } else createSubtask.mutate();
             }}
           />
         </Button>

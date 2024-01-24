@@ -24,10 +24,10 @@ export function StatusSelect({
       data={
         !isLoading && issueTypes
           ? issueTypes
-              .find(
-                (issueType) => issueType.id === form.getInputProps("type").value
-              )
-              ?.statuses?.map((status) => status.name) || []
+            .find(
+              (issueType) => issueType.id === form.getInputProps("type").value,
+            )
+            ?.statuses?.map((status) => status.name) || []
           : []
       }
       {...form.getInputProps("status")}

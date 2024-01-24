@@ -31,7 +31,7 @@ export function CreateSprintModal({
   const theme = useMantineTheme();
   const colorScheme = useColorScheme();
   const selectedBoard = useCanvasStore(
-    (state) => state.selectedProjectBoardIds[0]
+    (state) => state.selectedProjectBoardIds[0],
   );
 
   const form = useForm<SprintCreate>({
@@ -54,7 +54,7 @@ export function CreateSprintModal({
     },
     onSuccess: () => {
       showNotification({
-        message: `The sprint has been created!`,
+        message: "The sprint has been created!",
         color: "green",
       });
       queryClient.invalidateQueries({ queryKey: ["sprints"] });

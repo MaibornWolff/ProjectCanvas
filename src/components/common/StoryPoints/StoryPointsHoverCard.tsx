@@ -21,7 +21,13 @@ export function StoryPointsHoverCard({
       </HoverCard.Target>
       <HoverCard.Dropdown>
         <Text size="sm" style={{ marginLeft: "-5px" }}>
-          Total story points for <b>{statusType}</b> issues: <b>{count}</b>
+          Total story points for
+          {" "}
+          <b>{statusType}</b>
+          {" "}
+          issues:
+          {" "}
+          <b>{count}</b>
         </Text>
       </HoverCard.Dropdown>
     </HoverCard>

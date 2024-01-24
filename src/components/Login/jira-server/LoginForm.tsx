@@ -1,4 +1,6 @@
-import { Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core";
+import {
+  Button, Group, PasswordInput, Stack, TextInput,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { LoginFormValues } from "./LoginFormValues";
 import { loginToJiraServer } from "./loginToJiraServer";
@@ -21,9 +23,7 @@ export function LoginForm({
   });
   return (
     <form
-      onSubmit={form.onSubmit((loginOptions) =>
-        loginToJiraServer({ onSuccess, loginOptions })
-      )}
+      onSubmit={form.onSubmit((loginOptions) => loginToJiraServer({ onSuccess, loginOptions }))}
     >
       <Stack>
         <TextInput

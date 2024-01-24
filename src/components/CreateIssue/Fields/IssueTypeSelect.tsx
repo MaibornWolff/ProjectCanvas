@@ -19,11 +19,11 @@ export function IssueTypeSelect({
       data={
         !isLoading && issueTypes
           ? issueTypes
-              .filter((issueType) => issueType.name !== "Subtask")
-              .map((issueType) => ({
-                value: issueType.id,
-                label: issueType.name ?? "*unknown*",
-              }))
+            .filter((issueType) => issueType.name !== "Subtask")
+            .map((issueType) => ({
+              value: issueType.id,
+              label: issueType.name ?? "*unknown*",
+            }))
           : []
       }
       searchable
@@ -32,8 +32,8 @@ export function IssueTypeSelect({
       onChange={(value) => {
         form.getInputProps("type").onChange(value);
         if (
-          issueTypes?.find((issueType) => issueType.name === "Epic")?.id ===
-          value
+          issueTypes?.find((issueType) => issueType.name === "Epic")?.id
+          === value
         ) {
           form.setFieldValue("sprintId", null as unknown as string);
           form.setFieldValue("storyPointsEstimate", null as unknown as number);

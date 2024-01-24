@@ -10,10 +10,9 @@ export function StartDatePicker({
   form: UseFormReturnType<Issue>;
   issueTypesWithFieldsMap?: Map<string, string[]>;
 }) {
-  const isDisabled =
-    issueTypesWithFieldsMap &&
-    issueTypesWithFieldsMap.size > 0 &&
-    !issueTypesWithFieldsMap
+  const isDisabled = issueTypesWithFieldsMap
+    && issueTypesWithFieldsMap.size > 0
+    && !issueTypesWithFieldsMap
       .get(form.getInputProps("type").value)
       ?.includes("Start date");
 
@@ -41,11 +40,10 @@ export function StartDatePicker({
           onChange={(value) => {
             form.getInputProps("startDate").onChange(value);
             if (
-              value &&
-              form.getInputProps("dueDate").value &&
-              form.getInputProps("dueDate").value < value
-            )
-              form.setFieldValue("dueDate", null as unknown as Date);
+              value
+              && form.getInputProps("dueDate").value
+              && form.getInputProps("dueDate").value < value
+            ) form.setFieldValue("dueDate", null as unknown as Date);
           }}
         />
       </Box>

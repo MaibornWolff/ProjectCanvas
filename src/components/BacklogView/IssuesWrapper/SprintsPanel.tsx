@@ -1,4 +1,6 @@
-import { Accordion, Badge, Flex, Group, Text, Title } from "@mantine/core";
+import {
+  Accordion, Badge, Flex, Group, Text, Title,
+} from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 import { Issue, Sprint } from "types";
 import { pluralize, sortSprintsByActive } from "../helpers/backlogHelpers";
@@ -48,9 +50,7 @@ export function SprintsPanel({
           issues: issueWrapper[sprintId],
           sprint: sprints[sprintId],
         }))
-        .sort(({ sprint: sprintA }, { sprint: sprintB }) =>
-          sortSprintsByActive(sprintA, sprintB)
-        )
+        .sort(({ sprint: sprintA }, { sprint: sprintB }) => sortSprintsByActive(sprintA, sprintB))
         .map(({ issues, sprint }) => (
           <Accordion.Item
             key={`accordion-item-key-${sprint.name}`}
@@ -77,8 +77,7 @@ function SprintAccordionControl({
 }) {
   const { issueStatusByCategory } = useCanvasStore();
 
-  const getStatusNamesInCategory = (category: StatusType) =>
-    issueStatusByCategory[category]?.map((s) => s.name) ?? [];
+  const getStatusNamesInCategory = (category: StatusType) => issueStatusByCategory[category]?.map((s) => s.name) ?? [];
 
   return (
     <Accordion.Control>
@@ -95,21 +94,21 @@ function SprintAccordionControl({
             statusType={StatusType.TODO}
             storyPointsEstimate={storyPointsAccumulator(
               issues,
-              getStatusNamesInCategory(StatusType.TODO)
+              getStatusNamesInCategory(StatusType.TODO),
             )}
           />
           <StoryPointsBadge
             statusType={StatusType.IN_PROGRESS}
             storyPointsEstimate={storyPointsAccumulator(
               issues,
-              getStatusNamesInCategory(StatusType.IN_PROGRESS)
+              getStatusNamesInCategory(StatusType.IN_PROGRESS),
             )}
           />
           <StoryPointsBadge
             statusType={StatusType.DONE}
             storyPointsEstimate={storyPointsAccumulator(
               issues,
-              getStatusNamesInCategory(StatusType.DONE)
+              getStatusNamesInCategory(StatusType.DONE),
             )}
           />
         </Flex>

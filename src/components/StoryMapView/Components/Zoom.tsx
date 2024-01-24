@@ -1,4 +1,6 @@
-import { Affix, Group, ActionIcon, Text } from "@mantine/core";
+import {
+  Affix, Group, ActionIcon, Text,
+} from "@mantine/core";
 import { IconMinus, IconPlus } from "@tabler/icons-react";
 
 export function Zoom({
@@ -20,7 +22,8 @@ export function Zoom({
           <IconMinus />
         </ActionIcon>
         <Text w={36} style={{ align: "center" }}>
-          {(zoomValue * 100).toFixed()}%
+          {(zoomValue * 100).toFixed()}
+          %
         </Text>
         <ActionIcon
           variant="outline"

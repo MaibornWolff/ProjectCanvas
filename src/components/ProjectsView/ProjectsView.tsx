@@ -15,15 +15,15 @@ export function ProjectsView() {
 
   useEffect(() => setProjects(projects), [projects]);
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <Center style={{ width: "100%", height: "100%" }}>
         <Loader />
       </Center>
     );
+  }
 
-  if (projects.length > 0)
-    return <ProjectsTable data={projects.map(({ id, ...rest }) => rest)} />;
+  if (projects.length > 0) return <ProjectsTable data={projects.map(({ id, ...rest }) => rest)} />;
 
   return (
     <Center style={{ width: "100%", height: "100%" }}>

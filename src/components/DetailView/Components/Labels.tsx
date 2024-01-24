@@ -1,4 +1,6 @@
-import { MultiSelect, Text, Group, Box, useMantineTheme } from "@mantine/core";
+import {
+  MultiSelect, Text, Group, Box, useMantineTheme,
+} from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Issue } from "types";
@@ -27,7 +29,7 @@ export function Labels({
     mutationFn: (issue: Issue) => editIssue(issue, issueKey),
     onError: () => {
       showNotification({
-        message: `An error occurred while modifing the Labels 😢`,
+        message: "An error occurred while modifing the Labels 😢",
         color: "red",
       });
     },

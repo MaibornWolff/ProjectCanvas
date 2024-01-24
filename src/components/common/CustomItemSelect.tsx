@@ -10,7 +10,7 @@ import { ForwardRefExoticComponent, RefAttributes, useState } from "react";
 
 export function CustomItemSelect<
   OptionType extends { value: string; label: string },
-  RefType
+  RefType,
 >({
   value,
   onChange,
@@ -41,33 +41,30 @@ export function CustomItemSelect<
   });
 
   const [currentValue, setCurrentValue] = useState<string | null>(
-    value ?? null
+    value ?? null,
   );
   const selectedOption = options.find((item) => item.value === currentValue);
   const [search, setSearch] = useState(
-    selectedOption ? selectedOption.label : ""
+    selectedOption ? selectedOption.label : "",
   );
 
-  const activeSearch =
-    searchable && options.every((item) => item.label !== search);
+  const activeSearch = searchable && options.every((item) => item.label !== search);
   const filteredOptions = activeSearch
     ? options.filter(
-        (item) =>
-          item.value.toLowerCase().includes(search.toLowerCase().trim()) ||
-          item.label.toLowerCase().includes(search.toLowerCase().trim())
-      )
+      (item) => item.value.toLowerCase().includes(search.toLowerCase().trim())
+          || item.label.toLowerCase().includes(search.toLowerCase().trim()),
+    )
     : options;
 
-  const items =
-    filteredOptions.length > 0 ? (
-      filteredOptions.map((item) => (
-        <Combobox.Option value={item.value} key={item.value}>
-          <ItemComponent {...item} />
-        </Combobox.Option>
-      ))
-    ) : (
-      <Combobox.Empty>{nothingFoundMessage}</Combobox.Empty>
-    );
+  const items = filteredOptions.length > 0 ? (
+    filteredOptions.map((item) => (
+      <Combobox.Option value={item.value} key={item.value}>
+        <ItemComponent {...item} />
+      </Combobox.Option>
+    ))
+  ) : (
+    <Combobox.Empty>{nothingFoundMessage}</Combobox.Empty>
+  );
 
   return (
     <Combobox

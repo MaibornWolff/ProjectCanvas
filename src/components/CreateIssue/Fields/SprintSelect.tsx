@@ -29,14 +29,13 @@ export function SprintSelect({
     enabled: enabled && !!boardIds && !!boardIds[0],
   });
 
-  const isDisabled =
-    issueTypesWithFieldsMap &&
-    issueTypesWithFieldsMap.size > 0 &&
-    (!issueTypesWithFieldsMap
+  const isDisabled = issueTypesWithFieldsMap
+    && issueTypesWithFieldsMap.size > 0
+    && (!issueTypesWithFieldsMap
       .get(form.getInputProps("type").value)
-      ?.includes("Sprint") ||
-      form.getInputProps("type").value ===
-        issueTypes?.find((issueType) => issueType.name === "Epic")?.id);
+      ?.includes("Sprint")
+      || form.getInputProps("type").value
+        === issueTypes?.find((issueType) => issueType.name === "Epic")?.id);
 
   return (
     <Tooltip
@@ -61,9 +60,9 @@ export function SprintSelect({
           data={
             !isLoading && sprints
               ? sprints.map((sprint) => ({
-                  value: sprint.id.toString(),
-                  label: sprint.name,
-                }))
+                value: sprint.id.toString(),
+                label: sprint.name,
+              }))
               : []
           }
           searchable

@@ -52,7 +52,9 @@ export function DetailView({
         <EditableEpic projectId={projectId} issueKey={issueKey} epic={epic} />
 
         <Group>
-          <IssueIcon type={type} /> {issueKey}
+          <IssueIcon type={type} />
+          {" "}
+          {issueKey}
         </Group>
       </Breadcrumbs>
       <ColorSchemeToggle
@@ -142,14 +144,16 @@ export function DetailView({
               </Accordion.Item>
             </Accordion>
             <Text size="xs" c="dimmed">
-              Created{" "}
+              Created
+              {" "}
               {new Intl.DateTimeFormat("en-GB", {
                 dateStyle: "full",
                 timeStyle: "short",
               }).format(new Date(created))}
             </Text>
             <Text size="xs" c="dimmed">
-              Updated{" "}
+              Updated
+              {" "}
               {new Intl.DateTimeFormat("en-GB", {
                 dateStyle: "full",
                 timeStyle: "short",

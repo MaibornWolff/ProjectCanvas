@@ -24,14 +24,13 @@ export function EpicSelect({
     enabled: enabled && !!form.getInputProps("projectId").value,
   });
 
-  const isDisabled =
-    issueTypesWithFieldsMap &&
-    issueTypesWithFieldsMap.size > 0 &&
-    (!issueTypesWithFieldsMap
+  const isDisabled = issueTypesWithFieldsMap
+    && issueTypesWithFieldsMap.size > 0
+    && (!issueTypesWithFieldsMap
       .get(form.getInputProps("type").value)
-      ?.includes("Sprint") ||
-      form.getInputProps("type").value ===
-        issueTypes?.find((issueType) => issueType.name === "Epic")?.id);
+      ?.includes("Sprint")
+      || form.getInputProps("type").value
+        === issueTypes?.find((issueType) => issueType.name === "Epic")?.id);
 
   return (
     <Tooltip
@@ -60,9 +59,9 @@ export function EpicSelect({
           data={
             !isLoading && epics
               ? epics.map((epic) => ({
-                  value: epic.issueKey,
-                  label: epic.summary,
-                }))
+                value: epic.issueKey,
+                label: epic.summary,
+              }))
               : []
           }
           searchable

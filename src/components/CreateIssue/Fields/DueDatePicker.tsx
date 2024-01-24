@@ -10,10 +10,9 @@ export function DueDatePicker({
   form: UseFormReturnType<Issue>;
   issueTypesWithFieldsMap?: Map<string, string[]>;
 }) {
-  const isDisabled =
-    issueTypesWithFieldsMap &&
-    issueTypesWithFieldsMap.size > 0 &&
-    !issueTypesWithFieldsMap
+  const isDisabled = issueTypesWithFieldsMap
+    && issueTypesWithFieldsMap.size > 0
+    && !issueTypesWithFieldsMap
       .get(form.getInputProps("type").value)
       ?.includes("Due date");
   return (
@@ -41,11 +40,10 @@ export function DueDatePicker({
           onChange={(value) => {
             form.getInputProps("dueDate").onChange(value);
             if (
-              value &&
-              form.getInputProps("startDate").value &&
-              form.getInputProps("startDate").value > value
-            )
-              form.setFieldValue("startDate", null as unknown as Date);
+              value
+              && form.getInputProps("startDate").value
+              && form.getInputProps("startDate").value > value
+            ) form.setFieldValue("startDate", null as unknown as Date);
           }}
         />
       </Box>

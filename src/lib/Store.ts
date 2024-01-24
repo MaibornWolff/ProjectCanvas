@@ -26,37 +26,34 @@ export const useCanvasStore = create<CanvasStore>()((set) => ({
   issueStatusByCategory: {},
   issueStatusCategoryByStatusName: {},
   setProjects: (projects: Project[]) => set(() => ({ projects })),
-  setSelectedProjectBoardIds: (boards: number[]) =>
-    set(() => ({ selectedProjectBoardIds: boards })),
-  setSelectedProject: (row: Project | undefined) =>
-    set(() => ({ selectedProject: row })),
-  setIssueTypes: (issueTypes: IssueType[]) =>
-    set(() => {
-      const issueStatus = uniqWith(
-        issueTypes.flatMap((type) => type.statuses ?? []),
-        (statusA, statusB) => statusA.id === statusB.id
+  setSelectedProjectBoardIds: (boards: number[]) => set(() => ({ selectedProjectBoardIds: boards })),
+  setSelectedProject: (row: Project | undefined) => set(() => ({ selectedProject: row })),
+  setIssueTypes: (issueTypes: IssueType[]) => set(() => {
+    const issueStatus = uniqWith(
+      issueTypes.flatMap((type) => type.statuses ?? []),
+      (statusA, statusB) => statusA.id === statusB.id,
+    );
+
+    const issueStatusByCategory = {} as {
+      [Type in StatusType]: IssueStatus[];
+    };
+    const issueStatusCategoryByStatusName = {} as {
+      [statusName: string]: StatusType;
+    };
+    issueStatus.forEach((status) => {
+      issueStatusByCategory[status.statusCategory.name as StatusType] ??= [];
+      issueStatusByCategory[status.statusCategory.name as StatusType].push(
+        status,
       );
+      issueStatusCategoryByStatusName[status.name] = status.statusCategory
+        .name as StatusType;
+    });
 
-      const issueStatusByCategory = {} as {
-        [Type in StatusType]: IssueStatus[];
-      };
-      const issueStatusCategoryByStatusName = {} as {
-        [statusName: string]: StatusType;
-      };
-      issueStatus.forEach((status) => {
-        issueStatusByCategory[status.statusCategory.name as StatusType] ??= [];
-        issueStatusByCategory[status.statusCategory.name as StatusType].push(
-          status
-        );
-        issueStatusCategoryByStatusName[status.name] = status.statusCategory
-          .name as StatusType;
-      });
-
-      return {
-        issueTypes,
-        issueStatus,
-        issueStatusByCategory,
-        issueStatusCategoryByStatusName,
-      };
-    }),
+    return {
+      issueTypes,
+      issueStatus,
+      issueStatusByCategory,
+      issueStatusCategoryByStatusName,
+    };
+  }),
 }));

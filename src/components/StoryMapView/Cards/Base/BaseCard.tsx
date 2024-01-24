@@ -2,11 +2,11 @@ import { Paper, PaperProps } from "@mantine/core";
 import { forwardRef, MouseEventHandler, ReactNode } from "react";
 
 export const BaseCard = forwardRef<
-  HTMLDivElement,
-  {
-    children?: ReactNode;
-    onClick?: MouseEventHandler<HTMLDivElement>;
-  } & PaperProps
+HTMLDivElement,
+{
+  children?: ReactNode;
+  onClick?: MouseEventHandler<HTMLDivElement>;
+} & PaperProps
 >(({ onClick, children, ...props }, ref) => (
   <Paper
     radius="sm"

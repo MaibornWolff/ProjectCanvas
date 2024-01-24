@@ -13,7 +13,7 @@ export function StoryMapMenu() {
   const navigate = useNavigate();
   const storyMaps = useStoryMapStore((state) => state.storyMaps);
   const deleteAllStoryMaps = useStoryMapStore(
-    (state) => state.deleteAllStoryMaps
+    (state) => state.deleteAllStoryMaps,
   );
   return (
     <Menu trigger="hover">
@@ -35,9 +35,7 @@ export function StoryMapMenu() {
           <Menu.Item
             leftSection={<IconMap size={14} />}
             key={`layout-header-story-map-${storyMap.id}`}
-            onClick={() =>
-              navigate(`${RouteNames.STORY_MAP_VIEW}/${storyMap.id}`)
-            }
+            onClick={() => navigate(`${RouteNames.STORY_MAP_VIEW}/${storyMap.id}`)}
           >
             {storyMap.name}
           </Menu.Item>

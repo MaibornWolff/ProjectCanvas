@@ -17,14 +17,12 @@ export function StoryMapView() {
   const [zoomValue, setZoomValue] = useState(1);
 
   const updateCase = useStoryMapStore((state) => state.updateCase);
-  const updateCaseFn = (caseColumn: Partial<Case>) =>
-    updateCase(storyMapId!, caseColumn);
+  const updateCaseFn = (caseColumn: Partial<Case>) => updateCase(storyMapId!, caseColumn);
 
   const updateSubActionGroup = useStoryMapStore(
-    (state) => state.updateSubActionGroup
+    (state) => state.updateSubActionGroup,
   );
-  const updateSubActionGroupFn = (caseColumn: Partial<Case>) =>
-    updateSubActionGroup(storyMapId!, caseColumn);
+  const updateSubActionGroupFn = (caseColumn: Partial<Case>) => updateSubActionGroup(storyMapId!, caseColumn);
 
   return (
     <DragDropContext
@@ -33,7 +31,7 @@ export function StoryMapView() {
           dropResult,
           storyMap!.cases,
           updateCaseFn,
-          updateSubActionGroupFn
+          updateSubActionGroupFn,
         );
       }}
     >

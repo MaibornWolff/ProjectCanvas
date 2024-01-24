@@ -71,7 +71,7 @@ export function EpicDetailView({
         body: string;
         created: string;
         updated: string;
-      }
+      },
     ];
   };
   status: string;
@@ -90,8 +90,7 @@ export function EpicDetailView({
     timeStyle: "short",
   });
 
-  const { issueStatusByCategory, selectedProjectBoardIds: boardIds } =
-    useCanvasStore();
+  const { issueStatusByCategory, selectedProjectBoardIds: boardIds } = useCanvasStore();
   const projectKey = useCanvasStore((state) => state.selectedProject?.key);
   const currentBoardId = boardIds[0];
 
@@ -100,26 +99,22 @@ export function EpicDetailView({
     queryFn: () => getIssuesByProject(projectKey, currentBoardId),
     enabled: !!projectKey,
     initialData: [],
-    select: (newChildIssues) =>
-      newChildIssues
-        ?.filter((issue: Issue) => issue.epic.issueKey === issueKey)
-        ?.sort((issueA: Issue, issueB: Issue) =>
-          sortIssuesByRank(issueA, issueB)
-        ) ?? [],
+    select: (newChildIssues) => newChildIssues
+      ?.filter((issue: Issue) => issue.epic.issueKey === issueKey)
+      ?.sort((issueA: Issue, issueB: Issue) => sortIssuesByRank(issueA, issueB)) ?? [],
   });
 
-  const getStatusNamesInCategory = (category: StatusType) =>
-    issueStatusByCategory[category]?.map((s) => s.name) ?? [];
+  const getStatusNamesInCategory = (category: StatusType) => issueStatusByCategory[category]?.map((s) => s.name) ?? [];
   const validTodoStatus = getStatusNamesInCategory(StatusType.TODO);
   const validInProgressStatus = getStatusNamesInCategory(
-    StatusType.IN_PROGRESS
+    StatusType.IN_PROGRESS,
   );
   const validDoneStatus = getStatusNamesInCategory(StatusType.DONE);
 
   const tasksTodo = issueCountAccumulator(childIssues, validTodoStatus);
   const tasksInProgress = issueCountAccumulator(
     childIssues,
-    validInProgressStatus
+    validInProgressStatus,
   );
   const tasksDone = issueCountAccumulator(childIssues, validDoneStatus);
   const totalTaskCount = tasksTodo + tasksInProgress + tasksDone;
@@ -128,18 +123,21 @@ export function EpicDetailView({
     resizeDivider();
   }, [isLoadingChildIssues]);
 
-  if (isLoadingChildIssues)
+  if (isLoadingChildIssues) {
     return (
       <Center style={{ width: "100%", height: "100%" }}>
         <Loader />
       </Center>
     );
+  }
 
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
         <Group>
-          <IssueIcon type="Epic" /> {issueKey}
+          <IssueIcon type="Epic" />
+          {" "}
+          {issueKey}
         </Group>
       </Breadcrumbs>
       <ColorSchemeToggle
@@ -294,10 +292,14 @@ export function EpicDetailView({
               </Accordion.Item>
             </Accordion>
             <Text size="xs" c="dimmed">
-              Created {dateFormat.format(new Date(created))}
+              Created
+              {" "}
+              {dateFormat.format(new Date(created))}
             </Text>
             <Text size="xs" c="dimmed">
-              Updated {dateFormat.format(new Date(updated))}
+              Updated
+              {" "}
+              {dateFormat.format(new Date(updated))}
             </Text>
           </Box>
         </ScrollArea.Autosize>

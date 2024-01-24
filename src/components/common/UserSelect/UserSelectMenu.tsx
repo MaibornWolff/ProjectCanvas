@@ -36,13 +36,13 @@ export function UserSelectMenu({
   const displayedUsers = assignableUsers ? (
     assignableUsers.map((assignableUser) => (
       <Menu.Item
-        leftSection={
+        leftSection={(
           <Avatar
             src={assignableUser.avatarUrls["24x24"]}
             size="sm"
             radius="xl"
           />
-        }
+        )}
         onClick={() => onChange(assignableUser)}
         key={assignableUser.id}
       >

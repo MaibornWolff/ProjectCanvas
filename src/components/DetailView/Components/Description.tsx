@@ -7,14 +7,14 @@ import { editIssue } from "../helpers/queryFunctions";
 
 export function Description(props: { issueKey: string; description: string }) {
   const [defaultDescription, setDefaultDescription] = useState(
-    props.description
+    props.description,
   );
   const [showDescriptionInput, setShowDescriptionInput] = useState(false);
   const mutationDescription = useMutation({
     mutationFn: (issue: Issue) => editIssue(issue, props.issueKey),
     onError: () => {
       showNotification({
-        message: `An error occurred while modifing the Description 😢`,
+        message: "An error occurred while modifing the Description 😢",
         color: "red",
       });
     },

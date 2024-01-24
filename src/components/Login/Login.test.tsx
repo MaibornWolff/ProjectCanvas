@@ -32,7 +32,7 @@ describe("<Login />", () => {
     const { container, getByTestId } = render(
       <MantineProvider>
         <Login />
-      </MantineProvider>
+      </MantineProvider>,
     );
 
     await userEvent.click(screen.getByRole("button", { name: "Jira Cloud" }));
@@ -49,7 +49,7 @@ describe("<Login />", () => {
     const { container, getByTestId } = render(
       <MantineProvider>
         <Login />
-      </MantineProvider>
+      </MantineProvider>,
     );
 
     await userEvent.click(screen.getByRole("button", { name: "Jira Server" }));

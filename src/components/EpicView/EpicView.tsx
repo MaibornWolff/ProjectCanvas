@@ -32,7 +32,7 @@ export function EpicView() {
     enabled: !!projectKey,
     initialData: [],
   });
-  if (isLoadingEpics)
+  if (isLoadingEpics) {
     return (
       <Center style={{ width: "100%", height: "100%" }}>
         {projectKey ? (
@@ -50,6 +50,7 @@ export function EpicView() {
         )}
       </Center>
     );
+  }
   return (
     <Stack style={{ minHeight: "100%" }}>
       <Stack align="left" gap={0}>

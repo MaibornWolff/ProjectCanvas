@@ -21,7 +21,7 @@ export function CheckboxStack({
 }) {
   const theme = createTheme({ cursorType: "pointer" });
   const [includedValues, setIncludedValues] = useState<string[]>(
-    data.filter((d) => d.active).map((d) => d.value)
+    data.filter((d) => d.active).map((d) => d.value),
   );
 
   const allValues = data.map((d) => d.value);
@@ -33,12 +33,12 @@ export function CheckboxStack({
   };
 
   function toggleValue(value: string) {
-    if (includedValues.indexOf(value) < 0)
-      changeValues([...includedValues, value]);
-    else
+    if (includedValues.indexOf(value) < 0) changeValues([...includedValues, value]);
+    else {
       changeValues(
-        includedValues.filter((containedValue) => containedValue !== value)
+        includedValues.filter((containedValue) => containedValue !== value),
       );
+    }
   }
 
   return (
@@ -52,8 +52,8 @@ export function CheckboxStack({
           onChange={() => changeValues(allValuesSelected ? [] : allValues)}
         />
         <Divider mt="-8%" />
-        {data &&
-          data.map((d) => (
+        {data
+          && data.map((d) => (
             <Checkbox
               {...(!includedValues.includes(d.value) && { c: "dimmed" })}
               key={d.value}

@@ -6,7 +6,7 @@ import { useStoryMapStore } from "../StoryMapStore";
 export function AddLevel({ storyMapId }: { storyMapId: string }) {
   const addLevel = useStoryMapStore((state) => state.addLevel);
   const addSubActionGroups = useStoryMapStore(
-    (state) => state.addSubActionGroups
+    (state) => state.addSubActionGroups,
   );
   return (
     <Button

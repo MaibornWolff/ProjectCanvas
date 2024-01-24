@@ -37,10 +37,9 @@ export function Attachments(props: {
 
   const resource = resourceQuery?.data;
 
-  const fetchThumb = (id: string): Promise<string | undefined> =>
-    getAttachmentThumbnail(id, resource!)
-      .then((b) => URL.createObjectURL(b))
-      .catch(() => undefined);
+  const fetchThumb = (id: string): Promise<string | undefined> => getAttachmentThumbnail(id, resource!)
+    .then((b) => URL.createObjectURL(b))
+    .catch(() => undefined);
 
   const { data: thumbnails, isLoading: thumbnailsLoading } = useQuery({
     queryKey: ["thumbnails", props.attachments],
@@ -60,8 +59,7 @@ export function Attachments(props: {
   const deleteAttachmentMutationLocal = deleteAttachmentMutation(queryClient);
 
   const performDelete = (attachmentId: string): void => {
-    if (resource)
-      deleteAttachmentMutationLocal.mutate({ attachmentId, resource });
+    if (resource) deleteAttachmentMutationLocal.mutate({ attachmentId, resource });
   };
 
   const performUpload = async (file: File | null): Promise<void> => {
@@ -72,14 +70,12 @@ export function Attachments(props: {
     const form = new FormData();
     form.append("file", file, file.name);
     const issueIdOrKey = props.issueKey;
-    if (resource)
-      addAttachmentMutationLocal.mutate({ issueIdOrKey, resource, form });
+    if (resource) addAttachmentMutationLocal.mutate({ issueIdOrKey, resource, form });
   };
 
-  const label: string =
-    props.attachments && props.attachments.length === 0
-      ? "Attachments"
-      : `Attachments (${props.attachments ? props.attachments.length : 0})`;
+  const label: string = props.attachments && props.attachments.length === 0
+    ? "Attachments"
+    : `Attachments (${props.attachments ? props.attachments.length : 0})`;
 
   return (
     <>
@@ -106,21 +102,19 @@ export function Attachments(props: {
       <Paper mb="lg" mr="sm">
         {resource && (
           <Group>
-            {props.attachments &&
-              props.attachments.map((attachment: Attachment) => {
+            {props.attachments
+              && props.attachments.map((attachment: Attachment) => {
                 const fetchFile: Promise<Blob> = downloadAttachment(
                   attachment.id,
-                  resource
+                  resource,
                 );
                 const handleDownload = () => {
                   fetchFile
                     .then((blob) => FileSaver.saveAs(blob, attachment.filename))
-                    .catch(() =>
-                      showNotification({
-                        message: `File couldn't be uploaded! 😢`,
-                        color: "red",
-                      })
-                    );
+                    .catch(() => showNotification({
+                      message: "File couldn't be uploaded! 😢",
+                      color: "red",
+                    }));
                 };
 
                 return (
@@ -164,16 +158,14 @@ export function Attachments(props: {
                                     height={100}
                                     fit="contain"
                                     src={
-                                      !thumbnailsLoading &&
-                                      thumbnails &&
-                                      thumbnails.find(
-                                        (thumbnail) =>
-                                          thumbnail.id === attachment.id
+                                      !thumbnailsLoading
+                                      && thumbnails
+                                      && thumbnails.find(
+                                        (thumbnail) => thumbnail.id === attachment.id,
                                       )?.url
                                         ? thumbnails.find(
-                                            (thumbnail) =>
-                                              thumbnail.id === attachment.id
-                                          )?.url
+                                          (thumbnail) => thumbnail.id === attachment.id,
+                                        )?.url
                                         : null
                                     }
                                     alt={`${attachment.filename}`}

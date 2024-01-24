@@ -21,7 +21,7 @@ export function IssueSummary({
     mutationFn: (issue: Issue) => editIssue(issue, issueKey),
     onError: () => {
       showNotification({
-        message: `An error occurred while modifying the summary 😢`,
+        message: "An error occurred while modifying the summary 😢",
         color: "red",
       });
     },
@@ -36,24 +36,25 @@ export function IssueSummary({
     },
   });
 
-  if (!showSummaryInput)
+  if (!showSummaryInput) {
     return (
       <Text lineClamp={1} onClick={() => setShowSummaryInput(true)}>
         {defaultSummary}
       </Text>
     );
+  }
 
   return (
     <Textarea
       value={defaultSummary}
       onChange={(e) => setDefaultSummary(e.target.value)}
       onBlur={() => {
-        if (defaultSummary === "")
+        if (defaultSummary === "") {
           showNotification({
-            message: `The summary of an issue cannot be empty`,
+            message: "The summary of an issue cannot be empty",
             color: "red",
           });
-        else {
+        } else {
           setShowSummaryInput(false);
           mutationSummary.mutate({
             summary: defaultSummary,
