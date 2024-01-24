@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-  Divider,
-  Stack,
-  Checkbox,
-  MantineProvider,
-  createTheme,
-} from "@mantine/core";
+import { Divider, Stack, Checkbox, MantineProvider, createTheme } from "@mantine/core";
 import { isEqual } from "lodash";
 
 export function CheckboxStack({

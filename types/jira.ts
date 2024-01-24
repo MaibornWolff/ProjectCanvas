@@ -47,12 +47,12 @@ export interface JiraEpic {
       type: string;
       version: string;
       content: string &
-        {
-          content: {
-            type: string;
-            text: string;
-          }[];
+      {
+        content: {
+          type: string;
+          text: string;
         }[];
+      }[];
     };
     summary: string;
     creator: { name: string; displayName: string };
@@ -107,14 +107,14 @@ export interface JiraEpic {
                   {
                     type: string;
                     text: string;
-                  }
+                  },
                 ];
-              }
+              },
             ];
           };
           created: string;
           updated: string;
-        }
+        },
       ];
     };
     sprint?: JiraSprint;
@@ -130,12 +130,12 @@ export interface JiraIssue {
       type: string;
       version: string;
       content: string &
-        {
-          content: {
-            type: string;
-            text: string;
-          }[];
+      {
+        content: {
+          type: string;
+          text: string;
         }[];
+      }[];
     };
     summary: string;
     creator: { name: string; displayName: string };
@@ -180,15 +180,15 @@ export interface JiraIssue {
             displayName: string;
           };
           body: string &
-            {
-              content: {
-                type: string;
-                text: string;
-              }[];
+          {
+            content: {
+              type: string;
+              text: string;
             }[];
+          }[];
           created: string;
           updated: string;
-        }
+        },
       ];
     };
     sprint?: JiraSprint;

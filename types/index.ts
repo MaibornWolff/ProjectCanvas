@@ -100,7 +100,7 @@ export interface Issue {
         body: string;
         created: string;
         updated: string;
-      }
+      },
     ];
   };
   startDate: Date;

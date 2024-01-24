@@ -1,11 +1,4 @@
-import {
-  Combobox,
-  ComboboxProps,
-  InputBase,
-  useCombobox,
-  CloseButton,
-  InputBaseProps,
-} from "@mantine/core";
+import { Combobox, ComboboxProps, InputBase, useCombobox, CloseButton, InputBaseProps } from "@mantine/core";
 import { ForwardRefExoticComponent, RefAttributes, useState } from "react";
 
 export function CustomItemSelect<

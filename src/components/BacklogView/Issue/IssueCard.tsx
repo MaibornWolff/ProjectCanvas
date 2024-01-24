@@ -1,16 +1,4 @@
-import {
-  Avatar,
-  Center,
-  Box,
-  Group,
-  Modal,
-  Paper,
-  Stack,
-  Text,
-  Tooltip,
-  useMantineTheme,
-  Grid,
-} from "@mantine/core";
+import { Avatar, Center, Box, Group, Modal, Paper, Stack, Text, Tooltip, useMantineTheme, Grid } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { Issue } from "types";
 import { useState } from "react";

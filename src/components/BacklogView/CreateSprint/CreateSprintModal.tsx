@@ -1,11 +1,4 @@
-import {
-  Button,
-  Group,
-  Modal,
-  ScrollArea,
-  Stack,
-  useMantineTheme,
-} from "@mantine/core";
+import { Button, Group, Modal, ScrollArea, Stack, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

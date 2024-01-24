@@ -1,6 +1,4 @@
-import {
-  MultiSelect, Text, Group, Box, useMantineTheme,
-} from "@mantine/core";
+import { MultiSelect, Text, Group, Box, useMantineTheme } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Issue } from "types";

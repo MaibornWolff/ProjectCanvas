@@ -37,7 +37,7 @@ export async function getBacklogIssuesByProjectAndBoard(
   ...params: Parameters<IProvider["getBacklogIssuesByProjectAndBoard"]>
 ) {
   const issues = await getProvider().getBacklogIssuesByProjectAndBoard(
-    ...params
+    ...params,
   );
   return issues;
 }

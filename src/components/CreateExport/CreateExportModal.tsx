@@ -1,16 +1,5 @@
-import {
-  Dispatch, SetStateAction, useEffect, useState,
-} from "react";
-import {
-  Modal,
-  Stack,
-  Group,
-  Text,
-  Button,
-  Tooltip,
-  Paper,
-  ActionIcon,
-} from "@mantine/core";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Modal, Stack, Group, Text, Button, Tooltip, Paper, ActionIcon } from "@mantine/core";
 import { sortBy } from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { IconInfoCircle } from "@tabler/icons-react";

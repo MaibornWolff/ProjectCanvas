@@ -11,13 +11,7 @@ import {
   SprintCreate,
   User,
 } from "../../../types";
-import {
-  JiraEpic,
-  JiraIssue,
-  JiraIssueType,
-  JiraProject,
-  JiraSprint,
-} from "../../../types/jira";
+import { JiraEpic, JiraIssue, JiraIssueType, JiraProject, JiraSprint } from "../../../types/jira";
 import { IProvider } from "../base-provider";
 import { JiraServerInfo, JiraServerUser } from "./server-types";
 
@@ -47,10 +41,9 @@ export class JiraServerProvider implements IProvider {
     const matches = (matcher: string): boolean => {
       let match = true;
       matcher.split(".").forEach((matcherPart, index) => {
-        match =
-          match &&
-          (matcherPart === "*" ||
-            matcherPart === this.serverInfo!.versionNumbers[index].toString());
+        match = match
+          && (matcherPart === "*"
+            || matcherPart === this.serverInfo!.versionNumbers[index].toString());
       });
 
       return match;
@@ -58,7 +51,7 @@ export class JiraServerProvider implements IProvider {
 
     const isAMoreSpecificThanB = (
       matcherA: string,
-      matcherB: string
+      matcherB: string,
     ): boolean => {
       const matcherBParts = matcherB.split(".");
       let isMoreSpecific = false;
@@ -74,9 +67,9 @@ export class JiraServerProvider implements IProvider {
     let selectedMatcher: string | undefined;
     Object.keys(functionsByVersionMatcher).forEach((matcher) => {
       if (
-        matches(matcher) &&
-        (selectedMatcher === undefined ||
-          isAMoreSpecificThanB(matcher, selectedMatcher))
+        matches(matcher)
+        && (selectedMatcher === undefined
+          || isAMoreSpecificThanB(matcher, selectedMatcher))
       ) {
         selectedMatcher = matcher;
       }
@@ -84,7 +77,7 @@ export class JiraServerProvider implements IProvider {
 
     if (!selectedMatcher) {
       throw new Error(
-        `No version matcher found for version: ${this.serverInfo.version}`
+        `No version matcher found for version: ${this.serverInfo.version}`,
       );
     }
 
@@ -93,7 +86,7 @@ export class JiraServerProvider implements IProvider {
 
   private getAuthHeader() {
     return `Basic ${Buffer.from(
-      `${this.loginOptions.username}:${this.loginOptions.password}`
+      `${this.loginOptions.username}:${this.loginOptions.password}`,
     ).toString("base64")}`;
   }
 
@@ -107,14 +100,13 @@ export class JiraServerProvider implements IProvider {
       },
     });
 
-    const recreateAxiosError = (originalError: AxiosError, message: string) =>
-      new AxiosError(
-        message,
-        originalError.code,
-        originalError.config,
-        originalError.request,
-        originalError.response
-      );
+    const recreateAxiosError = (originalError: AxiosError, message: string) => new AxiosError(
+      message,
+      originalError.code,
+      originalError.config,
+      originalError.request,
+      originalError.response,
+    );
 
     instance.interceptors.response.use(
       (response) => response,
@@ -125,16 +117,16 @@ export class JiraServerProvider implements IProvider {
             return Promise.reject(
               recreateAxiosError(
                 error,
-                `Invalid request: ${JSON.stringify(error.response.data)}`
-              )
+                `Invalid request: ${JSON.stringify(error.response.data)}`,
+              ),
             );
           }
           if (statusCode === 401) {
             return Promise.reject(
               recreateAxiosError(
                 error,
-                `User not authenticated: ${JSON.stringify(error.response.data)}`
-              )
+                `User not authenticated: ${JSON.stringify(error.response.data)}`,
+              ),
             );
           }
           if (error.response.status === 403) {
@@ -142,23 +134,23 @@ export class JiraServerProvider implements IProvider {
               recreateAxiosError(
                 error,
                 `User does not have a valid licence: ${JSON.stringify(
-                  error.response.data
-                )}`
-              )
+                  error.response.data,
+                )}`,
+              ),
             );
           }
           if (error.response.status === 429) {
             return Promise.reject(
               recreateAxiosError(
                 error,
-                `Rate limit exceeded: ${JSON.stringify(error.response.data)}`
-              )
+                `Rate limit exceeded: ${JSON.stringify(error.response.data)}`,
+              ),
             );
           }
         }
 
         return Promise.reject(error);
-      }
+      },
     );
 
     return instance;
@@ -203,8 +195,8 @@ export class JiraServerProvider implements IProvider {
           if (this.serverInfo.versionNumbers[0] < 7) {
             reject(
               new Error(
-                `Your Jira server version is unsupported. Minimum major version: 7. Your version: ${this.serverInfo.versionNumbers[0]}`
-              )
+                `Your Jira server version is unsupported. Minimum major version: 7. Your version: ${this.serverInfo.versionNumbers[0]}`,
+              ),
             );
           }
 
@@ -296,9 +288,7 @@ export class JiraServerProvider implements IProvider {
           const issueTypes: JiraIssueType[] = response.data;
           resolve(issueTypes as IssueType[]);
         })
-        .catch((error) =>
-          reject(new Error(`Error in fetching the issue types: ${error}`))
-        );
+        .catch((error) => reject(new Error(`Error in fetching the issue types: ${error}`)));
     });
   }
 
@@ -308,13 +298,11 @@ export class JiraServerProvider implements IProvider {
         .get(`/board?projectKeyOrId=${project}`)
         .then(async (response) => {
           const boardIds: number[] = response.data.values.map(
-            (element: { id: number; name: string }) => element.id
+            (element: { id: number; name: string }) => element.id,
           );
           resolve(boardIds);
         })
-        .catch((error) =>
-          reject(new Error(`Error in fetching the boards: ${error}`))
-        );
+        .catch((error) => reject(new Error(`Error in fetching the boards: ${error}`)));
     });
   }
 
@@ -344,9 +332,7 @@ export class JiraServerProvider implements IProvider {
             });
           resolve(sprints);
         })
-        .catch((error) =>
-          reject(new Error(`Error in fetching the boards: ${error}`))
-        );
+        .catch((error) => reject(new Error(`Error in fetching the boards: ${error}`)));
     });
   }
 
@@ -354,45 +340,39 @@ export class JiraServerProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getAgileRestApiClient("1.0")
         .get(
-          `/board/${boardId}/issue?jql=project=${project}&maxResults=10000&fields=*all`
+          `/board/${boardId}/issue?jql=project=${project}&maxResults=10000&fields=*all`,
         )
         .then((response) => resolve(this.fetchIssues(response)))
-        .catch((error) =>
-          reject(new Error(`Error in fetching issues: ${error}`))
-        );
+        .catch((error) => reject(new Error(`Error in fetching issues: ${error}`)));
     });
   }
 
   async getIssuesBySprintAndProject(
     sprintId: number,
     project: string,
-    boardId: number
+    boardId: number,
   ): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
       this.getAgileRestApiClient("1.0")
         .get(
-          `/board/${boardId}/sprint/${sprintId}/issue?jql=project=${project}`
+          `/board/${boardId}/sprint/${sprintId}/issue?jql=project=${project}`,
         )
         .then((response) => resolve(this.fetchIssues(response)))
-        .catch((error) =>
-          reject(new Error(`Error in fetching issues: ${error}`))
-        );
+        .catch((error) => reject(new Error(`Error in fetching issues: ${error}`)));
     });
   }
 
   async getBacklogIssuesByProjectAndBoard(
     project: string,
-    boardId: number
+    boardId: number,
   ): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
       this.getAgileRestApiClient("1.0")
         .get(
-          `/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`
+          `/board/${boardId}/backlog?jql=sprint is EMPTY AND project=${project}`,
         )
         .then((response) => resolve(this.fetchIssues(response)))
-        .catch((error) =>
-          reject(new Error(`Error in fetching issues: ${error}`))
-        );
+        .catch((error) => reject(new Error(`Error in fetching issues: ${error}`)));
     });
   }
 
@@ -407,7 +387,7 @@ export class JiraServerProvider implements IProvider {
         status: element.fields.status.name,
         type: element.fields.issuetype.name,
         storyPointsEstimate: await this.getIssueStoryPointsEstimate(
-          element.key
+          element.key,
         ),
         epic: {
           issueKey: element.fields.parent?.key,
@@ -427,7 +407,7 @@ export class JiraServerProvider implements IProvider {
         projectId: element.fields.project.id,
         sprint: element.fields.sprint,
         attachments: element.fields.attachment,
-      }))
+      })),
     );
   }
 
@@ -435,7 +415,7 @@ export class JiraServerProvider implements IProvider {
     sprint: number,
     issue: string,
     rankBefore: string,
-    rankAfter: string
+    rankAfter: string,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const rankCustomField = this.customFields.get("Rank");
@@ -450,8 +430,8 @@ export class JiraServerProvider implements IProvider {
         .catch((error) => {
           reject(
             new Error(
-              `Error in moving this issue to the Sprint with id ${sprint}: ${error}`
-            )
+              `Error in moving this issue to the Sprint with id ${sprint}: ${error}`,
+            ),
           );
         });
     });
@@ -462,18 +442,16 @@ export class JiraServerProvider implements IProvider {
       this.getAgileRestApiClient("1.0")
         .post("/backlog/issue", { issues: [issue] })
         .then(() => resolve())
-        .catch((error) =>
-          reject(
-            new Error(`Error in moving this issue to the Backlog: ${error}`)
-          )
-        );
+        .catch((error) => reject(
+          new Error(`Error in moving this issue to the Backlog: ${error}`),
+        ));
     });
   }
 
   async rankIssueInBacklog(
     issue: string,
     rankBefore: string,
-    rankAfter: string
+    rankAfter: string,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const rankCustomField = this.customFields.get("Rank");
@@ -494,11 +472,9 @@ export class JiraServerProvider implements IProvider {
       this.getAgileRestApiClient("1.0")
         .put("/issue/rank", body)
         .then(() => resolve())
-        .catch((error) =>
-          reject(
-            new Error(`Error in moving this issue to the Backlog: ${error}`)
-          )
-        );
+        .catch((error) => reject(
+          new Error(`Error in moving this issue to the Backlog: ${error}`),
+        ));
     });
   }
 
@@ -512,13 +488,11 @@ export class JiraServerProvider implements IProvider {
 
           resolve(points);
         })
-        .catch((error) =>
-          reject(
-            new Error(
-              `Error in getting the story points for issue: ${issue}: ${error}`
-            )
-          )
-        );
+        .catch((error) => reject(
+          new Error(
+            `Error in getting the story points for issue: ${issue}: ${error}`,
+          ),
+        ));
     });
   }
 
@@ -528,14 +502,13 @@ export class JiraServerProvider implements IProvider {
         .get(`/user/assignable/search?project=${projectIdOrKey}`)
         .then(async (response: AxiosResponse<JiraServerUser[]>) => {
           const users: User[] = response.data.map(
-            (user) =>
-              ({
-                id: user.key,
-                name: user.name,
-                displayName: user.displayName,
-                avatarUrls: user.avatarUrls,
-                emailAddress: user.emailAddress,
-              } as User)
+            (user) => ({
+              id: user.key,
+              name: user.name,
+              displayName: user.displayName,
+              avatarUrls: user.avatarUrls,
+              emailAddress: user.emailAddress,
+            } as User),
           );
           resolve(users);
         })
@@ -543,7 +516,7 @@ export class JiraServerProvider implements IProvider {
           if (error.response) {
             if (error.response.status === 404) {
               return Promise.reject(
-                Error(`Project was not found: ${error.response.data}`)
+                Error(`Project was not found: ${error.response.data}`),
               );
             }
           }
@@ -553,8 +526,8 @@ export class JiraServerProvider implements IProvider {
         .catch((error) => {
           reject(
             new Error(
-              `Error in fetching the assignable users for the project ${projectIdOrKey}: ${error}`
-            )
+              `Error in fetching the assignable users for the project ${projectIdOrKey}: ${error}`,
+            ),
           );
         });
     });
@@ -564,18 +537,14 @@ export class JiraServerProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
         .get("/myself")
-        .then(async (response: AxiosResponse<JiraServerUser>) =>
-          resolve({
-            id: response.data.key,
-            name: response.data.name,
-            displayName: response.data.displayName,
-            avatarUrls: response.data.avatarUrls,
-            emailAddress: response.data.emailAddress,
-          } as User)
-        )
-        .catch((error) =>
-          reject(new Error(`Error in the current user: ${error}`))
-        );
+        .then(async (response: AxiosResponse<JiraServerUser>) => resolve({
+          id: response.data.key,
+          name: response.data.name,
+          displayName: response.data.displayName,
+          avatarUrls: response.data.avatarUrls,
+          emailAddress: response.data.emailAddress,
+        } as User))
+        .catch((error) => reject(new Error(`Error in the current user: ${error}`)));
     });
   }
   /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -602,11 +571,11 @@ export class JiraServerProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getIssueTypesByProject(projectId).then((issueTypes) => {
         const relevantIssueType = issueTypes.find(
-          (issueType) => issueType.id === type
+          (issueType) => issueType.id === type,
         );
 
         this.getRestApiClient(2)
-          .post(`/issue`, {
+          .post("/issue", {
             fields: {
               summary,
               parent: { key: epic.issueKey },
@@ -631,18 +600,18 @@ export class JiraServerProvider implements IProvider {
               ...(offsetDueDate && {
                 [this.customFields.get("Due date")!]: offsetDueDate,
               }),
-              ...(sprint &&
-                sprint.id && {
-                  [this.customFields.get("Sprint")!]: +sprint.id,
-                }),
+              ...(sprint
+                && sprint.id && {
+                [this.customFields.get("Sprint")!]: +sprint.id,
+              }),
               ...(storyPointsEstimate && {
                 [this.customFields.get("Story point estimate")!]:
                   storyPointsEstimate,
               }),
-              ...(relevantIssueType &&
-                relevantIssueType.name === "Epic" && {
-                  [this.customFields.get("Epic Name")!]: summary,
-                }),
+              ...(relevantIssueType
+                && relevantIssueType.name === "Epic" && {
+                [this.customFields.get("Epic Name")!]: summary,
+              }),
               // ...(files && {
               //   [this.customFields.get("Attachment")!]: files,
               // }),
@@ -658,7 +627,7 @@ export class JiraServerProvider implements IProvider {
             if (error.response) {
               if (error.response.status === 404) {
                 specificError = new Error(
-                  "The user does not have the necessary permissions"
+                  "The user does not have the necessary permissions",
                 );
               }
             }
@@ -673,7 +642,7 @@ export class JiraServerProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
         .get(
-          `search?jql=issuetype = Epic AND project = ${projectIdOrKey}&fields=*all`
+          `search?jql=issuetype = Epic AND project = ${projectIdOrKey}&fields=*all`,
         )
         .then(async (response) => {
           const epics: Promise<Issue[]> = Promise.all(
@@ -700,12 +669,12 @@ export class JiraServerProvider implements IProvider {
                     author: commentElement.author,
                     created: commentElement.created,
                     updated: commentElement.updated,
-                  })
+                  }),
                 ),
               },
               sprint: element.fields.sprint,
               attachments: element.fields.attachment,
-            }))
+            })),
           );
           resolve(epics);
         })
@@ -714,15 +683,15 @@ export class JiraServerProvider implements IProvider {
           if (error.response) {
             if (error.response.status === 404) {
               specificError = new Error(
-                `The board does not exist or the user does not have permission to view it: ${error.response.data}`
+                `The board does not exist or the user does not have permission to view it: ${error.response.data}`,
               );
             }
           }
 
           reject(
             new Error(
-              `Error in fetching the epics for the project ${projectIdOrKey}: ${specificError}`
-            )
+              `Error in fetching the epics for the project ${projectIdOrKey}: ${specificError}`,
+            ),
           );
         });
     });
@@ -737,7 +706,7 @@ export class JiraServerProvider implements IProvider {
         })
         .catch((error) => {
           reject(
-            new Error(`Error fetching issues by sprint ${sprintId}: ${error}`)
+            new Error(`Error fetching issues by sprint ${sprintId}: ${error}`),
           );
         });
     });
@@ -750,11 +719,9 @@ export class JiraServerProvider implements IProvider {
         .then((response: AxiosResponse<{ results: { value: string }[] }>) => {
           resolve(response.data.results.map((result) => result.value));
         })
-        .catch((error) =>
-          reject(
-            new Error(`Error in fetching labels: ${JSON.stringify(error)}`)
-          )
-        );
+        .catch((error) => reject(
+          new Error(`Error in fetching labels: ${JSON.stringify(error)}`),
+        ));
     });
   }
 
@@ -766,9 +733,7 @@ export class JiraServerProvider implements IProvider {
           const priorityData: Priority[] = response.data;
           resolve(priorityData);
         })
-        .catch((error) =>
-          reject(new Error(`Error in fetching priorities: ${error}`))
-        );
+        .catch((error) => reject(new Error(`Error in fetching priorities: ${error}`)));
     });
   }
 
@@ -796,10 +761,10 @@ export class JiraServerProvider implements IProvider {
               project.issuetypes.forEach((issueType) => {
                 const fieldKeys = Object.keys(issueType.fields);
                 issueTypeToFieldsMap[issueType.id] = fieldKeys.map(
-                  (fieldKey) => this.reversedCustomFields.get(fieldKey)!
+                  (fieldKey) => this.reversedCustomFields.get(fieldKey)!,
                 );
               });
-            }
+            },
           );
           resolve(issueTypeToFieldsMap);
         });
@@ -812,31 +777,23 @@ export class JiraServerProvider implements IProvider {
       this.getProjects().then(async (projects) => {
         const issueTypeToFieldsMap: { [key: string]: string[] } = {};
         await Promise.all(
-          projects.map((project) =>
-            // IMPROVE: This call currently only supports 50 issue types
-            this.getRestApiClient(2)
-              .get(`/issue/createmeta/${project.id}/issuetypes`)
-              .then(async (response) => {
-                await Promise.all(
-                  response.data.values.map((issueType: { id: string }) =>
-                    // IMPROVE: This call currently only supports 50 issue types
-                    this.getRestApiClient(2)
-                      .get(
-                        `/issue/createmeta/${project.id}/issuetypes/${issueType.id}`
-                      )
-                      .then((issueTypesResponse) => {
-                        issueTypeToFieldsMap[issueType.id] =
-                          issueTypesResponse.data.values.map(
-                            (issueTypeField: { fieldId: string }) =>
-                              this.reversedCustomFields.get(
-                                issueTypeField.fieldId
-                              )!
-                          );
-                      })
-                  )
-                );
-              })
-          )
+          // IMPROVE: This call currently only supports 50 issue types
+          projects.map((project) => this.getRestApiClient(2)
+            .get(`/issue/createmeta/${project.id}/issuetypes`)
+            .then(async (response) => {
+              await Promise.all(
+                // IMPROVE: This call currently only supports 50 issue types
+                response.data.values.map((issueType: { id: string }) => this.getRestApiClient(2)
+                  .get(`/issue/createmeta/${project.id}/issuetypes/${issueType.id}`)
+                  .then((issueTypesResponse) => {
+                    issueTypeToFieldsMap[issueType.id] = issueTypesResponse.data.values.map(
+                      (issueTypeField: { fieldId: string }) => this.reversedCustomFields.get(
+                        issueTypeField.fieldId,
+                      )!,
+                    );
+                  })),
+              );
+            })),
         );
 
         return resolve(issueTypeToFieldsMap);
@@ -847,8 +804,8 @@ export class JiraServerProvider implements IProvider {
   getResource(): Promise<Resource> {
     return new Promise<Resource>((resolve, reject) => {
       if (
-        this.loginOptions.username !== undefined &&
-        this.loginOptions.password
+        this.loginOptions.username !== undefined
+        && this.loginOptions.password
       ) {
         // IMPROVE expose API client instead of resource
         const { defaults } = this.getRestApiClient(2);
@@ -894,11 +851,11 @@ export class JiraServerProvider implements IProvider {
           if (error.response) {
             if (error.response.status === 403) {
               specificError = new Error(
-                "The user does not have the necessary permissions"
+                "The user does not have the necessary permissions",
               );
             } else if (error.response.status === 404) {
               specificError = new Error(
-                "The Board does not exist or the user does not have the necessary permissions to view it"
+                "The Board does not exist or the user does not have the necessary permissions to view it",
               );
             }
           }
@@ -920,23 +877,23 @@ export class JiraServerProvider implements IProvider {
           if (error.response) {
             if (error.response.status === 403) {
               specificError = new Error(
-                "The user does not have permission to delete the issue"
+                "The user does not have permission to delete the issue",
               );
             } else if (error.response.status === 404) {
               specificError = new Error(
-                "The issue was not found or the user does not have the necessary permissions"
+                "The issue was not found or the user does not have the necessary permissions",
               );
             } else if (error.response.status === 405) {
               specificError = new Error(
-                "An anonymous call has been made to the operation"
+                "An anonymous call has been made to the operation",
               );
             }
           }
 
           reject(
             new Error(
-              `Error deleting the issue ${issueIdOrKey}: ${specificError}`
-            )
+              `Error deleting the issue ${issueIdOrKey}: ${specificError}`,
+            ),
           );
         });
     });
@@ -946,7 +903,7 @@ export class JiraServerProvider implements IProvider {
     parentIssueKey: string,
     subtaskSummary: string,
     projectId: string,
-    subtaskIssueTypeId: string
+    subtaskIssueTypeId: string,
   ): Promise<{ id: string; key: string }> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
@@ -990,7 +947,7 @@ export class JiraServerProvider implements IProvider {
       labels,
       priority,
     }: Issue,
-    issueIdOrKey: string
+    issueIdOrKey: string,
   ): Promise<void> {
     const offsetStartDate = this.offsetDate(startDate);
     const offsetDueDate = this.offsetDate(dueDate);
@@ -1002,10 +959,10 @@ export class JiraServerProvider implements IProvider {
             ...(summary && {
               summary,
             }),
-            ...(epic &&
-              epic.issueKey !== undefined && {
-                parent: { key: epic.issueKey },
-              }),
+            ...(epic
+              && epic.issueKey !== undefined && {
+              parent: { key: epic.issueKey },
+            }),
             ...(type && {
               issuetype: { id: type },
             }),
@@ -1050,7 +1007,7 @@ export class JiraServerProvider implements IProvider {
           if (error.response) {
             if (error.response.status === 404) {
               specificError = new Error(
-                "The issue was not found or the user does not have the necessary permissions"
+                "The issue was not found or the user does not have the necessary permissions",
               );
             }
           }
@@ -1069,14 +1026,14 @@ export class JiraServerProvider implements IProvider {
           response.data.transitions.forEach(
             (field: { name: string; id: string }) => {
               transitions.set(field.name, field.id);
-            }
+            },
           );
 
           const transitionId = +transitions.get(targetStatus)!;
 
           return this.getRestApiClient(2).post(
             `/issue/${issueIdOrKey}/transitions`,
-            { transition: { id: transitionId } }
+            { transition: { id: transitionId } },
           );
         })
         .then(() => resolve())
@@ -1092,13 +1049,11 @@ export class JiraServerProvider implements IProvider {
         .get(`/issue/${issueIdOrKey}/editmeta`)
         .then(async (response) => {
           const fieldKeys = Object.keys(response.data.fields).map(
-            (fieldKey) => this.reversedCustomFields.get(fieldKey)!
+            (fieldKey) => this.reversedCustomFields.get(fieldKey)!,
           );
           resolve(fieldKeys);
         })
-        .catch((error) =>
-          reject(new Error(`Error in fetching the issue types map: ${error}`))
-        );
+        .catch((error) => reject(new Error(`Error in fetching the issue types map: ${error}`)));
     });
   }
 
@@ -1114,13 +1069,13 @@ export class JiraServerProvider implements IProvider {
           if (error.response) {
             if (error.response.status === 404) {
               specificError = new Error(
-                `The issue was not found or the user does not have permission to view it: ${error.response.data}`
+                `The issue was not found or the user does not have permission to view it: ${error.response.data}`,
               );
             }
           }
 
           reject(
-            new Error(`Error in fetching the issue reporter: ${specificError}`)
+            new Error(`Error in fetching the issue reporter: ${specificError}`),
           );
         });
     });
@@ -1136,8 +1091,8 @@ export class JiraServerProvider implements IProvider {
         .catch((error) => {
           reject(
             new Error(
-              `Error adding a comment to the issue ${issueIdOrKey}: ${error}`
-            )
+              `Error adding a comment to the issue ${issueIdOrKey}: ${error}`,
+            ),
           );
         });
     });
@@ -1146,7 +1101,7 @@ export class JiraServerProvider implements IProvider {
   editIssueComment(
     issueIdOrKey: string,
     commentId: string,
-    commentText: string
+    commentText: string,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       // main part
@@ -1162,15 +1117,15 @@ export class JiraServerProvider implements IProvider {
             if (error.response.status === 400) {
               return Promise.reject(
                 new Error(
-                  "The user does not have permission to edit the comment or the request is invalid"
-                )
+                  "The user does not have permission to edit the comment or the request is invalid",
+                ),
               );
             }
             if (error.response.status === 404) {
               return Promise.reject(
                 new Error(
-                  "The issue was not found or the user does not have the necessary permissions"
-                )
+                  "The issue was not found or the user does not have the necessary permissions",
+                ),
               );
             }
           }
@@ -1180,8 +1135,8 @@ export class JiraServerProvider implements IProvider {
         .catch((error) => {
           reject(
             Error(
-              `Error editing the comment in issue ${issueIdOrKey}: ${error}`
-            )
+              `Error editing the comment in issue ${issueIdOrKey}: ${error}`,
+            ),
           );
         });
     });
@@ -1199,28 +1154,28 @@ export class JiraServerProvider implements IProvider {
             if (error.response.status === 404) {
               return Promise.reject(
                 new Error(
-                  "The issue was not found or the user does not have the necessary permissions"
-                )
+                  "The issue was not found or the user does not have the necessary permissions",
+                ),
               );
             }
             if (error.response.status === 405) {
               return Promise.reject(
-                new Error("An anonymous call has been made to the operation")
+                new Error("An anonymous call has been made to the operation"),
               );
             }
           }
 
           return Promise.reject(
             new Error(
-              `Error deleting the comment in issue ${issueIdOrKey}: ${error}`
-            )
+              `Error deleting the comment in issue ${issueIdOrKey}: ${error}`,
+            ),
           );
         })
         .catch((error) => {
           reject(
             Error(
-              `Error deleting the comment in issue ${issueIdOrKey}: ${error}`
-            )
+              `Error deleting the comment in issue ${issueIdOrKey}: ${error}`,
+            ),
           );
         });
     });

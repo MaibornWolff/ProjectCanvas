@@ -55,14 +55,13 @@ export async function refreshTokens({
       .then(async (response) => {
         const resp = await response.json();
         if (response.status === 200) {
-          const { access_token: accessToken, refresh_token: refreshToken } =
-            resp;
+          const { access_token: accessToken, refresh_token: refreshToken } = resp;
           resolve({ accessToken, refreshToken });
         } else {
           reject(
             new Error(
-              `Failed to refresh tokens with status code: ${response.status}`
-            )
+              `Failed to refresh tokens with status code: ${response.status}`,
+            ),
           );
         }
       })

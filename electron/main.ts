@@ -65,7 +65,7 @@ const createWindow = () => {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
     mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
+      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
     );
   }
   // Make all links open with the browser, not with the application
@@ -92,9 +92,7 @@ app.on("activate", () => {
 });
 
 app.whenReady().then(() => {
-  ipcMain.on("start-oauth2", () =>
-    handleOAuth2(BrowserWindow.getAllWindows()[0]!)
-  );
+  ipcMain.on("start-oauth2", () => handleOAuth2(BrowserWindow.getAllWindows()[0]!));
 
   ipcMain.handle("login", login);
   ipcMain.handle("logout", logout);
@@ -113,7 +111,7 @@ app.whenReady().then(() => {
   ipcMain.handle("getIssuesBySprint", getIssuesBySprint);
   ipcMain.handle(
     "getBacklogIssuesByProjectAndBoard",
-    getBacklogIssuesByProjectAndBoard
+    getBacklogIssuesByProjectAndBoard,
   );
   ipcMain.handle("deleteIssue", deleteIssue);
   ipcMain.handle("moveIssueToSprintAndRank", moveIssueToSprintAndRank);

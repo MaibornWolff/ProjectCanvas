@@ -29,10 +29,7 @@ import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers";
 import { sortIssuesByRank } from "../BacklogView/helpers/backlogHelpers";
 import { useCanvasStore } from "../../lib/Store";
 import { resizeDivider } from "../BacklogView/helpers/resizeDivider";
-import {
-  issueCountAccumulator,
-  storyPointsAccumulator,
-} from "../common/StoryPoints/status-accumulator";
+import { issueCountAccumulator, storyPointsAccumulator } from "../common/StoryPoints/status-accumulator";
 import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard";
 import { CommentSection } from "../DetailView/Components/CommentSection";
 import { StatusType } from "../../../types/status";

@@ -1,6 +1,4 @@
-import {
-  Issue, IssueType, Priority, Sprint, User,
-} from "types";
+import { Issue, IssueType, Priority, Sprint, User } from "types";
 
 export const getIssueTypes = (projectIdOrKey: string): Promise<IssueType[]> => window.provider.getIssueTypesByProject(projectIdOrKey);
 

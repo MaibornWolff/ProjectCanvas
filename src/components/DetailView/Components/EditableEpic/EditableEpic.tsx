@@ -1,6 +1,4 @@
-import {
-  Box, Group, Loader, Text,
-} from "@mantine/core";
+import { Box, Group, Loader, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Issue } from "types";

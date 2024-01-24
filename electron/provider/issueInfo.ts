@@ -45,7 +45,6 @@ export async function getIssueTypesWithFieldsMap(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getIssueTypesWithFieldsMap"]>
 ) {
-  const issuesTypesWithFiledsMap =
-    await getProvider().getIssueTypesWithFieldsMap(...params);
+  const issuesTypesWithFiledsMap = await getProvider().getIssueTypesWithFieldsMap(...params);
   return issuesTypesWithFiledsMap;
 }

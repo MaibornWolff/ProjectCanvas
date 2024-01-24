@@ -9,7 +9,7 @@ export type LoginOptions =
 
 export async function login(
   _: Electron.IpcMainInvokeEvent,
-  loginOptions: LoginOptions
+  loginOptions: LoginOptions,
 ) {
   if (loginOptions.provider === ProviderType.JiraServer) {
     setProvider(new JiraServerProvider());

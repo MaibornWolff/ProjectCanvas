@@ -20,11 +20,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import FileSaver from "file-saver";
 import { Attachment } from "types";
 import { addAttachmentMutation, deleteAttachmentMutation } from "./queries";
-import {
-  downloadAttachment,
-  getAttachmentThumbnail,
-  getResource,
-} from "./queryFunctions";
+import { downloadAttachment, getAttachmentThumbnail, getResource } from "./queryFunctions";
 
 export function Attachments(props: {
   issueKey: string;

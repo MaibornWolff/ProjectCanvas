@@ -1,6 +1,4 @@
-import {
-  ActionIcon, Transition, Popover, Box,
-} from "@mantine/core";
+import { ActionIcon, Transition, Popover, Box } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useHover } from "@mantine/hooks";

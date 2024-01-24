@@ -11,14 +11,7 @@ import {
   SUB_ACTION_GROUP_PREFIX,
 } from "./helpers/utils";
 
-import {
-  Action,
-  Case,
-  StoryMap,
-  SubAction,
-  SubActionGroup,
-  SubActionLevel,
-} from "./Types";
+import { Action, Case, StoryMap, SubAction, SubActionGroup, SubActionLevel } from "./Types";
 
 export interface StoryMapStore {
   storyMaps: StoryMap[];

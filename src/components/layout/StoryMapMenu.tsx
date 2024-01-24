@@ -1,10 +1,5 @@
 import { Anchor, Menu } from "@mantine/core";
-import {
-  IconChevronDown,
-  IconLayoutDashboard,
-  IconMap,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconChevronDown, IconLayoutDashboard, IconMap, IconTrash } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import { useStoryMapStore } from "../StoryMapView/StoryMapStore";
 import { RouteNames } from "../../route-names";

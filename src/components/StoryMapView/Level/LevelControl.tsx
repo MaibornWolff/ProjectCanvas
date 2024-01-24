@@ -1,10 +1,4 @@
-import {
-  Accordion,
-  AccordionControlProps,
-  ActionIcon,
-  Center,
-  TextInput,
-} from "@mantine/core";
+import { Accordion, AccordionControlProps, ActionIcon, Center, TextInput } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
 import { useStoryMapStore } from "../StoryMapStore";

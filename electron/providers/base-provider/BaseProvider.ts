@@ -1,14 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import {
-  Issue,
-  IssueType,
-  Priority,
-  Project,
-  Resource,
-  Sprint,
-  SprintCreate,
-  User,
-} from "../../../types";
+import { Issue, IssueType, Priority, Project, Resource, Sprint, SprintCreate, User } from "../../../types";
 
 export interface BasicLoginOptions {
   url: string;

@@ -1,12 +1,4 @@
-import {
-  Button,
-  Divider,
-  Group,
-  Modal,
-  ScrollArea,
-  Stack,
-  useMantineTheme,
-} from "@mantine/core";
+import { Button, Divider, Group, Modal, ScrollArea, Stack, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,10 +6,7 @@ import { Issue } from "types";
 import { Dispatch, SetStateAction } from "react";
 import { useCanvasStore } from "../../lib/Store";
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
-import {
-  getResource,
-  uploadAttachment,
-} from "../DetailView/Components/Attachments/queryFunctions";
+import { getResource, uploadAttachment } from "../DetailView/Components/Attachments/queryFunctions";
 import {
   ProjectSelect,
   IssueTypeSelect,

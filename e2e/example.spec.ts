@@ -1,9 +1,4 @@
-import {
-  ElectronApplication,
-  _electron as electron,
-  expect,
-  test,
-} from "@playwright/test";
+import { ElectronApplication, _electron as electron, expect, test } from "@playwright/test";
 
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
 

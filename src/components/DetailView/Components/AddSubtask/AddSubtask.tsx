@@ -1,6 +1,4 @@
-import {
-  Box, Button, Group, Loader, TextInput,
-} from "@mantine/core";
+import { Box, Button, Group, Loader, TextInput } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

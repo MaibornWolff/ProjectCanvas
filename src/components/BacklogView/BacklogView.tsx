@@ -14,9 +14,7 @@ import {
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { QueriesResults, useQueries, useQuery } from "@tanstack/react-query";
-import {
-  ChangeEvent, useEffect, useMemo, useState,
-} from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
 import { Issue, Sprint } from "types";
@@ -25,18 +23,9 @@ import { useCanvasStore } from "../../lib/Store";
 import { CreateIssueModal } from "../CreateIssue/CreateIssueModal";
 import { CreateExportModal } from "../CreateExport/CreateExportModal";
 import { CreateSprint } from "./CreateSprint/CreateSprint";
-import {
-  BacklogKey,
-  IssuesState,
-  searchMatchesIssue,
-  sortIssuesByRank,
-} from "./helpers/backlogHelpers";
+import { BacklogKey, IssuesState, searchMatchesIssue, sortIssuesByRank } from "./helpers/backlogHelpers";
 import { onDragEnd } from "./helpers/draggingHelpers";
-import {
-  getBacklogIssues,
-  getIssuesBySprint,
-  getSprints,
-} from "./helpers/queryFetchers";
+import { getBacklogIssues, getIssuesBySprint, getSprints } from "./helpers/queryFetchers";
 import { resizeDivider } from "./helpers/resizeDivider";
 import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper";
 import { SprintsPanel } from "./IssuesWrapper/SprintsPanel";

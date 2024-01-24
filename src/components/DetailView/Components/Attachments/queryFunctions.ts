@@ -1,10 +1,5 @@
 import { Resource, Attachment } from "types";
-import {
-  getDeleteUrl,
-  getDownloadUrl,
-  getThumbnailUrl,
-  getUploadUrl,
-} from "./helpFunctions";
+import { getDeleteUrl, getDownloadUrl, getThumbnailUrl, getUploadUrl } from "./helpFunctions";
 
 export const getResource = (): Promise<Resource> => window.provider.getResource();
 

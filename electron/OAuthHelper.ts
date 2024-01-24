@@ -47,7 +47,7 @@ export function handleOAuth2(win: BrowserWindow) {
       if (
         // handle cancel button press event on the authWindow
         url.includes(
-          "error=access_denied&error_description=User%20did%20not%20authorize%20the%20request"
+          "error=access_denied&error_description=User%20did%20not%20authorize%20the%20request",
         )
       ) {
         authWindow.destroy();

@@ -1,23 +1,8 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  Text,
-  Group,
-  Stack,
-  Paper,
-  Avatar,
-  Anchor,
-  Loader,
-  Button,
-  Textarea,
-  Box,
-} from "@mantine/core";
+import { Text, Group, Stack, Paper, Avatar, Anchor, Loader, Button, Textarea, Box } from "@mantine/core";
 import { Issue } from "types";
-import {
-  addCommentMutation,
-  deleteCommentMutation,
-  editCommentMutation,
-} from "./queries";
+import { addCommentMutation, deleteCommentMutation, editCommentMutation } from "./queries";
 
 export function CommentSection({
   issueKey,

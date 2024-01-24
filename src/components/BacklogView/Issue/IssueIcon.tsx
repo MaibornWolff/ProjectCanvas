@@ -1,11 +1,5 @@
 import { ThemeIcon } from "@mantine/core";
-import {
-  IconBookmark,
-  IconCheck,
-  IconBug,
-  IconBolt,
-  IconEdit,
-} from "@tabler/icons-react";
+import { IconBookmark, IconCheck, IconBug, IconBolt, IconEdit } from "@tabler/icons-react";
 import { ReactElement } from "react";
 
 export function IssueIcon({ type }: { type: string }) {

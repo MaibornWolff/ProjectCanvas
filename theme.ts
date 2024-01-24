@@ -1,8 +1,4 @@
-import type {
-  MantineThemeOverride,
-  MantineColorsTuple,
-  DefaultMantineColor,
-} from "@mantine/core";
+import type { MantineThemeOverride, MantineColorsTuple, DefaultMantineColor } from "@mantine/core";
 
 export const theme: MantineThemeOverride = {
   colors: {

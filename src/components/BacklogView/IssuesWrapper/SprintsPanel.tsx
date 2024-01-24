@@ -1,6 +1,4 @@
-import {
-  Accordion, Badge, Flex, Group, Text, Title,
-} from "@mantine/core";
+import { Accordion, Badge, Flex, Group, Text, Title } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 import { Issue, Sprint } from "types";
 import { pluralize, sortSprintsByActive } from "../helpers/backlogHelpers";

@@ -1,15 +1,10 @@
-import {
-  Text, Box, Select, useMantineTheme,
-} from "@mantine/core";
+import { Text, Box, Select, useMantineTheme } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Issue, Sprint } from "types";
 import { useState } from "react";
 import { useCanvasStore } from "../../../lib/Store";
-import {
-  getSprints,
-  moveIssueToBacklog,
-} from "../../CreateIssue/queryFunctions";
+import { getSprints, moveIssueToBacklog } from "../../CreateIssue/queryFunctions";
 import { editIssue } from "../helpers/queryFunctions";
 
 export function IssueSprint(props: {

@@ -1,11 +1,4 @@
-import {
-  Text,
-  Group,
-  Menu,
-  Avatar,
-  UnstyledButton,
-  ScrollArea,
-} from "@mantine/core";
+import { Text, Group, Menu, Avatar, UnstyledButton, ScrollArea } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";

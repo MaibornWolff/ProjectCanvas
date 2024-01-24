@@ -38,10 +38,12 @@ module.exports = {
         ],
         "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/quotes": "off",
+        "object-curly-newline": ["error", { multiline: true, consistent: true }],
+        'import-newlines/enforce': ['error', { items: 40, 'max-len': 120 }],
         quotes: ["error", "double"],
         "max-len": "off",
       },
     },
   ],
-  plugins: ["react", "@typescript-eslint", "testing-library"],
+  plugins: ["react", "@typescript-eslint", "testing-library", "import-newlines"],
 };

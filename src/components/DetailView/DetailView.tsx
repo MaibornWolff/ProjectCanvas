@@ -1,14 +1,4 @@
-import {
-  Accordion,
-  Box,
-  Breadcrumbs,
-  Group,
-  Paper,
-  ScrollArea,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Accordion, Box, Breadcrumbs, Group, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import { Issue } from "types";
 import { AddSubtask } from "./Components/AddSubtask";
 import { AssigneeMenu } from "./Components/AssigneeMenu";

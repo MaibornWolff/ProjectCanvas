@@ -3,11 +3,7 @@ import { StrictModeDroppable } from "../../common/StrictModeDroppable";
 import { ActionCard } from "../Cards/ActionCard";
 import { AddCard } from "../Cards/Add/AddCard";
 import { CaseTitleCard } from "../Cards/CaseTitleCard";
-import {
-  ACTION_PREFIX,
-  getRndInteger,
-  SUB_ACTION_GROUP_PREFIX,
-} from "../helpers/utils";
+import { ACTION_PREFIX, getRndInteger, SUB_ACTION_GROUP_PREFIX } from "../helpers/utils";
 import { useStoryMapStore } from "../StoryMapStore";
 import { Case, SubActionLevel } from "../Types";
 

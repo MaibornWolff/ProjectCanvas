@@ -1,13 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import {
-  Text,
-  Group,
-  NumberInput,
-  Chip,
-  Loader,
-  Box,
-  useMantineTheme,
-} from "@mantine/core";
+import { Text, Group, NumberInput, Chip, Loader, Box, useMantineTheme } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Issue } from "types";

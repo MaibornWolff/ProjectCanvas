@@ -1,14 +1,4 @@
-import {
-  Group,
-  Stack,
-  Text,
-  Title,
-  ScrollArea,
-  Box,
-  Button,
-  Center,
-  Loader,
-} from "@mantine/core";
+import { Group, Stack, Text, Title, ScrollArea, Box, Button, Center, Loader } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
