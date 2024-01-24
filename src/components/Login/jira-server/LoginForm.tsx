@@ -1,6 +1,5 @@
 import { Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core"
 import { useForm } from "@mantine/form"
-import { useTranslation } from "react-i18next"
 import { LoginFormValues } from "./LoginFormValues"
 import { loginToJiraServer } from "./loginToJiraServer"
 import { getImportMetaEnv } from "../../../get-meta-env";
@@ -12,7 +11,6 @@ export function LoginForm({
   goBack: () => void
   onSuccess: () => void
 }) {
-  const { t } = useTranslation("login")
   const metaEnv = getImportMetaEnv()
   const form = useForm<LoginFormValues>({
     initialValues: {
@@ -30,20 +28,20 @@ export function LoginForm({
       <Stack>
         <TextInput
           required
-          label={t("url")}
-          placeholder={t("urlPlaceholder")}
+          label="Instance URL"
+          placeholder="https://jira.example.com"
           {...form.getInputProps("url")}
         />
         <TextInput
           required
-          label={t("username")}
-          placeholder={t("username")}
+          label="Username"
+          placeholder="Username"
           {...form.getInputProps("username")}
         />
         <PasswordInput
           required
-          label={t("password")}
-          placeholder={t("password")}
+          label="Password"
+          placeholder="Password"
           {...form.getInputProps("password")}
         />
       </Stack>
@@ -62,7 +60,7 @@ export function LoginForm({
           Log in
         </Button>
         <Button variant="outline" fullWidth color="dark" onClick={goBack}>
-          {t("button.goBack")}
+          Go Back
         </Button>
       </Group>
     </form>

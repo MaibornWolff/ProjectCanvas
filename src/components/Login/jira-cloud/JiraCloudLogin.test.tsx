@@ -13,18 +13,6 @@ jest.mock("electron", () => ({
     removeAllListeners: jest.fn(),
   },
 }))
-jest.mock("react-i18next", () => ({
-  useTranslation: () => ({
-    t: (str: string) => str,
-    i18n: {
-      changeLanguage: () => new Promise(() => {}),
-    },
-  }),
-  initReactI18next: {
-    type: "3rdParty",
-    init: () => {},
-  },
-}))
 
 describe("<JiraCloudLogin />", () => {
   it("should call goBack when GO BACK button clicked", async () => {

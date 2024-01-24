@@ -5,7 +5,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { HashRouter } from "react-router-dom"
 import { App } from "./App"
 import { ThemeProvider } from "./ThemeProvider"
-import "./i18n/i18n"
 
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
