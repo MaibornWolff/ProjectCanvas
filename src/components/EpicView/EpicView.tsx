@@ -7,6 +7,7 @@ import {CreateIssueModal} from "../CreateIssue/CreateIssueModal";
 import {EpicWrapper} from "./EpicWrapper";
 import {getEpics} from "./helpers/queryFetchers";
 import {useColorScheme} from "../../common/color-scheme";
+import {RouteNames} from "../../route-names";
 
 export function EpicView() {
   const colorScheme = useColorScheme()
@@ -32,7 +33,7 @@ export function EpicView() {
                   <Text>
                       Please go back to the Projects View section and select a project
                   </Text>
-                  <Button onClick={() => navigate("/projectsview")}>Go back</Button>
+                  <Button onClick={() => navigate(RouteNames.PROJECTS_VIEW)}>Go back</Button>
               </Stack>
           )}
       </Center>
@@ -43,7 +44,7 @@ export function EpicView() {
         <Group>
           <Group gap="xs" c="dimmed">
             <Text
-              onClick={() => navigate("/projectsview")}
+              onClick={() => navigate(RouteNames.PROJECTS_VIEW)}
               style={{
                 ":hover": {
                   textDecoration: "underline",

@@ -7,6 +7,7 @@ import {
 } from "@tabler/icons-react"
 import { useNavigate } from "react-router-dom"
 import { useStoryMapStore } from "../StoryMapView/StoryMapStore"
+import { RouteNames } from "../../route-names";
 
 export function StoryMapMenu() {
   const navigate = useNavigate()
@@ -20,7 +21,7 @@ export function StoryMapMenu() {
         <Anchor
           component="button"
           type="button"
-          onClick={() => navigate("/storymapview")}
+          onClick={() => navigate(RouteNames.STORY_MAP_VIEW)}
           style={{
             display: "flex",
           }}
@@ -34,7 +35,7 @@ export function StoryMapMenu() {
           <Menu.Item
             leftSection={<IconMap size={14} />}
             key={`layout-header-story-map-${storyMap.id}`}
-            onClick={() => navigate(`/storymapview/${storyMap.id}`)}
+            onClick={() => navigate(`${RouteNames.STORY_MAP_VIEW}/${storyMap.id}`)}
           >
             {storyMap.name}
           </Menu.Item>
@@ -43,7 +44,7 @@ export function StoryMapMenu() {
         {storyMaps?.length > 0 && <Menu.Divider />}
         <Menu.Item
           leftSection={<IconLayoutDashboard size={14} />}
-          onClick={() => navigate("/storymapview")}
+          onClick={() => navigate(RouteNames.STORY_MAP_VIEW)}
         >
           View All Story Maps
         </Menu.Item>
