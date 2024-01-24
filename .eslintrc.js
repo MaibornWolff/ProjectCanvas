@@ -8,6 +8,7 @@ module.exports = {
   overrides: [
     {
       extends: [
+        "eslint:recommended",
         "airbnb",
         "airbnb-typescript",
         "plugin:react/jsx-runtime",
@@ -40,5 +41,5 @@ module.exports = {
       },
     },
   ],
-  plugins: ["react", "testing-library"],
+  plugins: ["react", "@typescript-eslint", "testing-library"],
 }
