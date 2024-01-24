@@ -1,44 +1,44 @@
-import { useState } from "react"
+import { useState } from "react";
 import {
   Divider,
   Stack,
   Checkbox,
   MantineProvider,
   createTheme,
-} from "@mantine/core"
-import { isEqual } from "lodash"
+} from "@mantine/core";
+import { isEqual } from "lodash";
 
 export function CheckboxStack({
   data,
   onChange,
 }: {
   data: {
-    label: string
-    value: string
-    active?: boolean
-  }[]
-  onChange: (activeValues: string[]) => void
+    label: string;
+    value: string;
+    active?: boolean;
+  }[];
+  onChange: (activeValues: string[]) => void;
 }) {
-  const theme = createTheme({ cursorType: "pointer" })
+  const theme = createTheme({ cursorType: "pointer" });
   const [includedValues, setIncludedValues] = useState<string[]>(
     data.filter((d) => d.active).map((d) => d.value)
-  )
+  );
 
-  const allValues = data.map((d) => d.value)
-  const allValuesSelected = isEqual(includedValues.sort(), allValues.sort())
+  const allValues = data.map((d) => d.value);
+  const allValuesSelected = isEqual(includedValues.sort(), allValues.sort());
 
   const changeValues = (newValues: string[]) => {
-    setIncludedValues(newValues)
-    onChange(newValues)
-  }
+    setIncludedValues(newValues);
+    onChange(newValues);
+  };
 
   function toggleValue(value: string) {
     if (includedValues.indexOf(value) < 0)
-      changeValues([...includedValues, value])
+      changeValues([...includedValues, value]);
     else
       changeValues(
         includedValues.filter((containedValue) => containedValue !== value)
-      )
+      );
   }
 
   return (
@@ -64,5 +64,5 @@ export function CheckboxStack({
           ))}
       </MantineProvider>
     </Stack>
-  )
+  );
 }

@@ -1,14 +1,14 @@
-import { Center, Stack, Text } from "@mantine/core"
-import { Issue } from "types"
-import { StrictModeDroppable } from "../../common/StrictModeDroppable"
-import { IssueCard } from "../Issue/IssueCard"
+import { Center, Stack, Text } from "@mantine/core";
+import { Issue } from "types";
+import { StrictModeDroppable } from "../../common/StrictModeDroppable";
+import { IssueCard } from "../Issue/IssueCard";
 
 export function DraggableIssuesWrapper({
   id,
   issues,
 }: {
-  id: string
-  issues: Issue[]
+  id: string;
+  issues: Issue[];
 }) {
   return (
     <StrictModeDroppable droppableId={id}>
@@ -39,5 +39,5 @@ export function DraggableIssuesWrapper({
         )
       }
     </StrictModeDroppable>
-  )
+  );
 }

@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import axios, { AxiosError, AxiosResponse, isAxiosError } from "axios"
+import axios, { AxiosError, AxiosResponse, isAxiosError } from "axios";
 import {
   dateTimeFormat,
   Issue,
@@ -10,102 +10,102 @@ import {
   Sprint,
   SprintCreate,
   User,
-} from "../../../types"
+} from "../../../types";
 import {
   JiraEpic,
   JiraIssue,
   JiraIssueType,
   JiraProject,
   JiraSprint,
-} from "../../../types/jira"
-import { IProvider } from "../base-provider"
-import { JiraServerInfo, JiraServerUser } from "./server-types"
+} from "../../../types/jira";
+import { IProvider } from "../base-provider";
+import { JiraServerInfo, JiraServerUser } from "./server-types";
 
 export class JiraServerProvider implements IProvider {
   private loginOptions = {
     url: "",
     username: "",
     password: "",
-  }
+  };
 
-  private serverInfo?: JiraServerInfo = undefined
+  private serverInfo?: JiraServerInfo = undefined;
 
-  private customFields = new Map<string, string>()
+  private customFields = new Map<string, string>();
 
-  private reversedCustomFields = new Map<string, string>()
+  private reversedCustomFields = new Map<string, string>();
 
   private executeVersioned<R>(
     functionsByVersionMatcher: {
-      [versionMatcher: string]: (...args: never[]) => R
+      [versionMatcher: string]: (...args: never[]) => R;
     },
     ...args: never[]
   ) {
     if (!this.serverInfo) {
-      throw new Error("Server info not set!")
+      throw new Error("Server info not set!");
     }
 
     const matches = (matcher: string): boolean => {
-      let match = true
+      let match = true;
       matcher.split(".").forEach((matcherPart, index) => {
         match =
           match &&
           (matcherPart === "*" ||
-            matcherPart === this.serverInfo!.versionNumbers[index].toString())
-      })
+            matcherPart === this.serverInfo!.versionNumbers[index].toString());
+      });
 
-      return match
-    }
+      return match;
+    };
 
     const isAMoreSpecificThanB = (
       matcherA: string,
       matcherB: string
     ): boolean => {
-      const matcherBParts = matcherB.split(".")
-      let isMoreSpecific = false
+      const matcherBParts = matcherB.split(".");
+      let isMoreSpecific = false;
       matcherA.split(".").forEach((matcherAPart, index) => {
         if (matcherBParts[index] === "*" && matcherAPart !== "*") {
-          isMoreSpecific = true
+          isMoreSpecific = true;
         }
-      })
+      });
 
-      return isMoreSpecific
-    }
+      return isMoreSpecific;
+    };
 
-    let selectedMatcher: string | undefined
+    let selectedMatcher: string | undefined;
     Object.keys(functionsByVersionMatcher).forEach((matcher) => {
       if (
         matches(matcher) &&
         (selectedMatcher === undefined ||
           isAMoreSpecificThanB(matcher, selectedMatcher))
       ) {
-        selectedMatcher = matcher
+        selectedMatcher = matcher;
       }
-    })
+    });
 
     if (!selectedMatcher) {
       throw new Error(
         `No version matcher found for version: ${this.serverInfo.version}`
-      )
+      );
     }
 
-    return functionsByVersionMatcher[selectedMatcher](...args)
+    return functionsByVersionMatcher[selectedMatcher](...args);
   }
 
   private getAuthHeader() {
     return `Basic ${Buffer.from(
       `${this.loginOptions.username}:${this.loginOptions.password}`
-    ).toString("base64")}`
+    ).toString("base64")}`;
   }
 
   private constructRestBasedClient(apiName: string, version: string) {
     const instance = axios.create({
       baseURL: `${this.loginOptions.url}/rest/${apiName}/${version}`,
       headers: {
-        "Accept": "application/json",
-        "Authorization": this.getAuthHeader(),
+        Accept: "application/json",
+        Authorization: this.getAuthHeader(),
         "Content-Type": "application/json",
       },
-    })
+    });
 
     const recreateAxiosError = (originalError: AxiosError, message: string) =>
       new AxiosError(
@@ -114,20 +114,20 @@ export class JiraServerProvider implements IProvider {
         originalError.config,
         originalError.request,
         originalError.response
-      )
+      );
 
     instance.interceptors.response.use(
       (response) => response,
       (error) => {
         if (isAxiosError(error) && error.response) {
-          const statusCode = error.response.status
+          const statusCode = error.response.status;
           if (statusCode === 400) {
             return Promise.reject(
               recreateAxiosError(
                 error,
                 `Invalid request: ${JSON.stringify(error.response.data)}`
               )
-            )
+            );
           }
           if (statusCode === 401) {
             return Promise.reject(
@@ -135,7 +135,7 @@ export class JiraServerProvider implements IProvider {
                 error,
                 `User not authenticated: ${JSON.stringify(error.response.data)}`
               )
-            )
+            );
           }
           if (error.response.status === 403) {
             return Promise.reject(
@@ -145,7 +145,7 @@ export class JiraServerProvider implements IProvider {
                   error.response.data
                 )}`
               )
-            )
+            );
           }
           if (error.response.status === 429) {
             return Promise.reject(
@@ -153,45 +153,45 @@ export class JiraServerProvider implements IProvider {
                 error,
                 `Rate limit exceeded: ${JSON.stringify(error.response.data)}`
               )
-            )
+            );
           }
         }
 
-        return Promise.reject(error)
+        return Promise.reject(error);
       }
-    )
+    );
 
-    return instance
+    return instance;
   }
 
   private getRestApiClient(version: string | number) {
-    return this.constructRestBasedClient("api", version.toString())
+    return this.constructRestBasedClient("api", version.toString());
   }
 
   private getAuthRestApiClient(version: number) {
-    return this.constructRestBasedClient("auth", version.toString())
+    return this.constructRestBasedClient("auth", version.toString());
   }
 
   private getAgileRestApiClient(version: string) {
-    return this.constructRestBasedClient("agile", version)
+    return this.constructRestBasedClient("agile", version);
   }
 
   async login({
     basicLoginOptions,
   }: {
     basicLoginOptions: {
-      url: string
-      username: string
-      password: string
-    }
+      url: string;
+      username: string;
+      password: string;
+    };
   }) {
-    this.loginOptions.url = basicLoginOptions.url
-    this.loginOptions.username = basicLoginOptions.username
-    this.loginOptions.password = basicLoginOptions.password
+    this.loginOptions.url = basicLoginOptions.url;
+    this.loginOptions.username = basicLoginOptions.username;
+    this.loginOptions.password = basicLoginOptions.password;
 
-    await this.getServerInfo()
-    await this.mapCustomFields()
-    return this.isLoggedIn()
+    await this.getServerInfo();
+    await this.mapCustomFields();
+    return this.isLoggedIn();
   }
 
   async getServerInfo(): Promise<void> {
@@ -199,21 +199,21 @@ export class JiraServerProvider implements IProvider {
       this.getRestApiClient(2)
         .get("/serverInfo")
         .then((response: AxiosResponse<JiraServerInfo>) => {
-          this.serverInfo = response.data
+          this.serverInfo = response.data;
           if (this.serverInfo.versionNumbers[0] < 7) {
             reject(
               new Error(
                 `Your Jira server version is unsupported. Minimum major version: 7. Your version: ${this.serverInfo.versionNumbers[0]}`
               )
-            )
+            );
           }
 
-          resolve()
+          resolve();
         })
         .catch((error) => {
-          reject(new Error(`Error in checking server info: ${error}`))
-        })
-    })
+          reject(new Error(`Error in checking server info: ${error}`));
+        });
+    });
   }
 
   async isLoggedIn(): Promise<void> {
@@ -221,24 +221,24 @@ export class JiraServerProvider implements IProvider {
       this.getAuthRestApiClient(1)
         .get("/session")
         .then(() => {
-          resolve()
+          resolve();
         })
         .catch((error) => {
           if (isAxiosError(error) && error.response) {
             if (error.response.status === 401) {
-              return Promise.reject(new Error("Wrong Username or Password"))
+              return Promise.reject(new Error("Wrong Username or Password"));
             }
             if (error.response.status === 404) {
-              return Promise.reject(new Error("Wrong URL"))
+              return Promise.reject(new Error("Wrong URL"));
             }
           }
 
-          return Promise.reject(error)
+          return Promise.reject(error);
         })
         .catch((error) => {
-          reject(new Error(`Error in checking login status: ${error}`))
-        })
-    })
+          reject(new Error(`Error in checking login status: ${error}`));
+        });
+    });
   }
 
   async logout(): Promise<void> {
@@ -246,12 +246,12 @@ export class JiraServerProvider implements IProvider {
       this.getAuthRestApiClient(1)
         .delete("/session")
         .then(() => {
-          resolve()
+          resolve();
         })
         .catch((error) => {
-          reject(new Error(`Error in logging out: ${error}`))
-        })
-    })
+          reject(new Error(`Error in logging out: ${error}`));
+        });
+    });
   }
 
   async mapCustomFields(): Promise<void> {
@@ -260,15 +260,15 @@ export class JiraServerProvider implements IProvider {
         .get("/field")
         .then((response) => {
           response.data.forEach((field: { name: string; id: string }) => {
-            this.customFields.set(field.name, field.id)
-            this.reversedCustomFields.set(field.id, field.name)
-          })
-          resolve()
+            this.customFields.set(field.name, field.id);
+            this.reversedCustomFields.set(field.id, field.name);
+          });
+          resolve();
         })
         .catch((error) => {
-          reject(new Error(`Error in mapping custom fields: ${error}`))
-        })
-    })
+          reject(new Error(`Error in mapping custom fields: ${error}`));
+        });
+    });
   }
 
   async getProjects(): Promise<Project[]> {
@@ -282,10 +282,10 @@ export class JiraServerProvider implements IProvider {
             id: project.id,
             lead: project.lead.displayName,
             type: project.projectTypeKey,
-          }))
-          resolve(projects)
-        })
-    })
+          }));
+          resolve(projects);
+        });
+    });
   }
 
   async getIssueTypesByProject(projectIdOrKey: string): Promise<IssueType[]> {
@@ -293,13 +293,13 @@ export class JiraServerProvider implements IProvider {
       this.getRestApiClient(2)
         .get(`/project/${projectIdOrKey}/statuses`)
         .then(async (response) => {
-          const issueTypes: JiraIssueType[] = response.data
-          resolve(issueTypes as IssueType[])
+          const issueTypes: JiraIssueType[] = response.data;
+          resolve(issueTypes as IssueType[]);
         })
         .catch((error) =>
           reject(new Error(`Error in fetching the issue types: ${error}`))
-        )
-    })
+        );
+    });
   }
 
   async getBoardIds(project: string): Promise<number[]> {
@@ -309,13 +309,13 @@ export class JiraServerProvider implements IProvider {
         .then(async (response) => {
           const boardIds: number[] = response.data.values.map(
             (element: { id: number; name: string }) => element.id
-          )
-          resolve(boardIds)
+          );
+          resolve(boardIds);
         })
         .catch((error) =>
           reject(new Error(`Error in fetching the boards: ${error}`))
-        )
-    })
+        );
+    });
   }
 
   async getSprints(boardId: number): Promise<Sprint[]> {
@@ -326,28 +326,28 @@ export class JiraServerProvider implements IProvider {
           const sprints: Sprint[] = response.data.values
             .filter((element: { state: string }) => element.state !== "closed")
             .map((element: JiraSprint) => {
-              const sDate = new Date(element.startDate)
+              const sDate = new Date(element.startDate);
               const startDate = Number.isNaN(sDate.getTime())
                 ? "Invalid Date"
-                : dateTimeFormat.format(sDate)
-              const eDate = new Date(element.endDate)
+                : dateTimeFormat.format(sDate);
+              const eDate = new Date(element.endDate);
               const endDate = Number.isNaN(eDate.getTime())
                 ? "Invalid Date"
-                : dateTimeFormat.format(eDate)
+                : dateTimeFormat.format(eDate);
               return {
                 id: element.id,
                 name: element.name,
                 state: element.state,
                 startDate,
                 endDate,
-              }
-            })
-          resolve(sprints)
+              };
+            });
+          resolve(sprints);
         })
         .catch((error) =>
           reject(new Error(`Error in fetching the boards: ${error}`))
-        )
-    })
+        );
+    });
   }
 
   async getIssuesByProject(project: string, boardId: number): Promise<Issue[]> {
@@ -359,8 +359,8 @@ export class JiraServerProvider implements IProvider {
         .then((response) => resolve(this.fetchIssues(response)))
         .catch((error) =>
           reject(new Error(`Error in fetching issues: ${error}`))
-        )
-    })
+        );
+    });
   }
 
   async getIssuesBySprintAndProject(
@@ -376,8 +376,8 @@ export class JiraServerProvider implements IProvider {
         .then((response) => resolve(this.fetchIssues(response)))
         .catch((error) =>
           reject(new Error(`Error in fetching issues: ${error}`))
-        )
-    })
+        );
+    });
   }
 
   async getBacklogIssuesByProjectAndBoard(
@@ -392,12 +392,12 @@ export class JiraServerProvider implements IProvider {
         .then((response) => resolve(this.fetchIssues(response)))
         .catch((error) =>
           reject(new Error(`Error in fetching issues: ${error}`))
-        )
-    })
+        );
+    });
   }
 
   async fetchIssues(response: AxiosResponse): Promise<Issue[]> {
-    const rankCustomField = this.customFields.get("Rank")
+    const rankCustomField = this.customFields.get("Rank");
 
     return Promise.all(
       response.data.issues.map(async (element: JiraIssue) => ({
@@ -428,7 +428,7 @@ export class JiraServerProvider implements IProvider {
         sprint: element.fields.sprint,
         attachments: element.fields.attachment,
       }))
-    )
+    );
   }
 
   async moveIssueToSprintAndRank(
@@ -438,7 +438,7 @@ export class JiraServerProvider implements IProvider {
     rankAfter: string
   ): Promise<void> {
     return new Promise((resolve, reject) => {
-      const rankCustomField = this.customFields.get("Rank")
+      const rankCustomField = this.customFields.get("Rank");
       this.getAgileRestApiClient("1.0")
         .post(`/sprint/${sprint}/issue`, {
           rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
@@ -452,9 +452,9 @@ export class JiraServerProvider implements IProvider {
             new Error(
               `Error in moving this issue to the Sprint with id ${sprint}: ${error}`
             )
-          )
-        })
-    })
+          );
+        });
+    });
   }
 
   async moveIssueToBacklog(issue: string): Promise<void> {
@@ -466,8 +466,8 @@ export class JiraServerProvider implements IProvider {
           reject(
             new Error(`Error in moving this issue to the Backlog: ${error}`)
           )
-        )
-    })
+        );
+    });
   }
 
   async rankIssueInBacklog(
@@ -476,20 +476,20 @@ export class JiraServerProvider implements IProvider {
     rankAfter: string
   ): Promise<void> {
     return new Promise((resolve, reject) => {
-      const rankCustomField = this.customFields.get("Rank")
+      const rankCustomField = this.customFields.get("Rank");
       const body: {
-        rankCustomFieldId: string
-        issues: string[]
-        rankBeforeIssue?: string
-        rankAfterIssue?: string
+        rankCustomFieldId: string;
+        issues: string[];
+        rankBeforeIssue?: string;
+        rankAfterIssue?: string;
       } = {
         rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
         issues: [issue],
-      }
+      };
       if (rankBefore) {
-        body.rankBeforeIssue = rankBefore
+        body.rankBeforeIssue = rankBefore;
       } else if (rankAfter) {
-        body.rankAfterIssue = rankAfter
+        body.rankAfterIssue = rankAfter;
       }
       this.getAgileRestApiClient("1.0")
         .put("/issue/rank", body)
@@ -498,8 +498,8 @@ export class JiraServerProvider implements IProvider {
           reject(
             new Error(`Error in moving this issue to the Backlog: ${error}`)
           )
-        )
-    })
+        );
+    });
   }
 
   async getIssueStoryPointsEstimate(issue: string): Promise<number> {
@@ -507,10 +507,10 @@ export class JiraServerProvider implements IProvider {
       this.getRestApiClient(2)
         .get(`/issue/${issue}`)
         .then(async (response) => {
-          const customField = this.customFields.get("Story Points")
-          const points: number = response.data.fields[customField!]
+          const customField = this.customFields.get("Story Points");
+          const points: number = response.data.fields[customField!];
 
-          resolve(points)
+          resolve(points);
         })
         .catch((error) =>
           reject(
@@ -518,8 +518,8 @@ export class JiraServerProvider implements IProvider {
               `Error in getting the story points for issue: ${issue}: ${error}`
             )
           )
-        )
-    })
+        );
+    });
   }
 
   getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]> {
@@ -536,28 +536,28 @@ export class JiraServerProvider implements IProvider {
                 avatarUrls: user.avatarUrls,
                 emailAddress: user.emailAddress,
               } as User)
-          )
-          resolve(users)
+          );
+          resolve(users);
         })
         .catch((error) => {
           if (error.response) {
             if (error.response.status === 404) {
               return Promise.reject(
                 Error(`Project was not found: ${error.response.data}`)
-              )
+              );
             }
           }
 
-          return Promise.reject(error)
+          return Promise.reject(error);
         })
         .catch((error) => {
           reject(
             new Error(
               `Error in fetching the assignable users for the project ${projectIdOrKey}: ${error}`
             )
-          )
-        })
-    })
+          );
+        });
+    });
   }
 
   getCurrentUser(): Promise<User> {
@@ -575,8 +575,8 @@ export class JiraServerProvider implements IProvider {
         )
         .catch((error) =>
           reject(new Error(`Error in the current user: ${error}`))
-        )
-    })
+        );
+    });
   }
   /* eslint-disable @typescript-eslint/no-unused-vars */
 
@@ -596,14 +596,14 @@ export class JiraServerProvider implements IProvider {
     labels,
     priority,
   }: Issue): Promise<string> {
-    const offsetStartDate = this.offsetDate(startDate)
-    const offsetDueDate = this.offsetDate(dueDate)
+    const offsetStartDate = this.offsetDate(startDate);
+    const offsetDueDate = this.offsetDate(dueDate);
 
     return new Promise((resolve, reject) => {
       this.getIssueTypesByProject(projectId).then((issueTypes) => {
         const relevantIssueType = issueTypes.find(
           (issueType) => issueType.id === type
-        )
+        );
 
         this.getRestApiClient(2)
           .post(`/issue`, {
@@ -649,24 +649,24 @@ export class JiraServerProvider implements IProvider {
             },
           })
           .then(async (response) => {
-            const createdIssue = response.data
-            resolve(JSON.stringify(createdIssue.key))
-            await this.setTransition(createdIssue.id, status)
+            const createdIssue = response.data;
+            resolve(JSON.stringify(createdIssue.key));
+            await this.setTransition(createdIssue.id, status);
           })
           .catch((error) => {
-            let specificError = error
+            let specificError = error;
             if (error.response) {
               if (error.response.status === 404) {
                 specificError = new Error(
                   "The user does not have the necessary permissions"
-                )
+                );
               }
             }
 
-            reject(new Error(`Error creating issue: ${specificError}`))
-          })
-      })
-    })
+            reject(new Error(`Error creating issue: ${specificError}`));
+          });
+      });
+    });
   }
 
   getEpicsByProject(projectIdOrKey: string): Promise<Issue[]> {
@@ -706,16 +706,16 @@ export class JiraServerProvider implements IProvider {
               sprint: element.fields.sprint,
               attachments: element.fields.attachment,
             }))
-          )
-          resolve(epics)
+          );
+          resolve(epics);
         })
         .catch((error) => {
-          let specificError = error
+          let specificError = error;
           if (error.response) {
             if (error.response.status === 404) {
               specificError = new Error(
                 `The board does not exist or the user does not have permission to view it: ${error.response.data}`
-              )
+              );
             }
           }
 
@@ -723,9 +723,9 @@ export class JiraServerProvider implements IProvider {
             new Error(
               `Error in fetching the epics for the project ${projectIdOrKey}: ${specificError}`
             )
-          )
-        })
-    })
+          );
+        });
+    });
   }
 
   getIssuesBySprint(sprintId: number): Promise<Issue[]> {
@@ -733,14 +733,14 @@ export class JiraServerProvider implements IProvider {
       this.getAgileRestApiClient("1.0")
         .get(`/sprint/${sprintId}/issue`)
         .then(async (response) => {
-          resolve(this.fetchIssues(response))
+          resolve(this.fetchIssues(response));
         })
         .catch((error) => {
           reject(
             new Error(`Error fetching issues by sprint ${sprintId}: ${error}`)
-          )
-        })
-    })
+          );
+        });
+    });
   }
 
   getLabels(): Promise<string[]> {
@@ -748,14 +748,14 @@ export class JiraServerProvider implements IProvider {
       this.getRestApiClient(2)
         .get("/jql/autocompletedata/suggestions?fieldName=labels")
         .then((response: AxiosResponse<{ results: { value: string }[] }>) => {
-          resolve(response.data.results.map((result) => result.value))
+          resolve(response.data.results.map((result) => result.value));
         })
         .catch((error) =>
           reject(
             new Error(`Error in fetching labels: ${JSON.stringify(error)}`)
           )
-        )
-    })
+        );
+    });
   }
 
   getPriorities(): Promise<Priority[]> {
@@ -763,20 +763,20 @@ export class JiraServerProvider implements IProvider {
       this.getRestApiClient(2)
         .get("/priority")
         .then((response) => {
-          const priorityData: Priority[] = response.data
-          resolve(priorityData)
+          const priorityData: Priority[] = response.data;
+          resolve(priorityData);
         })
         .catch((error) =>
           reject(new Error(`Error in fetching priorities: ${error}`))
-        )
-    })
+        );
+    });
   }
 
   getIssueTypesWithFieldsMap(): Promise<{ [key: string]: string[] }> {
     return this.executeVersioned({
       "7.*": this.getIssueTypesWithFieldsMap_7.bind(this),
       "*": this.getIssueTypesWithFieldsMap_8and9.bind(this),
-    })
+    });
   }
 
   getIssueTypesWithFieldsMap_7(): Promise<{ [key: string]: string[] }> {
@@ -784,33 +784,33 @@ export class JiraServerProvider implements IProvider {
       this.getRestApiClient(2)
         .get("/issue/createmeta?expand=projects.issuetypes.fields")
         .then(async (response) => {
-          const issueTypeToFieldsMap: { [key: string]: string[] } = {}
+          const issueTypeToFieldsMap: { [key: string]: string[] } = {};
           response.data.projects.forEach(
             (project: {
-              id: string
+              id: string;
               issuetypes: {
-                fields: {}
-                id: string
-              }[]
+                fields: {};
+                id: string;
+              }[];
             }) => {
               project.issuetypes.forEach((issueType) => {
-                const fieldKeys = Object.keys(issueType.fields)
+                const fieldKeys = Object.keys(issueType.fields);
                 issueTypeToFieldsMap[issueType.id] = fieldKeys.map(
                   (fieldKey) => this.reversedCustomFields.get(fieldKey)!
-                )
-              })
+                );
+              });
             }
-          )
-          resolve(issueTypeToFieldsMap)
-        })
-    })
+          );
+          resolve(issueTypeToFieldsMap);
+        });
+    });
   }
 
   getIssueTypesWithFieldsMap_8and9(): Promise<{ [key: string]: string[] }> {
     return new Promise((resolve) => {
       // IMPROVE: This is barely scalable
       this.getProjects().then(async (projects) => {
-        const issueTypeToFieldsMap: { [key: string]: string[] } = {}
+        const issueTypeToFieldsMap: { [key: string]: string[] } = {};
         await Promise.all(
           projects.map((project) =>
             // IMPROVE: This call currently only supports 50 issue types
@@ -831,17 +831,17 @@ export class JiraServerProvider implements IProvider {
                               this.reversedCustomFields.get(
                                 issueTypeField.fieldId
                               )!
-                          )
+                          );
                       })
                   )
-                )
+                );
               })
           )
-        )
+        );
 
-        return resolve(issueTypeToFieldsMap)
-      })
-    })
+        return resolve(issueTypeToFieldsMap);
+      });
+    });
   }
 
   getResource(): Promise<Resource> {
@@ -851,16 +851,16 @@ export class JiraServerProvider implements IProvider {
         this.loginOptions.password
       ) {
         // IMPROVE expose API client instead of resource
-        const { defaults } = this.getRestApiClient(2)
+        const { defaults } = this.getRestApiClient(2);
         const result: Resource = {
           baseUrl: defaults.baseURL ?? "",
           authorization: defaults.headers.Authorization as string,
-        }
-        resolve(result)
+        };
+        resolve(result);
       } else {
-        reject()
+        reject();
       }
-    })
+    });
   }
 
   createSprint({
@@ -870,8 +870,8 @@ export class JiraServerProvider implements IProvider {
     originBoardId,
     goal,
   }: SprintCreate): Promise<void> {
-    const offsetStartDate = this.offsetDate(startDate)
-    const offsetEndDate = this.offsetDate(endDate)
+    const offsetStartDate = this.offsetDate(startDate);
+    const offsetEndDate = this.offsetDate(endDate);
 
     return new Promise((resolve, reject) => {
       this.getAgileRestApiClient("1.0")
@@ -887,25 +887,25 @@ export class JiraServerProvider implements IProvider {
           ...(goal && { goal }),
         })
         .then(async () => {
-          resolve()
+          resolve();
         })
         .catch((error) => {
-          let specificError = error
+          let specificError = error;
           if (error.response) {
             if (error.response.status === 403) {
               specificError = new Error(
                 "The user does not have the necessary permissions"
-              )
+              );
             } else if (error.response.status === 404) {
               specificError = new Error(
                 "The Board does not exist or the user does not have the necessary permissions to view it"
-              )
+              );
             }
           }
 
-          reject(new Error(`Error creating sprint: ${specificError}`))
-        })
-    })
+          reject(new Error(`Error creating sprint: ${specificError}`));
+        });
+    });
   }
 
   deleteIssue(issueIdOrKey: string): Promise<void> {
@@ -913,23 +913,23 @@ export class JiraServerProvider implements IProvider {
       this.getRestApiClient(2)
         .delete(`/issue/${issueIdOrKey}?deleteSubtasks`)
         .then(async () => {
-          resolve()
+          resolve();
         })
         .catch((error) => {
-          let specificError = error
+          let specificError = error;
           if (error.response) {
             if (error.response.status === 403) {
               specificError = new Error(
                 "The user does not have permission to delete the issue"
-              )
+              );
             } else if (error.response.status === 404) {
               specificError = new Error(
                 "The issue was not found or the user does not have the necessary permissions"
-              )
+              );
             } else if (error.response.status === 405) {
               specificError = new Error(
                 "An anonymous call has been made to the operation"
-              )
+              );
             }
           }
 
@@ -937,9 +937,9 @@ export class JiraServerProvider implements IProvider {
             new Error(
               `Error deleting the issue ${issueIdOrKey}: ${specificError}`
             )
-          )
-        })
-    })
+          );
+        });
+    });
   }
 
   createSubtask(
@@ -965,13 +965,13 @@ export class JiraServerProvider implements IProvider {
           },
         })
         .then(async (response) => {
-          const createdSubtask: { id: string; key: string } = response.data
-          resolve(createdSubtask)
+          const createdSubtask: { id: string; key: string } = response.data;
+          resolve(createdSubtask);
         })
         .catch((error) => {
-          reject(new Error(`Error creating subtask: ${error}`))
-        })
-    })
+          reject(new Error(`Error creating subtask: ${error}`));
+        });
+    });
   }
 
   editIssue(
@@ -992,8 +992,8 @@ export class JiraServerProvider implements IProvider {
     }: Issue,
     issueIdOrKey: string
   ): Promise<void> {
-    const offsetStartDate = this.offsetDate(startDate)
-    const offsetDueDate = this.offsetDate(dueDate)
+    const offsetStartDate = this.offsetDate(startDate);
+    const offsetDueDate = this.offsetDate(dueDate);
 
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
@@ -1043,21 +1043,21 @@ export class JiraServerProvider implements IProvider {
           },
         })
         .then(async () => {
-          resolve()
+          resolve();
         })
         .catch((error) => {
-          let specificError = error
+          let specificError = error;
           if (error.response) {
             if (error.response.status === 404) {
               specificError = new Error(
                 "The issue was not found or the user does not have the necessary permissions"
-              )
+              );
             }
           }
 
-          reject(new Error(`Error creating issue: ${specificError}`))
-        })
-    })
+          reject(new Error(`Error creating issue: ${specificError}`));
+        });
+    });
   }
 
   setTransition(issueIdOrKey: string, targetStatus: string): Promise<void> {
@@ -1065,25 +1065,25 @@ export class JiraServerProvider implements IProvider {
       this.getRestApiClient(2)
         .get(`/issue/${issueIdOrKey}/transitions`)
         .then((response) => {
-          const transitions = new Map<string, string>()
+          const transitions = new Map<string, string>();
           response.data.transitions.forEach(
             (field: { name: string; id: string }) => {
-              transitions.set(field.name, field.id)
+              transitions.set(field.name, field.id);
             }
-          )
+          );
 
-          const transitionId = +transitions.get(targetStatus)!
+          const transitionId = +transitions.get(targetStatus)!;
 
           return this.getRestApiClient(2).post(
             `/issue/${issueIdOrKey}/transitions`,
             { transition: { id: transitionId } }
-          )
+          );
         })
         .then(() => resolve())
         .catch((error) => {
-          reject(new Error(`Error setting transition: ${error}`))
-        })
-    })
+          reject(new Error(`Error setting transition: ${error}`));
+        });
+    });
   }
 
   getEditableIssueFields(issueIdOrKey: string): Promise<string[]> {
@@ -1093,13 +1093,13 @@ export class JiraServerProvider implements IProvider {
         .then(async (response) => {
           const fieldKeys = Object.keys(response.data.fields).map(
             (fieldKey) => this.reversedCustomFields.get(fieldKey)!
-          )
-          resolve(fieldKeys)
+          );
+          resolve(fieldKeys);
         })
         .catch((error) =>
           reject(new Error(`Error in fetching the issue types map: ${error}`))
-        )
-    })
+        );
+    });
   }
 
   getIssueReporter(issueIdOrKey: string): Promise<User> {
@@ -1107,23 +1107,23 @@ export class JiraServerProvider implements IProvider {
       this.getRestApiClient(2)
         .get(`/issue/${issueIdOrKey}?fields=reporter`)
         .then(async (response) => {
-          resolve(response.data.fields.reporter as User)
+          resolve(response.data.fields.reporter as User);
         })
         .catch((error) => {
-          let specificError = error
+          let specificError = error;
           if (error.response) {
             if (error.response.status === 404) {
               specificError = new Error(
                 `The issue was not found or the user does not have permission to view it: ${error.response.data}`
-              )
+              );
             }
           }
 
           reject(
             new Error(`Error in fetching the issue reporter: ${specificError}`)
-          )
-        })
-    })
+          );
+        });
+    });
   }
 
   addCommentToIssue(issueIdOrKey: string, commentText: string): Promise<void> {
@@ -1138,9 +1138,9 @@ export class JiraServerProvider implements IProvider {
             new Error(
               `Error adding a comment to the issue ${issueIdOrKey}: ${error}`
             )
-          )
-        })
-    })
+          );
+        });
+    });
   }
 
   editIssueComment(
@@ -1155,7 +1155,7 @@ export class JiraServerProvider implements IProvider {
           body: commentText.replace(/\n/g, " "),
         })
         .then(() => {
-          resolve()
+          resolve();
         })
         .catch((error) => {
           if (error.response) {
@@ -1164,27 +1164,27 @@ export class JiraServerProvider implements IProvider {
                 new Error(
                   "The user does not have permission to edit the comment or the request is invalid"
                 )
-              )
+              );
             }
             if (error.response.status === 404) {
               return Promise.reject(
                 new Error(
                   "The issue was not found or the user does not have the necessary permissions"
                 )
-              )
+              );
             }
           }
 
-          return Promise.reject(error)
+          return Promise.reject(error);
         })
         .catch((error) => {
           reject(
             Error(
               `Error editing the comment in issue ${issueIdOrKey}: ${error}`
             )
-          )
-        })
-    })
+          );
+        });
+    });
   }
 
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void> {
@@ -1192,7 +1192,7 @@ export class JiraServerProvider implements IProvider {
       this.getRestApiClient(2)
         .delete(`/issue/${issueIdOrKey}/comment/${commentId}`)
         .then(() => {
-          resolve()
+          resolve();
         })
         .catch((error) => {
           if (error.response) {
@@ -1201,12 +1201,12 @@ export class JiraServerProvider implements IProvider {
                 new Error(
                   "The issue was not found or the user does not have the necessary permissions"
                 )
-              )
+              );
             }
             if (error.response.status === 405) {
               return Promise.reject(
                 new Error("An anonymous call has been made to the operation")
-              )
+              );
             }
           }
 
@@ -1214,28 +1214,28 @@ export class JiraServerProvider implements IProvider {
             new Error(
               `Error deleting the comment in issue ${issueIdOrKey}: ${error}`
             )
-          )
+          );
         })
         .catch((error) => {
           reject(
             Error(
               `Error deleting the comment in issue ${issueIdOrKey}: ${error}`
             )
-          )
-        })
-    })
+          );
+        });
+    });
   }
 
   refreshAccessToken(): Promise<void> {
-    throw new Error("Method not implemented for Jira Server")
+    throw new Error("Method not implemented for Jira Server");
   }
 
   offsetDate(date: Date) {
     if (!date) {
-      return date
+      return date;
     }
-    const convertedDate = new Date(date)
-    const timezoneOffset = convertedDate.getTimezoneOffset()
-    return new Date(convertedDate.getTime() - timezoneOffset * 60 * 1000)
+    const convertedDate = new Date(date);
+    const timezoneOffset = convertedDate.getTimezoneOffset();
+    return new Date(convertedDate.getTime() - timezoneOffset * 60 * 1000);
   }
 }

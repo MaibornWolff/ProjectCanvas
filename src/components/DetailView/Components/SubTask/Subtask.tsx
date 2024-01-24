@@ -1,30 +1,30 @@
-import { Box, Group, Loader, Text, ThemeIcon } from "@mantine/core"
-import { IconBinaryTree2, IconTrash } from "@tabler/icons-react"
-import { useQueryClient } from "@tanstack/react-query"
-import { IssueSummary } from "../IssueSummary"
-import { deleteSubtaskMutation } from "./queries"
+import { Box, Group, Loader, Text, ThemeIcon } from "@mantine/core";
+import { IconBinaryTree2, IconTrash } from "@tabler/icons-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { IssueSummary } from "../IssueSummary";
+import { deleteSubtaskMutation } from "./queries";
 
 export function Subtask({
   id,
   subtaskKey,
   fields,
 }: {
-  id: string
-  subtaskKey: string
+  id: string;
+  subtaskKey: string;
   fields: {
-    summary: string
-  }
+    summary: string;
+  };
 }) {
-  const queryClient = useQueryClient()
-  const deleteSubtask = deleteSubtaskMutation(queryClient)
+  const queryClient = useQueryClient();
+  const deleteSubtask = deleteSubtaskMutation(queryClient);
   return (
     <Group
       align="center"
       key={id}
       style={(theme) => ({
-        "borderRadius": theme.radius.sm,
-        "transition": "background-color .8s ease-out",
-        "boxShadow": theme.shadows.xs,
+        borderRadius: theme.radius.sm,
+        transition: "background-color .8s ease-out",
+        boxShadow: theme.shadows.xs,
         ":hover": {
           backgroundColor: "#ebecf0",
           transition: "background-color .1s ease-in",
@@ -48,15 +48,15 @@ export function Subtask({
         color="gray"
         ml="auto"
         style={{
-          "flex": 2,
+          flex: 2,
           ":hover": { color: "red", borderColor: "red", cursor: "pointer" },
         }}
         onClick={() => {
-          deleteSubtask.mutate(subtaskKey)
+          deleteSubtask.mutate(subtaskKey);
         }}
       >
         <IconTrash />
       </ThemeIcon>
     </Group>
-  )
+  );
 }

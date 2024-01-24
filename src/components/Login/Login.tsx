@@ -1,20 +1,20 @@
-import { Button, Container, Divider, Image, Paper, rgba } from "@mantine/core"
-import { IconCloud, IconServer } from "@tabler/icons-react"
-import { ipcRenderer } from "electron"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
-import { JiraCloudLogin } from "./jira-cloud/JiraCloudLogin"
-import { JiraServerLogin } from "./jira-server/JiraServerLogin"
-import { useColorScheme } from "../../common/color-scheme"
-import { RouteNames } from "../../route-names"
+import { Button, Container, Divider, Image, Paper, rgba } from "@mantine/core";
+import { IconCloud, IconServer } from "@tabler/icons-react";
+import { ipcRenderer } from "electron";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
+import { JiraCloudLogin } from "./jira-cloud/JiraCloudLogin";
+import { JiraServerLogin } from "./jira-server/JiraServerLogin";
+import { useColorScheme } from "../../common/color-scheme";
+import { RouteNames } from "../../route-names";
 
 export function Login() {
-  const [providerLogin, setProviderLogin] = useState("")
-  const navigateTo = useNavigate()
-  const onSuccess = () => navigateTo(RouteNames.PROJECTS_VIEW)
-  const goBack = () => setProviderLogin("")
-  const colorScheme = useColorScheme()
+  const [providerLogin, setProviderLogin] = useState("");
+  const navigateTo = useNavigate();
+  const onSuccess = () => navigateTo(RouteNames.PROJECTS_VIEW);
+  const goBack = () => setProviderLogin("");
+  const colorScheme = useColorScheme();
 
   return (
     <Container
@@ -67,7 +67,7 @@ export function Login() {
               }}
               leftSection={<IconServer size={32} strokeWidth={1.8} />}
               onClick={() => {
-                setProviderLogin("JiraServer")
+                setProviderLogin("JiraServer");
               }}
             >
               Jira Server
@@ -82,8 +82,8 @@ export function Login() {
               }}
               leftSection={<IconCloud size={32} strokeWidth={1.8} />}
               onClick={() => {
-                setProviderLogin("JiraCloud")
-                ipcRenderer.send("start-oauth2")
+                setProviderLogin("JiraCloud");
+                ipcRenderer.send("start-oauth2");
               }}
             >
               Jira Cloud
@@ -98,5 +98,5 @@ export function Login() {
         )}
       </Paper>
     </Container>
-  )
+  );
 }

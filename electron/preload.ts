@@ -1,4 +1,4 @@
-import { ipcRenderer } from "electron"
+import { ipcRenderer } from "electron";
 
 window.provider = {
   login: (params) => ipcRenderer.invoke("login", params),
@@ -54,4 +54,4 @@ window.provider = {
   deleteIssueComment: (...params) =>
     ipcRenderer.invoke("deleteIssueComment", ...params),
   getResource: () => ipcRenderer.invoke("getResource"),
-}
+};

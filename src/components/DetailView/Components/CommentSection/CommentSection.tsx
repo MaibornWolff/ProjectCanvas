@@ -1,5 +1,5 @@
-import { useState, useEffect, ChangeEvent } from "react"
-import { useQueryClient } from "@tanstack/react-query"
+import { useState, useEffect, ChangeEvent } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Text,
   Group,
@@ -11,44 +11,44 @@ import {
   Button,
   Textarea,
   Box,
-} from "@mantine/core"
-import { Issue } from "types"
+} from "@mantine/core";
+import { Issue } from "types";
 import {
   addCommentMutation,
   deleteCommentMutation,
   editCommentMutation,
-} from "./queries"
+} from "./queries";
 
 export function CommentSection({
   issueKey,
   comment,
 }: {
-  issueKey: string
-  comment: Issue["comment"]
+  issueKey: string;
+  comment: Issue["comment"];
 }) {
-  const [addCommentInputText, setAddCommentInputText] = useState("")
+  const [addCommentInputText, setAddCommentInputText] = useState("");
   const [editCommentInputText, setEditCommentInputText] = useState<
     Record<string, string>
-  >({})
-  const [showEditableInputAdd, setShowEditableInputAdd] = useState(false)
+  >({});
+  const [showEditableInputAdd, setShowEditableInputAdd] = useState(false);
   const [editableComments, setEditableComments] = useState<
     Record<string, boolean>
-  >({})
-  const [showLoader, setShowLoader] = useState(false)
-  const queryClient = useQueryClient()
-  const addCommentMutationLocal = addCommentMutation(queryClient)
-  const editCommentMutationLocal = editCommentMutation(queryClient)
-  const deleteCommentMutationLocal = deleteCommentMutation(queryClient)
+  >({});
+  const [showLoader, setShowLoader] = useState(false);
+  const queryClient = useQueryClient();
+  const addCommentMutationLocal = addCommentMutation(queryClient);
+  const editCommentMutationLocal = editCommentMutation(queryClient);
+  const deleteCommentMutationLocal = deleteCommentMutation(queryClient);
 
   useEffect(() => {
-    setShowLoader(false)
-  }, [comment])
+    setShowLoader(false);
+  }, [comment]);
 
   const handleAddCommentInputChange = (
     event: ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setAddCommentInputText(event.target.value)
-  }
+    setAddCommentInputText(event.target.value);
+  };
 
   const handleEditCommentInputChange = (
     event: ChangeEvent<HTMLTextAreaElement>,
@@ -57,8 +57,8 @@ export function CommentSection({
     setEditCommentInputText({
       ...editCommentInputText,
       [commentId]: event.target.value,
-    })
-  }
+    });
+  };
 
   return (
     <Stack>
@@ -74,7 +74,7 @@ export function CommentSection({
           radius="xs"
           display="flex"
           onClick={() => {
-            setShowEditableInputAdd(true)
+            setShowEditableInputAdd(true);
           }}
           style={{
             justifyContent: "left",
@@ -95,17 +95,17 @@ export function CommentSection({
                 addCommentMutationLocal.mutate({
                   issueKey,
                   commentText: addCommentInputText,
-                })
-                setShowLoader(true)
-                setShowEditableInputAdd(false)
+                });
+                setShowLoader(true);
+                setShowEditableInputAdd(false);
               }}
             >
               Save
             </Button>
             <Button
               onClick={() => {
-                setAddCommentInputText("")
-                setShowEditableInputAdd(false)
+                setAddCommentInputText("");
+                setShowEditableInputAdd(false);
               }}
             >
               Cancel
@@ -148,11 +148,11 @@ export function CommentSection({
                         setEditCommentInputText({
                           ...editCommentInputText,
                           [commentBody.id]: commentBody.body,
-                        })
+                        });
                         setEditableComments({
                           ...editableComments,
                           [commentBody.id]: true,
-                        })
+                        });
                       }}
                     >
                       Edit
@@ -165,8 +165,8 @@ export function CommentSection({
                         deleteCommentMutationLocal.mutate({
                           issueKey,
                           commentId: commentBody.id,
-                        })
-                        setShowLoader(true)
+                        });
+                        setShowLoader(true);
                       }}
                     >
                       Delete
@@ -191,12 +191,12 @@ export function CommentSection({
                           issueKey,
                           commentId: commentBody.id,
                           commentText: editCommentInputText[commentBody.id],
-                        })
-                        setShowLoader(true)
+                        });
+                        setShowLoader(true);
                         setEditableComments({
                           ...editableComments,
                           [commentBody.id]: false,
-                        })
+                        });
                       }}
                     >
                       Save
@@ -207,11 +207,11 @@ export function CommentSection({
                         setEditCommentInputText({
                           ...editCommentInputText,
                           [commentBody.id]: "",
-                        })
+                        });
                         setEditableComments({
                           ...editableComments,
                           [commentBody.id]: false,
-                        })
+                        });
                       }}
                     >
                       Cancel
@@ -224,5 +224,5 @@ export function CommentSection({
         </Paper>
       ))}
     </Stack>
-  )
+  );
 }

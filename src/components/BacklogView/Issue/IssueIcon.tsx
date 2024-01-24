@@ -1,51 +1,51 @@
-import { ThemeIcon } from "@mantine/core"
+import { ThemeIcon } from "@mantine/core";
 import {
   IconBookmark,
   IconCheck,
   IconBug,
   IconBolt,
   IconEdit,
-} from "@tabler/icons-react"
-import { ReactElement } from "react"
+} from "@tabler/icons-react";
+import { ReactElement } from "react";
 
 export function IssueIcon({ type }: { type: string }) {
   const stringToColor = (value: string) => {
-    let hash = 0
+    let hash = 0;
     for (let i = 0; i < value.length; i += 1) {
       // eslint-disable-next-line no-bitwise
-      hash = value.charCodeAt(i) + ((hash << 1) - hash)
+      hash = value.charCodeAt(i) + ((hash << 1) - hash);
     }
-    return `hsl(${hash % 360}, 85%, 35%)`
-  }
+    return `hsl(${hash % 360}, 85%, 35%)`;
+  };
 
-  let icon: ReactElement
-  let iconGradient1: string
-  let iconGradient2: string
+  let icon: ReactElement;
+  let iconGradient1: string;
+  let iconGradient2: string;
   switch (type) {
     case "Story":
-      icon = <IconBookmark />
-      iconGradient1 = "teal"
-      iconGradient2 = "lime"
-      break
+      icon = <IconBookmark />;
+      iconGradient1 = "teal";
+      iconGradient2 = "lime";
+      break;
     case "Task":
-      icon = <IconCheck />
-      iconGradient1 = "teal"
-      iconGradient2 = "blue"
-      break
+      icon = <IconCheck />;
+      iconGradient1 = "teal";
+      iconGradient2 = "blue";
+      break;
     case "Bug":
-      icon = <IconBug />
-      iconGradient1 = "orange"
-      iconGradient2 = "red"
-      break
+      icon = <IconBug />;
+      iconGradient1 = "orange";
+      iconGradient2 = "red";
+      break;
     case "Epic":
-      icon = <IconBolt />
-      iconGradient1 = "violet"
-      iconGradient2 = "white"
-      break
+      icon = <IconBolt />;
+      iconGradient1 = "violet";
+      iconGradient2 = "white";
+      break;
     default:
-      icon = <IconEdit />
-      iconGradient1 = stringToColor(type)
-      iconGradient2 = stringToColor(type.split("").reverse().join(""))
+      icon = <IconEdit />;
+      iconGradient1 = stringToColor(type);
+      iconGradient2 = stringToColor(type.split("").reverse().join(""));
   }
   return (
     <ThemeIcon
@@ -55,5 +55,5 @@ export function IssueIcon({ type }: { type: string }) {
     >
       {icon}
     </ThemeIcon>
-  )
+  );
 }

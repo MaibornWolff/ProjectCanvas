@@ -8,30 +8,30 @@ import {
   Button,
   Center,
   Loader,
-} from "@mantine/core"
-import { useNavigate } from "react-router-dom"
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { useCanvasStore } from "../../lib/Store"
-import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
-import { EpicWrapper } from "./EpicWrapper"
-import { getEpics } from "./helpers/queryFetchers"
-import { useColorScheme } from "../../common/color-scheme"
-import { RouteNames } from "../../route-names"
+} from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useCanvasStore } from "../../lib/Store";
+import { CreateIssueModal } from "../CreateIssue/CreateIssueModal";
+import { EpicWrapper } from "./EpicWrapper";
+import { getEpics } from "./helpers/queryFetchers";
+import { useColorScheme } from "../../common/color-scheme";
+import { RouteNames } from "../../route-names";
 
 export function EpicView() {
-  const colorScheme = useColorScheme()
-  const navigate = useNavigate()
-  const projectName = useCanvasStore((state) => state.selectedProject?.name)
-  const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
-  const projectKey = useCanvasStore((state) => state.selectedProject?.key)
+  const colorScheme = useColorScheme();
+  const navigate = useNavigate();
+  const projectName = useCanvasStore((state) => state.selectedProject?.name);
+  const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false);
+  const projectKey = useCanvasStore((state) => state.selectedProject?.key);
 
   const { isLoading: isLoadingEpics, data: epics } = useQuery({
     queryKey: ["epics", projectKey],
     queryFn: () => getEpics(projectKey),
     enabled: !!projectKey,
     initialData: [],
-  })
+  });
   if (isLoadingEpics)
     return (
       <Center style={{ width: "100%", height: "100%" }}>
@@ -49,7 +49,7 @@ export function EpicView() {
           </Stack>
         )}
       </Center>
-    )
+    );
   return (
     <Stack style={{ minHeight: "100%" }}>
       <Stack align="left" gap={0}>
@@ -95,7 +95,7 @@ export function EpicView() {
             fullWidth
             onClick={() => setCreateIssueModalOpened(true)}
             style={(theme) => ({
-              "justifyContent": "left",
+              justifyContent: "left",
               ":hover": {
                 background:
                   colorScheme === "dark"
@@ -113,5 +113,5 @@ export function EpicView() {
         />
       </ScrollArea.Autosize>
     </Stack>
-  )
+  );
 }

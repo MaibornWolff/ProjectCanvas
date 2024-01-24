@@ -10,19 +10,19 @@ import {
   Tooltip,
   useMantineTheme,
   Grid,
-} from "@mantine/core"
-import { useQueryClient } from "@tanstack/react-query"
-import { Issue } from "types"
-import { useState } from "react"
-import { Draggable } from "@hello-pangea/dnd"
-import { DetailView } from "../../DetailView/DetailView"
-import { IssueIcon } from "./IssueIcon"
-import { StatusType } from "../../../../types/status"
-import { StoryPointsBadge } from "../../common/StoryPoints/StoryPointsBadge"
-import { useColorScheme } from "../../../common/color-scheme"
-import { IssueLabelBadge } from "../../common/IssueLabelBadge"
-import { IssueEpicBadge } from "../../common/IssueEpicBadge"
-import { useCanvasStore } from "../../../lib/Store"
+} from "@mantine/core";
+import { useQueryClient } from "@tanstack/react-query";
+import { Issue } from "types";
+import { useState } from "react";
+import { Draggable } from "@hello-pangea/dnd";
+import { DetailView } from "../../DetailView/DetailView";
+import { IssueIcon } from "./IssueIcon";
+import { StatusType } from "../../../../types/status";
+import { StoryPointsBadge } from "../../common/StoryPoints/StoryPointsBadge";
+import { useColorScheme } from "../../../common/color-scheme";
+import { IssueLabelBadge } from "../../common/IssueLabelBadge";
+import { IssueEpicBadge } from "../../common/IssueEpicBadge";
+import { useCanvasStore } from "../../../lib/Store";
 
 export function IssueCard({
   issueKey,
@@ -37,12 +37,12 @@ export function IssueCard({
   projectId,
   ...props
 }: Issue & { index: number }) {
-  const [opened, setOpened] = useState(false)
-  const queryClient = useQueryClient()
-  const theme = useMantineTheme()
-  const colorScheme = useColorScheme()
+  const [opened, setOpened] = useState(false);
+  const queryClient = useQueryClient();
+  const theme = useMantineTheme();
+  const colorScheme = useColorScheme();
   const { issueStatusCategoryByStatusName: statusNameToCategory } =
-    useCanvasStore()
+    useCanvasStore();
 
   const hoverStyles =
     colorScheme === "dark"
@@ -53,7 +53,7 @@ export function IssueCard({
       : {
           backgroundColor: theme.colors.gray[1],
           transition: "background-color .1s ease-in",
-        }
+        };
 
   return (
     <>
@@ -70,10 +70,10 @@ export function IssueCard({
               columns={100}
               p={10}
               style={{
-                "borderRadius": theme.radius.sm,
-                "margin": 0,
-                "boxShadow": theme.shadows.xs,
-                "transition": "background-color .8s ease-out",
+                borderRadius: theme.radius.sm,
+                margin: 0,
+                boxShadow: theme.shadows.xs,
+                transition: "background-color .8s ease-out",
                 ":hover": hoverStyles,
               }}
             >
@@ -180,8 +180,8 @@ export function IssueCard({
       <Modal
         opened={opened}
         onClose={() => {
-          setOpened(false)
-          queryClient.invalidateQueries({ queryKey: ["issues"] })
+          setOpened(false);
+          queryClient.invalidateQueries({ queryKey: ["issues"] });
         }}
         size="90vw"
         overlayProps={{
@@ -205,5 +205,5 @@ export function IssueCard({
         />
       </Modal>
     </>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-import { showNotification } from "@mantine/notifications"
-import { QueryClient, useMutation } from "@tanstack/react-query"
-import { deleteIssueSubtask } from "./queryFunctions"
+import { showNotification } from "@mantine/notifications";
+import { QueryClient, useMutation } from "@tanstack/react-query";
+import { deleteIssueSubtask } from "./queryFunctions";
 
 export const deleteSubtaskMutation = (queryClient: QueryClient) =>
   useMutation({
@@ -9,13 +9,13 @@ export const deleteSubtaskMutation = (queryClient: QueryClient) =>
       showNotification({
         message: "The subtask couldn't be deleted! 😢",
         color: "red",
-      })
+      });
     },
     onSuccess: () => {
       showNotification({
         message: "Subtask  has been deleted!",
         color: "green",
-      })
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
+      });
+      queryClient.invalidateQueries({ queryKey: ["issues"] });
     },
-  })
+  });

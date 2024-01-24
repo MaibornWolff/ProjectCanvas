@@ -1,23 +1,23 @@
-import { Stack } from "@mantine/core"
-import { StrictModeDroppable } from "../../common/StrictModeDroppable"
-import { AddCard } from "../Cards/Add/AddCard"
-import { SubActionCard } from "../Cards/SubActionCard"
-import { getRndInteger, SUB_ACTION_PREFIX } from "../helpers/utils"
-import { useStoryMapStore } from "../StoryMapStore"
-import { SubAction } from "../Types"
+import { Stack } from "@mantine/core";
+import { StrictModeDroppable } from "../../common/StrictModeDroppable";
+import { AddCard } from "../Cards/Add/AddCard";
+import { SubActionCard } from "../Cards/SubActionCard";
+import { getRndInteger, SUB_ACTION_PREFIX } from "../helpers/utils";
+import { useStoryMapStore } from "../StoryMapStore";
+import { SubAction } from "../Types";
 
 export function SubActionGroup({
   storyMapId,
   subActions,
   subActionGroupId,
 }: {
-  storyMapId: string
-  subActions: SubAction[]
-  subActionGroupId: string
+  storyMapId: string;
+  subActions: SubAction[];
+  subActionGroupId: string;
 }) {
-  const addSubAction = useStoryMapStore((state) => state.addSubAction)
-  const updateSubAction = useStoryMapStore((state) => state.updateSubAction)
-  const deleteSubAction = useStoryMapStore((state) => state.deleteSubAction)
+  const addSubAction = useStoryMapStore((state) => state.addSubAction);
+  const updateSubAction = useStoryMapStore((state) => state.updateSubAction);
+  const deleteSubAction = useStoryMapStore((state) => state.deleteSubAction);
 
   return (
     <StrictModeDroppable droppableId={subActionGroupId} type="subAction">
@@ -48,5 +48,5 @@ export function SubActionGroup({
         </Stack>
       )}
     </StrictModeDroppable>
-  )
+  );
 }

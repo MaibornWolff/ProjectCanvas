@@ -1,15 +1,15 @@
-import { Select } from "@mantine/core"
-import { UseFormReturnType } from "@mantine/form"
-import { Issue, IssueType } from "types"
+import { Select } from "@mantine/core";
+import { UseFormReturnType } from "@mantine/form";
+import { Issue, IssueType } from "types";
 
 export function IssueTypeSelect({
   form,
   issueTypes,
   isLoading,
 }: {
-  form: UseFormReturnType<Issue>
-  issueTypes?: IssueType[]
-  isLoading: boolean
+  form: UseFormReturnType<Issue>;
+  issueTypes?: IssueType[];
+  isLoading: boolean;
 }) {
   return (
     <Select
@@ -30,20 +30,20 @@ export function IssueTypeSelect({
       required
       {...form.getInputProps("type")}
       onChange={(value) => {
-        form.getInputProps("type").onChange(value)
+        form.getInputProps("type").onChange(value);
         if (
           issueTypes?.find((issueType) => issueType.name === "Epic")?.id ===
           value
         ) {
-          form.setFieldValue("sprintId", null as unknown as string)
-          form.setFieldValue("storyPointsEstimate", null as unknown as number)
-          form.setFieldValue("epic.issueKey", undefined)
+          form.setFieldValue("sprintId", null as unknown as string);
+          form.setFieldValue("storyPointsEstimate", null as unknown as number);
+          form.setFieldValue("epic.issueKey", undefined);
         }
-        form.setFieldValue("status", "To Do")
-        form.setFieldValue("priority.id", null)
-        form.setFieldValue("startDate", null as unknown as Date)
-        form.setFieldValue("dueDate", null as unknown as Date)
+        form.setFieldValue("status", "To Do");
+        form.setFieldValue("priority.id", null);
+        form.setFieldValue("startDate", null as unknown as Date);
+        form.setFieldValue("dueDate", null as unknown as Date);
       }}
     />
-  )
+  );
 }

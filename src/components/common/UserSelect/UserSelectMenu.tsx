@@ -5,33 +5,33 @@ import {
   Avatar,
   UnstyledButton,
   ScrollArea,
-} from "@mantine/core"
-import { IconChevronDown } from "@tabler/icons-react"
-import { useQuery } from "@tanstack/react-query"
-import { useState } from "react"
-import { User } from "../../../../types"
-import { useCanvasStore } from "../../../lib/Store"
-import { getAssignableUsersByProject } from "../../../common/query-functions"
+} from "@mantine/core";
+import { IconChevronDown } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { User } from "../../../../types";
+import { useCanvasStore } from "../../../lib/Store";
+import { getAssignableUsersByProject } from "../../../common/query-functions";
 
-import classes from "./UserSelectMenu.module.css"
+import classes from "./UserSelectMenu.module.css";
 
 export function UserSelectMenu({
   value,
   onChange,
   placeholder = "",
 }: {
-  value: User | undefined
-  onChange: (user: User) => void
-  placeholder?: string
+  value: User | undefined;
+  onChange: (user: User) => void;
+  placeholder?: string;
 }) {
-  const selectedProject = useCanvasStore((state) => state.selectedProject)
-  const [opened, setOpened] = useState(false)
+  const selectedProject = useCanvasStore((state) => state.selectedProject);
+  const [opened, setOpened] = useState(false);
 
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", selectedProject?.key],
     queryFn: () => getAssignableUsersByProject(selectedProject?.key!),
     enabled: !!selectedProject && !!selectedProject.key,
-  })
+  });
 
   const displayedUsers = assignableUsers ? (
     assignableUsers.map((assignableUser) => (
@@ -53,7 +53,7 @@ export function UserSelectMenu({
     <Menu.Item>
       <Text c="dimmed">None</Text>
     </Menu.Item>
-  )
+  );
 
   return (
     <Menu onOpen={() => setOpened(true)} onClose={() => setOpened(false)}>
@@ -82,5 +82,5 @@ export function UserSelectMenu({
         </ScrollArea>
       </Menu.Dropdown>
     </Menu>
-  )
+  );
 }

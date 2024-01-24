@@ -1,9 +1,14 @@
 {
-  "endOfLine": "lf",
-  "semi": false,
-  "singleQuote": false,
-  "tabWidth": 2,
-  "trailingComma": "es5",
-  "bracketSameLine": false,
-  "quoteProps": "consistent"
+  "overrides": [
+    {
+      "endOfLine": "lf",
+      "semi": false,
+      "singleQuote": false,
+      "tabWidth": 2,
+      "trailingComma": "es5",
+      "bracketSameLine": false,
+      "quoteProps": "consistent",
+      "files": ["**/*.json"]
+    }
+  ]
 }

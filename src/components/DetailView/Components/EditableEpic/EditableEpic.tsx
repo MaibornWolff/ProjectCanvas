@@ -1,32 +1,32 @@
-import { Box, Group, Loader, Text } from "@mantine/core"
-import { showNotification } from "@mantine/notifications"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { Issue } from "types"
-import { useState } from "react"
-import { editIssue } from "../../helpers/queryFunctions"
-import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon"
-import { getEpicsByProject } from "./queryFunctions"
-import { SelectItem } from "./SelectItem"
-import { CustomItemSelect } from "../../../common/CustomItemSelect"
+import { Box, Group, Loader, Text } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Issue } from "types";
+import { useState } from "react";
+import { editIssue } from "../../helpers/queryFunctions";
+import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
+import { getEpicsByProject } from "./queryFunctions";
+import { SelectItem } from "./SelectItem";
+import { CustomItemSelect } from "../../../common/CustomItemSelect";
 
 export function EditableEpic({
   projectId,
   issueKey,
   epic,
 }: {
-  projectId: string
-  issueKey: string
+  projectId: string;
+  issueKey: string;
   epic: {
-    issueKey?: string
-    summary?: string
-  }
+    issueKey?: string;
+    summary?: string;
+  };
 }) {
-  const [showEpicInput, setShowEpicInput] = useState(false)
+  const [showEpicInput, setShowEpicInput] = useState(false);
   const { data: epics } = useQuery({
     queryKey: ["epics", projectId],
     queryFn: () => getEpicsByProject(projectId),
-  })
-  const [selectedEpic, setSelectedEpic] = useState(epic.issueKey)
+  });
+  const [selectedEpic, setSelectedEpic] = useState(epic.issueKey);
   const mutationEpic = useMutation({
     mutationFn: (epicKey: string | null) =>
       editIssue({ epic: { issueKey: epicKey } } as Issue, issueKey),
@@ -34,15 +34,15 @@ export function EditableEpic({
       showNotification({
         message: `An error occurred while modifing the Epic 😢`,
         color: "red",
-      })
+      });
     },
     onSuccess: () => {
       showNotification({
         message: `Epic for issue ${issueKey} has been modified!`,
         color: "green",
-      })
+      });
     },
-  })
+  });
 
   return (
     <Group>
@@ -65,9 +65,9 @@ export function EditableEpic({
             ItemComponent={SelectItem}
             value={selectedEpic}
             onChange={(value) => {
-              setSelectedEpic(value)
-              mutationEpic.mutate(value ?? null)
-              setShowEpicInput(false)
+              setSelectedEpic(value);
+              mutationEpic.mutate(value ?? null);
+              setShowEpicInput(false);
             }}
           />
         </Box>
@@ -85,5 +85,5 @@ export function EditableEpic({
         </Group>
       )}
     </Group>
-  )
+  );
 }

@@ -1,22 +1,22 @@
-import { Accordion, Badge, Flex, Group, Text, Title } from "@mantine/core"
-import { IconChevronRight } from "@tabler/icons-react"
-import { Issue, Sprint } from "types"
-import { pluralize, sortSprintsByActive } from "../helpers/backlogHelpers"
-import { DraggableIssuesWrapper } from "./DraggableIssuesWrapper"
-import { StatusType } from "../../../../types/status"
-import { StoryPointsBadge } from "../../common/StoryPoints/StoryPointsBadge"
-import { useColorScheme } from "../../../common/color-scheme"
-import { storyPointsAccumulator } from "../../common/StoryPoints/status-accumulator"
-import { useCanvasStore } from "../../../lib/Store"
+import { Accordion, Badge, Flex, Group, Text, Title } from "@mantine/core";
+import { IconChevronRight } from "@tabler/icons-react";
+import { Issue, Sprint } from "types";
+import { pluralize, sortSprintsByActive } from "../helpers/backlogHelpers";
+import { DraggableIssuesWrapper } from "./DraggableIssuesWrapper";
+import { StatusType } from "../../../../types/status";
+import { StoryPointsBadge } from "../../common/StoryPoints/StoryPointsBadge";
+import { useColorScheme } from "../../../common/color-scheme";
+import { storyPointsAccumulator } from "../../common/StoryPoints/status-accumulator";
+import { useCanvasStore } from "../../../lib/Store";
 
 export function SprintsPanel({
   sprints,
   issueWrapper,
 }: {
-  sprints: { [_: string]: Sprint }
-  issueWrapper: { [_: string]: Issue[] }
+  sprints: { [_: string]: Sprint };
+  issueWrapper: { [_: string]: Issue[] };
 }) {
-  const colorScheme = useColorScheme()
+  const colorScheme = useColorScheme();
 
   return (
     <Accordion
@@ -35,7 +35,7 @@ export function SprintsPanel({
           padding: theme.spacing.xs,
         },
         item: {
-          "border": "solid 1px lightgray",
+          border: "solid 1px lightgray",
           "&:hover": {
             background:
               colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
@@ -65,20 +65,20 @@ export function SprintsPanel({
           </Accordion.Item>
         ))}
     </Accordion>
-  )
+  );
 }
 
 function SprintAccordionControl({
   issues,
   sprint,
 }: {
-  issues: Issue[]
-  sprint: Sprint
+  issues: Issue[];
+  sprint: Sprint;
 }) {
-  const { issueStatusByCategory } = useCanvasStore()
+  const { issueStatusByCategory } = useCanvasStore();
 
   const getStatusNamesInCategory = (category: StatusType) =>
-    issueStatusByCategory[category]?.map((s) => s.name) ?? []
+    issueStatusByCategory[category]?.map((s) => s.name) ?? [];
 
   return (
     <Accordion.Control>
@@ -123,5 +123,5 @@ function SprintAccordionControl({
           : ` · ${sprint.endDate.toString()}`}
       </Text>
     </Accordion.Control>
-  )
+  );
 }

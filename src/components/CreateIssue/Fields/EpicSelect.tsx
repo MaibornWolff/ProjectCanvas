@@ -1,8 +1,8 @@
-import { Select, Tooltip, Box } from "@mantine/core"
-import { UseFormReturnType } from "@mantine/form"
-import { useQuery } from "@tanstack/react-query"
-import { Issue, IssueType } from "types"
-import { getEpicsByProject } from "../queryFunctions"
+import { Select, Tooltip, Box } from "@mantine/core";
+import { UseFormReturnType } from "@mantine/form";
+import { useQuery } from "@tanstack/react-query";
+import { Issue, IssueType } from "types";
+import { getEpicsByProject } from "../queryFunctions";
 
 export function EpicSelect({
   form,
@@ -11,18 +11,18 @@ export function EpicSelect({
   issueTypesWithFieldsMap,
   isLoading,
 }: {
-  form: UseFormReturnType<Issue>
-  enabled: boolean
-  issueTypes?: IssueType[]
-  issueTypesWithFieldsMap?: Map<string, string[]>
+  form: UseFormReturnType<Issue>;
+  enabled: boolean;
+  issueTypes?: IssueType[];
+  issueTypesWithFieldsMap?: Map<string, string[]>;
 
-  isLoading: boolean
+  isLoading: boolean;
 }) {
   const { data: epics } = useQuery({
     queryKey: ["epics", form.getInputProps("projectId").value],
     queryFn: () => getEpicsByProject(form.getInputProps("projectId").value!),
     enabled: enabled && !!form.getInputProps("projectId").value,
-  })
+  });
 
   const isDisabled =
     issueTypesWithFieldsMap &&
@@ -31,7 +31,7 @@ export function EpicSelect({
       .get(form.getInputProps("type").value)
       ?.includes("Sprint") ||
       form.getInputProps("type").value ===
-        issueTypes?.find((issueType) => issueType.name === "Epic")?.id)
+        issueTypes?.find((issueType) => issueType.name === "Epic")?.id);
 
   return (
     <Tooltip
@@ -71,5 +71,5 @@ export function EpicSelect({
         />
       </Box>
     </Tooltip>
-  )
+  );
 }

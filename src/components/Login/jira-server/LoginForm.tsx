@@ -1,24 +1,24 @@
-import { Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core"
-import { useForm } from "@mantine/form"
-import { LoginFormValues } from "./LoginFormValues"
-import { loginToJiraServer } from "./loginToJiraServer"
-import { getImportMetaEnv } from "../../../get-meta-env"
+import { Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { LoginFormValues } from "./LoginFormValues";
+import { loginToJiraServer } from "./loginToJiraServer";
+import { getImportMetaEnv } from "../../../get-meta-env";
 
 export function LoginForm({
   goBack,
   onSuccess,
 }: {
-  goBack: () => void
-  onSuccess: () => void
+  goBack: () => void;
+  onSuccess: () => void;
 }) {
-  const metaEnv = getImportMetaEnv()
+  const metaEnv = getImportMetaEnv();
   const form = useForm<LoginFormValues>({
     initialValues: {
       url: metaEnv.VITE_JIRA_SERVER_DEFAULT_URL ?? "",
       username: metaEnv.VITE_JIRA_SERVER_DEFAULT_USERNAME ?? "",
       password: metaEnv.VITE_JIRA_SERVER_DEFAULT_PASSWORD ?? "",
     },
-  })
+  });
   return (
     <form
       onSubmit={form.onSubmit((loginOptions) =>
@@ -64,5 +64,5 @@ export function LoginForm({
         </Button>
       </Group>
     </form>
-  )
+  );
 }

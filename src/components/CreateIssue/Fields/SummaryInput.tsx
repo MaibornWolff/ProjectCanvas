@@ -1,6 +1,6 @@
-import { TextInput } from "@mantine/core"
-import { UseFormReturnType } from "@mantine/form"
-import { Issue } from "types"
+import { TextInput } from "@mantine/core";
+import { UseFormReturnType } from "@mantine/form";
+import { Issue } from "types";
 
 export function SummaryInput({ form }: { form: UseFormReturnType<Issue> }) {
   return (
@@ -10,5 +10,5 @@ export function SummaryInput({ form }: { form: UseFormReturnType<Issue> }) {
       required
       {...form.getInputProps("summary")}
     />
-  )
+  );
 }

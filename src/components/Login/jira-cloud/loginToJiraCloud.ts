@@ -1,21 +1,21 @@
-import { ipcRenderer } from "electron"
+import { ipcRenderer } from "electron";
 
-let listenerSetUp = false
-let refreshInterval: string | number | NodeJS.Timeout | undefined
+let listenerSetUp = false;
+let refreshInterval: string | number | NodeJS.Timeout | undefined;
 
 export function loginToJiraCloud({ onSuccess }: { onSuccess: () => void }) {
   if (!listenerSetUp) {
-    let lastCode: string
+    let lastCode: string;
     ipcRenderer.on("code", async (_, code: string) => {
       if (code !== lastCode) {
-        lastCode = code
+        lastCode = code;
         window.provider.login({ provider: "JiraCloud", code }).then(() => {
-          refreshInterval = setInterval(refreshAccessToken, 55 * 60 * 1000)
-          onSuccess()
-        })
+          refreshInterval = setInterval(refreshAccessToken, 55 * 60 * 1000);
+          onSuccess();
+        });
       }
-    })
-    listenerSetUp = true
+    });
+    listenerSetUp = true;
   }
 }
 
@@ -23,12 +23,12 @@ async function refreshAccessToken() {
   const isLoggedIn = await window.provider
     .isLoggedIn()
     .then(() => true)
-    .catch(() => false)
+    .catch(() => false);
 
   if (!isLoggedIn) {
-    clearInterval(refreshInterval)
-    return
+    clearInterval(refreshInterval);
+    return;
   }
 
-  await window.provider.refreshAccessToken()
+  await window.provider.refreshAccessToken();
 }

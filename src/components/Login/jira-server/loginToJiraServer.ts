@@ -1,11 +1,11 @@
-import { showNotification } from "@mantine/notifications"
+import { showNotification } from "@mantine/notifications";
 
 export async function loginToJiraServer({
   onSuccess,
   loginOptions,
 }: {
-  onSuccess: () => void
-  loginOptions: { url: string; username: string; password: string }
+  onSuccess: () => void;
+  loginOptions: { url: string; username: string; password: string };
 }) {
   window.provider
     .login({
@@ -21,13 +21,13 @@ export async function loginToJiraServer({
         title: error.name,
         message: error.message,
         color: "red",
-      })
-    })
+      });
+    });
 }
 
 function addProtocol(url: string) {
   if (!/^(?:f|ht)tps?:\/\//.test(url)) {
-    return `https://${url}`
+    return `https://${url}`;
   }
-  return url
+  return url;
 }

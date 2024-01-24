@@ -1,1 +1,1 @@
-export * from "./EditableEpic"
+export * from "./EditableEpic";

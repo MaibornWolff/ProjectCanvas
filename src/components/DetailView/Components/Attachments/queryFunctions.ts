@@ -1,13 +1,13 @@
-import { Resource, Attachment } from "types"
+import { Resource, Attachment } from "types";
 import {
   getDeleteUrl,
   getDownloadUrl,
   getThumbnailUrl,
   getUploadUrl,
-} from "./helpFunctions"
+} from "./helpFunctions";
 
 export const getResource = (): Promise<Resource> =>
-  window.provider.getResource()
+  window.provider.getResource();
 
 export const getAttachmentThumbnail = (
   attachmentId: string,
@@ -19,7 +19,7 @@ export const getAttachmentThumbnail = (
       Accept: "application/json",
       Authorization: resource.authorization,
     },
-  }).then((data) => data.blob())
+  }).then((data) => data.blob());
 
 export const deleteAttachment = (
   attachmentId: string,
@@ -31,7 +31,7 @@ export const deleteAttachment = (
       Accept: "application/json",
       Authorization: resource.authorization,
     },
-  }).then(() => {})
+  }).then(() => {});
 
 export const downloadAttachment = (
   attachmentId: string,
@@ -43,7 +43,7 @@ export const downloadAttachment = (
       Accept: "application/json",
       Authorization: resource.authorization,
     },
-  }).then((data) => data.blob())
+  }).then((data) => data.blob());
 
 export const uploadAttachment = (
   issueIdOrKey: string,
@@ -54,8 +54,8 @@ export const uploadAttachment = (
     method: "POST",
     body: form,
     headers: {
-      "Accept": "application/json",
-      "Authorization": `${resource.authorization}`,
+      Accept: "application/json",
+      Authorization: `${resource.authorization}`,
       "X-Atlassian-Token": "no-check",
     },
-  }).then((att) => att.json())
+  }).then((att) => att.json());

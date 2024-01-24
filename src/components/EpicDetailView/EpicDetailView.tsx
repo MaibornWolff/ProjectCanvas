@@ -12,33 +12,33 @@ import {
   Text,
   Title,
   Tooltip,
-} from "@mantine/core"
-import { Attachment, Issue, User } from "types"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { useEffect } from "react"
-import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu"
-import { Description } from "../DetailView/Components/Description"
-import { IssueSummary } from "./Components/IssueSummary"
-import { Labels } from "../DetailView/Components/Labels"
-import { ReporterMenu } from "../DetailView/Components/ReporterMenu"
-import { DeleteIssue } from "../DetailView/Components/DeleteIssue"
-import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
-import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
-import { ChildIssues } from "./Components/ChildIssue/ChildIssues"
-import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers"
-import { sortIssuesByRank } from "../BacklogView/helpers/backlogHelpers"
-import { useCanvasStore } from "../../lib/Store"
-import { resizeDivider } from "../BacklogView/helpers/resizeDivider"
+} from "@mantine/core";
+import { Attachment, Issue, User } from "types";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu";
+import { Description } from "../DetailView/Components/Description";
+import { IssueSummary } from "./Components/IssueSummary";
+import { Labels } from "../DetailView/Components/Labels";
+import { ReporterMenu } from "../DetailView/Components/ReporterMenu";
+import { DeleteIssue } from "../DetailView/Components/DeleteIssue";
+import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
+import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
+import { ChildIssues } from "./Components/ChildIssue/ChildIssues";
+import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers";
+import { sortIssuesByRank } from "../BacklogView/helpers/backlogHelpers";
+import { useCanvasStore } from "../../lib/Store";
+import { resizeDivider } from "../BacklogView/helpers/resizeDivider";
 import {
   issueCountAccumulator,
   storyPointsAccumulator,
-} from "../common/StoryPoints/status-accumulator"
-import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard"
-import { CommentSection } from "../DetailView/Components/CommentSection"
-import { StatusType } from "../../../types/status"
-import { getStatusTypeColor } from "../../common/status-color"
-import { Attachments } from "../DetailView/Components/Attachments/Attachments"
-import { IssueStatusMenu } from "../DetailView/Components/IssueStatusMenu"
+} from "../common/StoryPoints/status-accumulator";
+import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard";
+import { CommentSection } from "../DetailView/Components/CommentSection";
+import { StatusType } from "../../../types/status";
+import { getStatusTypeColor } from "../../common/status-color";
+import { Attachments } from "../DetailView/Components/Attachments/Attachments";
+import { IssueStatusMenu } from "../DetailView/Components/IssueStatusMenu";
 
 export function EpicDetailView({
   issueKey,
@@ -55,45 +55,45 @@ export function EpicDetailView({
   projectId,
   type,
 }: {
-  issueKey: string
-  summary: string
-  labels: string[]
-  assignee?: User
-  description: string
-  created: string
-  updated: string
-  attachments: Attachment[]
+  issueKey: string;
+  summary: string;
+  labels: string[];
+  assignee?: User;
+  description: string;
+  created: string;
+  updated: string;
+  attachments: Attachment[];
   comment: {
     comments: [
       {
-        id: string
-        author: User
-        body: string
-        created: string
-        updated: string
+        id: string;
+        author: User;
+        body: string;
+        created: string;
+        updated: string;
       }
-    ]
-  }
-  status: string
-  projectId: string
-  type: string
-  closeModal: () => void
+    ];
+  };
+  status: string;
+  projectId: string;
+  type: string;
+  closeModal: () => void;
 }) {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const reloadEpics = () => {
-    queryClient.invalidateQueries({ queryKey: ["issues"] })
-    queryClient.invalidateQueries({ queryKey: ["epics"] })
-  }
+    queryClient.invalidateQueries({ queryKey: ["issues"] });
+    queryClient.invalidateQueries({ queryKey: ["epics"] });
+  };
 
   const dateFormat = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
     timeStyle: "short",
-  })
+  });
 
   const { issueStatusByCategory, selectedProjectBoardIds: boardIds } =
-    useCanvasStore()
-  const projectKey = useCanvasStore((state) => state.selectedProject?.key)
-  const currentBoardId = boardIds[0]
+    useCanvasStore();
+  const projectKey = useCanvasStore((state) => state.selectedProject?.key);
+  const currentBoardId = boardIds[0];
 
   const { isLoading: isLoadingChildIssues, data: childIssues } = useQuery({
     queryKey: ["issues", projectKey, currentBoardId, issueKey],
@@ -106,32 +106,34 @@ export function EpicDetailView({
         ?.sort((issueA: Issue, issueB: Issue) =>
           sortIssuesByRank(issueA, issueB)
         ) ?? [],
-  })
+  });
 
   const getStatusNamesInCategory = (category: StatusType) =>
-    issueStatusByCategory[category]?.map((s) => s.name) ?? []
-  const validTodoStatus = getStatusNamesInCategory(StatusType.TODO)
-  const validInProgressStatus = getStatusNamesInCategory(StatusType.IN_PROGRESS)
-  const validDoneStatus = getStatusNamesInCategory(StatusType.DONE)
+    issueStatusByCategory[category]?.map((s) => s.name) ?? [];
+  const validTodoStatus = getStatusNamesInCategory(StatusType.TODO);
+  const validInProgressStatus = getStatusNamesInCategory(
+    StatusType.IN_PROGRESS
+  );
+  const validDoneStatus = getStatusNamesInCategory(StatusType.DONE);
 
-  const tasksTodo = issueCountAccumulator(childIssues, validTodoStatus)
+  const tasksTodo = issueCountAccumulator(childIssues, validTodoStatus);
   const tasksInProgress = issueCountAccumulator(
     childIssues,
     validInProgressStatus
-  )
-  const tasksDone = issueCountAccumulator(childIssues, validDoneStatus)
-  const totalTaskCount = tasksTodo + tasksInProgress + tasksDone
+  );
+  const tasksDone = issueCountAccumulator(childIssues, validDoneStatus);
+  const totalTaskCount = tasksTodo + tasksInProgress + tasksDone;
 
   useEffect(() => {
-    resizeDivider()
-  }, [isLoadingChildIssues])
+    resizeDivider();
+  }, [isLoadingChildIssues]);
 
   if (isLoadingChildIssues)
     return (
       <Center style={{ width: "100%", height: "100%" }}>
         <Loader />
       </Center>
-    )
+    );
 
   return (
     <Paper p="xs">
@@ -301,5 +303,5 @@ export function EpicDetailView({
         </ScrollArea.Autosize>
       </Group>
     </Paper>
-  )
+  );
 }

@@ -1,7 +1,7 @@
-import { MantineProvider } from "@mantine/core"
-import { Notifications } from "@mantine/notifications"
-import { ReactElement } from "react"
-import { theme } from "../theme"
+import { MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+import { ReactElement } from "react";
+import { theme } from "../theme";
 
 export function ThemeProvider({ children }: { children: ReactElement }) {
   // withGlobalStyles
@@ -12,5 +12,5 @@ export function ThemeProvider({ children }: { children: ReactElement }) {
       <Notifications />
       {children}
     </MantineProvider>
-  )
+  );
 }

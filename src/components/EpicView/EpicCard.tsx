@@ -1,4 +1,4 @@
-import { Issue } from "types"
+import { Issue } from "types";
 import {
   Avatar,
   Box,
@@ -12,17 +12,17 @@ import {
   ThemeIcon,
   Tooltip,
   useMantineTheme,
-} from "@mantine/core"
-import { useHover } from "@mantine/hooks"
-import { useState } from "react"
-import { useQueryClient } from "@tanstack/react-query"
-import { IconBolt } from "@tabler/icons-react"
-import { DeleteButton } from "../BacklogView/Issue/DeleteButton"
-import { EpicDetailView } from "../EpicDetailView/EpicDetailView"
-import { StatusType } from "../../../types/status"
-import { StoryPointsBadge } from "../common/StoryPoints/StoryPointsBadge"
-import { useColorScheme } from "../../common/color-scheme"
-import { IssueLabelBadge } from "../common/IssueLabelBadge"
+} from "@mantine/core";
+import { useHover } from "@mantine/hooks";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { IconBolt } from "@tabler/icons-react";
+import { DeleteButton } from "../BacklogView/Issue/DeleteButton";
+import { EpicDetailView } from "../EpicDetailView/EpicDetailView";
+import { StatusType } from "../../../types/status";
+import { StoryPointsBadge } from "../common/StoryPoints/StoryPointsBadge";
+import { useColorScheme } from "../../common/color-scheme";
+import { IssueLabelBadge } from "../common/IssueLabelBadge";
 
 export function EpicCard({
   issueKey,
@@ -36,11 +36,11 @@ export function EpicCard({
   projectId,
   ...props
 }: Issue) {
-  const [opened, setOpened] = useState(false)
-  const queryClient = useQueryClient()
-  const { hovered } = useHover()
-  const theme = useMantineTheme()
-  const colorScheme = useColorScheme()
+  const [opened, setOpened] = useState(false);
+  const queryClient = useQueryClient();
+  const { hovered } = useHover();
+  const theme = useMantineTheme();
+  const colorScheme = useColorScheme();
   const hoverStyles =
     colorScheme === "dark"
       ? {
@@ -50,7 +50,7 @@ export function EpicCard({
       : {
           backgroundColor: theme.colors.gray[1],
           transition: "background-color .1s ease-in",
-        }
+        };
 
   return (
     <>
@@ -60,10 +60,10 @@ export function EpicCard({
           columns={100}
           p={3}
           style={{
-            "borderRadius": theme.radius.sm,
-            "margin": 0,
-            "boxShadow": theme.shadows.xs,
-            "transition": "background-color .8s ease-out",
+            borderRadius: theme.radius.sm,
+            margin: 0,
+            boxShadow: theme.shadows.xs,
+            transition: "background-color .8s ease-out",
             ":hover": hoverStyles,
           }}
           onClick={() => setOpened(true)}
@@ -157,8 +157,8 @@ export function EpicCard({
       <Modal
         opened={opened}
         onClose={() => {
-          setOpened(false)
-          queryClient.invalidateQueries({ queryKey: ["issues"] })
+          setOpened(false);
+          queryClient.invalidateQueries({ queryKey: ["issues"] });
         }}
         size="90vw"
         overlayProps={{
@@ -180,5 +180,5 @@ export function EpicCard({
         />
       </Modal>
     </>
-  )
+  );
 }

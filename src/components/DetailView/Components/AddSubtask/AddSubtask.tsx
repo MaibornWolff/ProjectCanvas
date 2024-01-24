@@ -1,29 +1,29 @@
-import { Box, Button, Group, Loader, TextInput } from "@mantine/core"
-import { showNotification } from "@mantine/notifications"
-import { IconPlus } from "@tabler/icons-react"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
-import { createSubtaskMutation } from "./queries"
-import { getIssueTypes } from "./queryFunctions"
+import { Box, Button, Group, Loader, TextInput } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
+import { IconPlus } from "@tabler/icons-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { createSubtaskMutation } from "./queries";
+import { getIssueTypes } from "./queryFunctions";
 
 export function AddSubtask({
   issueKey,
   projectId,
 }: {
-  issueKey: string
-  projectId: string
+  issueKey: string;
+  projectId: string;
 }) {
-  const queryClient = useQueryClient()
-  const [summary, setSummary] = useState("")
+  const queryClient = useQueryClient();
+  const [summary, setSummary] = useState("");
   const { data: issueTypes } = useQuery({
     queryKey: ["issueTypes", projectId],
     queryFn: () => getIssueTypes(projectId),
     enabled: !!projectId,
-  })
+  });
 
   const issueTypeWithSubTask = issueTypes?.find(
     (issueType) => issueType?.subtask === true
-  )
+  );
 
   const createSubtask = createSubtaskMutation(
     issueKey,
@@ -32,7 +32,7 @@ export function AddSubtask({
     queryClient,
     `${issueTypeWithSubTask?.id.toString()}`,
     () => setSummary("")
-  )
+  );
 
   return (
     <Group>
@@ -52,13 +52,13 @@ export function AddSubtask({
                 showNotification({
                   message: `The summary of an issue cannot be empty!`,
                   color: "red",
-                })
-              else createSubtask.mutate()
+                });
+              else createSubtask.mutate();
             }}
           />
         </Button>
       </Box>
       {createSubtask.isPending && <Loader size="sm" />}
     </Group>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-import { Stack } from "@mantine/core"
-import { Issue } from "../../../../../types"
-import { ChildIssueCard } from "./ChildIssueCard"
+import { Stack } from "@mantine/core";
+import { Issue } from "../../../../../types";
+import { ChildIssueCard } from "./ChildIssueCard";
 
 export function ChildIssueWrapper({ issues }: { issues: Issue[] }) {
   return (
@@ -9,5 +9,5 @@ export function ChildIssueWrapper({ issues }: { issues: Issue[] }) {
         <ChildIssueCard {...issue} key={issue.issueKey} index={index} />
       ))}
     </Stack>
-  )
+  );
 }

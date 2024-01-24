@@ -1,1 +1,1 @@
-export * from "./BacklogView"
+export * from "./BacklogView";

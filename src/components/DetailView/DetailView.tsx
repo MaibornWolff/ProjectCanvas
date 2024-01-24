@@ -8,24 +8,24 @@ import {
   Stack,
   Text,
   Title,
-} from "@mantine/core"
-import { Issue } from "types"
-import { AddSubtask } from "./Components/AddSubtask"
-import { AssigneeMenu } from "./Components/AssigneeMenu"
-import { EditableEpic } from "./Components/EditableEpic"
-import { CommentSection } from "./Components/CommentSection"
-import { Description } from "./Components/Description"
-import { IssueSprint } from "./Components/IssueSprint"
-import { IssueSummary } from "./Components/IssueSummary"
-import { Labels } from "./Components/Labels"
-import { ReporterMenu } from "./Components/ReporterMenu"
-import { StoryPointsEstimateMenu } from "./Components/StoryPointsEstimateMenu"
-import { Subtask } from "./Components/SubTask"
-import { DeleteIssue } from "./Components/DeleteIssue"
-import { Attachments } from "./Components/Attachments/Attachments"
-import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
-import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
-import { IssueStatusMenu } from "./Components/IssueStatusMenu"
+} from "@mantine/core";
+import { Issue } from "types";
+import { AddSubtask } from "./Components/AddSubtask";
+import { AssigneeMenu } from "./Components/AssigneeMenu";
+import { EditableEpic } from "./Components/EditableEpic";
+import { CommentSection } from "./Components/CommentSection";
+import { Description } from "./Components/Description";
+import { IssueSprint } from "./Components/IssueSprint";
+import { IssueSummary } from "./Components/IssueSummary";
+import { Labels } from "./Components/Labels";
+import { ReporterMenu } from "./Components/ReporterMenu";
+import { StoryPointsEstimateMenu } from "./Components/StoryPointsEstimateMenu";
+import { Subtask } from "./Components/SubTask";
+import { DeleteIssue } from "./Components/DeleteIssue";
+import { Attachments } from "./Components/Attachments/Attachments";
+import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
+import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
+import { IssueStatusMenu } from "./Components/IssueStatusMenu";
 
 export function DetailView({
   issueKey,
@@ -159,5 +159,5 @@ export function DetailView({
         </ScrollArea.Autosize>
       </Group>
     </Paper>
-  )
+  );
 }

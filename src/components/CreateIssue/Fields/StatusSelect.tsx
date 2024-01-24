@@ -1,15 +1,15 @@
-import { Select } from "@mantine/core"
-import { UseFormReturnType } from "@mantine/form"
-import { Issue, IssueType } from "types"
+import { Select } from "@mantine/core";
+import { UseFormReturnType } from "@mantine/form";
+import { Issue, IssueType } from "types";
 
 export function StatusSelect({
   form,
   issueTypes,
   isLoading,
 }: {
-  form: UseFormReturnType<Issue>
-  issueTypes?: IssueType[]
-  isLoading: boolean
+  form: UseFormReturnType<Issue>;
+  issueTypes?: IssueType[];
+  isLoading: boolean;
 }) {
   return (
     <Select
@@ -32,5 +32,5 @@ export function StatusSelect({
       }
       {...form.getInputProps("status")}
     />
-  )
+  );
 }

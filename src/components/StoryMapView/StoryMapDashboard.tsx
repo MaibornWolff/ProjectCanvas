@@ -1,10 +1,10 @@
-import { Center, Group, Stack, Text, Title } from "@mantine/core"
-import { AddStoryMapCard } from "./StoryMap/AddStoryMapCard"
-import { StoryMapCard } from "./StoryMap/StoryMapCard"
-import { useStoryMapStore } from "./StoryMapStore"
+import { Center, Group, Stack, Text, Title } from "@mantine/core";
+import { AddStoryMapCard } from "./StoryMap/AddStoryMapCard";
+import { StoryMapCard } from "./StoryMap/StoryMapCard";
+import { useStoryMapStore } from "./StoryMapStore";
 
 export function StoryMapDashboard() {
-  const storyMaps = useStoryMapStore((state) => state.storyMaps)
+  const storyMaps = useStoryMapStore((state) => state.storyMaps);
 
   return (
     <Center h="100%">
@@ -30,5 +30,5 @@ export function StoryMapDashboard() {
         </Stack>
       </Stack>
     </Center>
-  )
+  );
 }

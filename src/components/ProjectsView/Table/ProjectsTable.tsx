@@ -6,71 +6,71 @@ import {
   Center,
   Group,
   UnstyledButton,
-} from "@mantine/core"
+} from "@mantine/core";
 import {
   Icon,
   IconChevronDown,
   IconChevronUp,
   IconSearch,
   IconSelector,
-} from "@tabler/icons-react"
-import { Project } from "types"
-import { useEffect, useState, ChangeEvent } from "react"
-import { useNavigate } from "react-router-dom"
-import { useCanvasStore } from "../../../lib/Store"
-import { sortData } from "./TableHelper"
-import { RouteNames } from "../../../route-names"
+} from "@tabler/icons-react";
+import { Project } from "types";
+import { useEffect, useState, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCanvasStore } from "../../../lib/Store";
+import { sortData } from "./TableHelper";
+import { RouteNames } from "../../../route-names";
 
-import classes from "./ProjectsTable.module.css"
+import classes from "./ProjectsTable.module.css";
 
 export function ProjectsTable({ data }: { data: Project[] }) {
-  const [search, setSearch] = useState("")
-  const [sortedData, setSortedData] = useState(data)
-  const [sortBy, setSortBy] = useState<keyof Project | null>(null)
-  const [reverseSortDirection, setReverseSortDirection] = useState(false)
+  const [search, setSearch] = useState("");
+  const [sortedData, setSortedData] = useState(data);
+  const [sortBy, setSortBy] = useState<keyof Project | null>(null);
+  const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const { setSelectedProject, setSelectedProjectBoardIds, setIssueTypes } =
-    useCanvasStore()
-  const navigate = useNavigate()
+    useCanvasStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Initialize sortedData with the sorted and filtered data
     //  when the component is first rendered
     setSortedData(
       sortData(data, { sortBy, reversed: reverseSortDirection, search })
-    )
-  }, [data, sortBy, reverseSortDirection, search])
+    );
+  }, [data, sortBy, reverseSortDirection, search]);
 
   const setSorting = (field: keyof Project) => {
-    const reversed = field === sortBy ? !reverseSortDirection : false
-    setReverseSortDirection(reversed)
-    setSortBy(field)
-    setSortedData(sortData(data, { sortBy: field, reversed, search }))
-  }
+    const reversed = field === sortBy ? !reverseSortDirection : false;
+    setReverseSortDirection(reversed);
+    setSortBy(field);
+    setSortedData(sortData(data, { sortBy: field, reversed, search }));
+  };
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.currentTarget
-    setSearch(value)
+    const { value } = event.currentTarget;
+    setSearch(value);
     setSortedData(
       sortData(data, { sortBy, reversed: reverseSortDirection, search: value })
-    )
-  }
+    );
+  };
 
   const onClickRow = async (row: Project) => {
-    setSelectedProject(row)
-    setSelectedProjectBoardIds(await window.provider.getBoardIds(row.key))
-    setIssueTypes(await window.provider.getIssueTypesByProject(row.key))
-    navigate(RouteNames.BACKLOG_VIEW)
-  }
+    setSelectedProject(row);
+    setSelectedProjectBoardIds(await window.provider.getBoardIds(row.key));
+    setIssueTypes(await window.provider.getIssueTypesByProject(row.key));
+    navigate(RouteNames.BACKLOG_VIEW);
+  };
 
   const header =
     data &&
     data.length > 0 &&
     Object.keys(data[0]).map((key) => {
-      let SortIcon: Icon
+      let SortIcon: Icon;
       if (sortBy === key) {
-        if (reverseSortDirection) SortIcon = IconChevronUp
-        else SortIcon = IconChevronDown
-      } else SortIcon = IconSelector
+        if (reverseSortDirection) SortIcon = IconChevronUp;
+        else SortIcon = IconChevronDown;
+      } else SortIcon = IconSelector;
 
       return (
         <Table.Th key={key}>
@@ -88,8 +88,8 @@ export function ProjectsTable({ data }: { data: Project[] }) {
             </Group>
           </UnstyledButton>
         </Table.Th>
-      )
-    })
+      );
+    });
 
   const rows = sortedData.map((row) => (
     <Table.Tr
@@ -101,7 +101,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
         <Table.Td key={key}> {row[key as keyof Project]}</Table.Td>
       ))}
     </Table.Tr>
-  ))
+  ));
 
   return (
     <ScrollArea>
@@ -136,5 +136,5 @@ export function ProjectsTable({ data }: { data: Project[] }) {
         </Table.Tbody>
       </Table>
     </ScrollArea>
-  )
+  );
 }

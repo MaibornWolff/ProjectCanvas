@@ -1,1 +1,1 @@
-export * from "./EpicView"
+export * from "./EpicView";

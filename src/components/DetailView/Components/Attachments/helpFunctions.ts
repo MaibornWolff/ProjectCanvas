@@ -1,23 +1,23 @@
-import { Resource } from "types"
+import { Resource } from "types";
 
 export function getThumbnailUrl(
   attachmentId: string,
   resource: Resource
 ): string {
-  return `${resource.baseUrl}/attachment/thumbnail/${attachmentId}`
+  return `${resource.baseUrl}/attachment/thumbnail/${attachmentId}`;
 }
 
 export const getDownloadUrl = (
   attachmentId: string,
   resource: Resource
-): string => `${resource.baseUrl}/attachment/content/${attachmentId}`
+): string => `${resource.baseUrl}/attachment/content/${attachmentId}`;
 
 export const getDeleteUrl = (
   attachmentId: string,
   resource: Resource
-): string => `${resource.baseUrl}/attachment/${attachmentId}`
+): string => `${resource.baseUrl}/attachment/${attachmentId}`;
 
 export const getUploadUrl = (
   issueIdOrKey: string,
   resource: Resource
-): string => `${resource.baseUrl}/issue/${issueIdOrKey}/attachments`
+): string => `${resource.baseUrl}/issue/${issueIdOrKey}/attachments`;

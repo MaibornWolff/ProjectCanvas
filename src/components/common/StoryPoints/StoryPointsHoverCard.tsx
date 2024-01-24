@@ -1,13 +1,13 @@
-import { Text, HoverCard, Box } from "@mantine/core"
-import { StatusType } from "../../../../types/status"
-import { StoryPointsBadge } from "./StoryPointsBadge"
+import { Text, HoverCard, Box } from "@mantine/core";
+import { StatusType } from "../../../../types/status";
+import { StoryPointsBadge } from "./StoryPointsBadge";
 
 export function StoryPointsHoverCard({
   statusType,
   count = 0,
 }: {
-  statusType: StatusType
-  count: number
+  statusType: StatusType;
+  count: number;
 }) {
   return (
     <HoverCard width="relative" shadow="md" radius="md">
@@ -25,5 +25,5 @@ export function StoryPointsHoverCard({
         </Text>
       </HoverCard.Dropdown>
     </HoverCard>
-  )
+  );
 }

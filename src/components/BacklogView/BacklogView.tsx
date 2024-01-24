@@ -11,47 +11,47 @@ import {
   Text,
   TextInput,
   Title,
-} from "@mantine/core"
-import { IconSearch } from "@tabler/icons-react"
-import { QueriesResults, useQueries, useQuery } from "@tanstack/react-query"
-import { ChangeEvent, useEffect, useMemo, useState } from "react"
-import { DragDropContext } from "@hello-pangea/dnd"
-import { useNavigate } from "react-router-dom"
-import { Issue, Sprint } from "types"
-import { UseQueryOptions } from "@tanstack/react-query/src/types"
-import { useCanvasStore } from "../../lib/Store"
-import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
-import { CreateExportModal } from "../CreateExport/CreateExportModal"
-import { CreateSprint } from "./CreateSprint/CreateSprint"
+} from "@mantine/core";
+import { IconSearch } from "@tabler/icons-react";
+import { QueriesResults, useQueries, useQuery } from "@tanstack/react-query";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { DragDropContext } from "@hello-pangea/dnd";
+import { useNavigate } from "react-router-dom";
+import { Issue, Sprint } from "types";
+import { UseQueryOptions } from "@tanstack/react-query/src/types";
+import { useCanvasStore } from "../../lib/Store";
+import { CreateIssueModal } from "../CreateIssue/CreateIssueModal";
+import { CreateExportModal } from "../CreateExport/CreateExportModal";
+import { CreateSprint } from "./CreateSprint/CreateSprint";
 import {
   BacklogKey,
   IssuesState,
   searchMatchesIssue,
   sortIssuesByRank,
-} from "./helpers/backlogHelpers"
-import { onDragEnd } from "./helpers/draggingHelpers"
+} from "./helpers/backlogHelpers";
+import { onDragEnd } from "./helpers/draggingHelpers";
 import {
   getBacklogIssues,
   getIssuesBySprint,
   getSprints,
-} from "./helpers/queryFetchers"
-import { resizeDivider } from "./helpers/resizeDivider"
-import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper"
-import { SprintsPanel } from "./IssuesWrapper/SprintsPanel"
-import { ReloadButton } from "./ReloadButton"
-import { useColorScheme } from "../../common/color-scheme"
-import { RouteNames } from "../../route-names"
+} from "./helpers/queryFetchers";
+import { resizeDivider } from "./helpers/resizeDivider";
+import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper";
+import { SprintsPanel } from "./IssuesWrapper/SprintsPanel";
+import { ReloadButton } from "./ReloadButton";
+import { useColorScheme } from "../../common/color-scheme";
+import { RouteNames } from "../../route-names";
 
 export function BacklogView() {
-  const colorScheme = useColorScheme()
-  const navigate = useNavigate()
-  const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
-  const projectName = useCanvasStore((state) => state.selectedProject?.name)
-  const projectKey = useCanvasStore((state) => state.selectedProject?.key)
-  const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds)
-  const currentBoardId = boardIds[0]
-  const [search, setSearch] = useState("")
-  const [createExportModalOpened, setCreateExportModalOpened] = useState(false)
+  const colorScheme = useColorScheme();
+  const navigate = useNavigate();
+  const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false);
+  const projectName = useCanvasStore((state) => state.selectedProject?.name);
+  const projectKey = useCanvasStore((state) => state.selectedProject?.key);
+  const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds);
+  const currentBoardId = boardIds[0];
+  const [search, setSearch] = useState("");
+  const [createExportModalOpened, setCreateExportModalOpened] = useState(false);
 
   const { data: sprints, isError: isErrorSprints } = useQuery({
     queryKey: ["sprints", currentBoardId],
@@ -60,7 +60,7 @@ export function BacklogView() {
     select: (fetchedSprints: Sprint[]) =>
       Object.fromEntries(fetchedSprints.map((s) => [s.id, s])),
     initialData: [],
-  })
+  });
 
   const issueQueries = useQueries<
     Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>
@@ -116,20 +116,20 @@ export function BacklogView() {
         Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>
       >
     ) => results.map((result) => result),
-  })
+  });
 
   const [issuesWrapper, setIssuesWrapper] = useState(
     new Map<string, IssuesState>()
-  )
+  );
   useEffect(() => {
     // Generally, using useEffect to sync state should be avoided. But since we need our state to be assignable AND
     // reactive AND derivable, we found no other solution than to use useEffect.
     setIssuesWrapper(
       new Map<string, IssuesState>(issueQueries.map((query) => query.data!))
-    )
-  }, [issueQueries])
+    );
+  }, [issueQueries]);
   const updateIssuesWrapper = (key: string, newState: IssuesState) =>
-    setIssuesWrapper(new Map(issuesWrapper.set(key, newState)))
+    setIssuesWrapper(new Map(issuesWrapper.set(key, newState)));
   const searchedIssuesWrapper = useMemo(
     () =>
       new Map<string, Issue[]>(
@@ -141,9 +141,9 @@ export function BacklogView() {
         ])
       ),
     [issuesWrapper, search]
-  )
+  );
 
-  useEffect(resizeDivider, [issueQueries])
+  useEffect(resizeDivider, [issueQueries]);
 
   if (isErrorSprints || issueQueries.some((query) => query.isError))
     return (
@@ -155,7 +155,7 @@ export function BacklogView() {
           messages)
         </Text>
       </Center>
-    )
+    );
 
   // This check might be broken. It does not trigger everytime we think it does. Might need to force a rerender.
   if (issueQueries.some((query) => query.isPending))
@@ -175,7 +175,7 @@ export function BacklogView() {
           </Stack>
         )}
       </Center>
-    )
+    );
   return (
     <Stack style={{ minHeight: "100%" }}>
       <Stack align="left" gap={0}>
@@ -214,7 +214,7 @@ export function BacklogView() {
           leftSection={<IconSearch size={14} stroke={1.5} />}
           value={search}
           onChange={(event: ChangeEvent<HTMLInputElement>) => {
-            setSearch(event.currentTarget.value)
+            setSearch(event.currentTarget.value);
           }}
         />
       </Stack>
@@ -257,7 +257,7 @@ export function BacklogView() {
                 fullWidth
                 onClick={() => setCreateIssueModalOpened(true)}
                 style={(theme) => ({
-                  "justifyContent": "left",
+                  justifyContent: "left",
                   ":hover": {
                     background:
                       colorScheme === "dark"
@@ -308,5 +308,5 @@ export function BacklogView() {
         </DragDropContext>
       </Flex>
     </Stack>
-  )
+  );
 }

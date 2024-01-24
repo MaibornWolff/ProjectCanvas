@@ -1,4 +1,4 @@
-import { IssueType } from "types"
+import { IssueType } from "types";
 
 export const createSubtask = (
   parentIssueKey: string,
@@ -11,6 +11,6 @@ export const createSubtask = (
     subtaskSummary,
     projectId,
     subtaskIssueTypeId
-  )
+  );
 export const getIssueTypes = (projectIdOrKey: string): Promise<IssueType[]> =>
-  window.provider.getIssueTypesByProject(projectIdOrKey)
+  window.provider.getIssueTypesByProject(projectIdOrKey);

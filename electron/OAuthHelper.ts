@@ -1,12 +1,12 @@
-import { BrowserWindow } from "electron"
+import { BrowserWindow } from "electron";
 
 export function handleOAuth2(win: BrowserWindow) {
   const authWindow = new BrowserWindow({
     width: 800,
     height: 600,
     show: false,
-  })
-  const CLIENT_ID = import.meta.env.VITE_CLIENT_ID
+  });
+  const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
   // join scopes with space (in url encoding)
   const SCOPE = [
     "read:me",
@@ -33,14 +33,14 @@ export function handleOAuth2(win: BrowserWindow) {
     "read:jql:jira",
     "offline_access",
     "offline_access",
-  ].join("%20")
-  const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
-  const AUDIENCE = "api.atlassian.com"
+  ].join("%20");
+  const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+  const AUDIENCE = "api.atlassian.com";
 
-  const authUrl = `https://auth.atlassian.com/authorize?audience=${AUDIENCE}&client_id=${CLIENT_ID}&scope=${SCOPE}&redirect_uri=${REDIRECT_URI}&response_type=code&prompt=consent`
+  const authUrl = `https://auth.atlassian.com/authorize?audience=${AUDIENCE}&client_id=${CLIENT_ID}&scope=${SCOPE}&redirect_uri=${REDIRECT_URI}&response_type=code&prompt=consent`;
 
-  authWindow.loadURL(authUrl)
-  authWindow.show()
+  authWindow.loadURL(authUrl);
+  authWindow.show();
 
   authWindow.webContents.on("will-redirect", (_, url) => {
     if (url.startsWith(REDIRECT_URI)) {
@@ -50,29 +50,29 @@ export function handleOAuth2(win: BrowserWindow) {
           "error=access_denied&error_description=User%20did%20not%20authorize%20the%20request"
         )
       ) {
-        authWindow.destroy()
-        win.webContents.send("cancelOAuth")
+        authWindow.destroy();
+        win.webContents.send("cancelOAuth");
       } else {
-        const code = handleCallback(url, authWindow)
+        const code = handleCallback(url, authWindow);
         // Send OAuth code back to renderer process
-        win.webContents.send("code", code)
+        win.webContents.send("code", code);
       }
     }
-  })
+  });
 }
 
 function handleCallback(url: string, authWindow: BrowserWindow) {
-  const rawCode = /\?code=(.+)/.exec(url) || null
-  const code = rawCode && rawCode.length > 1 ? rawCode[1] : null
-  const error = /\?error=(.+)\$/.exec(url)
+  const rawCode = /\?code=(.+)/.exec(url) || null;
+  const code = rawCode && rawCode.length > 1 ? rawCode[1] : null;
+  const error = /\?error=(.+)\$/.exec(url);
 
   if (code || error) {
-    authWindow.destroy()
+    authWindow.destroy();
   }
 
   if (code) {
-    return code
+    return code;
   }
 
-  return error
+  return error;
 }

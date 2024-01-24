@@ -1,13 +1,13 @@
-import { Badge, Box } from "@mantine/core"
-import { getStatusTypeColor } from "../../../common/status-color"
-import { StatusType } from "../../../../types/status"
+import { Badge, Box } from "@mantine/core";
+import { getStatusTypeColor } from "../../../common/status-color";
+import { StatusType } from "../../../../types/status";
 
 export function StoryPointsBadge({
   statusType,
   storyPointsEstimate,
 }: {
-  statusType: StatusType
-  storyPointsEstimate: number
+  statusType: StatusType;
+  storyPointsEstimate: number;
 }) {
   return (
     <Box style={{ lineHeight: 1 }}>
@@ -20,5 +20,5 @@ export function StoryPointsBadge({
         {storyPointsEstimate}
       </Badge>
     </Box>
-  )
+  );
 }

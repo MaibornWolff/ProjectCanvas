@@ -1,11 +1,11 @@
-import { Paper, PaperProps } from "@mantine/core"
-import { forwardRef, MouseEventHandler, ReactNode } from "react"
+import { Paper, PaperProps } from "@mantine/core";
+import { forwardRef, MouseEventHandler, ReactNode } from "react";
 
 export const BaseCard = forwardRef<
   HTMLDivElement,
   {
-    children?: ReactNode
-    onClick?: MouseEventHandler<HTMLDivElement>
+    children?: ReactNode;
+    onClick?: MouseEventHandler<HTMLDivElement>;
   } & PaperProps
 >(({ onClick, children, ...props }, ref) => (
   <Paper
@@ -31,4 +31,4 @@ export const BaseCard = forwardRef<
   >
     {children}
   </Paper>
-))
+));

@@ -5,8 +5,8 @@ import {
   useCombobox,
   CloseButton,
   InputBaseProps,
-} from "@mantine/core"
-import { ForwardRefExoticComponent, RefAttributes, useState } from "react"
+} from "@mantine/core";
+import { ForwardRefExoticComponent, RefAttributes, useState } from "react";
 
 export function CustomItemSelect<
   OptionType extends { value: string; label: string },
@@ -24,37 +24,39 @@ export function CustomItemSelect<
   comboboxProps = {},
   inputBaseProps = {},
 }: {
-  value: string | undefined
-  onChange: (updatedValue: string | undefined) => void
-  options: OptionType[]
-  ItemComponent: ForwardRefExoticComponent<OptionType & RefAttributes<RefType>>
-  clearable?: boolean
-  searchable?: boolean
-  label?: string
-  placeholder?: string
-  nothingFoundMessage?: string
-  comboboxProps?: ComboboxProps
-  inputBaseProps?: Omit<InputBaseProps, "value">
+  value: string | undefined;
+  onChange: (updatedValue: string | undefined) => void;
+  options: OptionType[];
+  ItemComponent: ForwardRefExoticComponent<OptionType & RefAttributes<RefType>>;
+  clearable?: boolean;
+  searchable?: boolean;
+  label?: string;
+  placeholder?: string;
+  nothingFoundMessage?: string;
+  comboboxProps?: ComboboxProps;
+  inputBaseProps?: Omit<InputBaseProps, "value">;
 }) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
-  })
+  });
 
-  const [currentValue, setCurrentValue] = useState<string | null>(value ?? null)
-  const selectedOption = options.find((item) => item.value === currentValue)
+  const [currentValue, setCurrentValue] = useState<string | null>(
+    value ?? null
+  );
+  const selectedOption = options.find((item) => item.value === currentValue);
   const [search, setSearch] = useState(
     selectedOption ? selectedOption.label : ""
-  )
+  );
 
   const activeSearch =
-    searchable && options.every((item) => item.label !== search)
+    searchable && options.every((item) => item.label !== search);
   const filteredOptions = activeSearch
     ? options.filter(
         (item) =>
           item.value.toLowerCase().includes(search.toLowerCase().trim()) ||
           item.label.toLowerCase().includes(search.toLowerCase().trim())
       )
-    : options
+    : options;
 
   const items =
     filteredOptions.length > 0 ? (
@@ -65,17 +67,17 @@ export function CustomItemSelect<
       ))
     ) : (
       <Combobox.Empty>{nothingFoundMessage}</Combobox.Empty>
-    )
+    );
 
   return (
     <Combobox
       store={combobox}
       onOptionSubmit={(val) => {
-        setCurrentValue(val)
-        const newSelectedOption = options.find((item) => item.value === val)
-        setSearch(newSelectedOption ? newSelectedOption.label : "")
-        combobox.closeDropdown()
-        onChange(val)
+        setCurrentValue(val);
+        const newSelectedOption = options.find((item) => item.value === val);
+        setSearch(newSelectedOption ? newSelectedOption.label : "");
+        combobox.closeDropdown();
+        onChange(val);
       }}
       {...comboboxProps}
     >
@@ -91,10 +93,10 @@ export function CustomItemSelect<
                 size="sm"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => {
-                  setCurrentValue(null)
-                  setSearch("")
-                  combobox.closeDropdown()
-                  onChange(undefined)
+                  setCurrentValue(null);
+                  setSearch("");
+                  combobox.closeDropdown();
+                  onChange(undefined);
                 }}
                 aria-label="Clear value"
               />
@@ -103,14 +105,14 @@ export function CustomItemSelect<
             )
           }
           onChange={(event) => {
-            combobox.openDropdown()
-            setSearch(event.currentTarget.value)
+            combobox.openDropdown();
+            setSearch(event.currentTarget.value);
           }}
           onClick={() => combobox.openDropdown()}
           onFocus={() => combobox.openDropdown()}
           onBlur={() => {
-            combobox.closeDropdown()
-            setSearch(selectedOption ? selectedOption.label : "")
+            combobox.closeDropdown();
+            setSearch(selectedOption ? selectedOption.label : "");
           }}
           rightSectionPointerEvents={value === null ? "none" : "all"}
           {...inputBaseProps}
@@ -121,5 +123,5 @@ export function CustomItemSelect<
         <Combobox.Options>{items}</Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>
-  )
+  );
 }

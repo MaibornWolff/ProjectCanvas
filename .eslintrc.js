@@ -42,4 +42,4 @@ module.exports = {
     },
   ],
   plugins: ["react", "@typescript-eslint", "testing-library"],
-}
+};

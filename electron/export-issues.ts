@@ -1,5 +1,5 @@
-import fs from "fs"
-import * as Electron from "electron"
+import fs from "fs";
+import * as Electron from "electron";
 
 export const enum ExportStatus {
   SUCCESS = "success",
@@ -7,7 +7,7 @@ export const enum ExportStatus {
   ERROR = "error",
 }
 
-export type ExportReply = { status: ExportStatus; error?: string }
+export type ExportReply = { status: ExportStatus; error?: string };
 
 export const getExportIssuesHandler =
   (electron: typeof Electron, mainWindow: Electron.BrowserWindow) =>
@@ -21,16 +21,16 @@ export const getExportIssuesHandler =
       })
       .then((file) => {
         if (file.canceled) {
-          event.reply("exportIssuesReply", { status: ExportStatus.CANCELED })
+          event.reply("exportIssuesReply", { status: ExportStatus.CANCELED });
         } else {
           fs.writeFile(
             file.filePath?.toString() ?? electron.app.getPath("downloads"),
             data,
             (err) => {
-              if (err) throw err
+              if (err) throw err;
             }
-          )
-          event.reply("exportIssuesReply", { status: ExportStatus.SUCCESS })
+          );
+          event.reply("exportIssuesReply", { status: ExportStatus.SUCCESS });
         }
       })
       .catch((e) =>
@@ -38,5 +38,5 @@ export const getExportIssuesHandler =
           status: ExportStatus.ERROR,
           error: e.toString,
         })
-      )
-  }
+      );
+  };

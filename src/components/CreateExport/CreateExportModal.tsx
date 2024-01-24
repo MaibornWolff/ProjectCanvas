@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   Modal,
   Stack,
@@ -8,49 +8,49 @@ import {
   Tooltip,
   Paper,
   ActionIcon,
-} from "@mantine/core"
-import { sortBy } from "lodash"
-import { useQuery } from "@tanstack/react-query"
-import { IconInfoCircle } from "@tabler/icons-react"
-import { DateInput } from "@mantine/dates"
-import dayjs from "dayjs"
-import { useCanvasStore } from "../../lib/Store"
-import { Issue } from "../../../types"
-import { exportIssues } from "./exportHelper"
-import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers"
-import { StatusType } from "../../../types/status"
-import { CheckboxStack } from "./CheckboxStack"
+} from "@mantine/core";
+import { sortBy } from "lodash";
+import { useQuery } from "@tanstack/react-query";
+import { IconInfoCircle } from "@tabler/icons-react";
+import { DateInput } from "@mantine/dates";
+import dayjs from "dayjs";
+import { useCanvasStore } from "../../lib/Store";
+import { Issue } from "../../../types";
+import { exportIssues } from "./exportHelper";
+import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers";
+import { StatusType } from "../../../types/status";
+import { CheckboxStack } from "./CheckboxStack";
 
 export function CreateExportModal({
   opened,
   setOpened,
 }: {
-  opened: boolean
-  setOpened: Dispatch<SetStateAction<boolean>>
+  opened: boolean;
+  setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
   const {
     selectedProject: project,
     issueStatusByCategory,
     issueTypes,
     issueStatus,
-  } = useCanvasStore()
-  const boardId = useCanvasStore((state) => state.selectedProjectBoardIds)[0]
+  } = useCanvasStore();
+  const boardId = useCanvasStore((state) => state.selectedProjectBoardIds)[0];
 
   const { data: issues } = useQuery<unknown, unknown, Issue[]>({
     queryKey: ["issues", project?.key],
     queryFn: () => project && getIssuesByProject(project.key, boardId),
     enabled: !!project?.key,
     initialData: [],
-  })
+  });
 
   const doneStatusNames =
-    issueStatusByCategory[StatusType.DONE]?.map((s) => s.name) ?? []
+    issueStatusByCategory[StatusType.DONE]?.map((s) => s.name) ?? [];
 
-  const [includedIssueTypes, setIncludedIssueTypes] = useState<string[]>([])
-  const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([])
-  const [issuesToExport, setIssuesToExport] = useState<Issue[]>([])
-  const [startDate, setStartDate] = useState<Date | null>(null)
-  const [endDate, setEndDate] = useState<Date | null>(null)
+  const [includedIssueTypes, setIncludedIssueTypes] = useState<string[]>([]);
+  const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
+  const [issuesToExport, setIssuesToExport] = useState<Issue[]>([]);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   function calculateIssuesToExport() {
     setIssuesToExport(
@@ -71,20 +71,20 @@ export function CreateExportModal({
           ),
         ["issueKey"]
       )
-    )
+    );
   }
 
   useEffect(() => {
-    calculateIssuesToExport()
-  }, [includedIssueTypes, includedIssueStatus, startDate, endDate])
+    calculateIssuesToExport();
+  }, [includedIssueTypes, includedIssueStatus, startDate, endDate]);
 
   return (
     <Modal
       opened={opened}
       onClose={() => {
-        setIncludedIssueTypes([])
-        setIncludedIssueStatus([])
-        setOpened(false)
+        setIncludedIssueTypes([]);
+        setIncludedIssueStatus([]);
+        setOpened(false);
       }}
       centered
       withCloseButton={false}
@@ -184,7 +184,7 @@ export function CreateExportModal({
               exportIssues(
                 issuesToExport,
                 issueStatus.filter((s) => includedIssueStatus.includes(s.name))
-              )
+              );
             }}
           >
             Export CSV
@@ -192,5 +192,5 @@ export function CreateExportModal({
         </Group>
       </Stack>
     </Modal>
-  )
+  );
 }

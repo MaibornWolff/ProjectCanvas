@@ -1,6 +1,6 @@
-import { Stack } from "@mantine/core"
-import { Issue } from "../../../types"
-import { EpicCard } from "./EpicCard"
+import { Stack } from "@mantine/core";
+import { Issue } from "../../../types";
+import { EpicCard } from "./EpicCard";
 
 export function EpicWrapper({ epics }: { epics: Issue[] }) {
   return (
@@ -9,5 +9,5 @@ export function EpicWrapper({ epics }: { epics: Issue[] }) {
         <EpicCard {...epic} key={epic.issueKey} />
       ))}
     </Stack>
-  )
+  );
 }

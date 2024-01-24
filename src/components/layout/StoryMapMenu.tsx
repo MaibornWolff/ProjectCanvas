@@ -1,20 +1,20 @@
-import { Anchor, Menu } from "@mantine/core"
+import { Anchor, Menu } from "@mantine/core";
 import {
   IconChevronDown,
   IconLayoutDashboard,
   IconMap,
   IconTrash,
-} from "@tabler/icons-react"
-import { useNavigate } from "react-router-dom"
-import { useStoryMapStore } from "../StoryMapView/StoryMapStore"
-import { RouteNames } from "../../route-names"
+} from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
+import { useStoryMapStore } from "../StoryMapView/StoryMapStore";
+import { RouteNames } from "../../route-names";
 
 export function StoryMapMenu() {
-  const navigate = useNavigate()
-  const storyMaps = useStoryMapStore((state) => state.storyMaps)
+  const navigate = useNavigate();
+  const storyMaps = useStoryMapStore((state) => state.storyMaps);
   const deleteAllStoryMaps = useStoryMapStore(
     (state) => state.deleteAllStoryMaps
-  )
+  );
   return (
     <Menu trigger="hover">
       <Menu.Target>
@@ -59,5 +59,5 @@ export function StoryMapMenu() {
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>
-  )
+  );
 }

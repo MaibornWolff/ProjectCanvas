@@ -1,1 +1,1 @@
-export * from "./JiraServerProvider"
+export * from "./JiraServerProvider";

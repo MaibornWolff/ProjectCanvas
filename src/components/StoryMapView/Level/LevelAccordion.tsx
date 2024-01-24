@@ -1,17 +1,17 @@
-import { Accordion, Group } from "@mantine/core"
-import { getFilteredCasesForLevel } from "../helpers/utils"
-import { Case, SubActionLevel } from "../Types"
-import { CaseSubActionLevel } from "./CaseSubActionLevel"
-import { LevelControl } from "./LevelControl"
+import { Accordion, Group } from "@mantine/core";
+import { getFilteredCasesForLevel } from "../helpers/utils";
+import { Case, SubActionLevel } from "../Types";
+import { CaseSubActionLevel } from "./CaseSubActionLevel";
+import { LevelControl } from "./LevelControl";
 
 export function LevelAccordion({
   storyMapId,
   cases,
   levels,
 }: {
-  storyMapId: string
-  cases: Case[]
-  levels: SubActionLevel[]
+  storyMapId: string;
+  cases: Case[];
+  levels: SubActionLevel[];
 }) {
   return (
     <Accordion
@@ -35,5 +35,5 @@ export function LevelAccordion({
         </Accordion.Item>
       ))}
     </Accordion>
-  )
+  );
 }

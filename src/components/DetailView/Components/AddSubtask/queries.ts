@@ -1,6 +1,6 @@
-import { showNotification } from "@mantine/notifications"
-import { QueryClient, useMutation } from "@tanstack/react-query"
-import { createSubtask } from "./queryFunctions"
+import { showNotification } from "@mantine/notifications";
+import { QueryClient, useMutation } from "@tanstack/react-query";
+import { createSubtask } from "./queryFunctions";
 
 export const createSubtaskMutation = (
   issueKey: string,
@@ -13,11 +13,11 @@ export const createSubtaskMutation = (
   useMutation({
     mutationFn: () => createSubtask(issueKey, summary, projectId, subtaskID),
     onSuccess(createdSubtask: { id: string; key: string }) {
-      resetSummary()
+      resetSummary();
       showNotification({
         message: `The issue  ${createdSubtask.key} has been created!`,
         color: "green",
-      })
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
+      });
+      queryClient.invalidateQueries({ queryKey: ["issues"] });
     },
-  })
+  });

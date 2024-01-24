@@ -1,11 +1,11 @@
-import { Box, Button } from "@mantine/core"
-import { useState } from "react"
-import { CreateSprintModal } from "./CreateSprintModal"
-import { useColorScheme } from "../../../common/color-scheme"
+import { Box, Button } from "@mantine/core";
+import { useState } from "react";
+import { CreateSprintModal } from "./CreateSprintModal";
+import { useColorScheme } from "../../../common/color-scheme";
 
 export function CreateSprint() {
-  const colorScheme = useColorScheme()
-  const [createSprintModalOpened, setCreateSprintModalOpened] = useState(false)
+  const colorScheme = useColorScheme();
+  const [createSprintModalOpened, setCreateSprintModalOpened] = useState(false);
 
   return (
     <Box>
@@ -19,7 +19,7 @@ export function CreateSprint() {
         fullWidth
         onClick={() => setCreateSprintModalOpened(true)}
         style={(theme) => ({
-          "justifyContent": "left",
+          justifyContent: "left",
           ":hover": {
             background:
               colorScheme === "dark"
@@ -35,5 +35,5 @@ export function CreateSprint() {
         setOpened={setCreateSprintModalOpened}
       />
     </Box>
-  )
+  );
 }

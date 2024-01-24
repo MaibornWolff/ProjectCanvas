@@ -10,20 +10,20 @@ import {
   Tooltip,
   useMantineTheme,
   Grid,
-} from "@mantine/core"
-import { useHover } from "@mantine/hooks"
-import { useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
-import { Issue } from "../../../../../types"
-import { DetailView } from "../../../DetailView/DetailView"
-import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon"
-import { DeleteButton } from "../../../BacklogView/Issue/DeleteButton"
-import { StatusType } from "../../../../../types/status"
-import { StoryPointsBadge } from "../../../common/StoryPoints/StoryPointsBadge"
-import { useColorScheme } from "../../../../common/color-scheme"
-import { IssueEpicBadge } from "../../../common/IssueEpicBadge"
-import { IssueLabelBadge } from "../../../common/IssueLabelBadge"
-import { useCanvasStore } from "../../../../lib/Store"
+} from "@mantine/core";
+import { useHover } from "@mantine/hooks";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { Issue } from "../../../../../types";
+import { DetailView } from "../../../DetailView/DetailView";
+import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
+import { DeleteButton } from "../../../BacklogView/Issue/DeleteButton";
+import { StatusType } from "../../../../../types/status";
+import { StoryPointsBadge } from "../../../common/StoryPoints/StoryPointsBadge";
+import { useColorScheme } from "../../../../common/color-scheme";
+import { IssueEpicBadge } from "../../../common/IssueEpicBadge";
+import { IssueLabelBadge } from "../../../common/IssueLabelBadge";
+import { useCanvasStore } from "../../../../lib/Store";
 
 export function ChildIssueCard({
   issueKey,
@@ -38,13 +38,13 @@ export function ChildIssueCard({
   projectId,
   ...props
 }: Issue & { index: number }) {
-  const [opened, setOpened] = useState(false)
-  const queryClient = useQueryClient()
-  const { hovered } = useHover()
-  const theme = useMantineTheme()
-  const colorScheme = useColorScheme()
+  const [opened, setOpened] = useState(false);
+  const queryClient = useQueryClient();
+  const { hovered } = useHover();
+  const theme = useMantineTheme();
+  const colorScheme = useColorScheme();
   const { issueStatusCategoryByStatusName: statusNameToCategory } =
-    useCanvasStore()
+    useCanvasStore();
 
   const hoverStyles =
     colorScheme === "dark"
@@ -55,7 +55,7 @@ export function ChildIssueCard({
       : {
           backgroundColor: theme.colors.gray[1],
           transition: "background-color .1s ease-in",
-        }
+        };
 
   return (
     <>
@@ -65,10 +65,10 @@ export function ChildIssueCard({
           columns={100}
           p={3}
           style={{
-            "borderRadius": theme.radius.sm,
-            "margin": 0,
-            "boxShadow": theme.shadows.xs,
-            "transition": "background-color .8s ease-out",
+            borderRadius: theme.radius.sm,
+            margin: 0,
+            boxShadow: theme.shadows.xs,
+            transition: "background-color .8s ease-out",
             ":hover": hoverStyles,
           }}
         >
@@ -174,8 +174,8 @@ export function ChildIssueCard({
       <Modal
         opened={opened}
         onClose={() => {
-          setOpened(false)
-          queryClient.invalidateQueries({ queryKey: ["issues"] })
+          setOpened(false);
+          queryClient.invalidateQueries({ queryKey: ["issues"] });
         }}
         size="90vw"
         overlayProps={{
@@ -199,5 +199,5 @@ export function ChildIssueCard({
         />
       </Modal>
     </>
-  )
+  );
 }

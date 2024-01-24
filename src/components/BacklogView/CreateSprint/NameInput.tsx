@@ -1,6 +1,6 @@
-import { TextInput } from "@mantine/core"
-import { UseFormReturnType } from "@mantine/form"
-import { SprintCreate } from "types"
+import { TextInput } from "@mantine/core";
+import { UseFormReturnType } from "@mantine/form";
+import { SprintCreate } from "types";
 
 export function NameInput({ form }: { form: UseFormReturnType<SprintCreate> }) {
   return (
@@ -10,5 +10,5 @@ export function NameInput({ form }: { form: UseFormReturnType<SprintCreate> }) {
       required
       {...form.getInputProps("name")}
     />
-  )
+  );
 }

@@ -13,34 +13,34 @@ import {
   Tooltip,
   Center,
   LoadingOverlay,
-} from "@mantine/core"
-import { IconCloudDownload, IconPlus, IconTrash } from "@tabler/icons-react"
-import { showNotification } from "@mantine/notifications"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import FileSaver from "file-saver"
-import { Attachment } from "types"
-import { addAttachmentMutation, deleteAttachmentMutation } from "./queries"
+} from "@mantine/core";
+import { IconCloudDownload, IconPlus, IconTrash } from "@tabler/icons-react";
+import { showNotification } from "@mantine/notifications";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import FileSaver from "file-saver";
+import { Attachment } from "types";
+import { addAttachmentMutation, deleteAttachmentMutation } from "./queries";
 import {
   downloadAttachment,
   getAttachmentThumbnail,
   getResource,
-} from "./queryFunctions"
+} from "./queryFunctions";
 
 export function Attachments(props: {
-  issueKey: string
-  attachments: Attachment[]
+  issueKey: string;
+  attachments: Attachment[];
 }) {
   const resourceQuery = useQuery({
     queryKey: ["resource"],
     queryFn: getResource,
-  })
+  });
 
-  const resource = resourceQuery?.data
+  const resource = resourceQuery?.data;
 
   const fetchThumb = (id: string): Promise<string | undefined> =>
     getAttachmentThumbnail(id, resource!)
       .then((b) => URL.createObjectURL(b))
-      .catch(() => undefined)
+      .catch(() => undefined);
 
   const { data: thumbnails, isLoading: thumbnailsLoading } = useQuery({
     queryKey: ["thumbnails", props.attachments],
@@ -48,38 +48,38 @@ export function Attachments(props: {
       const thumbnailPromises = props.attachments?.map(async (attachment) => ({
         id: attachment.id,
         url: await fetchThumb(attachment.id),
-      }))
-      const thumbnailResults = await Promise.all(thumbnailPromises)
-      return thumbnailResults
+      }));
+      const thumbnailResults = await Promise.all(thumbnailPromises);
+      return thumbnailResults;
     },
     enabled: !!resource && !!props.attachments,
-  })
+  });
 
-  const queryClient = useQueryClient()
-  const addAttachmentMutationLocal = addAttachmentMutation(queryClient)
-  const deleteAttachmentMutationLocal = deleteAttachmentMutation(queryClient)
+  const queryClient = useQueryClient();
+  const addAttachmentMutationLocal = addAttachmentMutation(queryClient);
+  const deleteAttachmentMutationLocal = deleteAttachmentMutation(queryClient);
 
   const performDelete = (attachmentId: string): void => {
     if (resource)
-      deleteAttachmentMutationLocal.mutate({ attachmentId, resource })
-  }
+      deleteAttachmentMutationLocal.mutate({ attachmentId, resource });
+  };
 
   const performUpload = async (file: File | null): Promise<void> => {
     if (!file) {
-      return
+      return;
     }
 
-    const form = new FormData()
-    form.append("file", file, file.name)
-    const issueIdOrKey = props.issueKey
+    const form = new FormData();
+    form.append("file", file, file.name);
+    const issueIdOrKey = props.issueKey;
     if (resource)
-      addAttachmentMutationLocal.mutate({ issueIdOrKey, resource, form })
-  }
+      addAttachmentMutationLocal.mutate({ issueIdOrKey, resource, form });
+  };
 
   const label: string =
     props.attachments && props.attachments.length === 0
       ? "Attachments"
-      : `Attachments (${props.attachments ? props.attachments.length : 0})`
+      : `Attachments (${props.attachments ? props.attachments.length : 0})`;
 
   return (
     <>
@@ -111,7 +111,7 @@ export function Attachments(props: {
                 const fetchFile: Promise<Blob> = downloadAttachment(
                   attachment.id,
                   resource
-                )
+                );
                 const handleDownload = () => {
                   fetchFile
                     .then((blob) => FileSaver.saveAs(blob, attachment.filename))
@@ -120,8 +120,8 @@ export function Attachments(props: {
                         message: `File couldn't be uploaded! 😢`,
                         color: "red",
                       })
-                    )
-                }
+                    );
+                };
 
                 return (
                   <Tooltip
@@ -204,12 +204,12 @@ export function Attachments(props: {
                                 radius="xs"
                                 variant="subtle"
                                 onMouseOver={(event) => {
-                                  const target = event.currentTarget
-                                  target.style.border = "1px solid"
+                                  const target = event.currentTarget;
+                                  target.style.border = "1px solid";
                                 }}
                                 onMouseLeave={(event) => {
-                                  const target = event.currentTarget
-                                  target.style.border = "1px solid transparent"
+                                  const target = event.currentTarget;
+                                  target.style.border = "1px solid transparent";
                                 }}
                               >
                                 <IconCloudDownload onClick={handleDownload} />
@@ -221,12 +221,12 @@ export function Attachments(props: {
                                 radius="xs"
                                 variant="subtle"
                                 onMouseOver={(event) => {
-                                  const target = event.currentTarget
-                                  target.style.border = "1px solid"
+                                  const target = event.currentTarget;
+                                  target.style.border = "1px solid";
                                 }}
                                 onMouseLeave={(event) => {
-                                  const target = event.currentTarget
-                                  target.style.border = "1px solid transparent"
+                                  const target = event.currentTarget;
+                                  target.style.border = "1px solid transparent";
                                 }}
                                 onClick={() => performDelete(attachment.id)}
                               >
@@ -238,11 +238,11 @@ export function Attachments(props: {
                       </HoverCard>
                     </Box>
                   </Tooltip>
-                )
+                );
               })}
           </Group>
         )}
       </Paper>
     </>
-  )
+  );
 }

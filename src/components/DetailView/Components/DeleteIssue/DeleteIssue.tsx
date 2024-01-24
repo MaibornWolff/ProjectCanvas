@@ -1,18 +1,18 @@
-import { Button, Popover } from "@mantine/core"
-import { IconTrash } from "@tabler/icons-react"
-import { useState } from "react"
-import { DeleteIssueAlert } from "./DeleteIssueAlert"
-import { useColorScheme } from "../../../../common/color-scheme"
+import { Button, Popover } from "@mantine/core";
+import { IconTrash } from "@tabler/icons-react";
+import { useState } from "react";
+import { DeleteIssueAlert } from "./DeleteIssueAlert";
+import { useColorScheme } from "../../../../common/color-scheme";
 
 export function DeleteIssue({
   issueKey,
   closeModal,
 }: {
-  issueKey: string
-  closeModal: () => void
+  issueKey: string;
+  closeModal: () => void;
 }) {
-  const colorScheme = useColorScheme()
-  const [issuePopoverOpened, setIssuePopoverOpened] = useState(false)
+  const colorScheme = useColorScheme();
+  const [issuePopoverOpened, setIssuePopoverOpened] = useState(false);
 
   return (
     <Popover
@@ -28,8 +28,8 @@ export function DeleteIssue({
           color="red"
           rightSection={<IconTrash size={16} />}
           onClick={(e) => {
-            e.stopPropagation()
-            setIssuePopoverOpened(!issuePopoverOpened)
+            e.stopPropagation();
+            setIssuePopoverOpened(!issuePopoverOpened);
           }}
         >
           Delete
@@ -48,5 +48,5 @@ export function DeleteIssue({
         />
       </Popover.Dropdown>
     </Popover>
-  )
+  );
 }
