@@ -54,8 +54,8 @@ export const uploadAttachment = (
     method: "POST",
     body: form,
     headers: {
-      Accept: "application/json",
-      Authorization: `${resource.authorization}`,
+      "Accept": "application/json",
+      "Authorization": `${resource.authorization}`,
       "X-Atlassian-Token": "no-check",
     },
   }).then((att) => att.json())

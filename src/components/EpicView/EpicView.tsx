@@ -95,7 +95,7 @@ export function EpicView() {
             fullWidth
             onClick={() => setCreateIssueModalOpened(true)}
             style={(theme) => ({
-              justifyContent: "left",
+              "justifyContent": "left",
               ":hover": {
                 background:
                   colorScheme === "dark"

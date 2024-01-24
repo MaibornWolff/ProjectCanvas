@@ -38,8 +38,8 @@ export class JiraCloudProvider implements IProvider {
     const instance = axios.create({
       baseURL: `https://api.atlassian.com/ex/jira/${this.cloudID}/rest/${basePath}/${version}`,
       headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${this.accessToken}`,
+        "Accept": "application/json",
+        "Authorization": `Bearer ${this.accessToken}`,
         "Content-Type": "application/json",
       },
     })

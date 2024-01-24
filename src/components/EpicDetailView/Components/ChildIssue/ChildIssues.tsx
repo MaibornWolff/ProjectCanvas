@@ -39,7 +39,7 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
             fullWidth
             onClick={() => setCreateIssueModalOpened(true)}
             style={(theme) => ({
-              justifyContent: "left",
+              "justifyContent": "left",
               ":hover": {
                 background:
                   colorScheme === "dark"

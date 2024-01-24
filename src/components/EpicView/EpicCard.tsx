@@ -60,10 +60,10 @@ export function EpicCard({
           columns={100}
           p={3}
           style={{
-            borderRadius: theme.radius.sm,
-            margin: 0,
-            boxShadow: theme.shadows.xs,
-            transition: "background-color .8s ease-out",
+            "borderRadius": theme.radius.sm,
+            "margin": 0,
+            "boxShadow": theme.shadows.xs,
+            "transition": "background-color .8s ease-out",
             ":hover": hoverStyles,
           }}
           onClick={() => setOpened(true)}

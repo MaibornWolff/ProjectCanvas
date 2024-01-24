@@ -35,7 +35,7 @@ export function SprintsPanel({
           padding: theme.spacing.xs,
         },
         item: {
-          border: "solid 1px lightgray",
+          "border": "solid 1px lightgray",
           "&:hover": {
             background:
               colorScheme === "dark" ? theme.colors.dark[8] : theme.white,

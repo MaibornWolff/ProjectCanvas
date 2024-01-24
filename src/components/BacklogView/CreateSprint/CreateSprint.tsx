@@ -19,7 +19,7 @@ export function CreateSprint() {
         fullWidth
         onClick={() => setCreateSprintModalOpened(true)}
         style={(theme) => ({
-          justifyContent: "left",
+          "justifyContent": "left",
           ":hover": {
             background:
               colorScheme === "dark"

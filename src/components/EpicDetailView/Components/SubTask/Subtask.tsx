@@ -22,9 +22,9 @@ export function Subtask({
       align="center"
       key={id}
       style={(theme) => ({
-        borderRadius: theme.radius.sm,
-        transition: "background-color .8s ease-out",
-        boxShadow: theme.shadows.xs,
+        "borderRadius": theme.radius.sm,
+        "transition": "background-color .8s ease-out",
+        "boxShadow": theme.shadows.xs,
         ":hover": {
           backgroundColor: "#ebecf0",
           transition: "background-color .1s ease-in",
@@ -48,7 +48,7 @@ export function Subtask({
         color="gray"
         ml="auto"
         style={{
-          flex: 2,
+          "flex": 2,
           ":hover": { color: "red", borderColor: "red", cursor: "pointer" },
         }}
         onClick={() => {

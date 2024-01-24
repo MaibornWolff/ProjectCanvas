@@ -101,8 +101,8 @@ export class JiraServerProvider implements IProvider {
     const instance = axios.create({
       baseURL: `${this.loginOptions.url}/rest/${apiName}/${version}`,
       headers: {
-        Accept: "application/json",
-        Authorization: this.getAuthHeader(),
+        "Accept": "application/json",
+        "Authorization": this.getAuthHeader(),
         "Content-Type": "application/json",
       },
     })
