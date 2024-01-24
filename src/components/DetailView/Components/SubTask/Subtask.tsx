@@ -9,11 +9,11 @@ export function Subtask({
   subtaskKey,
   fields,
 }: {
-  id: string;
-  subtaskKey: string;
+  id: string,
+  subtaskKey: string,
   fields: {
-    summary: string;
-  };
+    summary: string,
+  },
 }) {
   const queryClient = useQueryClient();
   const deleteSubtask = deleteSubtaskMutation(queryClient);

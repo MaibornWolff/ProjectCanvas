@@ -7,8 +7,8 @@ export function JiraCloudLogin({
   goBack,
   onSuccess,
 }: {
-  goBack: () => void;
-  onSuccess: () => void;
+  goBack: () => void,
+  onSuccess: () => void,
 }) {
   loginToJiraCloud({ onSuccess });
 

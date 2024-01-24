@@ -6,8 +6,8 @@ export function StoryPointsHoverCard({
   statusType,
   count = 0,
 }: {
-  statusType: StatusType;
-  count: number;
+  statusType: StatusType,
+  count: number,
 }) {
   return (
     <HoverCard width="relative" shadow="md" radius="md">

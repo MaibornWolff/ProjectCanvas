@@ -8,8 +8,8 @@ export const onDragEnd = ({
   issuesWrapper,
   updateIssuesWrapper,
 }: DropResult & {
-  issuesWrapper: Map<string, IssuesState>;
-  updateIssuesWrapper: (key: string, newState: IssuesState) => void;
+  issuesWrapper: Map<string, IssuesState>,
+  updateIssuesWrapper: (key: string, newState: IssuesState) => void,
 }): void => {
   if (!destination) return;
   if (

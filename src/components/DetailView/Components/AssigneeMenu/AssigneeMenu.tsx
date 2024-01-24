@@ -8,8 +8,8 @@ export function AssigneeMenu({
   assignee,
   issueKey,
 }: {
-  assignee: Issue["assignee"];
-  issueKey: string;
+  assignee: Issue["assignee"],
+  issueKey: string,
 }) {
   const queryClient = useQueryClient();
   const editIssue = editIssueMutation(queryClient, issueKey);

@@ -7,8 +7,8 @@ export const addCommentMutation = (queryClient: QueryClient) => useMutation({
     issueKey,
     commentText,
   }: {
-    issueKey: string;
-    commentText: string;
+    issueKey: string,
+    commentText: string,
   }) => addCommentToIssue(issueKey, commentText),
   onError: () => {
     showNotification({
@@ -32,9 +32,9 @@ export const editCommentMutation = (queryClient: QueryClient) => useMutation({
     commentId,
     commentText,
   }: {
-    issueKey: string;
-    commentId: string;
-    commentText: string;
+    issueKey: string,
+    commentId: string,
+    commentText: string,
   }) => editIssueComment(issueKey, commentId, commentText),
   onError: () => {
     showNotification({
@@ -57,8 +57,8 @@ export const deleteCommentMutation = (queryClient: QueryClient) => useMutation({
     issueKey,
     commentId,
   }: {
-    issueKey: string;
-    commentId: string;
+    issueKey: string,
+    commentId: string,
   }) => deleteIssueComment(issueKey, commentId),
   onError: () => {
     showNotification({

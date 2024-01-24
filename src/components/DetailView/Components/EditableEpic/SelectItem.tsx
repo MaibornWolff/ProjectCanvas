@@ -3,7 +3,7 @@ import { forwardRef, ComponentPropsWithoutRef } from "react";
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
 
 interface ItemProps extends ComponentPropsWithoutRef<"div"> {
-  label: string;
+  label: string,
 }
 
 export const SelectItem = forwardRef<HTMLDivElement, ItemProps>(

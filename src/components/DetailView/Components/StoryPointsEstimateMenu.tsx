@@ -10,8 +10,8 @@ export function StoryPointsEstimateMenu({
   issueKey,
   storyPointsEstimate,
 }: {
-  issueKey: string;
-  storyPointsEstimate: number;
+  issueKey: string,
+  storyPointsEstimate: number,
 }) {
   const queryClient = useQueryClient();
   const theme = useMantineTheme();

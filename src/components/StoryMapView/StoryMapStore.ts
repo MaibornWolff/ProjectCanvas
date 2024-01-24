@@ -14,38 +14,38 @@ import {
 import { Action, Case, StoryMap, SubAction, SubActionGroup, SubActionLevel } from "./Types";
 
 export interface StoryMapStore {
-  storyMaps: StoryMap[];
+  storyMaps: StoryMap[],
   // StoryMaps
-  addStoryMap: (storyMap: StoryMap) => void;
-  updateStoryMap: (storyMap: Partial<StoryMap>) => void;
-  deleteStoryMap: (storyMapId: string) => void;
-  deleteAllStoryMaps: () => void;
+  addStoryMap: (storyMap: StoryMap) => void,
+  updateStoryMap: (storyMap: Partial<StoryMap>) => void,
+  deleteStoryMap: (storyMapId: string) => void,
+  deleteAllStoryMaps: () => void,
   // Cases
-  addCase: (storyMapId: string, caseColumn: Case) => void;
-  updateCase: (storyMapId: string, caseColumn: Partial<Case>) => void;
-  deleteCase: (storyMapId: string, caseId: string) => void;
+  addCase: (storyMapId: string, caseColumn: Case) => void,
+  updateCase: (storyMapId: string, caseColumn: Partial<Case>) => void,
+  deleteCase: (storyMapId: string, caseId: string) => void,
   // Actions
-  addAction: (storyMapId: string, caseId: string, action: Action) => void;
-  updateAction: (storyMapId: string, action: Partial<Action>) => void;
-  deleteAction: (storyMapId: string, actionId: string) => void;
+  addAction: (storyMapId: string, caseId: string, action: Action) => void,
+  updateAction: (storyMapId: string, action: Partial<Action>) => void,
+  deleteAction: (storyMapId: string, actionId: string) => void,
   // SubActionGroups
-  addSubActionGroups: (storyMapId: string, levelId: string) => void;
+  addSubActionGroups: (storyMapId: string, levelId: string) => void,
   updateSubActionGroup: (
     storyMapId: string,
     subActionGroup: Partial<SubActionGroup>
-  ) => void;
+  ) => void,
   // SubActions
   addSubAction: (
     storyMapId: string,
     subActionGroupId: string,
     subAction: SubAction
-  ) => void;
-  updateSubAction: (storyMapId: string, subAction: Partial<SubAction>) => void;
-  deleteSubAction: (storyMapId: string, subActionId: string) => void;
+  ) => void,
+  updateSubAction: (storyMapId: string, subAction: Partial<SubAction>) => void,
+  deleteSubAction: (storyMapId: string, subActionId: string) => void,
   // Levels
-  addLevel: (storyMapId: string, level: SubAction) => void;
-  updateLevel: (storyMapId: string, level: Partial<SubActionLevel>) => void;
-  deleteLevel: (storyMapId: string, levelId: string) => void;
+  addLevel: (storyMapId: string, level: SubAction) => void,
+  updateLevel: (storyMapId: string, level: Partial<SubActionLevel>) => void,
+  deleteLevel: (storyMapId: string, levelId: string) => void,
 }
 
 export const useStoryMapStore = create<StoryMapStore>()(

@@ -9,8 +9,8 @@ export function LevelControl({
   storyMapId,
   ...props
 }: {
-  level: SubActionLevel;
-  storyMapId: string;
+  level: SubActionLevel,
+  storyMapId: string,
 } & AccordionControlProps) {
   const [edit, toggleEdit] = useState(true);
   const updateLevel = useStoryMapStore((state) => state.updateLevel);

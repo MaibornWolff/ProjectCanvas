@@ -9,8 +9,8 @@ export function IssueSummary({
   summary,
   issueKey,
 }: {
-  summary: string;
-  issueKey: string;
+  summary: string,
+  issueKey: string,
 }) {
   const [defaultSummary, setDefaultSummary] = useState(summary);
   const [showSummaryInput, setShowSummaryInput] = useState(false);

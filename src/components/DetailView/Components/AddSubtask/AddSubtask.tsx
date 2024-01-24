@@ -10,8 +10,8 @@ export function AddSubtask({
   issueKey,
   projectId,
 }: {
-  issueKey: string;
-  projectId: string;
+  issueKey: string,
+  projectId: string,
 }) {
   const queryClient = useQueryClient();
   const [summary, setSummary] = useState("");

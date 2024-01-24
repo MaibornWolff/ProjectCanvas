@@ -36,6 +36,16 @@ module.exports = {
           "off",
           { packageDir: ["project-canvas/electron/main"] },
         ],
+        "@typescript-eslint/member-delimiter-style": ["error", {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          },
+          "singleline": {
+            "delimiter": "comma",
+            "requireLast": false
+          },
+        }],
         "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/quotes": "off",
         "object-curly-newline": ["error", { multiline: true, consistent: true }],

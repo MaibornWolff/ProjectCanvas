@@ -6,10 +6,10 @@ export async function getAccessToken({
   redirectUri,
   code,
 }: {
-  clientId: string;
-  clientSecret: string;
-  redirectUri: string;
-  code: string;
+  clientId: string,
+  clientSecret: string,
+  redirectUri: string,
+  code: string,
 }) {
   return fetch("https://auth.atlassian.com/oauth/token", {
     method: "POST",
@@ -35,10 +35,10 @@ export async function refreshTokens({
   clientSecret,
   _refreshToken,
 }: {
-  clientId: string;
-  clientSecret: string;
-  _refreshToken: string;
-}): Promise<{ accessToken: string; refreshToken: string }> {
+  clientId: string,
+  clientSecret: string,
+  _refreshToken: string,
+}): Promise<{ accessToken: string, refreshToken: string }> {
   return new Promise((resolve, reject) => {
     fetch("https://auth.atlassian.com/oauth/token", {
       method: "POST",

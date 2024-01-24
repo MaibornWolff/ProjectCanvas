@@ -4,8 +4,8 @@ export function Logout({
   LogoutSuccess,
   LogoutFailed,
 }: {
-  LogoutSuccess: () => void;
-  LogoutFailed: () => void;
+  LogoutSuccess: () => void,
+  LogoutFailed: () => void,
 }) {
   window.provider
     .logout()

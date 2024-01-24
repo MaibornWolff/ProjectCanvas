@@ -7,11 +7,11 @@ export function CheckboxStack({
   onChange,
 }: {
   data: {
-    label: string;
-    value: string;
-    active?: boolean;
-  }[];
-  onChange: (activeValues: string[]) => void;
+    label: string,
+    value: string,
+    active?: boolean,
+  }[],
+  onChange: (activeValues: string[]) => void,
 }) {
   const theme = createTheme({ cursorType: "pointer" });
   const [includedValues, setIncludedValues] = useState<string[]>(

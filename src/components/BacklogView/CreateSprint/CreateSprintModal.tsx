@@ -17,8 +17,8 @@ export function CreateSprintModal({
   opened,
   setOpened,
 }: {
-  opened: boolean;
-  setOpened: Dispatch<SetStateAction<boolean>>;
+  opened: boolean,
+  setOpened: Dispatch<SetStateAction<boolean>>,
 }) {
   const queryClient = useQueryClient();
   const theme = useMantineTheme();

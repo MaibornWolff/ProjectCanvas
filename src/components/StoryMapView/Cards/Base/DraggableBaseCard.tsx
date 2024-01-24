@@ -7,9 +7,9 @@ import { BaseCard } from "./BaseCard";
 export const DraggableBaseCard = forwardRef<
 HTMLDivElement,
 {
-  id: string;
-  index: number;
-  children: ReactNode | ReactNode[];
+  id: string,
+  index: number,
+  children: ReactNode | ReactNode[],
 } & PaperProps
 >(({
   id, index, children, ...props

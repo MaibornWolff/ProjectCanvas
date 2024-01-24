@@ -6,8 +6,8 @@ export function StoryPointsBadge({
   statusType,
   storyPointsEstimate,
 }: {
-  statusType: StatusType;
-  storyPointsEstimate: number;
+  statusType: StatusType,
+  storyPointsEstimate: number,
 }) {
   return (
     <Box style={{ lineHeight: 1 }}>

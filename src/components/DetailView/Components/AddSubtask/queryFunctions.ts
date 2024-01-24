@@ -5,7 +5,7 @@ export const createSubtask = (
   subtaskSummary: string,
   projectId: string,
   subtaskIssueTypeId: string,
-): Promise<{ id: string; key: string }> => window.provider.createSubtask(
+): Promise<{ id: string, key: string }> => window.provider.createSubtask(
   parentIssueKey,
   subtaskSummary,
   projectId,

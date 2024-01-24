@@ -13,8 +13,8 @@ export function SprintsPanel({
   sprints,
   issueWrapper,
 }: {
-  sprints: { [_: string]: Sprint };
-  issueWrapper: { [_: string]: Issue[] };
+  sprints: { [_: string]: Sprint },
+  issueWrapper: { [_: string]: Issue[] },
 }) {
   const colorScheme = useColorScheme();
 
@@ -70,8 +70,8 @@ function SprintAccordionControl({
   issues,
   sprint,
 }: {
-  issues: Issue[];
-  sprint: Sprint;
+  issues: Issue[],
+  sprint: Sprint,
 }) {
   const { issueStatusByCategory } = useCanvasStore();
 

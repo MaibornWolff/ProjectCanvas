@@ -7,9 +7,9 @@ export function ProjectSelect({
   projects,
   currentUser,
 }: {
-  form: UseFormReturnType<Issue>;
-  projects: Project[];
-  currentUser?: User;
+  form: UseFormReturnType<Issue>,
+  projects: Project[],
+  currentUser?: User,
 }) {
   return (
     <Select

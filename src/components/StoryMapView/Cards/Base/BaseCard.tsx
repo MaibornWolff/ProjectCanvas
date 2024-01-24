@@ -4,8 +4,8 @@ import { forwardRef, MouseEventHandler, ReactNode } from "react";
 export const BaseCard = forwardRef<
 HTMLDivElement,
 {
-  children?: ReactNode;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  children?: ReactNode,
+  onClick?: MouseEventHandler<HTMLDivElement>,
 } & PaperProps
 >(({ onClick, children, ...props }, ref) => (
   <Paper

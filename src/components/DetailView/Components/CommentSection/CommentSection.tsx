@@ -8,8 +8,8 @@ export function CommentSection({
   issueKey,
   comment,
 }: {
-  issueKey: string;
-  comment: Issue["comment"];
+  issueKey: string,
+  comment: Issue["comment"],
 }) {
   const [addCommentInputText, setAddCommentInputText] = useState("");
   const [editCommentInputText, setEditCommentInputText] = useState<

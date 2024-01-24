@@ -52,29 +52,29 @@ export function EpicDetailView({
   projectId,
   type,
 }: {
-  issueKey: string;
-  summary: string;
-  labels: string[];
-  assignee?: User;
-  description: string;
-  created: string;
-  updated: string;
-  attachments: Attachment[];
+  issueKey: string,
+  summary: string,
+  labels: string[],
+  assignee?: User,
+  description: string,
+  created: string,
+  updated: string,
+  attachments: Attachment[],
   comment: {
     comments: [
       {
-        id: string;
-        author: User;
-        body: string;
-        created: string;
-        updated: string;
+        id: string,
+        author: User,
+        body: string,
+        created: string,
+        updated: string,
       },
-    ];
-  };
-  status: string;
-  projectId: string;
-  type: string;
-  closeModal: () => void;
+    ],
+  },
+  status: string,
+  projectId: string,
+  type: string,
+  closeModal: () => void,
 }) {
   const queryClient = useQueryClient();
   const reloadEpics = () => {

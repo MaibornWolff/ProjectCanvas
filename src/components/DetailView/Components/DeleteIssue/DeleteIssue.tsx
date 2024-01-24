@@ -8,8 +8,8 @@ export function DeleteIssue({
   issueKey,
   closeModal,
 }: {
-  issueKey: string;
-  closeModal: () => void;
+  issueKey: string,
+  closeModal: () => void,
 }) {
   const colorScheme = useColorScheme();
   const [issuePopoverOpened, setIssuePopoverOpened] = useState(false);

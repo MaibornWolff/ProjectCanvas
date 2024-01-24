@@ -7,8 +7,8 @@ export function DraggableIssuesWrapper({
   id,
   issues,
 }: {
-  id: string;
-  issues: Issue[];
+  id: string,
+  issues: Issue[],
 }) {
   return (
     <StrictModeDroppable droppableId={id}>

@@ -9,9 +9,9 @@ export function filterData(data: Project[], search: string) {
 export function sortData(
   data: Project[],
   payload: {
-    sortBy: keyof Project | null;
-    reversed: boolean;
-    search: string;
+    sortBy: keyof Project | null,
+    reversed: boolean,
+    search: string,
   },
 ) {
   const { sortBy } = payload;

@@ -9,8 +9,8 @@ export function DeleteButton({
   mounted,
   issueKey,
 }: {
-  mounted: boolean;
-  issueKey: string;
+  mounted: boolean,
+  issueKey: string,
 }) {
   const colorScheme = useColorScheme();
   const [issuePopoverOpened, setIssuePopoverOpened] = useState(false);

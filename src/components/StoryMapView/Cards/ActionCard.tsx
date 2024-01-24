@@ -14,12 +14,12 @@ export function ActionCard({
   deleteAction,
   ...props
 }: {
-  id: string;
-  index: number;
-  action: Action;
-  storyMapId: string;
-  updateAction: (storyMapId: string, { id, title }: Action) => void;
-  deleteAction: (storyMapId: string, actionId: string) => void;
+  id: string,
+  index: number,
+  action: Action,
+  storyMapId: string,
+  updateAction: (storyMapId: string, { id, title }: Action) => void,
+  deleteAction: (storyMapId: string, actionId: string) => void,
 } & PaperProps) {
   const [edit, toggleEdit] = useState(false);
   const [title, setTitle] = useState(action.title);

@@ -11,9 +11,9 @@ export function SubActionGroup({
   subActions,
   subActionGroupId,
 }: {
-  storyMapId: string;
-  subActions: SubAction[];
-  subActionGroupId: string;
+  storyMapId: string,
+  subActions: SubAction[],
+  subActionGroupId: string,
 }) {
   const addSubAction = useStoryMapStore((state) => state.addSubAction);
   const updateSubAction = useStoryMapStore((state) => state.updateSubAction);

@@ -8,9 +8,9 @@ export function DeleteIssueAlert({
   cancelAlert,
   confirmAlert,
 }: {
-  issueKey: string;
-  cancelAlert: () => void;
-  confirmAlert: () => void;
+  issueKey: string,
+  cancelAlert: () => void,
+  confirmAlert: () => void,
 }) {
   const queryClient = useQueryClient();
   const deleteIssue = deleteIssueMutation(queryClient);

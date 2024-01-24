@@ -6,8 +6,8 @@ export function DeleteButton({
   mounted,
   onClick,
 }: {
-  mounted: boolean;
-  onClick: MouseEventHandler<HTMLButtonElement>;
+  mounted: boolean,
+  onClick: MouseEventHandler<HTMLButtonElement>,
 }) {
   return (
     <Transition

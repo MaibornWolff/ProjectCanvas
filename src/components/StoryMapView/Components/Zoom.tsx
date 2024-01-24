@@ -5,8 +5,8 @@ export function Zoom({
   setZoomValue,
   zoomValue,
 }: {
-  zoomValue: number;
-  setZoomValue: (zoomValue: number) => void;
+  zoomValue: number,
+  setZoomValue: (zoomValue: number) => void,
 }) {
   return (
     <Affix position={{ bottom: 20, right: 20 }}>

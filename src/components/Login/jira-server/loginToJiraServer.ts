@@ -4,8 +4,8 @@ export async function loginToJiraServer({
   onSuccess,
   loginOptions,
 }: {
-  onSuccess: () => void;
-  loginOptions: { url: string; username: string; password: string };
+  onSuccess: () => void,
+  loginOptions: { url: string, username: string, password: string },
 }) {
   window.provider
     .login({

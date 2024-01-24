@@ -8,8 +8,8 @@ import { getSprints, moveIssueToBacklog } from "../../CreateIssue/queryFunctions
 import { editIssue } from "../helpers/queryFunctions";
 
 export function IssueSprint(props: {
-  sprint: Sprint | undefined;
-  issueKey: string;
+  sprint: Sprint | undefined,
+  issueKey: string,
 }) {
   const theme = useMantineTheme();
   const [defaultSprint, setDefaultSprint] = useState(props.sprint || undefined);

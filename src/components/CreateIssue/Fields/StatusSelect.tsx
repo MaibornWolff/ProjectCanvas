@@ -7,9 +7,9 @@ export function StatusSelect({
   issueTypes,
   isLoading,
 }: {
-  form: UseFormReturnType<Issue>;
-  issueTypes?: IssueType[];
-  isLoading: boolean;
+  form: UseFormReturnType<Issue>,
+  issueTypes?: IssueType[],
+  isLoading: boolean,
 }) {
   return (
     <Select

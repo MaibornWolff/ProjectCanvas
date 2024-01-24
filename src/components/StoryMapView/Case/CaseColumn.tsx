@@ -12,9 +12,9 @@ export function CaseColumn({
   caseColumn,
   levels,
 }: {
-  storyMapId: string;
-  caseColumn: Case;
-  levels: SubActionLevel[];
+  storyMapId: string,
+  caseColumn: Case,
+  levels: SubActionLevel[],
 }) {
   const updateCase = useStoryMapStore((state) => state.updateCase);
   const deleteCase = useStoryMapStore((state) => state.deleteCase);

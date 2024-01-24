@@ -16,8 +16,8 @@ export function CreateExportModal({
   opened,
   setOpened,
 }: {
-  opened: boolean;
-  setOpened: Dispatch<SetStateAction<boolean>>;
+  opened: boolean,
+  setOpened: Dispatch<SetStateAction<boolean>>,
 }) {
   const {
     selectedProject: project,

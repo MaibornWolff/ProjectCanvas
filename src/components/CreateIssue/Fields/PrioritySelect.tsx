@@ -11,9 +11,9 @@ export function PrioritySelect({
   issueTypesWithFieldsMap,
   isLoading,
 }: {
-  form: UseFormReturnType<Issue>;
-  issueTypesWithFieldsMap?: Map<string, string[]>;
-  isLoading: boolean;
+  form: UseFormReturnType<Issue>,
+  issueTypesWithFieldsMap?: Map<string, string[]>,
+  isLoading: boolean,
 }) {
   const { data: priorities } = useQuery({
     queryKey: ["priorities"],

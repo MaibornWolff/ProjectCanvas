@@ -9,9 +9,9 @@ export const addAttachmentMutation = (queryClient: QueryClient) => useMutation({
     resource,
     form,
   }: {
-    issueIdOrKey: string;
-    resource: Resource;
-    form: FormData;
+    issueIdOrKey: string,
+    resource: Resource,
+    form: FormData,
   }) => uploadAttachment(issueIdOrKey, resource, form),
   onError: () => {
     showNotification({
@@ -34,8 +34,8 @@ export const deleteAttachmentMutation = (queryClient: QueryClient) => useMutatio
     attachmentId,
     resource,
   }: {
-    attachmentId: string;
-    resource: Resource;
+    attachmentId: string,
+    resource: Resource,
   }) => deleteAttachment(attachmentId, resource),
   onError: () => {
     showNotification({

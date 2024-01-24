@@ -14,12 +14,12 @@ export function EditableEpic({
   issueKey,
   epic,
 }: {
-  projectId: string;
-  issueKey: string;
+  projectId: string,
+  issueKey: string,
   epic: {
-    issueKey?: string;
-    summary?: string;
-  };
+    issueKey?: string,
+    summary?: string,
+  },
 }) {
   const [showEpicInput, setShowEpicInput] = useState(false);
   const { data: epics } = useQuery({

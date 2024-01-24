@@ -7,7 +7,7 @@ export const enum ExportStatus {
   ERROR = "error",
 }
 
-export type ExportReply = { status: ExportStatus; error?: string };
+export type ExportReply = { status: ExportStatus, error?: string };
 
 export const getExportIssuesHandler = (electron: typeof Electron, mainWindow: Electron.BrowserWindow) => (event: Electron.IpcMainEvent, data: string) => {
   electron.dialog

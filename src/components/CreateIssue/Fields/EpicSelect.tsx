@@ -11,12 +11,12 @@ export function EpicSelect({
   issueTypesWithFieldsMap,
   isLoading,
 }: {
-  form: UseFormReturnType<Issue>;
-  enabled: boolean;
-  issueTypes?: IssueType[];
-  issueTypesWithFieldsMap?: Map<string, string[]>;
+  form: UseFormReturnType<Issue>,
+  enabled: boolean,
+  issueTypes?: IssueType[],
+  issueTypesWithFieldsMap?: Map<string, string[]>,
 
-  isLoading: boolean;
+  isLoading: boolean,
 }) {
   const { data: epics } = useQuery({
     queryKey: ["epics", form.getInputProps("projectId").value],

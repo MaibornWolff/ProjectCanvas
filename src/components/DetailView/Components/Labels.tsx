@@ -12,9 +12,9 @@ export function Labels({
   issueKey,
   onMutate = () => {},
 }: {
-  labels: string[];
-  issueKey: string;
-  onMutate?: () => void;
+  labels: string[],
+  issueKey: string,
+  onMutate?: () => void,
 }) {
   const theme = useMantineTheme();
   const [defaultLabels, setDefaultLabels] = useState(labels);

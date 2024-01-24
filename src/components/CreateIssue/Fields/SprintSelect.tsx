@@ -11,11 +11,11 @@ export function SprintSelect({
   enabled,
   isLoading,
 }: {
-  form: UseFormReturnType<Issue>;
-  issueTypes?: IssueType[];
-  issueTypesWithFieldsMap?: Map<string, string[]>;
-  enabled: boolean;
-  isLoading: boolean;
+  form: UseFormReturnType<Issue>,
+  issueTypes?: IssueType[],
+  issueTypesWithFieldsMap?: Map<string, string[]>,
+  enabled: boolean,
+  isLoading: boolean,
 }) {
   const { data: boardIds } = useQuery({
     queryKey: ["boards", form.getInputProps("projectId").value],

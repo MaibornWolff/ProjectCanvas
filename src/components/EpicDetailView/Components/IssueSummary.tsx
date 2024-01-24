@@ -10,9 +10,9 @@ export function IssueSummary({
   issueKey,
   onMutate = () => {},
 }: {
-  summary: string;
-  issueKey: string;
-  onMutate?: () => void;
+  summary: string,
+  issueKey: string,
+  onMutate?: () => void,
 }) {
   const [defaultSummary, setDefaultSummary] = useState(summary);
   const [showSummaryInput, setShowSummaryInput] = useState(false);

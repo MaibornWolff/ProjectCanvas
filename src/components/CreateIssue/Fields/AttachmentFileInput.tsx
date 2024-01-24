@@ -6,7 +6,7 @@ import { Issue } from "types";
 export function AttachmentFileInput({
   form,
 }: {
-  form: UseFormReturnType<Issue>;
+  form: UseFormReturnType<Issue>,
 }) {
   const numbFiles: number = form.getInputProps("attachment").value
     ? (form.getInputProps("attachment").value as []).length

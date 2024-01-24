@@ -6,9 +6,9 @@ import { ExportReply, ExportStatus } from "../../../electron/export-issues";
 import { StatusType } from "../../../types/status";
 
 type ExportableIssue = Omit<Issue, "startDate"> & {
-  startDate?: Dayjs;
-  endDate?: Dayjs;
-  workingDays: number;
+  startDate?: Dayjs,
+  endDate?: Dayjs,
+  workingDays: number,
 };
 
 const addExportedTimeProperties = (

@@ -11,10 +11,10 @@ export function IssueStatusMenu({
   status,
   issueKey,
 }: {
-  projectId: string;
-  type: string;
-  status: string;
-  issueKey: string;
+  projectId: string,
+  type: string,
+  status: string,
+  issueKey: string,
 }) {
   const [opened, setOpened] = useState(false);
 

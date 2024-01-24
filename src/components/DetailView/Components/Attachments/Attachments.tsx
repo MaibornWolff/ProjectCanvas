@@ -23,8 +23,8 @@ import { addAttachmentMutation, deleteAttachmentMutation } from "./queries";
 import { downloadAttachment, getAttachmentThumbnail, getResource } from "./queryFunctions";
 
 export function Attachments(props: {
-  issueKey: string;
-  attachments: Attachment[];
+  issueKey: string,
+  attachments: Attachment[],
 }) {
   const resourceQuery = useQuery({
     queryKey: ["resource"],

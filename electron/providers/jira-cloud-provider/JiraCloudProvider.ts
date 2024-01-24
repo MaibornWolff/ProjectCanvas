@@ -114,11 +114,11 @@ export class JiraCloudProvider implements IProvider {
     oauthLoginOptions,
   }: {
     oauthLoginOptions: {
-      clientId: string;
-      clientSecret: string;
-      redirectUri: string;
-      code: string;
-    };
+      clientId: string,
+      clientSecret: string,
+      redirectUri: string,
+      code: string,
+    },
   }) {
     if (this.accessToken === undefined) {
       const tokenObject = await getAccessToken(oauthLoginOptions);
@@ -153,8 +153,8 @@ export class JiraCloudProvider implements IProvider {
   }
 
   async refreshAccessToken(oauthRefreshOptions: {
-    clientId: string;
-    clientSecret: string;
+    clientId: string,
+    clientSecret: string,
   }): Promise<void> {
     if (this.refreshToken) {
       const { clientId, clientSecret } = oauthRefreshOptions;
@@ -189,7 +189,7 @@ export class JiraCloudProvider implements IProvider {
       this.getRestApiClient(3)
         .get("/field")
         .then(async (response) => {
-          response.data.forEach((field: { name: string; id: string }) => {
+          response.data.forEach((field: { name: string, id: string }) => {
             this.customFields.set(field.name, field.id);
             this.reversedCustomFields.set(field.id, field.name);
           });
@@ -265,11 +265,11 @@ export class JiraCloudProvider implements IProvider {
           const issueTypeToFieldsMap: { [key: string]: string[] } = {};
           response.data.projects.forEach(
             (project: {
-              id: string;
+              id: string,
               issuetypes: {
-                fields: {};
-                id: string;
-              }[];
+                fields: {},
+                id: string,
+              }[],
             }) => {
               project.issuetypes.forEach((issueType) => {
                 const fieldKeys = Object.keys(issueType.fields);
@@ -382,7 +382,7 @@ export class JiraCloudProvider implements IProvider {
         .get(`/board?projectKeyOrId=${project}`)
         .then(async (response) => {
           const boardIds: number[] = response.data.values.map(
-            (element: { id: number; name: string }) => element.id,
+            (element: { id: number, name: string }) => element.id,
           );
           resolve(boardIds);
         })
@@ -643,10 +643,10 @@ export class JiraCloudProvider implements IProvider {
       if (!rankBefore && !rankAfter) resolve();
       const rankCustomField = this.customFields.get("Rank");
       const body: {
-        rankCustomFieldId: string;
-        issues: string[];
-        rankBeforeIssue?: string;
-        rankAfterIssue?: string;
+        rankCustomFieldId: string,
+        issues: string[],
+        rankBeforeIssue?: string,
+        rankAfterIssue?: string,
       } = {
         rankCustomFieldId: rankCustomField!.match(/_(\d+)/)![1],
         issues: [issue],
@@ -915,7 +915,7 @@ export class JiraCloudProvider implements IProvider {
 
     const { data } = transitionResponse;
 
-    data.transitions.forEach((field: { name: string; id: string }) => {
+    data.transitions.forEach((field: { name: string, id: string }) => {
       transitions.set(field.name, field.id);
     });
     const transitionId = +transitions.get(status)!;
@@ -1185,7 +1185,7 @@ export class JiraCloudProvider implements IProvider {
     subtaskSummary: string,
     projectId: string,
     subtaskIssueTypeId: string,
-  ): Promise<{ id: string; key: string }> {
+  ): Promise<{ id: string, key: string }> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(3)
         .post("/issue", {
@@ -1203,7 +1203,7 @@ export class JiraCloudProvider implements IProvider {
           },
         })
         .then(async (response) => {
-          const createdSubtask: { id: string; key: string } = response.data;
+          const createdSubtask: { id: string, key: string } = response.data;
           resolve(createdSubtask);
         })
         .catch((error) => {

@@ -11,10 +11,10 @@ export function CaseTitleCard({
   updateCase,
   deleteCase,
 }: {
-  storyMapId: string;
-  caseColumn: Case;
-  updateCase: (storyMapId: string, caseColumn: Partial<Case>) => void;
-  deleteCase: (storyMapId: string, caseId: string) => void;
+  storyMapId: string,
+  caseColumn: Case,
+  updateCase: (storyMapId: string, caseColumn: Partial<Case>) => void,
+  deleteCase: (storyMapId: string, caseId: string) => void,
 }) {
   const [edit, toggleEdit] = useState(false);
   const [title, setTitle] = useState(caseColumn.title);

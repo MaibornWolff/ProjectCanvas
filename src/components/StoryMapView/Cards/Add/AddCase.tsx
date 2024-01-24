@@ -5,7 +5,7 @@ import { BaseCard } from "../Base/BaseCard";
 export function AddCase({
   onClick,
 }: {
-  onClick: MouseEventHandler<HTMLDivElement>;
+  onClick: MouseEventHandler<HTMLDivElement>,
 }) {
   return (
     <BaseCard

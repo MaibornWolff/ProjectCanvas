@@ -4,17 +4,17 @@ import { uniqWith } from "lodash";
 import { StatusType } from "../../types/status";
 
 export interface CanvasStore {
-  projects: Project[];
-  selectedProject: Project | undefined;
-  selectedProjectBoardIds: number[];
-  issueTypes: IssueType[];
-  issueStatus: IssueStatus[];
-  issueStatusByCategory: Partial<{ [Type in StatusType]: IssueStatus[] }>;
-  issueStatusCategoryByStatusName: { [statusName: string]: StatusType };
-  setProjects: (projects: Project[]) => void;
-  setSelectedProject: (project: Project) => void;
-  setSelectedProjectBoardIds: (boards: number[]) => void;
-  setIssueTypes: (types: IssueType[]) => void;
+  projects: Project[],
+  selectedProject: Project | undefined,
+  selectedProjectBoardIds: number[],
+  issueTypes: IssueType[],
+  issueStatus: IssueStatus[],
+  issueStatusByCategory: Partial<{ [Type in StatusType]: IssueStatus[] }>,
+  issueStatusCategoryByStatusName: { [statusName: string]: StatusType },
+  setProjects: (projects: Project[]) => void,
+  setSelectedProject: (project: Project) => void,
+  setSelectedProjectBoardIds: (boards: number[]) => void,
+  setIssueTypes: (types: IssueType[]) => void,
 }
 
 export const useCanvasStore = create<CanvasStore>()((set) => ({
@@ -38,7 +38,7 @@ export const useCanvasStore = create<CanvasStore>()((set) => ({
       [Type in StatusType]: IssueStatus[];
     };
     const issueStatusCategoryByStatusName = {} as {
-      [statusName: string]: StatusType;
+      [statusName: string]: StatusType,
     };
     issueStatus.forEach((status) => {
       issueStatusByCategory[status.statusCategory.name as StatusType] ??= [];

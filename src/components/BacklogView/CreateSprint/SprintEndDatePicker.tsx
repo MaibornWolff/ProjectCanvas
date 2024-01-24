@@ -5,7 +5,7 @@ import { SprintCreate } from "types";
 export function SprintEndDatePicker({
   form,
 }: {
-  form: UseFormReturnType<SprintCreate>;
+  form: UseFormReturnType<SprintCreate>,
 }) {
   return (
     <DatePickerInput

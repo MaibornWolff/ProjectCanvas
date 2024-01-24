@@ -5,7 +5,7 @@ import { Issue } from "types";
 import { useState } from "react";
 import { editIssue } from "../helpers/queryFunctions";
 
-export function Description(props: { issueKey: string; description: string }) {
+export function Description(props: { issueKey: string, description: string }) {
   const [defaultDescription, setDefaultDescription] = useState(
     props.description,
   );

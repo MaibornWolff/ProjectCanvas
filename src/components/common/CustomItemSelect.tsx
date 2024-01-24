@@ -2,7 +2,7 @@ import { Combobox, ComboboxProps, InputBase, useCombobox, CloseButton, InputBase
 import { ForwardRefExoticComponent, RefAttributes, useState } from "react";
 
 export function CustomItemSelect<
-  OptionType extends { value: string; label: string },
+  OptionType extends { value: string, label: string },
   RefType,
 >({
   value,
@@ -17,17 +17,17 @@ export function CustomItemSelect<
   comboboxProps = {},
   inputBaseProps = {},
 }: {
-  value: string | undefined;
-  onChange: (updatedValue: string | undefined) => void;
-  options: OptionType[];
-  ItemComponent: ForwardRefExoticComponent<OptionType & RefAttributes<RefType>>;
-  clearable?: boolean;
-  searchable?: boolean;
-  label?: string;
-  placeholder?: string;
-  nothingFoundMessage?: string;
-  comboboxProps?: ComboboxProps;
-  inputBaseProps?: Omit<InputBaseProps, "value">;
+  value: string | undefined,
+  onChange: (updatedValue: string | undefined) => void,
+  options: OptionType[],
+  ItemComponent: ForwardRefExoticComponent<OptionType & RefAttributes<RefType>>,
+  clearable?: boolean,
+  searchable?: boolean,
+  label?: string,
+  placeholder?: string,
+  nothingFoundMessage?: string,
+  comboboxProps?: ComboboxProps,
+  inputBaseProps?: Omit<InputBaseProps, "value">,
 }) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),

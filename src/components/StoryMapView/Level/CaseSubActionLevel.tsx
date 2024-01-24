@@ -8,9 +8,9 @@ export function CaseSubActionLevel({
   filteredCases,
   levelId,
 }: {
-  storyMapId: string;
-  filteredCases: Case[];
-  levelId: string;
+  storyMapId: string,
+  filteredCases: Case[],
+  levelId: string,
 }) {
   return (
     <Group align="start" wrap="nowrap">

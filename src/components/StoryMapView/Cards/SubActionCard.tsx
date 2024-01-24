@@ -14,12 +14,12 @@ export function SubActionCard({
   deleteSubAction,
   ...props
 }: {
-  id: string;
-  index: number;
-  storyMapId: string;
-  subAction: SubAction;
-  updateSubAction: (storyMapId: string, { id, title }: SubAction) => void;
-  deleteSubAction: (storyMapId: string, subActionId: string) => void;
+  id: string,
+  index: number,
+  storyMapId: string,
+  subAction: SubAction,
+  updateSubAction: (storyMapId: string, { id, title }: SubAction) => void,
+  deleteSubAction: (storyMapId: string, subActionId: string) => void,
 } & PaperProps) {
   const [edit, toggleEdit] = useToggle();
   const [title, setTitle] = useState(subAction.title);

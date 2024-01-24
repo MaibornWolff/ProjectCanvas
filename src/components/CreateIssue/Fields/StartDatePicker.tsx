@@ -7,8 +7,8 @@ export function StartDatePicker({
   form,
   issueTypesWithFieldsMap,
 }: {
-  form: UseFormReturnType<Issue>;
-  issueTypesWithFieldsMap?: Map<string, string[]>;
+  form: UseFormReturnType<Issue>,
+  issueTypesWithFieldsMap?: Map<string, string[]>,
 }) {
   const isDisabled = issueTypesWithFieldsMap
     && issueTypesWithFieldsMap.size > 0

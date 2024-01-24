@@ -10,9 +10,9 @@ export function AddCard({
   onClick,
   ...props
 }: {
-  id: string;
-  index: number;
-  onClick: MouseEventHandler<HTMLDivElement>;
+  id: string,
+  index: number,
+  onClick: MouseEventHandler<HTMLDivElement>,
 } & PaperProps) {
   return (
     <Draggable draggableId={id} index={index} isDragDisabled>

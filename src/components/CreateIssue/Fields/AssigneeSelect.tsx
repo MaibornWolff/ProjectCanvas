@@ -8,9 +8,9 @@ export function AssigneeSelect({
   assignableUsers,
   isLoading,
 }: {
-  form: UseFormReturnType<Issue>;
-  assignableUsers?: User[];
-  isLoading: boolean;
+  form: UseFormReturnType<Issue>,
+  assignableUsers?: User[],
+  isLoading: boolean,
 }) {
   return (
     <CustomItemSelect

@@ -13,9 +13,9 @@ export function UserSelectMenu({
   onChange,
   placeholder = "",
 }: {
-  value: User | undefined;
-  onChange: (user: User) => void;
-  placeholder?: string;
+  value: User | undefined,
+  onChange: (user: User) => void,
+  placeholder?: string,
 }) {
   const selectedProject = useCanvasStore((state) => state.selectedProject);
   const [opened, setOpened] = useState(false);

@@ -7,9 +7,9 @@ export function StoryPointsEstimateInput({
   issueTypes,
   issueTypesWithFieldsMap,
 }: {
-  form: UseFormReturnType<Issue>;
-  issueTypes?: IssueType[];
-  issueTypesWithFieldsMap?: Map<string, string[]>;
+  form: UseFormReturnType<Issue>,
+  issueTypes?: IssueType[],
+  issueTypesWithFieldsMap?: Map<string, string[]>,
 }) {
   const isDisabled = issueTypesWithFieldsMap
     && issueTypesWithFieldsMap.size > 0

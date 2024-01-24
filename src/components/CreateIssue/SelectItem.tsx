@@ -2,9 +2,9 @@ import { Avatar, Container, Group, Text } from "@mantine/core";
 import { forwardRef, ComponentPropsWithoutRef } from "react";
 
 interface ItemProps extends ComponentPropsWithoutRef<"div"> {
-  image: string;
-  label: string;
-  value: string;
+  image: string,
+  label: string,
+  value: string,
 }
 
 export const SelectItem = forwardRef<HTMLDivElement, ItemProps>(

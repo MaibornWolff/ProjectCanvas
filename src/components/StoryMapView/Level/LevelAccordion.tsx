@@ -9,9 +9,9 @@ export function LevelAccordion({
   cases,
   levels,
 }: {
-  storyMapId: string;
-  cases: Case[];
-  levels: SubActionLevel[];
+  storyMapId: string,
+  cases: Case[],
+  levels: SubActionLevel[],
 }) {
   return (
     <Accordion

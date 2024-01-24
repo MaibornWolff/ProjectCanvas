@@ -4,8 +4,8 @@ import { JiraServerProvider } from "../providers/jira-server-provider";
 import { getProvider, ProviderType, setProvider } from "./setup";
 
 export type LoginOptions =
-  | { provider: ProviderType.JiraServer; basicLoginOptions: BasicLoginOptions }
-  | { provider: ProviderType.JiraCloud; code: string };
+  | { provider: ProviderType.JiraServer, basicLoginOptions: BasicLoginOptions }
+  | { provider: ProviderType.JiraCloud, code: string };
 
 export async function login(
   _: Electron.IpcMainInvokeEvent,

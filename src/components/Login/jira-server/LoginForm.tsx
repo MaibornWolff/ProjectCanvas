@@ -8,8 +8,8 @@ export function LoginForm({
   goBack,
   onSuccess,
 }: {
-  goBack: () => void;
-  onSuccess: () => void;
+  goBack: () => void,
+  onSuccess: () => void,
 }) {
   const metaEnv = getImportMetaEnv();
   const form = useForm<LoginFormValues>({
