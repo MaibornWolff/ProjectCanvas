@@ -14,7 +14,6 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "release": "electron-forge publish",
-    "format": "prettier --write .",
     "lint": "eslint ./src ./types ./e2e ./electron",
     "lint:fix": "yarn run lint --fix",
     "test": "jest",
