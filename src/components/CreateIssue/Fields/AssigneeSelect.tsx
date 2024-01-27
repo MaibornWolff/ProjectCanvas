@@ -1,6 +1,6 @@
-import { UseFormReturnType } from "@mantine/form"
-import { Issue, User } from "types"
-import { SelectItem } from "../SelectItem"
+import { UseFormReturnType } from "@mantine/form";
+import { Issue, User } from "types";
+import { SelectItem } from "../SelectItem";
 import { CustomItemSelect } from "../../common/CustomItemSelect";
 
 export function AssigneeSelect({
@@ -8,9 +8,9 @@ export function AssigneeSelect({
   assignableUsers,
   isLoading,
 }: {
-  form: UseFormReturnType<Issue>
-  assignableUsers?: User[]
-  isLoading: boolean
+  form: UseFormReturnType<Issue>,
+  assignableUsers?: User[],
+  isLoading: boolean,
 }) {
   return (
     <CustomItemSelect
@@ -30,10 +30,12 @@ export function AssigneeSelect({
       }
       ItemComponent={SelectItem}
       {...form.getInputProps("assignee")}
-      value={ form.getInputProps("assignee").value?.id }
+      value={form.getInputProps("assignee").value?.id}
       onChange={(value) => {
-        form.getInputProps("assignee").onChange(assignableUsers?.find((user) => user.id === value))
+        form
+          .getInputProps("assignee")
+          .onChange(assignableUsers?.find((user) => user.id === value));
       }}
     />
-  )
+  );
 }

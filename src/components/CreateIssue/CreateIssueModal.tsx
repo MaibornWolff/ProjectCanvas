@@ -1,23 +1,12 @@
-import {
-  Button,
-  Divider,
-  Group,
-  Modal,
-  ScrollArea,
-  Stack,
-  useMantineTheme,
-} from "@mantine/core"
-import { useForm } from "@mantine/form"
-import { showNotification } from "@mantine/notifications"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Issue } from "types"
-import { Dispatch, SetStateAction } from "react"
-import { useCanvasStore } from "../../lib/Store"
-import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
-import {
-  getResource,
-  uploadAttachment,
-} from "../DetailView/Components/Attachments/queryFunctions"
+import { Button, Divider, Group, Modal, ScrollArea, Stack, useMantineTheme } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { showNotification } from "@mantine/notifications";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Issue } from "types";
+import { Dispatch, SetStateAction } from "react";
+import { useCanvasStore } from "../../lib/Store";
+import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
+import { getResource, uploadAttachment } from "../DetailView/Components/Attachments/queryFunctions";
 import {
   ProjectSelect,
   IssueTypeSelect,
@@ -34,7 +23,7 @@ import {
   DueDatePicker,
   LabelsSelect,
   AttachmentFileInput,
-} from "./Fields"
+} from "./Fields";
 
 import {
   createIssue,
@@ -42,26 +31,26 @@ import {
   getCurrentUser,
   getIssueTypes,
   getIssueTypesWithFieldsMap,
-} from "./queryFunctions"
+} from "./queryFunctions";
 import { useColorScheme } from "../../common/color-scheme";
 
 export function CreateIssueModal({
   opened,
   setOpened,
 }: {
-  opened: boolean
-  setOpened: Dispatch<SetStateAction<boolean>>
+  opened: boolean,
+  setOpened: Dispatch<SetStateAction<boolean>>,
 }) {
-  const queryClient = useQueryClient()
-  const theme = useMantineTheme()
-  const colorScheme = useColorScheme()
-  const projects = useCanvasStore((state) => state.projects)
-  const selectedProject = useCanvasStore((state) => state.selectedProject)
+  const queryClient = useQueryClient();
+  const theme = useMantineTheme();
+  const colorScheme = useColorScheme();
+  const projects = useCanvasStore((state) => state.projects);
+  const selectedProject = useCanvasStore((state) => state.selectedProject);
 
   const { data: currentUser } = useQuery({
     queryKey: ["currentUser"],
     queryFn: () => getCurrentUser(),
-  })
+  });
 
   const form = useForm<Issue>({
     initialValues: {
@@ -74,31 +63,32 @@ export function CreateIssueModal({
       status: "To Do",
       reporter: currentUser,
       priority: { id: "" },
-      epic: { issueKey: undefined }
+      epic: { issueKey: undefined },
     } as Issue,
-  })
+  });
 
   const { data: issueTypes, isLoading } = useQuery({
     queryKey: ["issueTypes", form.getInputProps("projectId").value],
     queryFn: () => getIssueTypes(form.getInputProps("projectId").value!),
     enabled: !!projects && !!form.getInputProps("projectId").value,
-  })
+  });
 
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", form.getInputProps("projectId").value],
     queryFn: () => {
-      const relevantProject = projects
-        .find((project) => project.id === form.getInputProps("projectId").value!)!
+      const relevantProject = projects.find(
+        (project) => project.id === form.getInputProps("projectId").value!,
+      )!;
 
-      return getAssignableUsersByProject(relevantProject.key)
+      return getAssignableUsersByProject(relevantProject.key);
     },
     enabled: !!projects && !!form.getInputProps("projectId").value,
-  })
+  });
 
   const { data: issueTypesWithFieldsMap } = useQuery({
     queryKey: ["issueTypesWithFieldsMap"],
     queryFn: () => getIssueTypesWithFieldsMap(),
-  })
+  });
 
   const mutation = useMutation({
     mutationFn: (issue: Issue) => createIssue(issue),
@@ -106,25 +96,25 @@ export function CreateIssueModal({
       showNotification({
         message: "The issue couldn't be created! 😢",
         color: "red",
-      })
+      });
     },
     onSuccess: (issueKey) => {
-      const files: File[] = form.getInputProps("attachment").value
-      const filesForm = new FormData()
+      const files: File[] = form.getInputProps("attachment").value;
+      const filesForm = new FormData();
       if (files) {
-        files.forEach((f) => filesForm.append("file", f, f.name))
-        getResource().then((r) => uploadAttachment(issueKey, r, filesForm))
+        files.forEach((f) => filesForm.append("file", f, f.name));
+        getResource().then((r) => uploadAttachment(issueKey, r, filesForm));
       }
       showNotification({
         message: `The issue ${issueKey} has been created!`,
         color: "green",
-      })
-      queryClient.invalidateQueries({ queryKey: ["issues"] })
-      queryClient.invalidateQueries({ queryKey: ["epics"] })
-      setOpened(false)
-      form.reset()
+      });
+      queryClient.invalidateQueries({ queryKey: ["issues"] });
+      queryClient.invalidateQueries({ queryKey: ["epics"] });
+      setOpened(false);
+      form.reset();
     },
-  })
+  });
 
   return (
     <Modal
@@ -133,7 +123,8 @@ export function CreateIssueModal({
       title="Create Issue"
       size="70vw"
       overlayProps={{
-        color: colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
+        color:
+          colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
         opacity: 0.55,
         blur: 5,
       }}
@@ -149,8 +140,8 @@ export function CreateIssueModal({
       <ScrollArea.Autosize style={{ maxHeight: "70vh" }}>
         <form
           onSubmit={form.onSubmit((issue, event) => {
-            event?.preventDefault()
-            mutation.mutate(issue)
+            event?.preventDefault();
+            mutation.mutate(issue);
           })}
         >
           <Stack gap="md" mr="sm">
@@ -230,5 +221,5 @@ export function CreateIssueModal({
         </form>
       </ScrollArea.Autosize>
     </Modal>
-  )
+  );
 }

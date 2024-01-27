@@ -1,6 +1,6 @@
-import { AppShell } from "@mantine/core"
-import { Outlet } from "react-router-dom"
-import { LayoutHeader } from "./LayoutHeader"
+import { AppShell } from "@mantine/core";
+import { Outlet } from "react-router-dom";
+import { LayoutHeader } from "./LayoutHeader";
 import { useColorScheme } from "../../common/color-scheme";
 
 export function Layout() {
@@ -26,5 +26,5 @@ export function Layout() {
         <Outlet />
       </AppShell.Main>
     </AppShell>
-  )
+  );
 }

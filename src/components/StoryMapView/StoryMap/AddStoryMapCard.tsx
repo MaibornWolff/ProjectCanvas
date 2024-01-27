@@ -1,10 +1,10 @@
-import { IconPlus } from "@tabler/icons-react"
-import { BaseCard } from "../Cards/Base/BaseCard"
-import { getRndInteger, STORY_MAP_PREFIX } from "../helpers/utils"
-import { useStoryMapStore } from "../StoryMapStore"
+import { IconPlus } from "@tabler/icons-react";
+import { BaseCard } from "../Cards/Base/BaseCard";
+import { getRndInteger, STORY_MAP_PREFIX } from "../helpers/utils";
+import { useStoryMapStore } from "../StoryMapStore";
 
 export function AddStoryMapCard() {
-  const addStoryMap = useStoryMapStore((state) => state.addStoryMap)
+  const addStoryMap = useStoryMapStore((state) => state.addStoryMap);
   return (
     <BaseCard
       style={{
@@ -15,16 +15,14 @@ export function AddStoryMapCard() {
         color: "gray",
       }}
       shadow={undefined}
-      onClick={() =>
-        addStoryMap({
-          id: `${STORY_MAP_PREFIX}-${getRndInteger()}`,
-          name: "New Story Map",
-          cases: [],
-          levels: [],
-        })
-      }
+      onClick={() => addStoryMap({
+        id: `${STORY_MAP_PREFIX}-${getRndInteger()}`,
+        name: "New Story Map",
+        cases: [],
+        levels: [],
+      })}
     >
       <IconPlus />
     </BaseCard>
-  )
+  );
 }

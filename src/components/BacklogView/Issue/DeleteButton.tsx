@@ -1,26 +1,26 @@
-import { ActionIcon, Transition, Popover, Box } from "@mantine/core"
-import { IconTrash } from "@tabler/icons-react"
-import { useEffect, useState } from "react"
+import { ActionIcon, Transition, Popover, Box } from "@mantine/core";
+import { IconTrash } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 import { useHover } from "@mantine/hooks";
-import { DeleteIssueAlert } from "../../DetailView/Components/DeleteIssue/DeleteIssueAlert"
+import { DeleteIssueAlert } from "../../DetailView/Components/DeleteIssue/DeleteIssueAlert";
 import { useColorScheme } from "../../../common/color-scheme";
 
 export function DeleteButton({
   mounted,
   issueKey,
 }: {
-  mounted: boolean
-  issueKey: string
+  mounted: boolean,
+  issueKey: string,
 }) {
-  const colorScheme = useColorScheme()
-  const [issuePopoverOpened, setIssuePopoverOpened] = useState(false)
-  const { ref, hovered } = useHover()
+  const colorScheme = useColorScheme();
+  const [issuePopoverOpened, setIssuePopoverOpened] = useState(false);
+  const { ref, hovered } = useHover();
 
   useEffect(() => {
     if (!mounted && !hovered) {
-      setIssuePopoverOpened(false)
+      setIssuePopoverOpened(false);
     }
-  }, [mounted, hovered])
+  }, [mounted, hovered]);
 
   return (
     <Box style={{ position: "absolute", bottom: 0, right: 11 }}>
@@ -47,8 +47,8 @@ export function DeleteButton({
                 variant="transparent"
                 style={styles}
                 onClick={(e) => {
-                  e.stopPropagation()
-                  setIssuePopoverOpened(!issuePopoverOpened)
+                  e.stopPropagation();
+                  setIssuePopoverOpened(!issuePopoverOpened);
                 }}
               >
                 <IconTrash />
@@ -56,7 +56,8 @@ export function DeleteButton({
             </Popover.Target>
             <Popover.Dropdown
               style={(theme) => ({
-                background: colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+                background:
+                  colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
               })}
             >
               <Box
@@ -78,5 +79,5 @@ export function DeleteButton({
         )}
       </Transition>
     </Box>
-  )
+  );
 }

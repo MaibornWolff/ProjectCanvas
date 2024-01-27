@@ -1,9 +1,9 @@
-import { PaperProps, Text, TextInput } from "@mantine/core"
-import { useHover, useToggle } from "@mantine/hooks"
-import { useState } from "react"
-import { SubAction } from "../Types"
-import { DraggableBaseCard } from "./Base/DraggableBaseCard"
-import { DeleteButton } from "../Components/DeleteButton"
+import { PaperProps, Text, TextInput } from "@mantine/core";
+import { useHover, useToggle } from "@mantine/hooks";
+import { useState } from "react";
+import { SubAction } from "../Types";
+import { DraggableBaseCard } from "./Base/DraggableBaseCard";
+import { DeleteButton } from "../Components/DeleteButton";
 
 export function SubActionCard({
   id,
@@ -14,16 +14,16 @@ export function SubActionCard({
   deleteSubAction,
   ...props
 }: {
-  id: string
-  index: number
-  storyMapId: string
-  subAction: SubAction
-  updateSubAction: (storyMapId: string, { id, title }: SubAction) => void
-  deleteSubAction: (storyMapId: string, subActionId: string) => void
+  id: string,
+  index: number,
+  storyMapId: string,
+  subAction: SubAction,
+  updateSubAction: (storyMapId: string, { id, title }: SubAction) => void,
+  deleteSubAction: (storyMapId: string, subActionId: string) => void,
 } & PaperProps) {
-  const [edit, toggleEdit] = useToggle()
-  const [title, setTitle] = useState(subAction.title)
-  const { hovered, ref } = useHover()
+  const [edit, toggleEdit] = useToggle();
+  const [title, setTitle] = useState(subAction.title);
+  const { hovered, ref } = useHover();
 
   return (
     <DraggableBaseCard
@@ -41,11 +41,11 @@ export function SubActionCard({
           onBlur={() => toggleEdit()}
           placeholder="Title"
           onChange={(event) => {
-            setTitle(event.currentTarget.value)
+            setTitle(event.currentTarget.value);
             updateSubAction(storyMapId, {
               id,
               title: event.currentTarget.value,
-            })
+            });
           }}
           variant="unstyled"
           value={title}
@@ -58,5 +58,5 @@ export function SubActionCard({
         onClick={() => deleteSubAction(storyMapId, subAction.id)}
       />
     </DraggableBaseCard>
-  )
+  );
 }

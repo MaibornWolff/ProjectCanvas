@@ -1,16 +1,16 @@
-import { Group } from "@mantine/core"
-import { BaseCard } from "../Cards/Base/BaseCard"
-import { SubActionGroup } from "./SubActionGroup"
-import { Case } from "../Types"
+import { Group } from "@mantine/core";
+import { BaseCard } from "../Cards/Base/BaseCard";
+import { SubActionGroup } from "./SubActionGroup";
+import { Case } from "../Types";
 
 export function CaseSubActionLevel({
   storyMapId,
   filteredCases,
   levelId,
 }: {
-  storyMapId: string
-  filteredCases: Case[]
-  levelId: string
+  storyMapId: string,
+  filteredCases: Case[],
+  levelId: string,
 }) {
   return (
     <Group align="start" wrap="nowrap">
@@ -39,5 +39,5 @@ export function CaseSubActionLevel({
         </Group>
       ))}
     </Group>
-  )
+  );
 }

@@ -1,22 +1,22 @@
-import { Box, Group, Loader, Text, ThemeIcon } from "@mantine/core"
-import { IconBinaryTree2, IconTrash } from "@tabler/icons-react"
-import { useQueryClient } from "@tanstack/react-query"
-import { IssueSummary } from "../IssueSummary"
-import { deleteSubtaskMutation } from "./queries"
+import { Box, Group, Loader, Text, ThemeIcon } from "@mantine/core";
+import { IconBinaryTree2, IconTrash } from "@tabler/icons-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { IssueSummary } from "../IssueSummary";
+import { deleteSubtaskMutation } from "./queries";
 
 export function Subtask({
   id,
   subtaskKey,
   fields,
 }: {
-  id: string
-  subtaskKey: string
+  id: string,
+  subtaskKey: string,
   fields: {
-    summary: string
-  }
+    summary: string,
+  },
 }) {
-  const queryClient = useQueryClient()
-  const deleteSubtask = deleteSubtaskMutation(queryClient)
+  const queryClient = useQueryClient();
+  const deleteSubtask = deleteSubtaskMutation(queryClient);
   return (
     <Group
       align="center"
@@ -52,11 +52,11 @@ export function Subtask({
           ":hover": { color: "red", borderColor: "red", cursor: "pointer" },
         }}
         onClick={() => {
-          deleteSubtask.mutate(subtaskKey)
+          deleteSubtask.mutate(subtaskKey);
         }}
       >
         <IconTrash />
       </ThemeIcon>
     </Group>
-  )
+  );
 }

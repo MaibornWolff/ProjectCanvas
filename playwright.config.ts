@@ -1,5 +1,5 @@
 /* eslint-disable import/no-default-export */
-import { defineConfig } from "@playwright/test"
+import { defineConfig } from "@playwright/test";
 
 /**
  * Read environment variables from file.
@@ -50,4 +50,4 @@ export default defineConfig({
   //   command: 'npm run start',
   //   port: 3000,
   // },
-})
+});

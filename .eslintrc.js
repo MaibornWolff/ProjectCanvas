@@ -8,10 +8,10 @@ module.exports = {
   overrides: [
     {
       extends: [
+        "eslint:recommended",
         "airbnb",
         "airbnb-typescript",
         "plugin:react/jsx-runtime",
-        "prettier",
       ],
       files: ["*.ts", "*.tsx"],
       rules: {
@@ -36,9 +36,24 @@ module.exports = {
           "off",
           { packageDir: ["project-canvas/electron/main"] },
         ],
+        "@typescript-eslint/member-delimiter-style": ["error", {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          },
+          "singleline": {
+            "delimiter": "comma",
+            "requireLast": false
+          },
+        }],
         "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/quotes": "off",
+        "object-curly-newline": ["error", { multiline: true, consistent: true }],
+        'import-newlines/enforce': ['error', { items: 40, 'max-len': 120 }],
+        quotes: ["error", "double"],
+        "max-len": "off",
       },
     },
   ],
-  plugins: ["react", "testing-library"],
-}
+  plugins: ["react", "@typescript-eslint", "testing-library", "import-newlines"],
+};

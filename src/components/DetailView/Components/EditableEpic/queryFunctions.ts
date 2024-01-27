@@ -1,4 +1,3 @@
-import { Issue } from "types"
+import { Issue } from "types";
 
-export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> =>
-  window.provider.getEpicsByProject(projectIdOrKey)
+export const getEpicsByProject = (projectIdOrKey: string): Promise<Issue[]> => window.provider.getEpicsByProject(projectIdOrKey);

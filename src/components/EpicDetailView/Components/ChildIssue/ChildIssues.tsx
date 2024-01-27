@@ -1,13 +1,13 @@
-import { Box, Button, Divider, ScrollArea, Stack } from "@mantine/core"
-import { useState } from "react"
-import { Issue } from "../../../../../types"
-import { CreateIssueModal } from "../../../CreateIssue/CreateIssueModal"
-import { ChildIssueWrapper } from "./ChildIssueWrapper"
+import { Box, Button, Divider, ScrollArea, Stack } from "@mantine/core";
+import { useState } from "react";
+import { Issue } from "../../../../../types";
+import { CreateIssueModal } from "../../../CreateIssue/CreateIssueModal";
+import { ChildIssueWrapper } from "./ChildIssueWrapper";
 import { useColorScheme } from "../../../../common/color-scheme";
 
 export function ChildIssues({ issues }: { issues: Issue[] }) {
-  const colorScheme = useColorScheme()
-  const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
+  const colorScheme = useColorScheme();
+  const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false);
 
   return (
     <Stack
@@ -64,5 +64,5 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
         }}
       />
     </Stack>
-  )
+  );
 }

@@ -1,8 +1,8 @@
-import { PaperProps } from "@mantine/core"
-import { IconPlus } from "@tabler/icons-react"
-import { MouseEventHandler } from "react"
-import { Draggable } from "@hello-pangea/dnd"
-import { BaseCard } from "../Base/BaseCard"
+import { PaperProps } from "@mantine/core";
+import { IconPlus } from "@tabler/icons-react";
+import { MouseEventHandler } from "react";
+import { Draggable } from "@hello-pangea/dnd";
+import { BaseCard } from "../Base/BaseCard";
 
 export function AddCard({
   id,
@@ -10,9 +10,9 @@ export function AddCard({
   onClick,
   ...props
 }: {
-  id: string
-  index: number
-  onClick: MouseEventHandler<HTMLDivElement>
+  id: string,
+  index: number,
+  onClick: MouseEventHandler<HTMLDivElement>,
 } & PaperProps) {
   return (
     <Draggable draggableId={id} index={index} isDragDisabled>
@@ -34,5 +34,5 @@ export function AddCard({
         </BaseCard>
       )}
     </Draggable>
-  )
+  );
 }

@@ -1,9 +1,9 @@
-import { Box, Tooltip } from "@mantine/core"
-import { UseFormReturnType } from "@mantine/form"
-import { useQuery } from "@tanstack/react-query"
-import { Issue } from "types"
-import { getPriorities } from "../queryFunctions"
-import { SelectItem } from "../SelectItem"
+import { Box, Tooltip } from "@mantine/core";
+import { UseFormReturnType } from "@mantine/form";
+import { useQuery } from "@tanstack/react-query";
+import { Issue } from "types";
+import { getPriorities } from "../queryFunctions";
+import { SelectItem } from "../SelectItem";
 import { CustomItemSelect } from "../../common/CustomItemSelect";
 
 export function PrioritySelect({
@@ -11,21 +11,20 @@ export function PrioritySelect({
   issueTypesWithFieldsMap,
   isLoading,
 }: {
-  form: UseFormReturnType<Issue>
-  issueTypesWithFieldsMap?: Map<string, string[]>
-  isLoading: boolean
+  form: UseFormReturnType<Issue>,
+  issueTypesWithFieldsMap?: Map<string, string[]>,
+  isLoading: boolean,
 }) {
   const { data: priorities } = useQuery({
     queryKey: ["priorities"],
     queryFn: () => getPriorities(),
-  })
+  });
 
-  const isDisabled =
-    issueTypesWithFieldsMap &&
-    issueTypesWithFieldsMap.size > 0 &&
-    !issueTypesWithFieldsMap
+  const isDisabled = issueTypesWithFieldsMap
+    && issueTypesWithFieldsMap.size > 0
+    && !issueTypesWithFieldsMap
       .get(form.getInputProps("type").value)
-      ?.includes("Priority")
+      ?.includes("Priority");
 
   return (
     <Tooltip
@@ -63,5 +62,5 @@ export function PrioritySelect({
         />
       </Box>
     </Tooltip>
-  )
+  );
 }

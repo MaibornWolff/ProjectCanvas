@@ -1,11 +1,11 @@
-import { IconPlus } from "@tabler/icons-react"
-import { MouseEventHandler } from "react"
-import { BaseCard } from "../Base/BaseCard"
+import { IconPlus } from "@tabler/icons-react";
+import { MouseEventHandler } from "react";
+import { BaseCard } from "../Base/BaseCard";
 
 export function AddCase({
   onClick,
 }: {
-  onClick: MouseEventHandler<HTMLDivElement>
+  onClick: MouseEventHandler<HTMLDivElement>,
 }) {
   return (
     <BaseCard
@@ -20,5 +20,5 @@ export function AddCase({
     >
       <IconPlus />
     </BaseCard>
-  )
+  );
 }

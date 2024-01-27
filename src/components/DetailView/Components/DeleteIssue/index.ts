@@ -1,1 +1,1 @@
-export * from "./DeleteIssue"
+export * from "./DeleteIssue";

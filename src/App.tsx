@@ -1,11 +1,11 @@
-import { Route, Routes } from "react-router-dom"
-import { Layout } from "./components/layout"
-import { Login } from "./components/Login"
-import { ProjectsView } from "./components/ProjectsView"
-import { BacklogView } from "./components/BacklogView"
-import { EpicView } from "./components/EpicView"
-import { StoryMapView } from "./components/StoryMapView"
-import { StoryMapDashboard } from "./components/StoryMapView/StoryMapDashboard"
+import { Route, Routes } from "react-router-dom";
+import { Layout } from "./components/layout";
+import { Login } from "./components/Login";
+import { ProjectsView } from "./components/ProjectsView";
+import { BacklogView } from "./components/BacklogView";
+import { EpicView } from "./components/EpicView";
+import { StoryMapView } from "./components/StoryMapView";
+import { StoryMapDashboard } from "./components/StoryMapView/StoryMapDashboard";
 import { RouteNames } from "./route-names";
 
 export function App() {
@@ -22,5 +22,5 @@ export function App() {
         </Route>
       </Route>
     </Routes>
-  )
+  );
 }

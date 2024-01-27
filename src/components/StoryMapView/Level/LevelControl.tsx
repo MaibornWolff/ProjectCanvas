@@ -1,20 +1,20 @@
-import {Accordion, AccordionControlProps, ActionIcon, Center, TextInput} from "@mantine/core"
-import { IconTrash } from "@tabler/icons-react"
-import { useState } from "react"
-import { useStoryMapStore } from "../StoryMapStore"
-import { SubActionLevel } from "../Types"
+import { Accordion, AccordionControlProps, ActionIcon, Center, TextInput } from "@mantine/core";
+import { IconTrash } from "@tabler/icons-react";
+import { useState } from "react";
+import { useStoryMapStore } from "../StoryMapStore";
+import { SubActionLevel } from "../Types";
 
 export function LevelControl({
   level,
   storyMapId,
   ...props
 }: {
-  level: SubActionLevel
-  storyMapId: string
+  level: SubActionLevel,
+  storyMapId: string,
 } & AccordionControlProps) {
-  const [edit, toggleEdit] = useState(true)
-  const updateLevel = useStoryMapStore((state) => state.updateLevel)
-  const deleteLevel = useStoryMapStore((state) => state.deleteLevel)
+  const [edit, toggleEdit] = useState(true);
+  const updateLevel = useStoryMapStore((state) => state.updateLevel);
+  const deleteLevel = useStoryMapStore((state) => state.deleteLevel);
   return (
     <Center>
       <Accordion.Control {...props}>
@@ -25,12 +25,12 @@ export function LevelControl({
             updateLevel(storyMapId, {
               id: level.id,
               title: event.currentTarget.value,
-            })
-            toggleEdit(false)
+            });
+            toggleEdit(false);
           }}
           onClick={(event) => {
-            event.stopPropagation()
-            toggleEdit(true)
+            event.stopPropagation();
+            toggleEdit(true);
           }}
           variant="unstyled"
           styles={{ input: { padding: 0 } }}
@@ -43,11 +43,11 @@ export function LevelControl({
         color="red"
         size="sm"
         onClick={() => {
-          deleteLevel(storyMapId, level.id)
+          deleteLevel(storyMapId, level.id);
         }}
       >
         <IconTrash />
       </ActionIcon>
     </Center>
-  )
+  );
 }

@@ -1,9 +1,9 @@
-import { TextInput, Title } from "@mantine/core"
-import { useHover } from "@mantine/hooks"
-import { useState } from "react"
-import { Case } from "../Types"
-import { BaseCard } from "./Base/BaseCard"
-import { DeleteButton } from "../Components/DeleteButton"
+import { TextInput, Title } from "@mantine/core";
+import { useHover } from "@mantine/hooks";
+import { useState } from "react";
+import { Case } from "../Types";
+import { BaseCard } from "./Base/BaseCard";
+import { DeleteButton } from "../Components/DeleteButton";
 
 export function CaseTitleCard({
   storyMapId,
@@ -11,14 +11,14 @@ export function CaseTitleCard({
   updateCase,
   deleteCase,
 }: {
-  storyMapId: string
-  caseColumn: Case
-  updateCase: (storyMapId: string, caseColumn: Partial<Case>) => void
-  deleteCase: (storyMapId: string, caseId: string) => void
+  storyMapId: string,
+  caseColumn: Case,
+  updateCase: (storyMapId: string, caseColumn: Partial<Case>) => void,
+  deleteCase: (storyMapId: string, caseId: string) => void,
 }) {
-  const [edit, toggleEdit] = useState(false)
-  const [title, setTitle] = useState(caseColumn.title)
-  const { hovered, ref } = useHover()
+  const [edit, toggleEdit] = useState(false);
+  const [title, setTitle] = useState(caseColumn.title);
+  const { hovered, ref } = useHover();
   return (
     <BaseCard
       w="100%"
@@ -37,12 +37,12 @@ export function CaseTitleCard({
         <TextInput
           placeholder="Title"
           onBlur={(event) => {
-            setTitle(event.currentTarget.value)
+            setTitle(event.currentTarget.value);
             updateCase(storyMapId, {
               id: caseColumn.id,
               title: event.currentTarget.value,
-            })
-            toggleEdit(!edit)
+            });
+            toggleEdit(!edit);
           }}
           variant="unstyled"
           defaultValue={title}
@@ -55,5 +55,5 @@ export function CaseTitleCard({
         onClick={() => deleteCase(storyMapId, caseColumn.id)}
       />
     </BaseCard>
-  )
+  );
 }

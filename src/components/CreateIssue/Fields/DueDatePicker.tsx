@@ -1,21 +1,20 @@
-import { Tooltip, Box } from "@mantine/core"
-import { DatePickerInput } from "@mantine/dates"
-import { UseFormReturnType } from "@mantine/form"
-import { Issue } from "types"
+import { Tooltip, Box } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
+import { UseFormReturnType } from "@mantine/form";
+import { Issue } from "types";
 
 export function DueDatePicker({
   form,
   issueTypesWithFieldsMap,
 }: {
-  form: UseFormReturnType<Issue>
-  issueTypesWithFieldsMap?: Map<string, string[]>
+  form: UseFormReturnType<Issue>,
+  issueTypesWithFieldsMap?: Map<string, string[]>,
 }) {
-  const isDisabled =
-    issueTypesWithFieldsMap &&
-    issueTypesWithFieldsMap.size > 0 &&
-    !issueTypesWithFieldsMap
+  const isDisabled = issueTypesWithFieldsMap
+    && issueTypesWithFieldsMap.size > 0
+    && !issueTypesWithFieldsMap
       .get(form.getInputProps("type").value)
-      ?.includes("Due date")
+      ?.includes("Due date");
   return (
     <Tooltip
       label={
@@ -39,16 +38,15 @@ export function DueDatePicker({
           disabled={isDisabled}
           {...form.getInputProps("dueDate")}
           onChange={(value) => {
-            form.getInputProps("dueDate").onChange(value)
+            form.getInputProps("dueDate").onChange(value);
             if (
-              value &&
-              form.getInputProps("startDate").value &&
-              form.getInputProps("startDate").value > value
-            )
-              form.setFieldValue("startDate", null as unknown as Date)
+              value
+              && form.getInputProps("startDate").value
+              && form.getInputProps("startDate").value > value
+            ) form.setFieldValue("startDate", null as unknown as Date);
           }}
         />
       </Box>
     </Tooltip>
-  )
+  );
 }

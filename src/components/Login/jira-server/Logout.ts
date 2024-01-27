@@ -1,11 +1,11 @@
-import { showNotification } from "@mantine/notifications"
+import { showNotification } from "@mantine/notifications";
 
 export function Logout({
   LogoutSuccess,
   LogoutFailed,
 }: {
-  LogoutSuccess: () => void
-  LogoutFailed: () => void
+  LogoutSuccess: () => void,
+  LogoutFailed: () => void,
 }) {
   window.provider
     .logout()
@@ -15,7 +15,7 @@ export function Logout({
         title: error.name,
         message: error.message,
         color: "red",
-      })
-      LogoutFailed()
-    })
+      });
+      LogoutFailed();
+    });
 }

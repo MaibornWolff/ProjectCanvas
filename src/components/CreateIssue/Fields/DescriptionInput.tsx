@@ -1,6 +1,6 @@
-import { Textarea } from "@mantine/core"
-import { UseFormReturnType } from "@mantine/form"
-import { Issue } from "types"
+import { Textarea } from "@mantine/core";
+import { UseFormReturnType } from "@mantine/form";
+import { Issue } from "types";
 
 export function DescriptionInput({ form }: { form: UseFormReturnType<Issue> }) {
   return (
@@ -11,5 +11,5 @@ export function DescriptionInput({ form }: { form: UseFormReturnType<Issue> }) {
       minRows={6}
       {...form.getInputProps("description")}
     />
-  )
+  );
 }

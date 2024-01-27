@@ -4,10 +4,10 @@ import { StatusType } from "../../../../types/status";
 
 export function StoryPointsBadge({
   statusType,
-  storyPointsEstimate
- }: {
-  statusType: StatusType
-  storyPointsEstimate: number
+  storyPointsEstimate,
+}: {
+  statusType: StatusType,
+  storyPointsEstimate: number,
 }) {
   return (
     <Box style={{ lineHeight: 1 }}>
@@ -20,5 +20,5 @@ export function StoryPointsBadge({
         {storyPointsEstimate}
       </Badge>
     </Box>
-  )
+  );
 }

@@ -1,27 +1,27 @@
-import { Button, Center, Loader } from "@mantine/core"
-import { ipcRenderer } from "electron"
-import { useEffect } from "react"
-import { loginToJiraCloud } from "./loginToJiraCloud"
+import { Button, Center, Loader } from "@mantine/core";
+import { ipcRenderer } from "electron";
+import { useEffect } from "react";
+import { loginToJiraCloud } from "./loginToJiraCloud";
 
 export function JiraCloudLogin({
   goBack,
   onSuccess,
 }: {
-  goBack: () => void
-  onSuccess: () => void
+  goBack: () => void,
+  onSuccess: () => void,
 }) {
-  loginToJiraCloud({ onSuccess })
+  loginToJiraCloud({ onSuccess });
 
   // Add event listener for "cancelOAuth" message
   useEffect(() => {
     ipcRenderer.on("cancelOAuth", () => {
-      goBack()
-    })
+      goBack();
+    });
     return () => {
       // Remove event listener when component unmounts
-      ipcRenderer.removeAllListeners("cancelOAuth")
-    }
-  }, [])
+      ipcRenderer.removeAllListeners("cancelOAuth");
+    };
+  }, []);
 
   return (
     <>
@@ -32,5 +32,5 @@ export function JiraCloudLogin({
         Go Back
       </Button>
     </>
-  )
+  );
 }

@@ -1,8 +1,4 @@
-import type {
-  MantineThemeOverride,
-  MantineColorsTuple,
-  DefaultMantineColor,
-} from "@mantine/core"
+import type { MantineThemeOverride, MantineColorsTuple, DefaultMantineColor } from "@mantine/core";
 
 export const theme: MantineThemeOverride = {
   colors: {
@@ -61,17 +57,17 @@ export const theme: MantineThemeOverride = {
   defaultGradient: { deg: 90, from: "secondary.1", to: "primaryBlue.3" },
   fontFamily: "Poppins",
   headings: { fontFamily: "Poppins", fontWeight: "bold" },
-}
+};
 
 type ExtendedCustomColors =
   | "primaryRed"
   | "primaryBlue"
   | "primaryGreen"
   | "secondary"
-  | DefaultMantineColor
+  | DefaultMantineColor;
 
 declare module "@mantine/core" {
   export interface MantineThemeColorsOverride {
-    colors: Record<ExtendedCustomColors, MantineColorsTuple>
+    colors: Record<ExtendedCustomColors, MantineColorsTuple>;
   }
 }

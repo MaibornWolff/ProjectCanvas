@@ -1,21 +1,21 @@
-import { Anchor, AppShell, Box, Button, Group, Image } from "@mantine/core"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
-import { CreateIssueModal } from "../CreateIssue/CreateIssueModal"
+import { Anchor, AppShell, Box, Button, Group, Image } from "@mantine/core";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
+import { CreateIssueModal } from "../CreateIssue/CreateIssueModal";
 
-import { LogoutButton } from "./LogoutButton"
-import { StoryMapMenu } from "./StoryMapMenu"
-import { RouteNames } from "../../route-names"
+import { LogoutButton } from "./LogoutButton";
+import { StoryMapMenu } from "./StoryMapMenu";
+import { RouteNames } from "../../route-names";
 
-import classes from "./LayoutHeader.module.css"
+import classes from "./LayoutHeader.module.css";
 
 export function LayoutHeader() {
-  const navigate = useNavigate()
-  const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false)
+  const navigate = useNavigate();
+  const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false);
 
   return (
-    <AppShell.Header p="sm" className={classes.root} >
+    <AppShell.Header p="sm" className={classes.root}>
       <Box
         style={(theme) => ({
           paddingLeft: theme.spacing.xs,
@@ -46,7 +46,8 @@ export function LayoutHeader() {
           <Anchor
             component="button"
             type="button"
-            onClick={() => navigate(RouteNames.EPIC_VIEW)}>
+            onClick={() => navigate(RouteNames.EPIC_VIEW)}
+          >
             Epics
           </Anchor>
           <StoryMapMenu />
@@ -62,5 +63,5 @@ export function LayoutHeader() {
         </Group>
       </Box>
     </AppShell.Header>
-  )
+  );
 }

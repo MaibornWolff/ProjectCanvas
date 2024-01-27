@@ -1,4 +1,4 @@
-import fetch from "cross-fetch"
+import fetch from "cross-fetch";
 
 export async function getAccessToken({
   clientId,
@@ -6,10 +6,10 @@ export async function getAccessToken({
   redirectUri,
   code,
 }: {
-  clientId: string
-  clientSecret: string
-  redirectUri: string
-  code: string
+  clientId: string,
+  clientSecret: string,
+  redirectUri: string,
+  code: string,
 }) {
   return fetch("https://auth.atlassian.com/oauth/token", {
     method: "POST",
@@ -24,10 +24,10 @@ export async function getAccessToken({
       code,
     }),
   }).then(async (response) => {
-    const resp = await response.json()
-    const { access_token: accessToken, refresh_token: refreshToken } = resp
-    return { accessToken, refreshToken }
-  })
+    const resp = await response.json();
+    const { access_token: accessToken, refresh_token: refreshToken } = resp;
+    return { accessToken, refreshToken };
+  });
 }
 
 export async function refreshTokens({
@@ -35,10 +35,10 @@ export async function refreshTokens({
   clientSecret,
   _refreshToken,
 }: {
-  clientId: string
-  clientSecret: string
-  _refreshToken: string
-}): Promise<{ accessToken: string; refreshToken: string }> {
+  clientId: string,
+  clientSecret: string,
+  _refreshToken: string,
+}): Promise<{ accessToken: string, refreshToken: string }> {
   return new Promise((resolve, reject) => {
     fetch("https://auth.atlassian.com/oauth/token", {
       method: "POST",
@@ -53,21 +53,20 @@ export async function refreshTokens({
       }),
     })
       .then(async (response) => {
-        const resp = await response.json()
+        const resp = await response.json();
         if (response.status === 200) {
-          const { access_token: accessToken, refresh_token: refreshToken } =
-            resp
-          resolve({ accessToken, refreshToken })
+          const { access_token: accessToken, refresh_token: refreshToken } = resp;
+          resolve({ accessToken, refreshToken });
         } else {
           reject(
             new Error(
-              `Failed to refresh tokens with status code: ${response.status}`
-            )
-          )
+              `Failed to refresh tokens with status code: ${response.status}`,
+            ),
+          );
         }
       })
       .catch((error) => {
-        reject(error)
-      })
-  })
+        reject(error);
+      });
+  });
 }

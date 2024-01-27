@@ -1,15 +1,15 @@
-import { Select } from "@mantine/core"
-import { UseFormReturnType } from "@mantine/form"
-import { Issue, Project, User } from "types"
+import { Select } from "@mantine/core";
+import { UseFormReturnType } from "@mantine/form";
+import { Issue, Project, User } from "types";
 
 export function ProjectSelect({
   form,
   projects,
   currentUser,
 }: {
-  form: UseFormReturnType<Issue>
-  projects: Project[]
-  currentUser?: User
+  form: UseFormReturnType<Issue>,
+  projects: Project[],
+  currentUser?: User,
 }) {
   return (
     <Select
@@ -24,14 +24,14 @@ export function ProjectSelect({
       required
       {...form.getInputProps("projectId")}
       onChange={(value) => {
-        form.getInputProps("projectId").onChange(value)
-        form.setFieldValue("type", "")
-        form.setFieldValue("status", "")
-        form.setFieldValue("assignee", undefined)
+        form.getInputProps("projectId").onChange(value);
+        form.setFieldValue("type", "");
+        form.setFieldValue("status", "");
+        form.setFieldValue("assignee", undefined);
         if (currentUser) {
-          form.setFieldValue("reporter", currentUser)
+          form.setFieldValue("reporter", currentUser);
         }
       }}
     />
-  )
+  );
 }

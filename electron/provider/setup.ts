@@ -1,6 +1,6 @@
-import { IProvider } from "../providers/base-provider"
+import { IProvider } from "../providers/base-provider";
 
-let issueProvider: IProvider
+let issueProvider: IProvider;
 
 export enum ProviderType {
   JiraServer = "JiraServer",
@@ -8,6 +8,6 @@ export enum ProviderType {
 }
 
 export const setProvider = (provider: IProvider) => {
-  issueProvider = provider
-}
-export const getProvider = () => issueProvider
+  issueProvider = provider;
+};
+export const getProvider = () => issueProvider;

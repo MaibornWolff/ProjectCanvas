@@ -1,16 +1,16 @@
-import React from "react"
-import ReactDOM from "react-dom/client"
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { HashRouter } from "react-router-dom"
-import { App } from "./App"
-import { ThemeProvider } from "./ThemeProvider"
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { HashRouter } from "react-router-dom";
+import { App } from "./App";
+import { ThemeProvider } from "./ThemeProvider";
 
-import '@mantine/core/styles.css';
-import '@mantine/dates/styles.css';
-import '@mantine/notifications/styles.css';
+import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
+import "@mantine/notifications/styles.css";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -22,5 +22,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <ReactQueryDevtools initialIsOpen={false} />
       </HashRouter>
     </QueryClientProvider>
-  </React.StrictMode>
-)
+  </React.StrictMode>,
+);

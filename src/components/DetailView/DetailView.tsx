@@ -1,30 +1,20 @@
-import {
-  Accordion,
-  Box,
-  Breadcrumbs,
-  Group,
-  Paper,
-  ScrollArea,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core"
-import { Issue } from "types"
-import { AddSubtask } from "./Components/AddSubtask"
-import { AssigneeMenu } from "./Components/AssigneeMenu"
-import { EditableEpic } from "./Components/EditableEpic"
-import { CommentSection } from "./Components/CommentSection"
-import { Description } from "./Components/Description"
-import { IssueSprint } from "./Components/IssueSprint"
-import { IssueSummary } from "./Components/IssueSummary"
-import { Labels } from "./Components/Labels"
-import { ReporterMenu } from "./Components/ReporterMenu"
-import { StoryPointsEstimateMenu } from "./Components/StoryPointsEstimateMenu"
-import { Subtask } from "./Components/SubTask"
-import { DeleteIssue } from "./Components/DeleteIssue"
-import { Attachments } from "./Components/Attachments/Attachments"
-import { ColorSchemeToggle } from "../common/ColorSchemeToggle"
-import { IssueIcon } from "../BacklogView/Issue/IssueIcon"
+import { Accordion, Box, Breadcrumbs, Group, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
+import { Issue } from "types";
+import { AddSubtask } from "./Components/AddSubtask";
+import { AssigneeMenu } from "./Components/AssigneeMenu";
+import { EditableEpic } from "./Components/EditableEpic";
+import { CommentSection } from "./Components/CommentSection";
+import { Description } from "./Components/Description";
+import { IssueSprint } from "./Components/IssueSprint";
+import { IssueSummary } from "./Components/IssueSummary";
+import { Labels } from "./Components/Labels";
+import { ReporterMenu } from "./Components/ReporterMenu";
+import { StoryPointsEstimateMenu } from "./Components/StoryPointsEstimateMenu";
+import { Subtask } from "./Components/SubTask";
+import { DeleteIssue } from "./Components/DeleteIssue";
+import { Attachments } from "./Components/Attachments/Attachments";
+import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
+import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
 import { IssueStatusMenu } from "./Components/IssueStatusMenu";
 
 export function DetailView({
@@ -46,14 +36,15 @@ export function DetailView({
   attachments,
   closeModal,
 }: Issue & { closeModal: () => void }) {
-
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
         <EditableEpic projectId={projectId} issueKey={issueKey} epic={epic} />
 
         <Group>
-          <IssueIcon type={type} /> {issueKey}
+          <IssueIcon type={type} />
+          {" "}
+          {issueKey}
         </Group>
       </Breadcrumbs>
       <ColorSchemeToggle
@@ -97,10 +88,17 @@ export function DetailView({
             <CommentSection issueKey={issueKey} comment={comment} />
           </ScrollArea.Autosize>
         </Stack>
-        <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
+        <ScrollArea.Autosize
+          style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}
+        >
           <Box>
             <Group justify="space-between" mb="sm">
-              <IssueStatusMenu projectId={projectId} issueKey={issueKey} type={type} status={status} />
+              <IssueStatusMenu
+                projectId={projectId}
+                issueKey={issueKey}
+                type={type}
+                status={status}
+              />
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
@@ -110,7 +108,10 @@ export function DetailView({
                 </Accordion.Control>
                 <Accordion.Panel>
                   <Stack>
-                    <AssigneeMenu assignee={assignee as Issue["assignee"]} issueKey={issueKey} />
+                    <AssigneeMenu
+                      assignee={assignee as Issue["assignee"]}
+                      issueKey={issueKey}
+                    />
                     <Group grow>
                       <Text fz="sm" c="dimmed">
                         Labels
@@ -133,14 +134,16 @@ export function DetailView({
               </Accordion.Item>
             </Accordion>
             <Text size="xs" c="dimmed">
-              Created{" "}
+              Created
+              {" "}
               {new Intl.DateTimeFormat("en-GB", {
                 dateStyle: "full",
                 timeStyle: "short",
               }).format(new Date(created))}
             </Text>
             <Text size="xs" c="dimmed">
-              Updated{" "}
+              Updated
+              {" "}
               {new Intl.DateTimeFormat("en-GB", {
                 dateStyle: "full",
                 timeStyle: "short",
@@ -150,5 +153,5 @@ export function DetailView({
         </ScrollArea.Autosize>
       </Group>
     </Paper>
-  )
+  );
 }
