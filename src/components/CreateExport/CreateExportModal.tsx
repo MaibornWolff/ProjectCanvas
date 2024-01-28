@@ -40,7 +40,7 @@ export function CreateExportModal({
   const [issuesToExport, setIssuesToExport] = useState<ExportableIssue[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [exportHovered, setexportHovered] = useState(false);
+  const [exportHovered, setExportHovered] = useState(false);
   function calculateIssuesToExport() {
     if (!startDate || !endDate) {
       setIssuesToExport([]);
@@ -186,8 +186,8 @@ export function CreateExportModal({
               ml="auto"
               size="sm"
               disabled={issuesToExport.length === 0}
-              onMouseOver={() => setexportHovered(true)}
-              onMouseOut={() => setexportHovered(false)}
+              onMouseOver={() => setExportHovered(true)}
+              onMouseOut={() => setExportHovered(false)}
               onClick={() => exportIssues(issuesToExport)}
             >
               Export
