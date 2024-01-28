@@ -1,8 +1,11 @@
 import { ipcRenderer } from "electron";
 import { showNotification } from "@mantine/notifications";
 import dayjs, { Dayjs } from "dayjs";
+import dayjsBusinessDays from "dayjs-business-days2";
 import { ChangelogHistoryItem, Issue } from "../../../types";
 import { ExportReply, ExportStatus } from "../../../electron/export-issues";
+
+dayjs.extend(dayjsBusinessDays);
 
 export type ExportableIssue = Omit<Issue, "startDate"> & {
   startDate: Dayjs,
@@ -49,11 +52,18 @@ export const addExportedTimeProperties = (
   const startDate = dayjs(enterEdges[0].date);
   const endDate = dayjs(leaveEdges[leaveEdges.length - 1].date);
 
+  // Determines if the time of the endDate is after the time of the startDate manually as there is no dayjs API for this
+  // In the case the start time is before the end time, we need to add one working day to accommodate for the start day
+  const currentDayIncluded = endDate.hour() > startDate.hour() || (endDate.hour() === startDate.hour()
+    && (endDate.minute() > startDate.minute() || (endDate.minute() === startDate.minute()
+      && (endDate.second() > startDate.second() || (endDate.second() === startDate.second()
+        && endDate.millisecond() > startDate.millisecond())))));
+
   return {
     ...issue,
     startDate,
     endDate,
-    workingDays: Math.ceil(endDate.diff(startDate, "day", true)),
+    workingDays: currentDayIncluded ? endDate.businessDiff(startDate) : endDate.businessDiff(startDate) + 1,
   };
 };
 
