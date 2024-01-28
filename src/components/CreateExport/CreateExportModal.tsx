@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Modal, Stack, Group, Text, Button, Tooltip, Paper, ActionIcon } from "@mantine/core";
+import { Modal, Stack, Group, Text, Button, Paper, CloseButton } from "@mantine/core";
 import { sortBy } from "lodash";
 import { useQuery } from "@tanstack/react-query";
-import { IconInfoCircle } from "@tabler/icons-react";
+
 import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
 import { useCanvasStore } from "../../lib/Store";
@@ -11,6 +11,7 @@ import { exportIssues } from "./exportHelper";
 import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers";
 import { StatusType } from "../../../types/status";
 import { CheckboxStack } from "./CheckboxStack";
+import { InfoButton } from "./InfoButton";
 
 export function CreateExportModal({
   opened,
@@ -62,6 +63,12 @@ export function CreateExportModal({
     );
   }
 
+  function handleClose() {
+    setIncludedIssueTypes([]);
+    setIncludedIssueStatus([]);
+    setOpened(false);
+  }
+
   useEffect(() => {
     calculateIssuesToExport();
   }, [includedIssueTypes, includedIssueStatus, startDate, endDate]);
@@ -76,7 +83,7 @@ export function CreateExportModal({
       }}
       centered
       withCloseButton={false}
-      size="60vw"
+      size="70vw"
     >
       <Stack
         align="left"
@@ -88,30 +95,17 @@ export function CreateExportModal({
       >
         <Group c="dimmed" mb="xs">
           <Text>{project?.name}</Text>
-          <Tooltip
-            withArrow
-            multiline
-            w={150}
-            fz={14}
-            fw={500}
-            openDelay={200}
-            closeDelay={200}
-            ta="center"
-            color="primaryBlue"
-            variant="filled"
-            label="Only issues with corresponding types and a 'Done' status are exported. The remaining status influence the date calculations."
-          >
-            <ActionIcon variant="subtle" ml="auto">
-              <IconInfoCircle />
-            </ActionIcon>
-          </Tooltip>
+          <CloseButton ml="auto" onClick={() => handleClose()} />
         </Group>
         <Paper shadow="md" radius="md" withBorder mb="xs">
           <Group align="top" justify="center" mb="5%">
             <Stack align="center" mr="5%">
-              <Text size="md" fw={450} mt="7%" mb="10%">
-                Include Issue Types
-              </Text>
+              <Group>
+                <Text size="md" fw={450} mt="7%" mb="10%">
+                  Include Issue Types
+                </Text>
+                <InfoButton text="Only issues with corresponding types are exported." />
+              </Group>
               {issueTypes && (
                 <CheckboxStack
                   data={issueTypes.map((issueType) => ({
@@ -123,9 +117,12 @@ export function CreateExportModal({
               )}
             </Stack>
             <Stack align="center">
-              <Text size="md" fw={450} mt="7%" mb="10%">
-                Include Issue Status
-              </Text>
+              <Group>
+                <Text size="md" fw={450} mt="7%" mb="10%">
+                  Include Issue Status
+                </Text>
+                <InfoButton text="Only issues with a 'Done' status are exported.The remaining chosen status influence the date calculations." />
+              </Group>
               {issueStatus && (
                 <CheckboxStack
                   data={issueStatus.map((status) => ({
@@ -137,9 +134,12 @@ export function CreateExportModal({
               )}
             </Stack>
             <Stack align="center" mt="xs" w="40%">
-              <Text size="md" fw={450}>
-                Creation date range
-              </Text>
+              <Group>
+                <Text size="md" fw={450}>
+                  Creation date range
+                </Text>
+                <InfoButton text="Only issues within the selected date range are exported" />
+              </Group>
               <DateInput
                 label="Start Date"
                 clearable
