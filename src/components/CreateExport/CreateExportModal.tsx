@@ -40,7 +40,7 @@ export function CreateExportModal({
   const [issuesToExport, setIssuesToExport] = useState<ExportableIssue[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [hoveredoverexport, sethoveroverexport] = useState(false);
+  const [exportHovered, setexportHovered] = useState(false);
   function calculateIssuesToExport() {
     if (!startDate || !endDate) {
       setIssuesToExport([]);
@@ -176,20 +176,22 @@ export function CreateExportModal({
             fw={500}
             openDelay={200}
             closeDelay={200}
-            opened={issuesToExport.length === 0 && hoveredoverexport}
+            opened={issuesToExport.length === 0 && exportHovered}
             ta="center"
             color="primaryBlue"
             variant="filled"
-            label="Please select Issue Types and Status with a date range with at least 1 issue to export"
+            label="No issues are exportable with this configuration"
           >
             <Button
               ml="auto"
               size="sm"
               disabled={issuesToExport.length === 0}
-              onMouseOver={() => sethoveroverexport(true)}
-              onMouseOut={() => sethoveroverexport(false)}
+              onMouseOver={() => setexportHovered(true)}
+              onMouseOut={() => setexportHovered(false)}
               onClick={() => exportIssues(issuesToExport)}
-            />
+            >
+              Export
+            </Button>
           </Tooltip>
         </Group>
       </Stack>
