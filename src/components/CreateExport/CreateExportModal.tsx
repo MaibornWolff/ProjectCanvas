@@ -26,6 +26,7 @@ export function CreateExportModal({
     issueStatus,
   } = useCanvasStore();
   const boardId = useCanvasStore((state) => state.selectedProjectBoardIds)[0];
+  const doneIssueStatus = issueStatus.filter((status) => issueStatusByCategory[StatusType.DONE]?.includes(status));
 
   const { data: issues } = useQuery<unknown, unknown, Issue[]>({
     queryKey: ["issues", project?.key],
@@ -33,8 +34,6 @@ export function CreateExportModal({
     enabled: !!project?.key,
     initialData: [],
   });
-
-  const doneStatusNames = issueStatusByCategory[StatusType.DONE]?.map((s) => s.name) ?? [];
 
   const [includedIssueTypes, setIncludedIssueTypes] = useState<string[]>([]);
   const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
@@ -48,8 +47,7 @@ export function CreateExportModal({
         issues
           .filter((issue) => includedIssueTypes.includes(issue.type))
           .filter(
-            (issue) => includedIssueStatus.includes(issue.status)
-              && doneStatusNames.includes(issue.status),
+            (issue) => includedIssueStatus.includes(issue.status),
           )
           .filter(
             (issue) => !startDate || dayjs(startDate).isBefore(dayjs(issue.created)),
@@ -126,9 +124,9 @@ export function CreateExportModal({
               <Text size="md" fw={450} mt="7%" mb="10%">
                 Include Issue Status
               </Text>
-              {issueStatus && (
+              {doneIssueStatus && (
                 <CheckboxStack
-                  data={issueStatus.map((status) => ({
+                  data={doneIssueStatus.map((status) => ({
                     value: status.name,
                     label: status.name,
                   }))}
