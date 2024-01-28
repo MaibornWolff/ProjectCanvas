@@ -20,7 +20,7 @@
     "typecheck": "tsc --noEmit",
     "pree2e": "yarn run package",
     "e2e": "playwright test",
-    "prepare": "husky install",
+    "prepare": "husky",
     "pre-commit": "lint-staged"
   },
   "dependencies": {
@@ -84,7 +84,7 @@
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-testing-library": "^6.0.0",
-    "husky": "^8.0.0",
+    "husky": "^9.0.0",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.4.3",
     "lint-staged": "^15.0.0",
