@@ -1,20 +1,23 @@
 import { ipcRenderer } from "electron";
 import { showNotification } from "@mantine/notifications";
 import dayjs, { Dayjs } from "dayjs";
-import { ChangelogHistoryItem, Issue, IssueStatus } from "../../../types";
+import dayjsBusinessDays from "dayjs-business-days2";
+import { ChangelogHistoryItem, Issue } from "../../../types";
 import { ExportReply, ExportStatus } from "../../../electron/export-issues";
-import { StatusType } from "../../../types/status";
 
-type ExportableIssue = Omit<Issue, "startDate"> & {
-  startDate?: Dayjs,
-  endDate?: Dayjs,
+dayjs.extend(dayjsBusinessDays);
+
+export type ExportableIssue = Omit<Issue, "startDate"> & {
+  startDate: Dayjs,
+  endDate: Dayjs,
   workingDays: number,
 };
 
-const addExportedTimeProperties = (
+export const addExportedTimeProperties = (
   issue: Issue,
   inProgressStatusNames: string[],
-): ExportableIssue => {
+  doneStatusNames: string[],
+): ExportableIssue | undefined => {
   const statusItems = issue.changelog.histories
     .reverse()
     .map((history) => {
@@ -39,69 +42,42 @@ const addExportedTimeProperties = (
     (item) => item.fromString
       && inProgressStatusNames.includes(item.fromString)
       && item.toString
-      && !inProgressStatusNames.includes(item.toString),
+      && doneStatusNames.includes(item.toString),
   );
-  if (enterEdges.length !== leaveEdges.length) {
-    throw new Error(
-      `Inconsistent in-progress changelog history encountered. Enter edge count: ${enterEdges.length}. Leave edge count: ${leaveEdges.length}`,
-    );
-  }
 
   if (enterEdges.length === 0) {
-    return {
-      ...issue,
-      startDate: undefined,
-      endDate: undefined,
-      workingDays: 0,
-    };
+    return undefined;
   }
 
-  let workingDays = 0;
-  for (let i = 0; i < enterEdges.length; i += 1) {
-    const enterDate = dayjs(enterEdges[i].date);
-    const leaveDate = dayjs(leaveEdges[i].date);
+  const startDate = dayjs(enterEdges[0].date);
+  const endDate = dayjs(leaveEdges[leaveEdges.length - 1].date);
 
-    workingDays += Math.ceil(leaveDate.diff(enterDate, "day", true));
-  }
+  // Determines if the time of the endDate is after the time of the startDate manually as there is no dayjs API for this
+  // In the case the start time is before the end time, we need to add one working day to accommodate for the start day
+  const currentDayIncluded = endDate.hour() > startDate.hour() || (endDate.hour() === startDate.hour()
+    && (endDate.minute() > startDate.minute() || (endDate.minute() === startDate.minute()
+      && (endDate.second() > startDate.second() || (endDate.second() === startDate.second()
+        && endDate.millisecond() > startDate.millisecond())))));
 
   return {
     ...issue,
-    startDate: dayjs(enterEdges[0].date),
-    endDate: dayjs(leaveEdges[leaveEdges.length - 1].date),
-    workingDays,
+    startDate,
+    endDate,
+    workingDays: currentDayIncluded ? endDate.businessDiff(startDate) : endDate.businessDiff(startDate) + 1,
   };
 };
 
-export const exportIssues = (
-  issues: Issue[],
-  includedStatus: IssueStatus[],
-) => {
+export const exportIssues = (issues: ExportableIssue[]) => {
   const header = ["ID", "Name", "Start Date", "End Date", "Working days"];
   const data = [header.map((h) => `"${h}"`).join(",")];
 
-  const inProgressStatusNames = includedStatus
-    .filter((status) => status.statusCategory.name === StatusType.IN_PROGRESS)
-    .map((status) => status.name);
-
   issues.forEach((issue) => {
-    const exportableIssue = addExportedTimeProperties(
-      issue,
-      inProgressStatusNames,
-    );
     const exportedValues = [
-      `"${exportableIssue.issueKey}"`,
-      `"${exportableIssue.summary}"`,
-      `${
-        exportableIssue.startDate
-          ? `"${exportableIssue.startDate?.toISOString()}"`
-          : ""
-      }`,
-      `${
-        exportableIssue.endDate
-          ? `"${exportableIssue.endDate?.toISOString()}"`
-          : ""
-      }`,
-      exportableIssue.workingDays,
+      `"${issue.issueKey}"`,
+      `"${issue.summary}"`,
+      `"${issue.startDate?.toISOString()}"`,
+      `"${issue.endDate?.toISOString()}"`,
+      issue.workingDays,
     ];
 
     data.push(exportedValues.join(","));
