@@ -20,7 +20,7 @@
     "typecheck": "tsc --noEmit",
     "pree2e": "yarn run package",
     "e2e": "playwright test",
-    "prepare": "husky install",
+    "prepare": "husky",
     "pre-commit": "lint-staged"
   },
   "dependencies": {
