@@ -41,6 +41,7 @@ export function CreateExportModal({
   const [issuesToExport, setIssuesToExport] = useState<Issue[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [hoveredoverexport, sethoveroverexport] = useState(false);
 
   function calculateIssuesToExport() {
     setIssuesToExport(
@@ -163,18 +164,43 @@ export function CreateExportModal({
             {" "}
             {issuesToExport.length}
           </Text>
-          <Button
-            ml="auto"
-            size="sm"
-            onClick={() => {
-              exportIssues(
-                issuesToExport,
-                issueStatus.filter((s) => includedIssueStatus.includes(s.name)),
-              );
-            }}
+          <Tooltip
+            withArrow
+            multiline
+            w={200}
+            fz={14}
+            fw={500}
+            openDelay={200}
+            closeDelay={200}
+            opened={
+              (endDate === null
+                || startDate === null
+                || issuesToExport.length === 0)
+              && hoveredoverexport
+            }
+            ta="center"
+            color="primaryBlue"
+            variant="filled"
+            label="Please select Issue Types and Status with a date range with at least 1 issue to export"
           >
-            Export CSV
-          </Button>
+            <Button
+              ml="auto"
+              size="sm"
+              disabled={endDate === null
+                || startDate === null
+                || issuesToExport.length === 0}
+              onMouseOver={() => sethoveroverexport(true)}
+              onMouseOut={() => sethoveroverexport(false)}
+              onClick={() => {
+                exportIssues(
+                  issuesToExport,
+                  issueStatus.filter((s) => includedIssueStatus.includes(s.name)),
+                );
+              }}
+            >
+              Export CSV
+            </Button>
+          </Tooltip>
         </Group>
       </Stack>
     </Modal>
