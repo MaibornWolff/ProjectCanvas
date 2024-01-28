@@ -143,7 +143,7 @@ export function CreateExportModal({
             </Stack>
             <Stack align="center" mt="xs" w="40%">
               <Text size="md" fw={450}>
-                Creation date range
+                In progress date range
               </Text>
               <DateInput
                 label="Start Date"
