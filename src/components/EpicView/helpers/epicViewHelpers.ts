@@ -1,12 +1,12 @@
 import { Issue } from "../../../../types";
 
 export function filterSearch(query : string, epics : Issue[]) {
-  const searchString = query.toLowerCase().trim();
-  if (!searchString) return epics;
-  return epics.filter((item) => item.summary.toLowerCase().includes(searchString)
-    || item.issueKey.toLowerCase().includes(searchString)
-    || item.assignee?.displayName?.toLowerCase().includes(searchString)
-    || item.creator?.toLowerCase().includes(searchString)
-    || item.labels?.map((label) => label.toLowerCase()).filter((label) => label.includes(searchString)).length !== 0
-    || (item.status?.toLowerCase().includes(searchString)));
+  const search = query.toLowerCase().trim();
+  if (!search) return epics;
+  return epics.filter((item) => item.summary.toLowerCase().includes(search)
+    || item.issueKey.toLowerCase().includes(search)
+    || item.assignee?.displayName?.toLowerCase().includes(search)
+    || item.creator?.toLowerCase().includes(search)
+    || item.labels?.some((label: string) => label.toLowerCase().includes(search.toLowerCase()))
+    || (item.status?.toLowerCase().includes(search)));
 }
