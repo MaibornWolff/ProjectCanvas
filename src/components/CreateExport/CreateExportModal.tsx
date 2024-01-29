@@ -7,7 +7,7 @@ import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
 import { useCanvasStore } from "../../lib/Store";
 import { Issue } from "../../../types";
-import { exportIssues } from "./exportHelper";
+import { addExportedTimeProperties, ExportableIssue, exportIssues } from "./exportHelper";
 import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers";
 import { StatusType } from "../../../types/status";
 import { CheckboxStack } from "./CheckboxStack";
@@ -26,6 +26,7 @@ export function CreateExportModal({
     issueStatus,
   } = useCanvasStore();
   const boardId = useCanvasStore((state) => state.selectedProjectBoardIds)[0];
+  const doneIssueStatus = issueStatus.filter((status) => issueStatusByCategory[StatusType.DONE]?.includes(status));
 
   const { data: issues } = useQuery<unknown, unknown, Issue[]>({
     queryKey: ["issues", project?.key],
@@ -34,29 +35,33 @@ export function CreateExportModal({
     initialData: [],
   });
 
-  const doneStatusNames = issueStatusByCategory[StatusType.DONE]?.map((s) => s.name) ?? [];
-
   const [includedIssueTypes, setIncludedIssueTypes] = useState<string[]>([]);
   const [includedIssueStatus, setIncludedIssueStatus] = useState<string[]>([]);
-  const [issuesToExport, setIssuesToExport] = useState<Issue[]>([]);
+  const [issuesToExport, setIssuesToExport] = useState<ExportableIssue[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   function calculateIssuesToExport() {
+    if (!startDate || !endDate) {
+      setIssuesToExport([]);
+    }
+
+    const inProgressStatusNames = issueStatus
+      .filter((status) => status.statusCategory.name === StatusType.IN_PROGRESS)
+      .map((status) => status.name);
+    const doneStatusNames = issueStatus
+      .filter((status) => status.statusCategory.name === StatusType.DONE)
+      .map((status) => status.name);
+
     setIssuesToExport(
       sortBy(
         issues
           .filter((issue) => includedIssueTypes.includes(issue.type))
-          .filter(
-            (issue) => includedIssueStatus.includes(issue.status)
-              && doneStatusNames.includes(issue.status),
-          )
-          .filter(
-            (issue) => !startDate || dayjs(startDate).isBefore(dayjs(issue.created)),
-          )
-          .filter(
-            (issue) => !endDate || dayjs(endDate).isAfter(dayjs(issue.created)),
-          ),
+          .filter((issue) => includedIssueStatus.includes(issue.status))
+          .map((issue) => addExportedTimeProperties(issue, inProgressStatusNames, doneStatusNames))
+          .filter((issue) => issue !== undefined)
+          .filter((issue) => dayjs(startDate).isBefore(issue!.startDate))
+          .filter((issue) => dayjs(endDate).isAfter(issue!.endDate)) as ExportableIssue[],
         ["issueKey"],
       ),
     );
@@ -126,9 +131,9 @@ export function CreateExportModal({
               <Text size="md" fw={450} mt="7%" mb="10%">
                 Include Issue Status
               </Text>
-              {issueStatus && (
+              {doneIssueStatus && (
                 <CheckboxStack
-                  data={issueStatus.map((status) => ({
+                  data={doneIssueStatus.map((status) => ({
                     value: status.name,
                     label: status.name,
                   }))}
@@ -138,7 +143,7 @@ export function CreateExportModal({
             </Stack>
             <Stack align="center" mt="xs" w="40%">
               <Text size="md" fw={450}>
-                Creation date range
+                In progress date range
               </Text>
               <DateInput
                 label="Start Date"
@@ -166,12 +171,7 @@ export function CreateExportModal({
           <Button
             ml="auto"
             size="sm"
-            onClick={() => {
-              exportIssues(
-                issuesToExport,
-                issueStatus.filter((s) => includedIssueStatus.includes(s.name)),
-              );
-            }}
+            onClick={() => exportIssues(issuesToExport)}
           >
             Export CSV
           </Button>
