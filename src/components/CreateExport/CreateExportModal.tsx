@@ -120,10 +120,9 @@ export function CreateExportModal({
             </Stack>
             <Stack align="center" ml="4%">
               <Group>
-                <Text size="md" fw={450} mt="7%" mb="10%">
+                <Text size="md" fw={450} mt="9%" mb="10%">
                   Include Issue Status
                 </Text>
-                <InfoButton text="Only issues with a 'Done' status are exported.The remaining chosen status influence the date calculations." mb="xs" mt="0%" />
               </Group>
               {doneIssueStatus && (
                 <CheckboxStack
