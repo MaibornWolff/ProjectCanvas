@@ -1,6 +1,6 @@
 import { Group, Stack, Text, Title, ScrollArea, Box, Button, Center, Loader, TextInput } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { IconSearch } from "@tabler/icons-react";
 import { useCanvasStore } from "../../lib/Store";
@@ -9,7 +9,7 @@ import { EpicWrapper } from "./EpicWrapper";
 import { getEpics } from "./helpers/queryFetchers";
 import { useColorScheme } from "../../common/color-scheme";
 import { RouteNames } from "../../route-names";
-import { filtersearch } from "./helpers/epicViewHelpers";
+import { filterSearch } from "./helpers/epicViewHelpers";
 
 export function EpicView() {
   const colorScheme = useColorScheme();
@@ -26,10 +26,7 @@ export function EpicView() {
     initialData: [],
   });
 
-  const searchedEpicsWrapper = useMemo(
-    () => filtersearch(search, epics),
-    [epics, search],
-  );
+  const searchedEpics = filterSearch(search, epics);
 
   if (isLoadingEpics) {
     return (
@@ -72,7 +69,7 @@ export function EpicView() {
         </Group>
         <Title mb="sm">Epics</Title>
         <TextInput
-          placeholder="Search by epic summary, id, creator, labels, status or assignee..."
+          placeholder="Search by summary, id, creator, labels, status or assignee..."
           leftSection={<IconSearch size={14} stroke={1.5} />}
           value={search}
           onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +87,7 @@ export function EpicView() {
         }}
       >
         <Box mr="xs">
-          <EpicWrapper epics={searchedEpicsWrapper} />
+          <EpicWrapper epics={searchedEpics} />
         </Box>
         <Box mr="xs">
           <Button
