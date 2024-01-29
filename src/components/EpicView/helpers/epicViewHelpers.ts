@@ -8,5 +8,5 @@ export function filterSearch(query : string, epics : Issue[]) {
     || item.assignee?.displayName?.toLowerCase().includes(search)
     || item.creator?.toLowerCase().includes(search)
     || item.labels?.some((label: string) => label.toLowerCase().includes(search.toLowerCase()))
-    || (item.status?.toLowerCase().includes(search)));
+    || item.status?.toLowerCase().includes(search));
 }
