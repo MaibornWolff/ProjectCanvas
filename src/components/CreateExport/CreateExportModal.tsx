@@ -78,6 +78,8 @@ export function CreateExportModal({
         setIncludedIssueTypes([]);
         setIncludedIssueStatus([]);
         setOpened(false);
+        setStartDate(null);
+        setEndDate(null);
       }}
       centered
       withCloseButton={false}
