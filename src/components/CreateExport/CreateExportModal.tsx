@@ -63,7 +63,7 @@ export function CreateExportModal({
     );
   }
 
-  function handleClose() {
+  function closeModal() {
     setIncludedIssueTypes([]);
     setIncludedIssueStatus([]);
     setOpened(false);
@@ -77,13 +77,11 @@ export function CreateExportModal({
     <Modal
       opened={opened}
       onClose={() => {
-        setIncludedIssueTypes([]);
-        setIncludedIssueStatus([]);
-        setOpened(false);
+        closeModal();
       }}
       centered
       withCloseButton={false}
-      size="70vw"
+      size="60vw"
     >
       <Stack
         align="left"
@@ -95,16 +93,15 @@ export function CreateExportModal({
       >
         <Group c="dimmed" mb="xs">
           <Text>{project?.name}</Text>
-          <CloseButton ml="auto" onClick={() => handleClose()} />
+          <CloseButton ml="auto" onClick={() => closeModal()} />
         </Group>
         <Paper shadow="md" radius="md" withBorder mb="xs">
           <Group align="top" justify="center" mb="5%">
-            <Stack align="center" mr="5%">
+            <Stack align="center" ml="1%">
               <Group>
-                <Text size="md" fw={450} mt="7%" mb="10%">
+                <Text size="md" fw={450} mt="9%" mb="10%">
                   Include Issue Types
                 </Text>
-                <InfoButton text="Only issues with corresponding types are exported." />
               </Group>
               {issueTypes && (
                 <CheckboxStack
@@ -116,12 +113,12 @@ export function CreateExportModal({
                 />
               )}
             </Stack>
-            <Stack align="center">
+            <Stack align="center" ml="4%">
               <Group>
                 <Text size="md" fw={450} mt="7%" mb="10%">
                   Include Issue Status
                 </Text>
-                <InfoButton text="Only issues with a 'Done' status are exported.The remaining chosen status influence the date calculations." />
+                <InfoButton text="Only issues with a 'Done' status are exported.The remaining chosen status influence the date calculations." mb="xs" mt="0%" />
               </Group>
               {issueStatus && (
                 <CheckboxStack
@@ -133,12 +130,12 @@ export function CreateExportModal({
                 />
               )}
             </Stack>
-            <Stack align="center" mt="xs" w="40%">
+            <Stack align="center" w="40%">
               <Group>
-                <Text size="md" fw={450}>
+                <Text size="md" mt="7%" mb="2%" fw={450}>
                   Creation date range
                 </Text>
-                <InfoButton text="Only issues within the selected date range are exported" />
+                <InfoButton text="Only issues whose in-progress time is completely inside this date range are exported." mb="0%" mt="xs" />
               </Group>
               <DateInput
                 label="Start Date"
