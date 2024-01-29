@@ -1,13 +1,15 @@
-import { Group, Stack, Text, Title, ScrollArea, Box, Button, Center, Loader } from "@mantine/core";
+import { Group, Stack, Text, Title, ScrollArea, Box, Button, Center, Loader, TextInput } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { IconSearch } from "@tabler/icons-react";
 import { useCanvasStore } from "../../lib/Store";
 import { CreateIssueModal } from "../CreateIssue/CreateIssueModal";
 import { EpicWrapper } from "./EpicWrapper";
 import { getEpics } from "./helpers/queryFetchers";
 import { useColorScheme } from "../../common/color-scheme";
 import { RouteNames } from "../../route-names";
+import { filterSearch } from "./helpers/epicViewHelpers";
 
 export function EpicView() {
   const colorScheme = useColorScheme();
@@ -15,6 +17,7 @@ export function EpicView() {
   const projectName = useCanvasStore((state) => state.selectedProject?.name);
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false);
   const projectKey = useCanvasStore((state) => state.selectedProject?.key);
+  const [search, setSearch] = useState("");
 
   const { isLoading: isLoadingEpics, data: epics } = useQuery({
     queryKey: ["epics", projectKey],
@@ -22,6 +25,9 @@ export function EpicView() {
     enabled: !!projectKey,
     initialData: [],
   });
+
+  const searchedEpics = filterSearch(search, epics);
+
   if (isLoadingEpics) {
     return (
       <Center style={{ width: "100%", height: "100%" }}>
@@ -62,6 +68,14 @@ export function EpicView() {
           </Group>
         </Group>
         <Title mb="sm">Epics</Title>
+        <TextInput
+          placeholder="Search by summary, id, creator, labels, status or assignee..."
+          leftSection={<IconSearch size={14} stroke={1.5} />}
+          value={search}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setSearch(event.currentTarget.value);
+          }}
+        />
       </Stack>
       <ScrollArea.Autosize
         className="main-panel"
@@ -73,7 +87,7 @@ export function EpicView() {
         }}
       >
         <Box mr="xs">
-          <EpicWrapper epics={epics} />
+          <EpicWrapper epics={searchedEpics} />
         </Box>
         <Box mr="xs">
           <Button
