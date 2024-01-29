@@ -147,16 +147,17 @@ export function CreateExportModal({
               </Text>
               <DateInput
                 label="Start Date"
-                clearable
+                clearable={false}
                 value={startDate}
                 onChange={setStartDate}
                 {...(endDate && { maxDate: endDate })}
               />
               <DateInput
                 label="End Date"
-                clearable
+                clearable={false}
                 value={endDate}
                 onChange={setEndDate}
+                allowDeselect={false}
                 {...(startDate && { minDate: startDate })}
               />
             </Stack>
