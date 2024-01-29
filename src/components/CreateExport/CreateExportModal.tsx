@@ -120,7 +120,7 @@ export function CreateExportModal({
             </Stack>
             <Stack align="center" ml="4%">
               <Group>
-                <Text size="md" fw={450} mt="9%" mb="10%">
+                <Text size="md" fw={450} mt="10%" mb="10%">
                   Include Issue Status
                 </Text>
               </Group>
@@ -136,7 +136,7 @@ export function CreateExportModal({
             </Stack>
             <Stack align="center" w="40%">
               <Group>
-                <Text size="md" mt="7%" mb="2%" fw={450}>
+                <Text size="md" mt="7%" mb="1%" fw={450}>
                   In progress date range
                 </Text>
                 <InfoButton text="Only issues whose in-progress time is completely inside this date range are exported." mb="0%" mt="xs" />
