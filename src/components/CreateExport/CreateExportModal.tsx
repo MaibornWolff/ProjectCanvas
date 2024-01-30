@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Modal, Stack, Group, Text, Button, Paper, CloseButton } from "@mantine/core";
+import { Modal, Stack, Group, Text, Button, Tooltip, Paper, CloseButton } from "@mantine/core";
 import { sortBy } from "lodash";
 import { useQuery } from "@tanstack/react-query";
 
@@ -41,7 +41,7 @@ export function CreateExportModal({
   const [issuesToExport, setIssuesToExport] = useState<ExportableIssue[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-
+  const [exportHovered, setExportHovered] = useState(false);
   function calculateIssuesToExport() {
     if (!startDate || !endDate) {
       setIssuesToExport([]);
@@ -83,6 +83,8 @@ export function CreateExportModal({
       opened={opened}
       onClose={() => {
         closeModal();
+        setStartDate(null);
+        setEndDate(null);
       }}
       centered
       withCloseButton={false}
@@ -143,16 +145,16 @@ export function CreateExportModal({
               </Group>
               <DateInput
                 label="Start Date"
-                clearable
                 value={startDate}
                 onChange={setStartDate}
+                allowDeselect={false}
                 {...(endDate && { maxDate: endDate })}
               />
               <DateInput
                 label="End Date"
-                clearable
                 value={endDate}
                 onChange={setEndDate}
+                allowDeselect={false}
                 {...(startDate && { minDate: startDate })}
               />
             </Stack>
@@ -164,13 +166,31 @@ export function CreateExportModal({
             {" "}
             {issuesToExport.length}
           </Text>
-          <Button
-            ml="auto"
-            size="sm"
-            onClick={() => exportIssues(issuesToExport)}
+          <Tooltip
+            withArrow
+            multiline
+            w={200}
+            fz={14}
+            fw={500}
+            openDelay={200}
+            closeDelay={200}
+            opened={issuesToExport.length === 0 && exportHovered}
+            ta="center"
+            color="primaryBlue"
+            variant="filled"
+            label="No issues are exportable with this configuration"
           >
-            Export CSV
-          </Button>
+            <Button
+              ml="auto"
+              size="sm"
+              disabled={issuesToExport.length === 0}
+              onMouseOver={() => setExportHovered(true)}
+              onMouseOut={() => setExportHovered(false)}
+              onClick={() => exportIssues(issuesToExport)}
+            >
+              Export
+            </Button>
+          </Tooltip>
         </Group>
       </Stack>
     </Modal>
