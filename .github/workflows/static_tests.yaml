@@ -15,7 +15,7 @@ on:
 # Automatically cancel previous runs for the same ref (i.e. branch) and event type. The latter component prevents
 # manually dispatched events (i.e. manual actions) from being cancelled by pushes to the main branch.
 concurrency:
-  group: ${{ github.ref }}-${{ github.event_name }}
+  group: ${{ github.ref }}-${{ github.event_name }}-static-tests
   cancel-in-progress: true
 
 jobs:
