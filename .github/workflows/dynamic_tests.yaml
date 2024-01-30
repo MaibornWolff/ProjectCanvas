@@ -1,11 +1,22 @@
 name: Dynamic Tests
 on:
   pull_request:
-    branches:
-      - main
+    # Build all pull requests, regardless of what their base branch is.
+    branches: [ '**' ]
+    types:
+      # Default types (see https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request)
+      - opened
+      - synchronize
+      - reopened
   push:
     branches:
       - main
+
+# Automatically cancel previous runs for the same ref (i.e. branch) and event type. The latter component prevents
+# manually dispatched events (i.e. manual actions) from being cancelled by pushes to the main branch.
+concurrency:
+  group: ${{ github.ref }}-${{ github.event_name }}-dynamic-tests
+  cancel-in-progress: true
 
 jobs:
   unit:
