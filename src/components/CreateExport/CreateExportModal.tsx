@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Modal, Stack, Group, Text, Button, Tooltip, Paper, ActionIcon } from "@mantine/core";
+import { Modal, Stack, Group, Text, Button, Paper, CloseButton } from "@mantine/core";
 import { sortBy } from "lodash";
 import { useQuery } from "@tanstack/react-query";
-import { IconInfoCircle } from "@tabler/icons-react";
+
 import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
 import { useCanvasStore } from "../../lib/Store";
@@ -11,6 +11,7 @@ import { addExportedTimeProperties, ExportableIssue, exportIssues } from "./expo
 import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers";
 import { StatusType } from "../../../types/status";
 import { CheckboxStack } from "./CheckboxStack";
+import { InfoButton } from "./InfoButton";
 
 export function CreateExportModal({
   opened,
@@ -67,6 +68,12 @@ export function CreateExportModal({
     );
   }
 
+  function closeModal() {
+    setIncludedIssueTypes([]);
+    setIncludedIssueStatus([]);
+    setOpened(false);
+  }
+
   useEffect(() => {
     calculateIssuesToExport();
   }, [includedIssueTypes, includedIssueStatus, startDate, endDate]);
@@ -75,9 +82,7 @@ export function CreateExportModal({
     <Modal
       opened={opened}
       onClose={() => {
-        setIncludedIssueTypes([]);
-        setIncludedIssueStatus([]);
-        setOpened(false);
+        closeModal();
       }}
       centered
       withCloseButton={false}
@@ -93,30 +98,16 @@ export function CreateExportModal({
       >
         <Group c="dimmed" mb="xs">
           <Text>{project?.name}</Text>
-          <Tooltip
-            withArrow
-            multiline
-            w={150}
-            fz={14}
-            fw={500}
-            openDelay={200}
-            closeDelay={200}
-            ta="center"
-            color="primaryBlue"
-            variant="filled"
-            label="Only issues with corresponding types and a 'Done' status are exported. The remaining status influence the date calculations."
-          >
-            <ActionIcon variant="subtle" ml="auto">
-              <IconInfoCircle />
-            </ActionIcon>
-          </Tooltip>
+          <CloseButton ml="auto" onClick={() => closeModal()} />
         </Group>
         <Paper shadow="md" radius="md" withBorder mb="xs">
           <Group align="top" justify="center" mb="5%">
-            <Stack align="center" mr="5%">
-              <Text size="md" fw={450} mt="7%" mb="10%">
-                Include Issue Types
-              </Text>
+            <Stack align="center" ml="1%">
+              <Group>
+                <Text size="md" fw={450} mt="9%" mb="10%">
+                  Include Issue Types
+                </Text>
+              </Group>
               {issueTypes && (
                 <CheckboxStack
                   data={issueTypes.map((issueType) => ({
@@ -127,10 +118,12 @@ export function CreateExportModal({
                 />
               )}
             </Stack>
-            <Stack align="center">
-              <Text size="md" fw={450} mt="7%" mb="10%">
-                Include Issue Status
-              </Text>
+            <Stack align="center" ml="4%">
+              <Group>
+                <Text size="md" fw={450} mt="10%" mb="10%">
+                  Include Issue Status
+                </Text>
+              </Group>
               {doneIssueStatus && (
                 <CheckboxStack
                   data={doneIssueStatus.map((status) => ({
@@ -141,10 +134,13 @@ export function CreateExportModal({
                 />
               )}
             </Stack>
-            <Stack align="center" mt="xs" w="40%">
-              <Text size="md" fw={450}>
-                In progress date range
-              </Text>
+            <Stack align="center" w="40%">
+              <Group>
+                <Text size="md" mt="7%" mb="1%" fw={450}>
+                  In progress date range
+                </Text>
+                <InfoButton text="Only issues whose in-progress time is completely inside this date range are exported." mb="0%" mt="xs" />
+              </Group>
               <DateInput
                 label="Start Date"
                 clearable
