@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Modal, Stack, Group, Text, Button, Tooltip, Paper, CloseButton } from "@mantine/core";
+import { Modal, Stack, Group, Text, Button, Tooltip, CloseButton } from "@mantine/core";
 import { sortBy } from "lodash";
 import { useQuery } from "@tanstack/react-query";
 
@@ -102,64 +102,62 @@ export function CreateExportModal({
           <Text>Issue Export</Text>
           <CloseButton ml="auto" onClick={() => closeModal()} />
         </Group>
-        <Paper shadow="md" radius="md" withBorder mb="xs">
-          <Group align="top" justify="center" mb="5%">
-            <Stack align="center" ml="1%">
-              <Group>
-                <Text size="md" fw={450} mt="9%" mb="10%">
-                  Include Issue Types
-                </Text>
-              </Group>
-              {issueTypes && (
-                <CheckboxStack
-                  data={issueTypes.map((issueType) => ({
-                    value: issueType.name!,
-                    label: issueType.name!,
-                  }))}
-                  onChange={(includedTypes) => setIncludedIssueTypes(includedTypes)}
-                />
-              )}
-            </Stack>
-            <Stack align="center" ml="4%">
-              <Group>
-                <Text size="md" fw={450} mt="10%" mb="10%">
-                  Include Issue Status
-                </Text>
-              </Group>
-              {doneIssueStatus && (
-                <CheckboxStack
-                  data={doneIssueStatus.map((status) => ({
-                    value: status.name,
-                    label: status.name,
-                  }))}
-                  onChange={(includedStatus) => setIncludedIssueStatus(includedStatus)}
-                />
-              )}
-            </Stack>
-            <Stack align="center" w="40%">
-              <Group>
-                <Text size="md" mt="7%" mb="1%" fw={450}>
-                  In progress date range
-                </Text>
-                <InfoButton text="Only issues whose in-progress time is completely inside this date range are exported." mb="0%" mt="xs" />
-              </Group>
-              <DateInput
-                label="Start Date"
-                value={startDate}
-                onChange={setStartDate}
-                allowDeselect={false}
-                {...(endDate && { maxDate: endDate })}
+        <Group align="top" justify="center" mb="5%">
+          <Stack align="center" ml="1%">
+            <Group>
+              <Text size="md" fw={450} mt="9%" mb="10%">
+                Include Issue Types
+              </Text>
+            </Group>
+            {issueTypes && (
+              <CheckboxStack
+                data={issueTypes.map((issueType) => ({
+                  value: issueType.name!,
+                  label: issueType.name!,
+                }))}
+                onChange={(includedTypes) => setIncludedIssueTypes(includedTypes)}
               />
-              <DateInput
-                label="End Date"
-                value={endDate}
-                onChange={setEndDate}
-                allowDeselect={false}
-                {...(startDate && { minDate: startDate })}
+            )}
+          </Stack>
+          <Stack align="center" ml="4%">
+            <Group>
+              <Text size="md" fw={450} mt="10%" mb="10%">
+                Include Issue Status
+              </Text>
+            </Group>
+            {doneIssueStatus && (
+              <CheckboxStack
+                data={doneIssueStatus.map((status) => ({
+                  value: status.name,
+                  label: status.name,
+                }))}
+                onChange={(includedStatus) => setIncludedIssueStatus(includedStatus)}
               />
-            </Stack>
-          </Group>
-        </Paper>
+            )}
+          </Stack>
+          <Stack align="center" w="40%">
+            <Group>
+              <Text size="md" mt="7%" mb="1%" fw={450}>
+                In progress date range
+              </Text>
+              <InfoButton text="Only issues whose in-progress time is completely inside this date range are exported." mb="0%" mt="xs" />
+            </Group>
+            <DateInput
+              label="Start Date"
+              value={startDate}
+              onChange={setStartDate}
+              allowDeselect={false}
+              {...(endDate && { maxDate: endDate })}
+            />
+            <DateInput
+              label="End Date"
+              value={endDate}
+              onChange={setEndDate}
+              allowDeselect={false}
+              {...(startDate && { minDate: startDate })}
+            />
+          </Stack>
+        </Group>
         <Group>
           <Text size="90%" c="dimmed">
             Issues to export:
