@@ -99,7 +99,7 @@ export function CreateExportModal({
         }}
       >
         <Group c="dimmed" mb="xs">
-          <Text>{project?.name}</Text>
+          <Text>Issue Export</Text>
           <CloseButton ml="auto" onClick={() => closeModal()} />
         </Group>
         <Paper shadow="md" radius="md" withBorder mb="xs">
