@@ -19,7 +19,7 @@ export const addExportedTimeProperties = (
   doneStatusNames: string[],
 ): ExportableIssue | undefined => {
   const statusItems = issue.changelog.histories
-    .reverse()
+    .toReversed()
     .map((history) => {
       const statusItem = history.items.find((item) => item.field === "status");
 
