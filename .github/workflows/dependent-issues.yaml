@@ -19,7 +19,7 @@ jobs:
     timeout-minutes: 5
     steps:
       # v1.5.1 https://github.com/z0al/dependent-issues/commit/0fae07162bc9e0d8e116a133bd03686eed6efa21
-      - uses: z0al/dependent-issues@0fae07162bc9e0d8e116a133bd03686eed6efa21
+      - uses: z0al/dependent-issues@75d554cd9494b6e1766bc9d08a81c26444ad5c5a
         with:
           check_issues: on
           keywords: depends on, blocked by
