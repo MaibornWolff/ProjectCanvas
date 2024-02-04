@@ -524,7 +524,7 @@ export class JiraCloudProvider implements IProvider {
           // IMPROVE: Remove boolean flag
           description: isAgile
             ? element.fields.description
-            : element.fields.description?.content,
+            : element.fields.description?.content[0]?.content[0]?.text,
           subtasks: element.fields.subtasks,
           created: element.fields.created,
           updated: element.fields.updated,
