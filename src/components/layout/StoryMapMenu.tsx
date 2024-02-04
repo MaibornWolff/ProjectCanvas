@@ -46,7 +46,10 @@ export function StoryMapMenu() {
         <Menu.Item
           color="red"
           leftSection={<IconTrash size={14} />}
-          onClick={deleteAllStoryMaps}
+          onClick={() => {
+            deleteAllStoryMaps();
+            navigate(RouteNames.STORY_MAP_VIEW);
+          }}
         >
           Delete All Story Maps
         </Menu.Item>
