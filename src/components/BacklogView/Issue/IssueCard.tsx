@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Issue } from "types";
 import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
+import { mergeRefs, useHover } from "@mantine/hooks";
 import { DetailView } from "../../DetailView/DetailView";
 import { IssueIcon } from "./IssueIcon";
 import { StatusType } from "../../../../types/status";
@@ -11,6 +12,7 @@ import { useColorScheme } from "../../../common/color-scheme";
 import { IssueLabelBadge } from "../../common/IssueLabelBadge";
 import { IssueEpicBadge } from "../../common/IssueEpicBadge";
 import { useCanvasStore } from "../../../lib/Store";
+import { DeleteButton } from "./DeleteButton";
 
 export function IssueCard({
   issueKey,
@@ -30,6 +32,7 @@ export function IssueCard({
   const theme = useMantineTheme();
   const colorScheme = useColorScheme();
   const { issueStatusCategoryByStatusName: statusNameToCategory } = useCanvasStore();
+  const { hovered, ref } = useHover();
 
   const hoverStyles = colorScheme === "dark"
     ? {
@@ -46,12 +49,11 @@ export function IssueCard({
       <Draggable key={issueKey} draggableId={issueKey} index={index}>
         {(provided) => (
           <Paper
-            ref={provided.innerRef}
+            ref={mergeRefs(provided.innerRef, ref)}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             onClick={() => setOpened(true)}
           >
-            {/* <DeleteButton mounted={hovered} issueKey={issueKey} /> */}
             <Grid
               columns={100}
               p={10}
@@ -61,6 +63,7 @@ export function IssueCard({
                 boxShadow: theme.shadows.xs,
                 transition: "background-color .8s ease-out",
                 ":hover": hoverStyles,
+                position: "relative",
               }}
             >
               <Grid.Col
@@ -159,6 +162,7 @@ export function IssueCard({
                   )}
                 </Box>
               </Grid.Col>
+              <DeleteButton mounted={hovered} issueKey={issueKey} />
             </Grid>
           </Paper>
         )}

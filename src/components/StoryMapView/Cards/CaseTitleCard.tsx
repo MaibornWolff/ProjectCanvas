@@ -1,4 +1,4 @@
-import { TextInput, Title } from "@mantine/core";
+import { TextInput, Title, Box } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
 import { useState } from "react";
 import { Case } from "../Types";
@@ -26,34 +26,46 @@ export function CaseTitleCard({
       radius="sm"
       m={undefined}
       shadow={undefined}
-      p="md"
+      p="0"
       ref={ref}
     >
-      {!edit && title !== "" ? (
-        <Title order={2} onClick={() => toggleEdit(!edit)}>
-          {title}
-        </Title>
-      ) : (
-        <TextInput
-          placeholder="Title"
-          onBlur={(event) => {
-            setTitle(event.currentTarget.value);
-            updateCase(storyMapId, {
-              id: caseColumn.id,
-              title: event.currentTarget.value,
-            });
-            toggleEdit(!edit);
-          }}
-          variant="unstyled"
-          defaultValue={title}
-          autoFocus
-          styles={{ input: { textAlign: "center", fontSize: "16px" } }}
+      <Box
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        p="md"
+      >
+        {!edit && title !== "" ? (
+          <Title order={2} onClick={() => toggleEdit(!edit)}>
+            {title}
+          </Title>
+        ) : (
+          <TextInput
+            placeholder="Title"
+            onBlur={(event) => {
+              setTitle(event.currentTarget.value);
+              updateCase(storyMapId, {
+                id: caseColumn.id,
+                title: event.currentTarget.value,
+              });
+              toggleEdit(!edit);
+            }}
+            variant="unstyled"
+            defaultValue={title}
+            autoFocus
+            styles={{ input: { textAlign: "center", fontSize: "16px" } }}
+          />
+        )}
+        <DeleteButton
+          mounted={hovered}
+          onClick={() => deleteCase(storyMapId, caseColumn.id)}
         />
-      )}
-      <DeleteButton
-        mounted={hovered}
-        onClick={() => deleteCase(storyMapId, caseColumn.id)}
-      />
+      </Box>
     </BaseCard>
   );
 }
