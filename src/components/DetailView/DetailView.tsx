@@ -1,5 +1,6 @@
 import { Accordion, Box, Breadcrumbs, Group, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import { Issue } from "types";
+import { useState } from "react";
 import { AddSubtask } from "./Components/AddSubtask";
 import { AssigneeMenu } from "./Components/AssigneeMenu";
 import { EditableEpic } from "./Components/EditableEpic";
@@ -17,6 +18,7 @@ import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
 import { IssueStatusMenu } from "./Components/IssueStatusMenu";
 import { SplitIssueButton } from "./Components/SplitIssue/SplitIssueButton";
+import { SplitView } from "./Components/SplitIssue/SplitView";
 
 export function DetailView({
   issueKey,
@@ -37,6 +39,7 @@ export function DetailView({
   attachments,
   closeModal,
 }: Issue & { closeModal: () => void }) {
+  const [createSplitViewOpened, setCreateSplitViewOpened] = useState(false);
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
@@ -100,7 +103,10 @@ export function DetailView({
                 type={type}
                 status={status}
               />
-              <SplitIssueButton projectId={projectId} />
+              <SplitIssueButton splitViewModalOpened={setCreateSplitViewOpened} />
+              {createSplitViewOpened
+                && <SplitView opened={createSplitViewOpened} setOpened={setCreateSplitViewOpened} /> }
+
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>

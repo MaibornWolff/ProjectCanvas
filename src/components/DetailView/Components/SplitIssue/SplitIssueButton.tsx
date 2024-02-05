@@ -1,6 +1,6 @@
 import { ActionIcon, Box, Button, Menu } from "@mantine/core";
 import { IconCaretDown, IconPlus } from "@tabler/icons-react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import classes from "../IssueStatusMenu.module.css";
 import { Issue } from "../../../../../types";
@@ -8,7 +8,11 @@ import { getIssuesByProject } from "../../../BacklogView/helpers/queryFetchers";
 import { useCanvasStore } from "../../../../lib/Store";
 import { SelectDropdownSearch } from "./SelectDropdownSearch";
 
-export function SplitIssueButton() {
+export function SplitIssueButton({
+  splitViewModalOpened,
+}:{
+  splitViewModalOpened: Dispatch<SetStateAction<boolean>>,
+}) {
   const boardId = useCanvasStore((state) => state.selectedProjectBoardIds)[0];
   const {
     selectedProject: project,
@@ -47,7 +51,7 @@ export function SplitIssueButton() {
             </Button>
           </Menu.Item>
           <Menu.Item>
-            <SelectDropdownSearch issueNames={issues.map((issue) => issue.summary)} />
+            <SelectDropdownSearch issueNames={issues.map((issue) => issue.summary)} splitViewModalOpened={splitViewModalOpened} />
           </Menu.Item>
 
         </Menu.Dropdown>

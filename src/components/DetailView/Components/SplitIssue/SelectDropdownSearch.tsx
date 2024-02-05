@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { PillsInput, Pill, Combobox, CheckIcon, Group, useCombobox, ActionIcon } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
-import { SplitView } from "./SplitView";
 
 export function SelectDropdownSearch({
   issueNames,
+  splitViewModalOpened,
 }: {
   issueNames: string[],
+  splitViewModalOpened: Dispatch<SetStateAction<boolean>>,
 }) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -15,8 +16,6 @@ export function SelectDropdownSearch({
 
   const [search, setSearch] = useState("");
   const [value, setValue] = useState<string[]>([]);
-  const [createSplitViewOpened, setCreateSplitViewOpened] = useState(false);
-
   // const handleValueSelect = (val: string) => setValue((current) => (current.includes(val) ? current.filter((v) => v !== val) : [...current, val]));
 
   const handleValueRemove = (val: string) => setValue((current) => current.filter((v) => v !== val));
@@ -42,7 +41,7 @@ export function SelectDropdownSearch({
     <Combobox
       store={combobox}
       onOptionSubmit={() => {
-        setCreateSplitViewOpened(true);
+        splitViewModalOpened(true);
       }}
     >
       <Combobox.DropdownTarget>
@@ -66,16 +65,11 @@ export function SelectDropdownSearch({
                 onKeyDown={(event) => {
                   if (event.key === "Backspace" && search.length === 0) {
                     event.preventDefault();
-                    handleValueRemove(value[value.length - 1]);
                   }
                 }}
               />
-              <SplitView
-                opened={createSplitViewOpened}
-                setOpened={setCreateSplitViewOpened}
-              />
-            </Combobox.EventsTarget>
 
+            </Combobox.EventsTarget>
           </Pill.Group>
 
         </PillsInput>
