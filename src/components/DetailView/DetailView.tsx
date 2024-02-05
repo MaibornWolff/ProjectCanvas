@@ -16,6 +16,7 @@ import { Attachments } from "./Components/Attachments/Attachments";
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
 import { IssueStatusMenu } from "./Components/IssueStatusMenu";
+import { SplitIssueButton } from "./Components/SplitIssue/SplitIssueButton";
 
 export function DetailView({
   issueKey,
@@ -99,6 +100,7 @@ export function DetailView({
                 type={type}
                 status={status}
               />
+              <SplitIssueButton projectId={projectId} />
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
