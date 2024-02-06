@@ -1,29 +1,38 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { ActionIcon, Combobox, InputBase, useCombobox } from "@mantine/core";
+import { ActionIcon, Combobox, Group, InputBase, useCombobox } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
+import { Issue } from "../../../../../types";
 
 export function SelectDropdownSearch({
-  issueNames,
   splitViewModalOpened,
+  issues,
+  setSelectedSplitIssues,
 }: {
-  issueNames: string[],
   splitViewModalOpened: Dispatch<SetStateAction<boolean>>,
+  issues : Issue[],
+  setSelectedSplitIssues: Dispatch<SetStateAction<string[]>>,
 }) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
-  const [value, setValue] = useState<string | null>(null);
   const [search, setSearch] = useState("");
 
-  const shouldFilterOptions = issueNames.every((item) => item !== search);
+  const shouldFilterOptions = issues.map((issue) => issue.summary).every((item) => item !== search);
   const filteredOptions = shouldFilterOptions
-    ? issueNames.filter((item) => item.toLowerCase().includes(search.toLowerCase().trim()))
-    : issueNames;
+    ? issues.filter((issue) => issue.summary.toLowerCase().includes(search.toLowerCase().trim()) || issue.issueKey.toLowerCase().includes(search.toLowerCase().trim()))
+    : issues;
+
+  const addSelectedIssue = (newIssue: string) => {
+    setSelectedSplitIssues((state) => [...state, newIssue]);
+  };
 
   const options = filteredOptions.map((item) => (
-    <Combobox.Option value={item} key={item}>
-      {item}
+    <Combobox.Option value={item.issueKey} key={item.issueKey}>
+      <Group justify="space-between">
+        {item.summary}
+        <span style={{ color: "#888" }}>{item.issueKey}</span>
+      </Group>
     </Combobox.Option>
   ));
 
@@ -31,8 +40,7 @@ export function SelectDropdownSearch({
     <Combobox
       store={combobox}
       onOptionSubmit={(val) => {
-        setValue(val);
-        setSearch(val);
+        addSelectedIssue(val);
         splitViewModalOpened(true);
       }}
     >
@@ -54,9 +62,8 @@ export function SelectDropdownSearch({
           onFocus={() => combobox.openDropdown()}
           onBlur={() => {
             combobox.closeDropdown();
-            setSearch(value || "");
           }}
-          placeholder="Search value"
+          placeholder="Find issue name or key"
 
         />
       </Combobox.Target>

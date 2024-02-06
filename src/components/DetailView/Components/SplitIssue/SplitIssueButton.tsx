@@ -1,31 +1,21 @@
 import { ActionIcon, Box, Button, Menu } from "@mantine/core";
 import { IconCaretDown, IconPlus } from "@tabler/icons-react";
 import { Dispatch, SetStateAction, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import classes from "../IssueStatusMenu.module.css";
 import { Issue } from "../../../../../types";
-import { getIssuesByProject } from "../../../BacklogView/helpers/queryFetchers";
-import { useCanvasStore } from "../../../../lib/Store";
 import { SelectDropdownSearch } from "./SelectDropdownSearch";
 
 export function SplitIssueButton({
   splitViewModalOpened,
+  setSelectedSplitIssues,
+  issues,
 }:{
   splitViewModalOpened: Dispatch<SetStateAction<boolean>>,
+  setSelectedSplitIssues: Dispatch<SetStateAction<string[]>>,
+  issues: Issue[],
+
 }) {
-  const boardId = useCanvasStore((state) => state.selectedProjectBoardIds)[0];
-  const {
-    selectedProject: project,
-  } = useCanvasStore();
-
   const [opened, setOpened] = useState(false);
-
-  const { data: issues } = useQuery<unknown, unknown, Issue[]>({
-    queryKey: ["issues", project?.key],
-    queryFn: () => project && getIssuesByProject(project.key, boardId),
-    enabled: !!project?.key,
-    initialData: [],
-  });
 
   return (
     <Box className={classes.root} mod={{ opened }}>
@@ -51,7 +41,7 @@ export function SplitIssueButton({
             </Button>
           </Menu.Item>
           <Menu.Item>
-            <SelectDropdownSearch issueNames={issues.map((issue) => issue.summary)} splitViewModalOpened={splitViewModalOpened} />
+            <SelectDropdownSearch splitViewModalOpened={splitViewModalOpened} issues={issues} setSelectedSplitIssues={setSelectedSplitIssues} />
           </Menu.Item>
 
         </Menu.Dropdown>

@@ -1,6 +1,7 @@
 import { Accordion, Box, Breadcrumbs, Group, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import { Issue } from "types";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { AddSubtask } from "./Components/AddSubtask";
 import { AssigneeMenu } from "./Components/AssigneeMenu";
 import { EditableEpic } from "./Components/EditableEpic";
@@ -19,6 +20,8 @@ import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
 import { IssueStatusMenu } from "./Components/IssueStatusMenu";
 import { SplitIssueButton } from "./Components/SplitIssue/SplitIssueButton";
 import { SplitView } from "./Components/SplitIssue/SplitView";
+import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers";
+import { useCanvasStore } from "../../lib/Store";
 
 export function DetailView({
   issueKey,
@@ -39,7 +42,22 @@ export function DetailView({
   attachments,
   closeModal,
 }: Issue & { closeModal: () => void }) {
+  const boardId = useCanvasStore((state) => state.selectedProjectBoardIds)[0];
+  const {
+    selectedProject: project,
+  } = useCanvasStore();
+
+  const { data: issues } = useQuery<unknown, unknown, Issue[]>({
+    queryKey: ["issues", project?.key],
+    queryFn: () => project && getIssuesByProject(project.key, boardId),
+    enabled: !!project?.key,
+    initialData: [],
+  });
+
   const [createSplitViewOpened, setCreateSplitViewOpened] = useState(false);
+  // this is the array that saves the keys of the selected issues or "Create new Issue"(when this is selected) when handling split select
+  const [selectedSplitIssues, setSelectedSplitIssues] = useState<string[]>([]);
+
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
@@ -103,9 +121,9 @@ export function DetailView({
                 type={type}
                 status={status}
               />
-              <SplitIssueButton splitViewModalOpened={setCreateSplitViewOpened} />
-              {createSplitViewOpened
-                && <SplitView opened={createSplitViewOpened} setOpened={setCreateSplitViewOpened} /> }
+              <SplitIssueButton splitViewModalOpened={setCreateSplitViewOpened} setSelectedSplitIssues={setSelectedSplitIssues} issues={issues} />
+
+              <SplitView opened={createSplitViewOpened} setOpened={setCreateSplitViewOpened} selectedSplitIssues={selectedSplitIssues} issues={issues} />
 
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
