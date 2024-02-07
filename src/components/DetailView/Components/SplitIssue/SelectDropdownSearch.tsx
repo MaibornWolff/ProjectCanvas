@@ -7,10 +7,12 @@ export function SelectDropdownSearch({
   splitViewModalOpened,
   issues,
   setSelectedSplitIssues,
+  selectedSplitIssues,
 }: {
   splitViewModalOpened: Dispatch<SetStateAction<boolean>>,
   issues : Issue[],
   setSelectedSplitIssues: Dispatch<SetStateAction<string[]>>,
+  selectedSplitIssues: string[],
 }) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -19,15 +21,16 @@ export function SelectDropdownSearch({
   const [search, setSearch] = useState("");
 
   const shouldFilterOptions = issues.map((issue) => issue.summary).every((item) => item !== search);
-  const filteredOptions = shouldFilterOptions
-    ? issues.filter((issue) => issue.summary.toLowerCase().includes(search.toLowerCase().trim()) || issue.issueKey.toLowerCase().includes(search.toLowerCase().trim()))
-    : issues;
+  const filteredIssuesToSelect = issues.filter((issue) => !(selectedSplitIssues.some((splitIssue) => splitIssue.includes(issue.issueKey))));
+  const filteredSearchOptions = shouldFilterOptions
+    ? filteredIssuesToSelect.filter((issue) => issue.summary.toLowerCase().includes(search.toLowerCase().trim()) || issue.issueKey.toLowerCase().includes(search.toLowerCase().trim()))
+    : filteredIssuesToSelect;
 
   const addSelectedIssue = (newIssue: string) => {
     setSelectedSplitIssues((state) => [...state, newIssue]);
   };
 
-  const options = filteredOptions.map((item) => (
+  const options = filteredSearchOptions.map((item) => (
     <Combobox.Option value={item.issueKey} key={item.issueKey}>
       <Group justify="space-between">
         {item.summary}
@@ -42,6 +45,7 @@ export function SelectDropdownSearch({
       onOptionSubmit={(val) => {
         addSelectedIssue(val);
         splitViewModalOpened(true);
+        console.log(selectedSplitIssues);
       }}
     >
       <Combobox.Target>

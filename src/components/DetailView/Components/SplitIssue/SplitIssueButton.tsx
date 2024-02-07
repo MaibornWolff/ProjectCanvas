@@ -9,13 +9,18 @@ export function SplitIssueButton({
   splitViewModalOpened,
   setSelectedSplitIssues,
   issues,
+  selectedSplitIssues,
 }:{
   splitViewModalOpened: Dispatch<SetStateAction<boolean>>,
   setSelectedSplitIssues: Dispatch<SetStateAction<string[]>>,
   issues: Issue[],
+  selectedSplitIssues: string[],
 
 }) {
   const [opened, setOpened] = useState(false);
+  const addSelectedIssue = (newIssue: string) => {
+    setSelectedSplitIssues((state) => [...state, newIssue]);
+  };
 
   return (
     <Box className={classes.root} mod={{ opened }}>
@@ -33,7 +38,7 @@ export function SplitIssueButton({
         </Menu.Target>
         <Menu.Dropdown>
           <Menu.Item>
-            <Button fullWidth>
+            <Button fullWidth onClick={() => addSelectedIssue("Create new Issue")}>
               <ActionIcon>
                 <IconPlus size={20} />
               </ActionIcon>
@@ -41,7 +46,7 @@ export function SplitIssueButton({
             </Button>
           </Menu.Item>
           <Menu.Item>
-            <SelectDropdownSearch splitViewModalOpened={splitViewModalOpened} issues={issues} setSelectedSplitIssues={setSelectedSplitIssues} />
+            <SelectDropdownSearch splitViewModalOpened={splitViewModalOpened} issues={issues} setSelectedSplitIssues={setSelectedSplitIssues} selectedSplitIssues={selectedSplitIssues} />
           </Menu.Item>
 
         </Menu.Dropdown>

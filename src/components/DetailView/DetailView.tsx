@@ -121,9 +121,9 @@ export function DetailView({
                 type={type}
                 status={status}
               />
-              <SplitIssueButton splitViewModalOpened={setCreateSplitViewOpened} setSelectedSplitIssues={setSelectedSplitIssues} issues={issues} />
+              <SplitIssueButton splitViewModalOpened={setCreateSplitViewOpened} setSelectedSplitIssues={setSelectedSplitIssues} issues={issues} selectedSplitIssues={selectedSplitIssues} />
 
-              <SplitView opened={createSplitViewOpened} setOpened={setCreateSplitViewOpened} selectedSplitIssues={selectedSplitIssues} issues={issues} />
+              <SplitView opened={createSplitViewOpened} setOpened={setCreateSplitViewOpened} selectedSplitIssues={selectedSplitIssues} issues={issues} setSelectedSplitIssues={setSelectedSplitIssues} />
 
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
