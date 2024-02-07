@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { ActionIcon, Combobox, Group, InputBase, useCombobox } from "@mantine/core";
+import { ActionIcon, Combobox, Group, InputBase, ScrollArea, useCombobox } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Issue } from "../../../../../types";
 
@@ -45,7 +45,6 @@ export function SelectDropdownSearch({
       onOptionSubmit={(val) => {
         addSelectedIssue(val);
         splitViewModalOpened(true);
-        console.log(selectedSplitIssues);
       }}
     >
       <Combobox.Target>
@@ -73,9 +72,11 @@ export function SelectDropdownSearch({
       </Combobox.Target>
 
       <Combobox.Dropdown>
-        <Combobox.Options>
-          {options.length > 0 ? options : <Combobox.Empty>Nothing found</Combobox.Empty>}
-        </Combobox.Options>
+        <ScrollArea>
+          <Combobox.Options>
+            {options.length > 0 ? options : <Combobox.Empty>Nothing found</Combobox.Empty>}
+          </Combobox.Options>
+        </ScrollArea>
       </Combobox.Dropdown>
     </Combobox>
   );

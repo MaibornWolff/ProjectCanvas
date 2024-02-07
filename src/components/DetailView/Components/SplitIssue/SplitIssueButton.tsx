@@ -32,7 +32,7 @@ export function SplitIssueButton({
         closeOnItemClick={false}
       >
         <Menu.Target>
-          <Button rightSection={<IconCaretDown className={classes.icon} />}>
+          <Button disabled={selectedSplitIssues.length === 3} rightSection={<IconCaretDown className={classes.icon} />}>
             Split Issue
           </Button>
         </Menu.Target>

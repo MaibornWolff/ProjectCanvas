@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
-import { Modal } from "@mantine/core";
+import { Button, Group, Modal, Paper } from "@mantine/core";
 import { Issue } from "../../../../../types";
+import { SplitIssueButton } from "./SplitIssueButton";
 
 export function SplitView({
   opened,
@@ -28,6 +29,21 @@ export function SplitView({
         setOpened(false);
         setSelectedSplitIssues([]);
       }}
-    />
+    >
+      <Group>
+        <Paper withBorder>
+          <Button onClick={() => {
+            console.log(selectedSplitIssues);
+            console.log(filteredIssuesToDisplay);
+          }}
+          />
+          <SplitIssueButton splitViewModalOpened={setOpened} setSelectedSplitIssues={setSelectedSplitIssues} issues={issues} selectedSplitIssues={selectedSplitIssues} />
+        </Paper>
+        <Paper withBorder>
+          <SplitIssueButton splitViewModalOpened={setOpened} setSelectedSplitIssues={setSelectedSplitIssues} issues={issues} selectedSplitIssues={selectedSplitIssues} />
+        </Paper>
+      </Group>
+
+    </Modal>
   );
 }
