@@ -6,12 +6,12 @@ import { Issue } from "../../../../../types";
 import { SelectDropdownSearch } from "./SelectDropdownSearch";
 
 export function SplitIssueButton({
-  splitViewModalOpened,
+  setCreateSplitViewOpened,
   setSelectedSplitIssues,
   issues,
   selectedSplitIssues,
 }:{
-  splitViewModalOpened: Dispatch<SetStateAction<boolean>>,
+  setCreateSplitViewOpened: Dispatch<SetStateAction<boolean>>,
   setSelectedSplitIssues: Dispatch<SetStateAction<string[]>>,
   issues: Issue[],
   selectedSplitIssues: string[],
@@ -27,7 +27,9 @@ export function SplitIssueButton({
       <Menu
         shadow="md"
         onOpen={() => setOpened(true)}
-        onClose={() => setOpened(false)}
+        onClose={() => {
+          setOpened(false);
+        }}
         opened={opened}
         closeOnItemClick={false}
       >
@@ -38,7 +40,14 @@ export function SplitIssueButton({
         </Menu.Target>
         <Menu.Dropdown>
           <Menu.Item>
-            <Button fullWidth onClick={() => addSelectedIssue("Create new Issue")}>
+            <Button
+              fullWidth
+              onClick={() => {
+                addSelectedIssue("Create new Issue");
+                setCreateSplitViewOpened(true);
+                setOpened(false);
+              }}
+            >
               <ActionIcon>
                 <IconPlus size={20} />
               </ActionIcon>
@@ -46,7 +55,7 @@ export function SplitIssueButton({
             </Button>
           </Menu.Item>
           <Menu.Item>
-            <SelectDropdownSearch splitViewModalOpened={splitViewModalOpened} issues={issues} setSelectedSplitIssues={setSelectedSplitIssues} selectedSplitIssues={selectedSplitIssues} />
+            <SelectDropdownSearch splitViewModalOpened={setCreateSplitViewOpened} issues={issues} setSelectedSplitIssues={setSelectedSplitIssues} selectedSplitIssues={selectedSplitIssues} />
           </Menu.Item>
 
         </Menu.Dropdown>
