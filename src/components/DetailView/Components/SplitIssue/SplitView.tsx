@@ -46,7 +46,15 @@ export function SplitView({
             selectedSplitIssues={selectedSplitIssues}
           />
         </Paper>
-        <Paper withBorder />
+        <Paper withBorder>
+          <SplitIssueDetails
+            {...filteredIssuesToDisplay[1]}
+            setCreateSplitViewOpened={setCreateSplitViewOpened}
+            setSelectedSplitIssues={setSelectedSplitIssues}
+            issues={issues}
+            selectedSplitIssues={selectedSplitIssues}
+          />
+        </Paper>
       </Group>
     </Modal>
   );
