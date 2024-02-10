@@ -6,9 +6,9 @@ import { SplitIssueButton } from "./SplitIssueButton";
 export function SplitView({
   opened,
   setOpened,
+  setSelectedSplitIssues,
   selectedSplitIssues,
   issues,
-  setSelectedSplitIssues,
 }: {
   opened: boolean,
   setOpened: Dispatch<SetStateAction<boolean>>,

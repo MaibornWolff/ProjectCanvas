@@ -56,7 +56,7 @@ export function DetailView({
 
   const [createSplitViewOpened, setCreateSplitViewOpened] = useState(false);
   // this is the array that saves the keys of the selected issues or "Create new Issue"(when this is selected) when handling split select
-  const [selectedSplitIssues, setSelectedSplitIssues] = useState<string[]>([]);
+  const [selectedSplitIssues, setSelectedSplitIssues] = useState<string[]>([issueKey]);
 
   return (
     <Paper p="xs">
