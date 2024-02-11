@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { Group, Modal, Paper } from "@mantine/core";
 import { Issue } from "../../../../../types";
 import { SplitIssueDetails } from "./SplitIssueDetails";
+import { SplitIssueCreate } from "./SplitIssueCreate";
 
 export function SplitView({
   opened,
@@ -20,12 +21,9 @@ export function SplitView({
   issues: Issue[],
   originalIssue: string,
 }) {
-  // filtered issues for the split view screens that need to be displayed
   const filteredIssuesToDisplay = issues.filter((issue) => selectedSplitIssues.some((SplitIssue) => SplitIssue.toLowerCase().includes(issue.issueKey.toLowerCase())));
 
   return (
-    // idea is that the modal only relies on selectedSplitIssues => gets updated in selection and delete options in CreateIssue and SelectedIssue.tsx
-    // CreateIssue also updates selectedSplitIssues with the new Issue => everything controlled via selectedSplitIssue array
     <Modal
       opened={opened}
       size="auto"
@@ -36,25 +34,23 @@ export function SplitView({
       }}
       withCloseButton={false}
     >
-      <Group style={{ alignItems: "flex-start" }}>
-        <Paper withBorder>
-          <SplitIssueDetails
-            {...filteredIssuesToDisplay[0]}
-            setCreateSplitViewOpened={setCreateSplitViewOpened}
-            setSelectedSplitIssues={setSelectedSplitIssues}
-            issues={issues}
-            selectedSplitIssues={selectedSplitIssues}
-          />
-        </Paper>
-        <Paper withBorder>
-          <SplitIssueDetails
-            {...filteredIssuesToDisplay[1]}
-            setCreateSplitViewOpened={setCreateSplitViewOpened}
-            setSelectedSplitIssues={setSelectedSplitIssues}
-            issues={issues}
-            selectedSplitIssues={selectedSplitIssues}
-          />
-        </Paper>
+      <Group style={{ alignItems: "stretch" }}>
+        {selectedSplitIssues.map((issueKey) => (
+          issueKey === "Create new Issue" ? (
+            <Paper withBorder style={{ flex: 1 }}>
+              <SplitIssueCreate />
+            </Paper>
+          ) : (
+            <Paper withBorder style={{ flex: 1 }}>
+              <SplitIssueDetails
+                {...filteredIssuesToDisplay[filteredIssuesToDisplay.findIndex((issue) => issueKey.toLowerCase().includes(issue.issueKey.toLowerCase()))]}
+                setCreateSplitViewOpened={setCreateSplitViewOpened}
+                setSelectedSplitIssues={setSelectedSplitIssues}
+                issues={issues}
+                selectedSplitIssues={selectedSplitIssues}
+              />
+            </Paper>
+          )))}
       </Group>
     </Modal>
   );

@@ -51,15 +51,19 @@ export function SplitIssueDetails(
     <Paper p="xs">
       <Breadcrumbs mb="md">
         <EditableEpic projectId={projectId} issueKey={issueKey} epic={epic} />
-
         <Group>
           <IssueIcon type={type} />
           {" "}
           {issueKey}
+          <SplitIssueButton
+            setCreateSplitViewOpened={setCreateSplitViewOpened}
+            setSelectedSplitIssues={setSelectedSplitIssues}
+            issues={issues}
+            selectedSplitIssues={selectedSplitIssues}
+          />
         </Group>
       </Breadcrumbs>
-
-      <Stack style={{ flex: 13 }}>
+      <Stack>
         <Title order={1}>
           <IssueSummary summary={summary} issueKey={issueKey} />
         </Title>
@@ -79,7 +83,6 @@ export function SplitIssueDetails(
               type={type}
               status={status}
             />
-            <SplitIssueButton setCreateSplitViewOpened={setCreateSplitViewOpened} setSelectedSplitIssues={setSelectedSplitIssues} issues={issues} selectedSplitIssues={selectedSplitIssues} />
           </Group>
           <Accordion variant="contained" defaultValue="Details" mb={20}>
             <Accordion.Item value="Details">
@@ -151,10 +154,6 @@ export function SplitIssueDetails(
           <CommentSection issueKey={issueKey} comment={comment} />
         </ScrollArea.Autosize>
       </Stack>
-      <ScrollArea.Autosize
-        style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}
-      />
-
     </Paper>
   );
 }

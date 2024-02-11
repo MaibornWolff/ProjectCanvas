@@ -43,7 +43,7 @@ export function Description(props: { issueKey: string, description: string }) {
         />
       ) : (
         <Text onClick={() => setShowDescriptionInput(true)} mb="xl">
-          {defaultDescription !== null && defaultDescription !== ""
+          {defaultDescription !== undefined && defaultDescription !== null && defaultDescription !== ""
             ? defaultDescription
             : "Add Description"}
         </Text>
