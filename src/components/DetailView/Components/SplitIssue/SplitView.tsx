@@ -27,13 +27,13 @@ export function SplitView({
   return (
     <Modal
       opened={opened}
-      size="auto"
       centered
       onClose={() => {
         setSelectedSplitIssues(() => [originalIssue]);
         setOpened(false);
       }}
       withCloseButton={false}
+      size="90vw"
     >
       <Group style={{ alignItems: "stretch" }}>
         {selectedSplitIssues.map((issueKey) => (
