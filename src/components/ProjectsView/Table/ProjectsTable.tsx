@@ -14,7 +14,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
   const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<keyof Project | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
-  const { setSelectedProject, setSelectedProjectBoardIds, setIssueTypes } = useCanvasStore();
+  const { setSelectedProject, setSelectedProjectBoardIds, setIssueTypes, setIssueTypesWithFieldsMap } = useCanvasStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,6 +44,14 @@ export function ProjectsTable({ data }: { data: Project[] }) {
     setSelectedProject(row);
     setSelectedProjectBoardIds(await window.provider.getBoardIds(row.key));
     setIssueTypes(await window.provider.getIssueTypesByProject(row.key));
+    setIssueTypesWithFieldsMap(
+      await window.provider.getIssueTypesWithFieldsMap()
+        .then(async (mapResponse) => {
+          const map = new Map<string, string[]>();
+          Object.entries(mapResponse).forEach(([key, value]) => map.set(key, value));
+          return map;
+        }),
+    );
     navigate(RouteNames.BACKLOG_VIEW);
   };
 

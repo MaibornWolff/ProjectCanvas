@@ -8,6 +8,7 @@ export interface CanvasStore {
   selectedProject: Project | undefined,
   selectedProjectBoardIds: number[],
   issueTypes: IssueType[],
+  issueTypesWithFieldsMap: Map<string, string[]>,
   issueStatus: IssueStatus[],
   issueStatusByCategory: Partial<{ [Type in StatusType]: IssueStatus[] }>,
   issueStatusCategoryByStatusName: { [statusName: string]: StatusType },
@@ -15,6 +16,7 @@ export interface CanvasStore {
   setSelectedProject: (project: Project) => void,
   setSelectedProjectBoardIds: (boards: number[]) => void,
   setIssueTypes: (types: IssueType[]) => void,
+  setIssueTypesWithFieldsMap: (issueTypesWithFieldsMap: Map<string, string[]>) => void,
 }
 
 export const useCanvasStore = create<CanvasStore>()((set) => ({
@@ -22,6 +24,7 @@ export const useCanvasStore = create<CanvasStore>()((set) => ({
   selectedProject: undefined,
   selectedProjectBoardIds: [],
   issueTypes: [],
+  issueTypesWithFieldsMap: new Map<string, string[]>(),
   issueStatus: [],
   issueStatusByCategory: {},
   issueStatusCategoryByStatusName: {},
@@ -56,4 +59,7 @@ export const useCanvasStore = create<CanvasStore>()((set) => ({
       issueStatusCategoryByStatusName,
     };
   }),
+  setIssueTypesWithFieldsMap: (issueTypesWithFieldsMap: Map<string, string[]>) => set(() => ({
+    issueTypesWithFieldsMap,
+  })),
 }));

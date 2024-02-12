@@ -23,18 +23,17 @@ import {
   AttachmentFileInput,
 } from "../../../CreateIssue/Fields";
 
-import {
-  createIssue,
-  getAssignableUsersByProject,
-  getCurrentUser,
-  getIssueTypes,
-  getIssueTypesWithFieldsMap,
-} from "../../../CreateIssue/queryFunctions";
+import { createIssue, getAssignableUsersByProject, getCurrentUser } from "../../../CreateIssue/queryFunctions";
 
 export function SplitIssueCreate() {
   const queryClient = useQueryClient();
-  const projects = useCanvasStore((state) => state.projects);
-  const selectedProject = useCanvasStore((state) => state.selectedProject);
+
+  const {
+    projects,
+    selectedProject,
+    issueTypes,
+    issueTypesWithFieldsMap,
+  } = useCanvasStore();
 
   const { data: currentUser } = useQuery({
     queryKey: ["currentUser"],
@@ -56,12 +55,6 @@ export function SplitIssueCreate() {
     } as Issue,
   });
 
-  const { data: issueTypes, isLoading } = useQuery({
-    queryKey: ["issueTypes", form.getInputProps("projectId").value],
-    queryFn: () => getIssueTypes(form.getInputProps("projectId").value!),
-    enabled: !!projects && !!form.getInputProps("projectId").value,
-  });
-
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", form.getInputProps("projectId").value],
     queryFn: () => {
@@ -72,11 +65,6 @@ export function SplitIssueCreate() {
       return getAssignableUsersByProject(relevantProject.key);
     },
     enabled: !!projects && !!form.getInputProps("projectId").value,
-  });
-
-  const { data: issueTypesWithFieldsMap } = useQuery({
-    queryKey: ["issueTypesWithFieldsMap"],
-    queryFn: () => getIssueTypesWithFieldsMap(),
   });
 
   const mutation = useMutation({
@@ -126,39 +114,39 @@ export function SplitIssueCreate() {
             <IssueTypeSelect
               form={form}
               issueTypes={issueTypes}
-              isLoading={isLoading}
+              isLoading={false}
             />
             <Divider m={10} />
             <StatusSelect
               form={form}
               issueTypes={issueTypes}
-              isLoading={isLoading}
+              isLoading={false}
             />
             <SummaryInput form={form} />
             <DescriptionInput form={form} />
             <AssigneeSelect
               form={form}
               assignableUsers={assignableUsers}
-              isLoading={isLoading}
+              isLoading={false}
             />
             <PrioritySelect
               form={form}
               issueTypesWithFieldsMap={issueTypesWithFieldsMap}
-              isLoading={isLoading}
+              isLoading={false}
             />
             <SprintSelect
               form={form}
               issueTypes={issueTypes}
               issueTypesWithFieldsMap={issueTypesWithFieldsMap}
               enabled={!!projects}
-              isLoading={isLoading}
+              isLoading={false}
             />
             <EpicSelect
               form={form}
               issueTypes={issueTypes}
               issueTypesWithFieldsMap={issueTypesWithFieldsMap}
               enabled={!!projects}
-              isLoading={isLoading}
+              isLoading={false}
             />
             <StoryPointsEstimateInput
               form={form}
@@ -168,7 +156,7 @@ export function SplitIssueCreate() {
             <ReporterSelect
               form={form}
               assignableUsers={assignableUsers}
-              isLoading={isLoading}
+              isLoading={false}
             />
             <StartDatePicker
               form={form}
