@@ -105,9 +105,7 @@ export function SplitIssueCreate() {
   });
 
   return (
-    <Paper
-      p="xs"
-    >
+    <Paper p="xs">
       <ScrollArea.Autosize
         mr="xs"
         style={{ maxHeight: "80vh" }}

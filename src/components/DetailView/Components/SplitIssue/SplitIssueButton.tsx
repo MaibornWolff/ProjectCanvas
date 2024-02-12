@@ -1,36 +1,28 @@
 import { Box, Button, Menu } from "@mantine/core";
 import { IconCaretDown, IconPlus } from "@tabler/icons-react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import classes from "../IssueStatusMenu.module.css";
-import { Issue } from "../../../../../types";
 import { SelectDropdownSearch } from "./SelectDropdownSearch";
 import { CreateNewIssueKey } from "./split-view-constants";
 
 export function SplitIssueButton({
-  setCreateSplitViewOpened,
-  setSelectedSplitIssues,
-  issues,
+  onIssueSelected,
   selectedSplitIssues,
 }:{
-  setCreateSplitViewOpened: Dispatch<SetStateAction<boolean>>,
-  setSelectedSplitIssues: Dispatch<SetStateAction<string[]>>,
-  issues: Issue[],
+  onIssueSelected: (issueKey: string) => void,
   selectedSplitIssues: string[],
 }) {
-  const [opened, setOpened] = useState(false);
-  const addSelectedIssue = (newIssue: string) => {
-    setSelectedSplitIssues((state) => [...state, newIssue]);
-  };
+  const [menuOpened, setMenuOpened] = useState(false);
 
   return (
-    <Box className={classes.root} mod={{ opened }}>
+    <Box className={classes.root} mod={{ opened: menuOpened }}>
       <Menu
         shadow="md"
-        onOpen={() => setOpened(true)}
+        onOpen={() => setMenuOpened(true)}
         onClose={() => {
-          setOpened(false);
+          setMenuOpened(false);
         }}
-        opened={opened}
+        opened={menuOpened}
         closeOnItemClick={false}
       >
         <Menu.Target>
@@ -43,9 +35,8 @@ export function SplitIssueButton({
             <Button
               fullWidth
               onClick={() => {
-                addSelectedIssue(CreateNewIssueKey);
-                setCreateSplitViewOpened(true);
-                setOpened(false);
+                onIssueSelected(CreateNewIssueKey);
+                setMenuOpened(false);
               }}
             >
               <IconPlus size={20} />
@@ -54,9 +45,7 @@ export function SplitIssueButton({
           </Menu.Item>
           <Menu.Item component="div">
             <SelectDropdownSearch
-              splitViewModalOpened={setCreateSplitViewOpened}
-              issues={issues}
-              setSelectedSplitIssues={setSelectedSplitIssues}
+              onIssueSelected={onIssueSelected}
               selectedSplitIssues={selectedSplitIssues}
             />
           </Menu.Item>

@@ -1,34 +1,39 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { ActionIcon, Combobox, Group, InputBase, ScrollArea, useCombobox } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import { Issue } from "../../../../../types";
+import { getIssuesByProject } from "../../../BacklogView/helpers/queryFetchers";
+import { useCanvasStore } from "../../../../lib/Store";
 
 export function SelectDropdownSearch({
-  splitViewModalOpened,
-  issues,
-  setSelectedSplitIssues,
+  onIssueSelected,
   selectedSplitIssues,
 }: {
-  splitViewModalOpened: Dispatch<SetStateAction<boolean>>,
-  issues : Issue[],
-  setSelectedSplitIssues: Dispatch<SetStateAction<string[]>>,
+  onIssueSelected: (issueKey: string) => void,
   selectedSplitIssues: string[],
 }) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
-  const [search, setSearch] = useState("");
+  const { selectedProject: project, selectedProjectBoardIds: boardIds } = useCanvasStore();
+  const { data: issues } = useQuery<unknown, unknown, Issue[]>({
+    queryKey: ["issues", project?.key],
+    queryFn: () => project && getIssuesByProject(project.key, boardIds[0]),
+    enabled: !!project?.key,
+    initialData: [],
+  });
 
+  const [search, setSearch] = useState("");
   const shouldFilterOptions = issues.map((issue) => issue.summary).every((item) => item !== search);
   const filteredIssuesToSelect = issues.filter((issue) => !(selectedSplitIssues.some((splitIssue) => splitIssue.includes(issue.issueKey))));
   const filteredSearchOptions = shouldFilterOptions
-    ? filteredIssuesToSelect.filter((issue) => issue.summary.toLowerCase().includes(search.toLowerCase().trim()) || issue.issueKey.toLowerCase().includes(search.toLowerCase().trim()))
+    ? filteredIssuesToSelect.filter(
+      (issue) => issue.summary.toLowerCase().includes(search.toLowerCase().trim())
+        || issue.issueKey.toLowerCase().includes(search.toLowerCase().trim()),
+    )
     : filteredIssuesToSelect;
-
-  const addSelectedIssue = (newIssue: string) => {
-    setSelectedSplitIssues((state) => [...state, newIssue]);
-  };
 
   const options = filteredSearchOptions.map((item) => (
     <Combobox.Option value={item.issueKey} key={item.issueKey}>
@@ -42,10 +47,7 @@ export function SelectDropdownSearch({
   return (
     <Combobox
       store={combobox}
-      onOptionSubmit={(val) => {
-        addSelectedIssue(val);
-        splitViewModalOpened(true);
-      }}
+      onOptionSubmit={onIssueSelected}
     >
       <Combobox.Target>
         <InputBase
@@ -63,11 +65,8 @@ export function SelectDropdownSearch({
           }}
           onClick={() => combobox.openDropdown()}
           onFocus={() => combobox.openDropdown()}
-          onBlur={() => {
-            combobox.closeDropdown();
-          }}
+          onBlur={() => { combobox.closeDropdown(); }}
           placeholder="Find issue name or key"
-
         />
       </Combobox.Target>
 

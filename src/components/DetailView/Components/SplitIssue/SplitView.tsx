@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
 import { Group, Modal, Paper } from "@mantine/core";
 import { Issue } from "../../../../../types";
 import { SplitIssueDetails } from "./SplitIssueDetails";
@@ -6,52 +5,46 @@ import { SplitIssueCreate } from "./SplitIssueCreate";
 import { CreateNewIssueKey } from "./split-view-constants";
 
 export function SplitView({
+  onIssueSelected,
   opened,
-  setOpened,
-  setCreateSplitViewOpened,
-  setSelectedSplitIssues,
+  onClose,
   selectedSplitIssues,
   issues,
-  originalIssue,
 }: {
+  onIssueSelected: (issueKey: string) => void,
   opened: boolean,
-  setOpened: Dispatch<SetStateAction<boolean>>,
-  setCreateSplitViewOpened: Dispatch<SetStateAction<boolean>>,
-  setSelectedSplitIssues: Dispatch<SetStateAction<string[]>>,
+  onClose: () => void,
   selectedSplitIssues: string[],
   issues: Issue[],
-  originalIssue: string,
 }) {
-  const filteredIssuesToDisplay = issues.filter((issue) => selectedSplitIssues.some((SplitIssue) => SplitIssue.toLowerCase().includes(issue.issueKey.toLowerCase())));
+  const filteredIssuesToDisplay = issues.filter(
+    (issue) => selectedSplitIssues.some(
+      (SplitIssue) => SplitIssue.toLowerCase().includes(issue.issueKey.toLowerCase()),
+    ),
+  );
 
   return (
     <Modal
       opened={opened}
       centered
-      onClose={() => {
-        setSelectedSplitIssues(() => [originalIssue]);
-        setOpened(false);
-      }}
+      onClose={onClose}
       withCloseButton={false}
       size="90vw"
     >
       <Group style={{ alignItems: "stretch" }}>
         {selectedSplitIssues.map((issueKey) => (
-          issueKey === CreateNewIssueKey ? (
-            <Paper withBorder style={{ flex: 1 }} key={issueKey}>
+          <Paper withBorder style={{ flex: 1 }} key={issueKey}>
+            {issueKey === CreateNewIssueKey ? (
               <SplitIssueCreate />
-            </Paper>
-          ) : (
-            <Paper withBorder style={{ flex: 1 }} key={issueKey}>
+            ) : (
               <SplitIssueDetails
                 {...filteredIssuesToDisplay[filteredIssuesToDisplay.findIndex((issue) => issueKey.toLowerCase().includes(issue.issueKey.toLowerCase()))]}
-                setCreateSplitViewOpened={setCreateSplitViewOpened}
-                setSelectedSplitIssues={setSelectedSplitIssues}
-                issues={issues}
+                onIssueSelected={onIssueSelected}
                 selectedSplitIssues={selectedSplitIssues}
               />
-            </Paper>
-          )))}
+            )}
+          </Paper>
+        ))}
       </Group>
     </Modal>
   );

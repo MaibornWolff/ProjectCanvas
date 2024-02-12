@@ -57,6 +57,9 @@ export function DetailView({
   const [createSplitViewOpened, setCreateSplitViewOpened] = useState(false);
   // this is the array that saves the keys of the selected issues or "Create new Issue"(when this is selected) when handling split select
   const [selectedSplitIssues, setSelectedSplitIssues] = useState<string[]>([issueKey]);
+  const addSelectedIssue = (newIssue: string) => {
+    setSelectedSplitIssues((state) => [...state, newIssue]);
+  };
 
   return (
     <Paper p="xs">
@@ -121,9 +124,27 @@ export function DetailView({
                 type={type}
                 status={status}
               />
-              <SplitIssueButton setCreateSplitViewOpened={setCreateSplitViewOpened} setSelectedSplitIssues={setSelectedSplitIssues} issues={issues} selectedSplitIssues={selectedSplitIssues} />
+              <SplitIssueButton
+                onIssueSelected={(selectedIssueKey: string) => {
+                  setCreateSplitViewOpened(true);
+                  addSelectedIssue(selectedIssueKey);
+                }}
+                selectedSplitIssues={selectedSplitIssues}
+              />
 
-              <SplitView opened={createSplitViewOpened} setOpened={setCreateSplitViewOpened} selectedSplitIssues={selectedSplitIssues} issues={issues} setSelectedSplitIssues={setSelectedSplitIssues} originalIssue={issueKey} setCreateSplitViewOpened={setCreateSplitViewOpened} />
+              <SplitView
+                opened={createSplitViewOpened}
+                onClose={() => {
+                  setSelectedSplitIssues(() => [issueKey]);
+                  setCreateSplitViewOpened(false);
+                }}
+                onIssueSelected={(selectedIssueKey: string) => {
+                  setCreateSplitViewOpened(true);
+                  addSelectedIssue(selectedIssueKey);
+                }}
+                selectedSplitIssues={selectedSplitIssues}
+                issues={issues}
+              />
 
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>

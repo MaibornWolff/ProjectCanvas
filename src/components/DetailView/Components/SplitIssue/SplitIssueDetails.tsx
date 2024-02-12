@@ -1,5 +1,4 @@
 import { Accordion, Box, Breadcrumbs, Group, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
-import { Dispatch, SetStateAction } from "react";
 import { Issue } from "../../../../../types";
 import { EditableEpic } from "../EditableEpic";
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
@@ -35,16 +34,11 @@ export function SplitIssueDetails(
     projectId,
     sprint,
     attachments,
-    setSelectedSplitIssues,
-    setCreateSplitViewOpened,
+    onIssueSelected,
     selectedSplitIssues,
-    issues,
-
   } : Issue & {
-    setSelectedSplitIssues: Dispatch<SetStateAction<string[]>>,
-    setCreateSplitViewOpened: Dispatch<SetStateAction<boolean>>,
+    onIssueSelected: (issueKey: string) => void,
     selectedSplitIssues: string[],
-    issues: Issue[],
   },
 ) {
   return (
@@ -56,9 +50,7 @@ export function SplitIssueDetails(
           {" "}
           {issueKey}
           <SplitIssueButton
-            setCreateSplitViewOpened={setCreateSplitViewOpened}
-            setSelectedSplitIssues={setSelectedSplitIssues}
-            issues={issues}
+            onIssueSelected={onIssueSelected}
             selectedSplitIssues={selectedSplitIssues}
           />
         </Group>
