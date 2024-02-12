@@ -1,5 +1,5 @@
-const NewIssueKeyPrefix = "$_";
+const NewIssueIdentifierPrefix = "$_";
 
-export const createNewIssueKey = (newIssueIndex: number) => NewIssueKeyPrefix + newIssueIndex.toString();
+export const createNewIssueIdentifier = (newIssueIndex: number) => NewIssueIdentifierPrefix + newIssueIndex.toString();
 
-export const isNewIssueKey = (newIssueKey: string) => newIssueKey.startsWith(NewIssueKeyPrefix);
+export const isNewIssueIdentifier = (id: string) => id.startsWith(NewIssueIdentifierPrefix);

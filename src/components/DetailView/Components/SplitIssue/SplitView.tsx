@@ -1,27 +1,63 @@
-import { Group, Modal, Paper } from "@mantine/core";
+import { Center, Group, Loader, Modal, Paper } from "@mantine/core";
+import { useQuery } from "@tanstack/react-query";
 import { Issue } from "../../../../../types";
 import { SplitIssueDetails } from "./SplitIssueDetails";
 import { SplitIssueCreate } from "./SplitIssueCreate";
-import { isNewIssueKey } from "./split-view-constants";
+import { isNewIssueIdentifier } from "./split-view-constants";
+import { getIssuesByProject } from "../../../BacklogView/helpers/queryFetchers";
+import { useCanvasStore } from "../../../../lib/Store";
 
 export function SplitView({
   onIssueSelected,
   opened,
   onClose,
+  onCreate,
   selectedSplitIssues,
-  issues,
 }: {
   onIssueSelected: (issueKey: string) => void,
   opened: boolean,
   onClose: () => void,
+  onCreate: (newIssueKey: string, previousNewIssueIdentifier: string) => void,
   selectedSplitIssues: string[],
-  issues: Issue[],
 }) {
-  const filteredIssuesToDisplay = issues.filter(
-    (issue) => selectedSplitIssues.some(
-      (SplitIssue) => SplitIssue.toLowerCase().includes(issue.issueKey.toLowerCase()),
-    ),
-  );
+  const { selectedProject: project, selectedProjectBoardIds: boardIds } = useCanvasStore();
+  const { data: issues } = useQuery({
+    queryKey: ["issues", project?.key],
+    queryFn: () => getIssuesByProject(project!.key, boardIds[0]),
+    enabled: !!project?.key,
+    select: (fetchedIssues: Issue[]) => Object.fromEntries(fetchedIssues.map((s) => [s.issueKey, s])),
+    initialData: [],
+  });
+
+  function getContentForSplitIssue(issueKey: string) {
+    if (isNewIssueIdentifier(issueKey)) {
+      return (
+        <SplitIssueCreate
+          onCreate={(newIssueKey: string) => {
+            onCreate(newIssueKey, issueKey);
+          }}
+        />
+      );
+    }
+
+    if (issues[issueKey] !== undefined) {
+      return (
+        <SplitIssueDetails
+          {...issues[issueKey]}
+          onIssueSelected={onIssueSelected}
+          selectedSplitIssues={selectedSplitIssues}
+        />
+      );
+    }
+
+    return (
+      <Paper p="xs" h="100%">
+        <Center h="100%">
+          <Loader />
+        </Center>
+      </Paper>
+    );
+  }
 
   return (
     <Modal
@@ -34,15 +70,7 @@ export function SplitView({
       <Group style={{ alignItems: "stretch" }}>
         {selectedSplitIssues.map((issueKey) => (
           <Paper withBorder style={{ flex: 1 }} key={issueKey}>
-            {isNewIssueKey(issueKey) ? (
-              <SplitIssueCreate />
-            ) : (
-              <SplitIssueDetails
-                {...filteredIssuesToDisplay[filteredIssuesToDisplay.findIndex((issue) => issueKey.toLowerCase().includes(issue.issueKey.toLowerCase()))]}
-                onIssueSelected={onIssueSelected}
-                selectedSplitIssues={selectedSplitIssues}
-              />
-            )}
+            {getContentForSplitIssue(issueKey)}
           </Paper>
         ))}
       </Group>

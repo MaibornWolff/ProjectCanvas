@@ -6,7 +6,6 @@ import { Issue } from "types";
 import { useCanvasStore } from "../../../../lib/Store";
 import { getResource, uploadAttachment } from "../Attachments/queryFunctions";
 import {
-  ProjectSelect,
   IssueTypeSelect,
   StatusSelect,
   SummaryInput,
@@ -25,7 +24,11 @@ import {
 
 import { createIssue, getAssignableUsersByProject, getCurrentUser } from "../../../CreateIssue/queryFunctions";
 
-export function SplitIssueCreate() {
+export function SplitIssueCreate({
+  onCreate,
+}: {
+  onCreate: (issueKey: string) => void,
+}) {
   const queryClient = useQueryClient();
 
   const {
@@ -42,12 +45,12 @@ export function SplitIssueCreate() {
 
   const form = useForm<Issue>({
     initialValues: {
-      projectId: selectedProject?.id,
+      projectId: selectedProject!.id,
       type: "",
       sprint: { id: undefined as unknown as number },
       summary: "",
       description: "",
-      assignee: { id: "" },
+      assignee: undefined,
       status: "To Do",
       reporter: currentUser,
       priority: { id: "" },
@@ -55,7 +58,7 @@ export function SplitIssueCreate() {
     } as Issue,
   });
 
-  const { data: assignableUsers } = useQuery({
+  const { data: assignableUsers, isLoading } = useQuery({
     queryKey: ["assignableUsers", form.getInputProps("projectId").value],
     queryFn: () => {
       const relevantProject = projects.find(
@@ -88,6 +91,7 @@ export function SplitIssueCreate() {
       });
       queryClient.invalidateQueries({ queryKey: ["issues"] });
       queryClient.invalidateQueries({ queryKey: ["epics"] });
+      onCreate(issueKey);
       form.reset();
     },
   });
@@ -106,11 +110,6 @@ export function SplitIssueCreate() {
           })}
         >
           <Stack gap="md">
-            <ProjectSelect
-              form={form}
-              projects={projects}
-              currentUser={currentUser}
-            />
             <IssueTypeSelect
               form={form}
               issueTypes={issueTypes}
@@ -127,7 +126,7 @@ export function SplitIssueCreate() {
             <AssigneeSelect
               form={form}
               assignableUsers={assignableUsers}
-              isLoading={false}
+              isLoading={isLoading}
             />
             <PrioritySelect
               form={form}

@@ -3,7 +3,7 @@ import { IconCaretDown, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import classes from "../IssueStatusMenu.module.css";
 import { SelectDropdownSearch } from "./SelectDropdownSearch";
-import { createNewIssueKey } from "./split-view-constants";
+import { createNewIssueIdentifier } from "./split-view-constants";
 
 export function SplitIssueButton({
   onIssueSelected,
@@ -35,7 +35,7 @@ export function SplitIssueButton({
             <Button
               fullWidth
               onClick={() => {
-                onIssueSelected(createNewIssueKey(selectedSplitIssues.length));
+                onIssueSelected(createNewIssueIdentifier(selectedSplitIssues.length));
                 setMenuOpened(false);
               }}
             >

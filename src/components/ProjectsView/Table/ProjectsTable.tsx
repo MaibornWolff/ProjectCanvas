@@ -57,7 +57,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
 
   const header = data
     && data.length > 0
-    && Object.keys(data[0]).map((key) => {
+    && Object.keys(data[0]).filter((key) => key !== "id").map((key) => {
       let SortIcon: Icon;
       if (sortBy === key) {
         if (reverseSortDirection) SortIcon = IconChevronUp;
@@ -89,7 +89,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
       key={row.key}
       onClick={() => onClickRow(row)}
     >
-      {Object.keys(row).map((key) => (
+      {Object.keys(row).filter((key) => key !== "id").map((key) => (
         <Table.Td key={key}>
           {" "}
           {row[key as keyof Project]}
