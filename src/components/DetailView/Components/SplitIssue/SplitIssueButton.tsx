@@ -1,9 +1,10 @@
-import { ActionIcon, Box, Button, Menu } from "@mantine/core";
+import { Box, Button, Menu } from "@mantine/core";
 import { IconCaretDown, IconPlus } from "@tabler/icons-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import classes from "../IssueStatusMenu.module.css";
 import { Issue } from "../../../../../types";
 import { SelectDropdownSearch } from "./SelectDropdownSearch";
+import { CreateNewIssueKey } from "./split-view-constants";
 
 export function SplitIssueButton({
   setCreateSplitViewOpened,
@@ -15,7 +16,6 @@ export function SplitIssueButton({
   setSelectedSplitIssues: Dispatch<SetStateAction<string[]>>,
   issues: Issue[],
   selectedSplitIssues: string[],
-
 }) {
   const [opened, setOpened] = useState(false);
   const addSelectedIssue = (newIssue: string) => {
@@ -39,25 +39,27 @@ export function SplitIssueButton({
           </Button>
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item>
+          <Menu.Item component="div">
             <Button
               fullWidth
               onClick={() => {
-                addSelectedIssue("Create new Issue");
+                addSelectedIssue(CreateNewIssueKey);
                 setCreateSplitViewOpened(true);
                 setOpened(false);
               }}
             >
-              <ActionIcon>
-                <IconPlus size={20} />
-              </ActionIcon>
-              create new Issue
+              <IconPlus size={20} />
+              Create new Issue
             </Button>
           </Menu.Item>
-          <Menu.Item>
-            <SelectDropdownSearch splitViewModalOpened={setCreateSplitViewOpened} issues={issues} setSelectedSplitIssues={setSelectedSplitIssues} selectedSplitIssues={selectedSplitIssues} />
+          <Menu.Item component="div">
+            <SelectDropdownSearch
+              splitViewModalOpened={setCreateSplitViewOpened}
+              issues={issues}
+              setSelectedSplitIssues={setSelectedSplitIssues}
+              selectedSplitIssues={selectedSplitIssues}
+            />
           </Menu.Item>
-
         </Menu.Dropdown>
       </Menu>
     </Box>

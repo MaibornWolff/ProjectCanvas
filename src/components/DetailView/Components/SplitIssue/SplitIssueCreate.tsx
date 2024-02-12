@@ -110,7 +110,7 @@ export function SplitIssueCreate() {
     >
       <ScrollArea.Autosize
         mr="xs"
-        style={{ maxHeight: "70vh" }}
+        style={{ maxHeight: "80vh" }}
         offsetScrollbars
       >
         <form

@@ -3,6 +3,7 @@ import { Group, Modal, Paper } from "@mantine/core";
 import { Issue } from "../../../../../types";
 import { SplitIssueDetails } from "./SplitIssueDetails";
 import { SplitIssueCreate } from "./SplitIssueCreate";
+import { CreateNewIssueKey } from "./split-view-constants";
 
 export function SplitView({
   opened,
@@ -36,12 +37,12 @@ export function SplitView({
     >
       <Group style={{ alignItems: "stretch" }}>
         {selectedSplitIssues.map((issueKey) => (
-          issueKey === "Create new Issue" ? (
-            <Paper withBorder style={{ flex: 1 }}>
+          issueKey === CreateNewIssueKey ? (
+            <Paper withBorder style={{ flex: 1 }} key={issueKey}>
               <SplitIssueCreate />
             </Paper>
           ) : (
-            <Paper withBorder style={{ flex: 1 }}>
+            <Paper withBorder style={{ flex: 1 }} key={issueKey}>
               <SplitIssueDetails
                 {...filteredIssuesToDisplay[filteredIssuesToDisplay.findIndex((issue) => issueKey.toLowerCase().includes(issue.issueKey.toLowerCase()))]}
                 setCreateSplitViewOpened={setCreateSplitViewOpened}
