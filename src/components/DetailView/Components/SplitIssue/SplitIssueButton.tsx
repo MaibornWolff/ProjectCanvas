@@ -26,7 +26,11 @@ export function SplitIssueButton({
         closeOnItemClick={false}
       >
         <Menu.Target>
-          <Button disabled={selectedSplitIssues.length >= 3} rightSection={<IconCaretDown className={classes.icon} />}>
+          <Button
+            disabled={selectedSplitIssues.length >= 3}
+            rightSection={<IconCaretDown className={classes.icon} />}
+            color="primaryRed"
+          >
             Split Issue
           </Button>
         </Menu.Target>
@@ -38,6 +42,7 @@ export function SplitIssueButton({
                 onIssueSelected(createNewIssueIdentifier(selectedSplitIssues.length));
                 setMenuOpened(false);
               }}
+              color="primaryRed"
             >
               <IconPlus size={20} />
               Create new Issue
