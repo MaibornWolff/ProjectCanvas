@@ -2,7 +2,7 @@ import { Group, Modal, Paper } from "@mantine/core";
 import { Issue } from "../../../../../types";
 import { SplitIssueDetails } from "./SplitIssueDetails";
 import { SplitIssueCreate } from "./SplitIssueCreate";
-import { CreateNewIssueKey } from "./split-view-constants";
+import { isNewIssueKey } from "./split-view-constants";
 
 export function SplitView({
   onIssueSelected,
@@ -34,7 +34,7 @@ export function SplitView({
       <Group style={{ alignItems: "stretch" }}>
         {selectedSplitIssues.map((issueKey) => (
           <Paper withBorder style={{ flex: 1 }} key={issueKey}>
-            {issueKey === CreateNewIssueKey ? (
+            {isNewIssueKey(issueKey) ? (
               <SplitIssueCreate />
             ) : (
               <SplitIssueDetails
