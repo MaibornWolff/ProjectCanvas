@@ -1,7 +1,7 @@
 import { Box, Button, Menu } from "@mantine/core";
 import { IconCaretDown, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
-import classes from "../IssueStatusMenu.module.css";
+import classes from "./SplitIssueButton.module.css";
 import { SelectDropdownSearch } from "./SelectDropdownSearch";
 import { createNewIssueIdentifier } from "./split-view-constants";
 

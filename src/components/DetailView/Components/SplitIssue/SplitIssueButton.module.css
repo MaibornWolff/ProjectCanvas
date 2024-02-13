@@ -1,0 +1,12 @@
+.root {
+  .icon {
+    transition: transform 150ms ease;
+    transform: rotate(0deg);
+  }
+
+  &[data-opened] {
+    .icon {
+      transform: rotate(180deg);
+    }
+  }
+}
