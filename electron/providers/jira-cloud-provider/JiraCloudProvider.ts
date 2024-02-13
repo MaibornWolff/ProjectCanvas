@@ -790,7 +790,7 @@ export class JiraCloudProvider implements IProvider {
         })
         .then(async (response) => {
           const createdIssue = response.data;
-          resolve(JSON.stringify(createdIssue.key));
+          resolve(createdIssue.key);
           this.setTransition(createdIssue.id, status);
         })
         .catch((error) => {

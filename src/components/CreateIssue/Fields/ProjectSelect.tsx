@@ -17,7 +17,7 @@ export function ProjectSelect({
       placeholder="Choose project"
       nothingFoundMessage="No Options"
       data={projects.map((project) => ({
-        value: project.id?.toString() || "",
+        value: project.key?.toString() || "",
         label: `${project.name} (${project.key})`,
       }))}
       searchable

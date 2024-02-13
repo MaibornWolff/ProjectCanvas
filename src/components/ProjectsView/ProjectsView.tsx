@@ -23,7 +23,7 @@ export function ProjectsView() {
     );
   }
 
-  if (projects.length > 0) return <ProjectsTable data={projects.map(({ id, ...rest }) => rest)} />;
+  if (projects.length > 0) return <ProjectsTable data={projects} />;
 
   return (
     <Center style={{ width: "100%", height: "100%" }}>

@@ -14,7 +14,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
   const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<keyof Project | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
-  const { setSelectedProject, setSelectedProjectBoardIds, setIssueTypes } = useCanvasStore();
+  const { setSelectedProject, setSelectedProjectBoardIds, setIssueTypes, setIssueTypesWithFieldsMap } = useCanvasStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,12 +44,20 @@ export function ProjectsTable({ data }: { data: Project[] }) {
     setSelectedProject(row);
     setSelectedProjectBoardIds(await window.provider.getBoardIds(row.key));
     setIssueTypes(await window.provider.getIssueTypesByProject(row.key));
+    setIssueTypesWithFieldsMap(
+      await window.provider.getIssueTypesWithFieldsMap()
+        .then(async (mapResponse) => {
+          const map = new Map<string, string[]>();
+          Object.entries(mapResponse).forEach(([key, value]) => map.set(key, value));
+          return map;
+        }),
+    );
     navigate(RouteNames.BACKLOG_VIEW);
   };
 
   const header = data
     && data.length > 0
-    && Object.keys(data[0]).map((key) => {
+    && Object.keys(data[0]).filter((key) => key !== "id").map((key) => {
       let SortIcon: Icon;
       if (sortBy === key) {
         if (reverseSortDirection) SortIcon = IconChevronUp;
@@ -81,7 +89,7 @@ export function ProjectsTable({ data }: { data: Project[] }) {
       key={row.key}
       onClick={() => onClickRow(row)}
     >
-      {Object.keys(row).map((key) => (
+      {Object.keys(row).filter((key) => key !== "id").map((key) => (
         <Table.Td key={key}>
           {" "}
           {row[key as keyof Project]}

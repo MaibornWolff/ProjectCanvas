@@ -1,5 +1,6 @@
 import { Accordion, Box, Breadcrumbs, Group, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import { Issue } from "types";
+import { useState } from "react";
 import { AddSubtask } from "./Components/AddSubtask";
 import { AssigneeMenu } from "./Components/AssigneeMenu";
 import { EditableEpic } from "./Components/EditableEpic";
@@ -16,6 +17,8 @@ import { Attachments } from "./Components/Attachments/Attachments";
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
 import { IssueStatusMenu } from "./Components/IssueStatusMenu";
+import { SplitIssueButton } from "./Components/SplitIssue/SplitIssueButton";
+import { SplitView } from "./Components/SplitIssue/SplitView";
 
 export function DetailView({
   issueKey,
@@ -36,6 +39,15 @@ export function DetailView({
   attachments,
   closeModal,
 }: Issue & { closeModal: () => void }) {
+  const [createSplitViewOpened, setCreateSplitViewOpened] = useState(false);
+  const [selectedSplitIssues, setSelectedSplitIssues] = useState<string[]>([issueKey]);
+  const addSelectedIssue = (newIssue: string) => {
+    setSelectedSplitIssues((state) => [...state, newIssue]);
+  };
+  const replaceSelectedIssue = (oldIssue: string, newIssue: string) => {
+    setSelectedSplitIssues(selectedSplitIssues.with(selectedSplitIssues.indexOf(oldIssue), newIssue));
+  };
+
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
@@ -99,6 +111,30 @@ export function DetailView({
                 type={type}
                 status={status}
               />
+              <SplitIssueButton
+                onIssueSelected={(selectedIssueKey: string) => {
+                  setCreateSplitViewOpened(true);
+                  addSelectedIssue(selectedIssueKey);
+                }}
+                selectedSplitIssues={selectedSplitIssues}
+              />
+
+              <SplitView
+                opened={createSplitViewOpened}
+                onClose={() => {
+                  setSelectedSplitIssues(() => [issueKey]);
+                  setCreateSplitViewOpened(false);
+                }}
+                onCreate={(newIssueKey: string, previousNewIssueIdentifier: string) => {
+                  replaceSelectedIssue(previousNewIssueIdentifier, newIssueKey);
+                }}
+                onIssueSelected={(selectedIssueKey: string) => {
+                  setCreateSplitViewOpened(true);
+                  addSelectedIssue(selectedIssueKey);
+                }}
+                selectedSplitIssues={selectedSplitIssues}
+              />
+
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
