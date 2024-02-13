@@ -1,12 +1,12 @@
 .root {
   .icon {
     transition: transform 150ms ease;
-    transform: rotate(0deg);
+    transform: scaleX(1);
   }
 
   &[data-opened] {
     .icon {
-      transform: rotate(180deg);
+      transform: scaleX(-1);
     }
   }
 }

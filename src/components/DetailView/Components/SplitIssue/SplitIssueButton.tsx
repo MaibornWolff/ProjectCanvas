@@ -1,5 +1,5 @@
 import { Box, Button, Menu } from "@mantine/core";
-import { IconCaretDown, IconPlus } from "@tabler/icons-react";
+import { IconArrowsSplit2, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import classes from "./SplitIssueButton.module.css";
 import { SelectDropdownSearch } from "./SelectDropdownSearch";
@@ -28,7 +28,7 @@ export function SplitIssueButton({
         <Menu.Target>
           <Button
             disabled={selectedSplitIssues.length >= 3}
-            rightSection={<IconCaretDown className={classes.icon} />}
+            rightSection={<IconArrowsSplit2 className={classes.icon} />}
             color="primaryRed"
           >
             Split Issue
