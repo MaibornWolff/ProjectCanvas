@@ -1,6 +1,6 @@
-import { Center, Group, Loader, Modal, Paper, Button, Text } from "@mantine/core";
+import { Center, Group, Loader, Modal, Paper, Button, Text, Box, ActionIcon } from "@mantine/core";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
+import { IconArrowsRightLeft, IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import { Issue } from "../../../../../types";
@@ -13,12 +13,14 @@ import { editIssue } from "../../helpers/queryFunctions";
 
 export function SplitView({
   onIssueSelected,
+  onIssuesSwapped,
   opened,
   onClose,
   onCreate,
   selectedSplitIssues,
 }: {
   onIssueSelected: (issueKey: string) => void,
+  onIssuesSwapped: (firstIssueKey: string, secondIssueKey: string) => void,
   opened: boolean,
   onClose: () => void,
   onCreate: (newIssueKey: string, previousNewIssueIdentifier: string) => void,
@@ -141,9 +143,26 @@ export function SplitView({
       </Group>
       <Group style={{ alignItems: "stretch" }}>
         {selectedSplitIssues.map((issueKey) => (
-          <Paper withBorder style={{ flex: 1 }} key={issueKey}>
-            {getContentForSplitIssue(issueKey)}
-          </Paper>
+          <Box pos="relative" style={{ flex: 1 }} h="80vh">
+            <Paper withBorder key={issueKey} h="100%">
+              {getContentForSplitIssue(issueKey)}
+            </Paper>
+            {(selectedSplitIssues.indexOf(issueKey) !== selectedSplitIssues.length - 1) ? (
+              <ActionIcon
+                style={{ position: "absolute", right: "-27px", top: "50%", zIndex: 1000, width: "40px" }}
+                c="div"
+                color="gray"
+                variant="filled"
+                radius="lg"
+                onClick={() => {
+                  const currentIndex = selectedSplitIssues.indexOf(issueKey);
+                  onIssuesSwapped(selectedSplitIssues[currentIndex], selectedSplitIssues[currentIndex + 1]);
+                }}
+              >
+                <IconArrowsRightLeft />
+              </ActionIcon>
+            ) : undefined}
+          </Box>
         ))}
       </Group>
     </Modal>
