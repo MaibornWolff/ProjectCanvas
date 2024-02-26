@@ -132,7 +132,7 @@ export function SplitView({
           >
             <IconDeviceFloppy />
           </Button>
-          <Button c="div" variant="transparent" color="red" pl="0">
+          <Button c="div" variant="transparent" color="red" pl="0" onClick={() => onClose()}>
             <IconX />
           </Button>
         </Group>

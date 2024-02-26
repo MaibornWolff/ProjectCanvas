@@ -141,6 +141,7 @@ export function DetailView({
                 onClose={() => {
                   setSelectedSplitIssues(() => [issueKey]);
                   setCreateSplitViewOpened(false);
+                  closeModal();
                 }}
                 onCreate={(newIssueKey: string, previousNewIssueIdentifier: string) => {
                   replaceSelectedIssue(previousNewIssueIdentifier, newIssueKey);
