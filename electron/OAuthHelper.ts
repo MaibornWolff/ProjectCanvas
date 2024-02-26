@@ -18,10 +18,11 @@ export function handleOAuth2(win: BrowserWindow) {
     "write:jira-work",
     "manage:jira-webhook",
     "manage:jira-data-provider",
+    "read:project:jira",
     "read:sprint:jira-software",
+    "write:sprint:jira-software",
     "read:issue-details:jira",
     "read:board-scope:jira-software",
-    "write:sprint:jira-software",
     "write:board-scope:jira-software",
     "read:issue:jira-software",
     "write:issue:jira-software",
@@ -31,7 +32,6 @@ export function handleOAuth2(win: BrowserWindow) {
     "read:epic:jira-software",
     "write:epic:jira-software",
     "read:jql:jira",
-    "offline_access",
     "offline_access",
   ].join("%20");
   const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
