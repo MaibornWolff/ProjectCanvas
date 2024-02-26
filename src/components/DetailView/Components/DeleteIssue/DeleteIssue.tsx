@@ -25,14 +25,14 @@ export function DeleteIssue({
     >
       <Popover.Target>
         <Button
+          c="div"
           color="red"
-          rightSection={<IconTrash size={16} />}
           onClick={(e) => {
             e.stopPropagation();
             setIssuePopoverOpened(!issuePopoverOpened);
           }}
         >
-          Delete
+          <IconTrash size={16} />
         </Button>
       </Popover.Target>
       <Popover.Dropdown

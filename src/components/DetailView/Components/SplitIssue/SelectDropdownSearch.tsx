@@ -53,7 +53,7 @@ export function SelectDropdownSearch({
         <InputBase
           rightSection={<Combobox.Chevron />}
           leftSection={(
-            <ActionIcon>
+            <ActionIcon color="primaryRed">
               <IconSearch size={14} />
             </ActionIcon>
           )}

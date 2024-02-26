@@ -111,13 +111,6 @@ export function DetailView({
                 type={type}
                 status={status}
               />
-              <SplitIssueButton
-                onIssueSelected={(selectedIssueKey: string) => {
-                  setCreateSplitViewOpened(true);
-                  addSelectedIssue(selectedIssueKey);
-                }}
-                selectedSplitIssues={selectedSplitIssues}
-              />
 
               <SplitView
                 opened={createSplitViewOpened}
@@ -135,7 +128,17 @@ export function DetailView({
                 selectedSplitIssues={selectedSplitIssues}
               />
 
-              <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
+              <Group>
+                <SplitIssueButton
+                  onIssueSelected={(selectedIssueKey: string) => {
+                    setCreateSplitViewOpened(true);
+                    addSelectedIssue(selectedIssueKey);
+                  }}
+                  selectedSplitIssues={selectedSplitIssues}
+                />
+
+                <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
+              </Group>
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
               <Accordion.Item value="Details">
