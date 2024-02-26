@@ -1,5 +1,6 @@
-import { Center, Group, Loader, Modal, Paper } from "@mantine/core";
+import { Center, Group, Loader, Modal, Paper, Button, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
+import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { Issue } from "../../../../../types";
 import { SplitIssueDetails } from "./SplitIssueDetails";
 import { SplitIssueCreate } from "./SplitIssueCreate";
@@ -67,6 +68,18 @@ export function SplitView({
       withCloseButton={false}
       size="90vw"
     >
+      <Group mb="sm" justify="space-between">
+        <Text>Split-View</Text>
+
+        <Group>
+          <Button c="div" color="primaryBlue">
+            <IconDeviceFloppy />
+          </Button>
+          <Button c="div" variant="transparent" color="red" pl="0">
+            <IconX />
+          </Button>
+        </Group>
+      </Group>
       <Group style={{ alignItems: "stretch" }}>
         {selectedSplitIssues.map((issueKey) => (
           <Paper withBorder style={{ flex: 1 }} key={issueKey}>
