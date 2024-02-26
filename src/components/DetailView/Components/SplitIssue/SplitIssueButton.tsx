@@ -1,4 +1,4 @@
-import { Box, Button, Menu } from "@mantine/core";
+import { Text, Box, Button, Popover } from "@mantine/core";
 import { IconArrowsSplit2, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import classes from "./SplitIssueButton.module.css";
@@ -16,46 +16,48 @@ export function SplitIssueButton({
 
   return (
     <Box className={classes.root} mod={{ opened: menuOpened }}>
-      <Menu
+      <Popover
         shadow="md"
-        onOpen={() => setMenuOpened(true)}
-        onClose={() => {
-          setMenuOpened(false);
-        }}
         opened={menuOpened}
-        closeOnItemClick={false}
       >
-        <Menu.Target>
+        <Popover.Target>
           <Button
+            c="div"
             disabled={selectedSplitIssues.length >= 3}
-            rightSection={<IconArrowsSplit2 className={classes.icon} />}
+            onClick={(e) => {
+              e.stopPropagation();
+              setMenuOpened(!menuOpened);
+            }}
             color="primaryRed"
           >
-            Split Issue
+            <IconArrowsSplit2 className={classes.icon} />
           </Button>
-        </Menu.Target>
-        <Menu.Dropdown>
-          <Menu.Item component="div">
-            <Button
-              fullWidth
-              onClick={() => {
-                onIssueSelected(createNewIssueIdentifier(selectedSplitIssues.length));
-                setMenuOpened(false);
-              }}
-              color="primaryRed"
-            >
-              <IconPlus size={20} />
-              Create new Issue
-            </Button>
-          </Menu.Item>
-          <Menu.Item component="div">
-            <SelectDropdownSearch
-              onIssueSelected={onIssueSelected}
-              selectedSplitIssues={selectedSplitIssues}
-            />
-          </Menu.Item>
-        </Menu.Dropdown>
-      </Menu>
+        </Popover.Target>
+        <Popover.Dropdown>
+          <Text mb="sm">Split Issue</Text>
+
+          <Button
+            mb="sm"
+            fullWidth
+            onClick={() => {
+              onIssueSelected(createNewIssueIdentifier(selectedSplitIssues.length));
+              setMenuOpened(false);
+            }}
+            color="primaryRed"
+          >
+            <IconPlus size={20} />
+            Create new Issue
+          </Button>
+
+          <SelectDropdownSearch
+            onIssueSelected={(issueKey) => {
+              onIssueSelected(issueKey);
+              setMenuOpened(false);
+            }}
+            selectedSplitIssues={selectedSplitIssues}
+          />
+        </Popover.Dropdown>
+      </Popover>
     </Box>
   );
 }
