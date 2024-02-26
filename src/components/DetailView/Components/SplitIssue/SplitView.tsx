@@ -62,7 +62,9 @@ export function SplitView({
       });
     },
     onSuccess: () => {
-      const issueKeys = Object.keys(modifiedDescriptions).join(", ");
+      const issueKeys = Object.keys(modifiedDescriptions)
+        .filter((x) => !!modifiedDescriptions[x])
+        .join(", ");
       showNotification({
         message: `Description of the following issues has been modified: ${issueKeys}!`,
         color: "green",
