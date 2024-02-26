@@ -14,8 +14,9 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { Attachment, Issue, User } from "types";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { showNotification } from "@mantine/notifications";
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu";
 import { Description } from "../DetailView/Components/Description";
 import { IssueSummary } from "./Components/IssueSummary";
@@ -36,6 +37,7 @@ import { StatusType } from "../../../types/status";
 import { getStatusTypeColor } from "../../common/status-color";
 import { Attachments } from "../DetailView/Components/Attachments/Attachments";
 import { IssueStatusMenu } from "../DetailView/Components/IssueStatusMenu";
+import { editIssue } from "../DetailView/helpers/queryFunctions";
 
 export function EpicDetailView({
   issueKey,
@@ -101,6 +103,22 @@ export function EpicDetailView({
       ?.sort((issueA: Issue, issueB: Issue) => sortIssuesByRank(issueA, issueB)) ?? [],
   });
 
+  const mutationDescription = useMutation({
+    mutationFn: (issue: Partial<Issue>) => editIssue(issue as Issue, issueKey),
+    onError: () => {
+      showNotification({
+        message: "An error occurred while modifing the Description 😢",
+        color: "red",
+      });
+    },
+    onSuccess: () => {
+      showNotification({
+        message: `Description of issue ${issueKey} has been modified!`,
+        color: "green",
+      });
+    },
+  });
+
   const getStatusNamesInCategory = (category: StatusType) => issueStatusByCategory[category]?.map((s) => s.name) ?? [];
   const validTodoStatus = getStatusNamesInCategory(StatusType.TODO);
   const validInProgressStatus = getStatusNamesInCategory(
@@ -163,7 +181,12 @@ export function EpicDetailView({
               marginTop: "-7px",
             }}
           >
-            <Description issueKey={issueKey} description={description} />
+            <Description
+              description={description}
+              onChange={(newDescription) => {
+                mutationDescription.mutate({ description: newDescription });
+              }}
+            />
           </Group>
           <Group align="center" p="sm">
             <Progress.Root

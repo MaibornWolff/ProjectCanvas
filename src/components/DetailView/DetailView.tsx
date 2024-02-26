@@ -1,6 +1,8 @@
 import { Accordion, Box, Breadcrumbs, Group, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import { Issue } from "types";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { showNotification } from "@mantine/notifications";
 import { AddSubtask } from "./Components/AddSubtask";
 import { AssigneeMenu } from "./Components/AssigneeMenu";
 import { EditableEpic } from "./Components/EditableEpic";
@@ -19,6 +21,7 @@ import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
 import { IssueStatusMenu } from "./Components/IssueStatusMenu";
 import { SplitIssueButton } from "./Components/SplitIssue/SplitIssueButton";
 import { SplitView } from "./Components/SplitIssue/SplitView";
+import { editIssue } from "./helpers/queryFunctions";
 
 export function DetailView({
   issueKey,
@@ -47,6 +50,22 @@ export function DetailView({
   const replaceSelectedIssue = (oldIssue: string, newIssue: string) => {
     setSelectedSplitIssues(selectedSplitIssues.with(selectedSplitIssues.indexOf(oldIssue), newIssue));
   };
+
+  const mutationDescription = useMutation({
+    mutationFn: (issue: Partial<Issue>) => editIssue(issue as Issue, issueKey),
+    onError: () => {
+      showNotification({
+        message: "An error occurred while modifing the Description 😢",
+        color: "red",
+      });
+    },
+    onSuccess: () => {
+      showNotification({
+        message: `Description of issue ${issueKey} has been modified!`,
+        color: "green",
+      });
+    },
+  });
 
   return (
     <Paper p="xs">
@@ -79,7 +98,12 @@ export function DetailView({
             <Text c="dimmed" mb="sm">
               Description
             </Text>
-            <Description issueKey={issueKey} description={description} />
+            <Description
+              description={description}
+              onChange={(newDescription) => {
+                mutationDescription.mutate({ description: newDescription });
+              }}
+            />
             <Text c="dimmed" mb="sm">
               Child Issues
             </Text>
