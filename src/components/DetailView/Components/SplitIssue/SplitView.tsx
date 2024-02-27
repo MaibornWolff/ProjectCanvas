@@ -198,8 +198,8 @@ export function SplitView({
       </Group>
       <Group style={{ alignItems: "stretch" }}>
         {selectedSplitIssues.map((issueKey) => (
-          <Box pos="relative" style={{ flex: 1 }} h="80vh">
-            <Paper withBorder key={issueKey} h="100%">
+          <Box pos="relative" style={{ flex: 1 }} h="80vh" key={issueKey}>
+            <Paper withBorder h="100%">
               {getContentForSplitIssue(issueKey)}
             </Paper>
             {(selectedSplitIssues.indexOf(issueKey) !== selectedSplitIssues.length - 1) ? (
