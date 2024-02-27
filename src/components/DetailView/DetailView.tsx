@@ -44,8 +44,22 @@ export function DetailView({
 }: Issue & { closeModal: () => void }) {
   const [createSplitViewOpened, setCreateSplitViewOpened] = useState(false);
   const [selectedSplitIssues, setSelectedSplitIssues] = useState<string[]>([issueKey]);
+
+  function closeSplitView() {
+    setSelectedSplitIssues(() => [issueKey]);
+    setCreateSplitViewOpened(false);
+    closeModal();
+  }
+
   const addSelectedIssue = (newIssue: string) => {
     setSelectedSplitIssues((state) => [...state, newIssue]);
+  };
+  const removeSelectedIssue = (issue: string) => {
+    const newSelectedSplitIssues = selectedSplitIssues.filter((x) => x !== issue);
+    setSelectedSplitIssues(newSelectedSplitIssues);
+    if (newSelectedSplitIssues.length === 0) {
+      closeSplitView();
+    }
   };
   const replaceSelectedIssue = (oldIssue: string, newIssue: string) => {
     setSelectedSplitIssues(selectedSplitIssues.with(selectedSplitIssues.indexOf(oldIssue), newIssue));
@@ -143,11 +157,8 @@ export function DetailView({
 
               <SplitView
                 opened={createSplitViewOpened}
-                onClose={() => {
-                  setSelectedSplitIssues(() => [issueKey]);
-                  setCreateSplitViewOpened(false);
-                  closeModal();
-                }}
+                onClose={() => closeSplitView()}
+                onIssueClose={removeSelectedIssue}
                 onCreate={(newIssueKey: string, previousNewIssueIdentifier: string) => {
                   replaceSelectedIssue(previousNewIssueIdentifier, newIssueKey);
                 }}
