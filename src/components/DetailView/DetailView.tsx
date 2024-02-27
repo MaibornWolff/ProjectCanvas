@@ -50,6 +50,11 @@ export function DetailView({
   const replaceSelectedIssue = (oldIssue: string, newIssue: string) => {
     setSelectedSplitIssues(selectedSplitIssues.with(selectedSplitIssues.indexOf(oldIssue), newIssue));
   };
+  const swapSelectedIssues = (firstIssue: string, secondIssue: string) => {
+    setSelectedSplitIssues(selectedSplitIssues
+      .with(selectedSplitIssues.indexOf(firstIssue), secondIssue)
+      .with(selectedSplitIssues.indexOf(secondIssue), firstIssue));
+  };
 
   const mutationDescription = useMutation({
     mutationFn: (issue: Partial<Issue>) => editIssue(issue as Issue, issueKey),
@@ -150,6 +155,7 @@ export function DetailView({
                   setCreateSplitViewOpened(true);
                   addSelectedIssue(selectedIssueKey);
                 }}
+                onIssuesSwapped={swapSelectedIssues}
                 selectedSplitIssues={selectedSplitIssues}
               />
 
