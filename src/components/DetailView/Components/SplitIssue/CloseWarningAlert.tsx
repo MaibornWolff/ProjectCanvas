@@ -1,12 +1,12 @@
 import { Button, Stack, Alert, Group } from "@mantine/core";
-import { IconAlertCircle } from "@tabler/icons-react";
+import { IconAlertTriangle } from "@tabler/icons-react";
 
 export function CloseWarningAlert({ cancelAlert, confirmAlert }: { cancelAlert: () => void, confirmAlert: () => void }) {
   return (
     <Stack>
       <Alert
-        icon={<IconAlertCircle size={16} />}
-        title="Attention!"
+        icon={<IconAlertTriangle size={32} />}
+        title="Warning!"
         color="red"
       >
         If you close this view, all unsaved changes will be lost!
@@ -24,6 +24,8 @@ export function CloseWarningAlert({ cancelAlert, confirmAlert }: { cancelAlert: 
           Cancel
         </Button>
         <Button
+          variant="gradient"
+          gradient={{ from: "primaryBlue", to: "primaryRed", deg: 45 }}
           style={{ flex: 1 }}
           onClick={(e) => {
             e.stopPropagation();

@@ -184,6 +184,7 @@ export function SplitView({
             centered
             onClose={() => setCloseWarningModalOpened(false)}
             withCloseButton={false}
+            size={500}
           >
             <CloseWarningAlert
               cancelAlert={() => setCloseWarningModalOpened(false)}
