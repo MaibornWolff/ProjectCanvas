@@ -26,8 +26,10 @@ import { createIssue, getAssignableUsersByProject, getCurrentUser } from "../../
 
 export function SplitIssueCreate({
   onCreate,
+  onCancel,
 }: {
   onCreate: (issueKey: string) => void,
+  onCancel: () => void,
 }) {
   const queryClient = useQueryClient();
 
@@ -168,12 +170,7 @@ export function SplitIssueCreate({
             <LabelsSelect form={form} />
             <AttachmentFileInput form={form} />
             <Group justify="right">
-              <Button
-                variant="light"
-                color="gray"
-              >
-                Cancel
-              </Button>
+              <Button variant="light" color="gray" onClick={onCancel}>Cancel</Button>
               <Button type="submit">Create</Button>
             </Group>
           </Stack>

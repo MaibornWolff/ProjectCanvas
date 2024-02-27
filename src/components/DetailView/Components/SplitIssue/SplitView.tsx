@@ -16,6 +16,7 @@ export function SplitView({
   onIssuesSwapped,
   opened,
   onClose,
+  onIssueClose,
   onCreate,
   selectedSplitIssues,
 }: {
@@ -23,6 +24,7 @@ export function SplitView({
   onIssuesSwapped: (firstIssueKey: string, secondIssueKey: string) => void,
   opened: boolean,
   onClose: () => void,
+  onIssueClose: (issueKey: string) => void,
   onCreate: (newIssueKey: string, previousNewIssueIdentifier: string) => void,
   selectedSplitIssues: string[],
 }) {
@@ -75,13 +77,32 @@ export function SplitView({
     },
   });
 
+  const mutateDescription = useMutation({
+    mutationFn: (issueKey: string) => editIssue(
+      { description: modifiedDescriptions[issueKey] } as Issue,
+      issueKey,
+    ),
+    onError: () => {
+      showNotification({
+        message: "An error occurred while modifing the Description 😢",
+        color: "red",
+      });
+    },
+    onSuccess: (_, issueKey) => {
+      showNotification({
+        message: `Description of the issue ${issueKey} has been modified!`,
+        color: "green",
+      });
+      setModifiedDescription(issueKey, undefined);
+    },
+  });
+
   function getContentForSplitIssue(issueKey: string) {
     if (isNewIssueIdentifier(issueKey)) {
       return (
         <SplitIssueCreate
-          onCreate={(newIssueKey: string) => {
-            onCreate(newIssueKey, issueKey);
-          }}
+          onCreate={(newIssueKey: string) => onCreate(newIssueKey, issueKey)}
+          onCancel={() => onIssueClose(issueKey)}
         />
       );
     }
@@ -91,7 +112,10 @@ export function SplitView({
         <SplitIssueDetails
           {...issues[issueKey]}
           description={modifiedDescriptions[issueKey] ?? issues[issueKey].description}
+          originalIssueDescription={issues[issueKey].description}
           onIssueSelected={onIssueSelected}
+          onIssueClosed={() => onIssueClose(issueKey)}
+          onIssueSaved={() => mutateDescription.mutate(issueKey)}
           onIssueDescriptionChanged={(newDescription) => {
             setModifiedDescription(
               issueKey,

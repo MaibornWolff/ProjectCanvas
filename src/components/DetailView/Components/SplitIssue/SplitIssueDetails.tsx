@@ -1,4 +1,5 @@
-import { Accordion, Box, Breadcrumbs, Group, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
+import { Accordion, Box, Breadcrumbs, Button, Group, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
+import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { Issue } from "../../../../../types";
 import { EditableEpic } from "../EditableEpic";
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
@@ -26,6 +27,7 @@ export function SplitIssueDetails(
     labels,
     assignee,
     description,
+    originalIssueDescription,
     subtasks,
     created,
     updated,
@@ -35,10 +37,15 @@ export function SplitIssueDetails(
     sprint,
     attachments,
     onIssueSelected,
+    onIssueClosed,
+    onIssueSaved,
     onIssueDescriptionChanged,
     selectedSplitIssues,
   } : Issue & {
+    originalIssueDescription: string,
     onIssueSelected: (issueKey: string) => void,
+    onIssueClosed: () => void,
+    onIssueSaved: () => void,
     onIssueDescriptionChanged: (newDescription: string) => void,
     selectedSplitIssues: string[],
   },
@@ -63,7 +70,7 @@ export function SplitIssueDetails(
         </Title>
         <ScrollArea.Autosize
           mr="xs"
-          style={{ maxHeight: "70vh" }}
+          style={{ maxHeight: "65vh" }}
           offsetScrollbars
         >
           <Text c="dimmed" mb="sm">
@@ -150,6 +157,19 @@ export function SplitIssueDetails(
           <Attachments issueKey={issueKey} attachments={attachments} />
           <CommentSection issueKey={issueKey} comment={comment} />
         </ScrollArea.Autosize>
+        <Group style={{ position: "absolute", right: "50px", bottom: "15px" }}>
+          <Button
+            c="div"
+            color="primaryBlue"
+            disabled={originalIssueDescription === description}
+            onClick={onIssueSaved}
+          >
+            <IconDeviceFloppy />
+          </Button>
+          <Button c="div" variant="subtle" color="red" onClick={onIssueClosed}>
+            <IconX />
+          </Button>
+        </Group>
       </Stack>
     </Paper>
   );
