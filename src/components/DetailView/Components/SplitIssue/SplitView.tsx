@@ -10,6 +10,7 @@ import { isNewIssueIdentifier } from "./split-view-constants";
 import { getIssuesByProject } from "../../../BacklogView/helpers/queryFetchers";
 import { useCanvasStore } from "../../../../lib/Store";
 import { editIssue } from "../../helpers/queryFunctions";
+import { CloseWarningAlert } from "./CloseWarningAlert";
 
 export function SplitView({
   onIssueSelected,
@@ -47,6 +48,7 @@ export function SplitView({
     });
   };
   const saveButtonEnabled = Object.values(modifiedDescriptions).filter((x) => !!x).length > 0;
+  const [closeWarningModalOpened, setCloseWarningModalOpened] = useState(false);
 
   const mutateDescriptions = useMutation({
     mutationFn: () => Promise.all(
@@ -138,11 +140,19 @@ export function SplitView({
     );
   }
 
+  function tryClose() {
+    if (!saveButtonEnabled) {
+      onClose();
+    } else {
+      setCloseWarningModalOpened(!closeWarningModalOpened);
+    }
+  }
+
   return (
     <Modal
       opened={opened}
       centered
-      onClose={onClose}
+      onClose={() => tryClose()}
       withCloseButton={false}
       size="90vw"
     >
@@ -160,9 +170,29 @@ export function SplitView({
           >
             <IconDeviceFloppy />
           </Button>
-          <Button c="div" variant="transparent" color="red" pl="0" onClick={() => onClose()}>
+          <Button
+            c="div"
+            variant="transparent"
+            color="red"
+            pl="0"
+            onClick={() => tryClose()}
+          >
             <IconX />
           </Button>
+          <Modal
+            opened={closeWarningModalOpened}
+            centered
+            onClose={() => setCloseWarningModalOpened(false)}
+            withCloseButton={false}
+          >
+            <CloseWarningAlert
+              cancelAlert={() => setCloseWarningModalOpened(false)}
+              confirmAlert={() => {
+                setCloseWarningModalOpened(false);
+                onClose();
+              }}
+            />
+          </Modal>
         </Group>
       </Group>
       <Group style={{ alignItems: "stretch" }}>
