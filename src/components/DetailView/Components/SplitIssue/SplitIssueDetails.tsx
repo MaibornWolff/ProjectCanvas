@@ -1,5 +1,18 @@
-import { Accordion, Box, Breadcrumbs, Button, Group, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
+import {
+  Accordion,
+  Box,
+  Breadcrumbs,
+  Button,
+  Group,
+  Paper,
+  ScrollArea,
+  Stack,
+  Text,
+  Title,
+  Popover,
+} from "@mantine/core";
 import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
+import { useState } from "react";
 import { Issue } from "../../../../../types";
 import { EditableEpic } from "../EditableEpic";
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
@@ -16,6 +29,7 @@ import { Labels } from "../Labels";
 import { IssueSprint } from "../IssueSprint";
 import { StoryPointsEstimateMenu } from "../StoryPointsEstimateMenu";
 import { ReporterMenu } from "../ReporterMenu";
+import { CloseWarningAlert } from "./CloseWarningAlert";
 
 export function SplitIssueDetails(
   {
@@ -50,6 +64,9 @@ export function SplitIssueDetails(
     selectedSplitIssues: string[],
   },
 ) {
+  const saveButtonDisabled = originalIssueDescription === description;
+  const [closeWarningPopoverOpened, setCloseWarningPopoverOpened] = useState(false);
+
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
@@ -161,14 +178,39 @@ export function SplitIssueDetails(
           <Button
             c="div"
             color="primaryBlue"
-            disabled={originalIssueDescription === description}
+            disabled={saveButtonDisabled}
             onClick={onIssueSaved}
           >
             <IconDeviceFloppy />
           </Button>
-          <Button c="div" variant="subtle" color="red" onClick={onIssueClosed}>
-            <IconX />
-          </Button>
+
+          <Popover opened={closeWarningPopoverOpened} onChange={setCloseWarningPopoverOpened}>
+            <Popover.Target>
+              <Button
+                c="div"
+                variant="subtle"
+                color="red"
+                onClick={() => {
+                  if (saveButtonDisabled) {
+                    onIssueClosed();
+                  } else {
+                    setCloseWarningPopoverOpened(!closeWarningPopoverOpened);
+                  }
+                }}
+              >
+                <IconX />
+              </Button>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <CloseWarningAlert
+                cancelAlert={() => setCloseWarningPopoverOpened(false)}
+                confirmAlert={() => {
+                  setCloseWarningPopoverOpened(false);
+                  onIssueClosed();
+                }}
+              />
+            </Popover.Dropdown>
+          </Popover>
         </Group>
       </Stack>
     </Paper>
