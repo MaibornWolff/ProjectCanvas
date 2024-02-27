@@ -35,9 +35,11 @@ export function SplitIssueDetails(
     sprint,
     attachments,
     onIssueSelected,
+    onIssueDescriptionChanged,
     selectedSplitIssues,
   } : Issue & {
     onIssueSelected: (issueKey: string) => void,
+    onIssueDescriptionChanged: (newDescription: string) => void,
     selectedSplitIssues: string[],
   },
 ) {
@@ -67,7 +69,10 @@ export function SplitIssueDetails(
           <Text c="dimmed" mb="sm">
             Description
           </Text>
-          <Description issueKey={issueKey} description={description} />
+          <Description
+            description={description}
+            onChange={onIssueDescriptionChanged}
+          />
           <Group justify="left" mb="sm">
             <IssueStatusMenu
               projectId={projectId}

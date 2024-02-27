@@ -190,7 +190,10 @@ export function IssueCard({
           labels={labels}
           assignee={assignee}
           projectId={projectId}
-          closeModal={() => setOpened(false)}
+          closeModal={() => {
+            setOpened(false);
+            queryClient.invalidateQueries({ queryKey: ["issues"] });
+          }}
           {...props}
         />
       </Modal>
