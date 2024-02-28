@@ -33,7 +33,7 @@ export function SplitIssueButton({
             <IconArrowsSplit2 className={classes.icon} />
           </Button>
         </Popover.Target>
-        <Popover.Dropdown>
+        <Popover.Dropdown miw={300}>
           <Text mb="sm">Split Issue</Text>
 
           <Button
