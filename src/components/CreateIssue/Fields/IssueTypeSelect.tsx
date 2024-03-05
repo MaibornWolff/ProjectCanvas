@@ -40,7 +40,7 @@ export function IssueTypeSelect({
           form.setFieldValue("epic.issueKey", undefined);
         }
         form.setFieldValue("status", "To Do");
-        form.setFieldValue("priority.id", null);
+        form.setFieldValue("priority.id", "");
         form.setFieldValue("startDate", null as unknown as Date);
         form.setFieldValue("dueDate", null as unknown as Date);
       }}

@@ -17,7 +17,7 @@ export function CustomItemSelect<
   comboboxProps = {},
   inputBaseProps = {},
 }: {
-  value: string | undefined,
+  value?: string,
   onChange: (updatedValue: string | undefined) => void,
   options: OptionType[],
   ItemComponent: ForwardRefExoticComponent<OptionType & RefAttributes<RefType>>,
@@ -78,7 +78,7 @@ export function CustomItemSelect<
           placeholder={placeholder}
           pointer
           rightSection={
-            clearable && value !== null ? (
+            clearable && currentValue !== null ? (
               <CloseButton
                 size="sm"
                 onMouseDown={(event) => event.preventDefault()}
@@ -104,7 +104,7 @@ export function CustomItemSelect<
             combobox.closeDropdown();
             setSearch(selectedOption ? selectedOption.label : "");
           }}
-          rightSectionPointerEvents={value === null ? "none" : "all"}
+          rightSectionPointerEvents={currentValue === null ? "none" : "all"}
           {...inputBaseProps}
         />
       </Combobox.Target>
