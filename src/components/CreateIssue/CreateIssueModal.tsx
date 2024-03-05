@@ -3,7 +3,6 @@ import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Issue } from "types";
-import { Dispatch, SetStateAction } from "react";
 import { useCanvasStore } from "../../lib/Store";
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
 import { getResource, uploadAttachment } from "../DetailView/Components/Attachments/queryFunctions";
@@ -36,16 +35,17 @@ import { useColorScheme } from "../../common/color-scheme";
 
 export function CreateIssueModal({
   opened,
-  setOpened,
+  onCancel,
+  onCreate,
 }: {
   opened: boolean,
-  setOpened: Dispatch<SetStateAction<boolean>>,
+  onCancel: () => void,
+  onCreate: () => void,
 }) {
   const queryClient = useQueryClient();
   const theme = useMantineTheme();
   const colorScheme = useColorScheme();
-  const projects = useCanvasStore((state) => state.projects);
-  const selectedProject = useCanvasStore((state) => state.selectedProject);
+  const { projects, selectedProject } = useCanvasStore();
 
   const { data: currentUser } = useQuery({
     queryKey: ["currentUser"],
@@ -75,13 +75,7 @@ export function CreateIssueModal({
 
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", form.getInputProps("projectId").value],
-    queryFn: () => {
-      const relevantProject = projects.find(
-        (project) => project.id === form.getInputProps("projectId").value!,
-      )!;
-
-      return getAssignableUsersByProject(relevantProject.key);
-    },
+    queryFn: () => getAssignableUsersByProject(form.getInputProps("projectId").value!),
     enabled: !!projects && !!form.getInputProps("projectId").value,
   });
 
@@ -111,7 +105,7 @@ export function CreateIssueModal({
       });
       queryClient.invalidateQueries({ queryKey: ["issues"] });
       queryClient.invalidateQueries({ queryKey: ["epics"] });
-      setOpened(false);
+      onCreate();
       form.reset();
     },
   });
@@ -119,7 +113,7 @@ export function CreateIssueModal({
   return (
     <Modal
       opened={opened}
-      onClose={() => setOpened(false)}
+      onClose={onCancel}
       title="Create Issue"
       size="70vw"
       overlayProps={{
@@ -211,7 +205,7 @@ export function CreateIssueModal({
               <Button
                 variant="light"
                 color="gray"
-                onClick={() => setOpened(false)}
+                onClick={onCancel}
               >
                 Cancel
               </Button>

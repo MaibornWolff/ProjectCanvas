@@ -61,15 +61,9 @@ export function SplitIssueCreate({
   });
 
   const { data: assignableUsers, isLoading } = useQuery({
-    queryKey: ["assignableUsers", form.getInputProps("projectId").value],
-    queryFn: () => {
-      const relevantProject = projects.find(
-        (project) => project.id === form.getInputProps("projectId").value!,
-      )!;
-
-      return getAssignableUsersByProject(relevantProject.key);
-    },
-    enabled: !!projects && !!form.getInputProps("projectId").value,
+    queryKey: ["assignableUsers", selectedProject!.key],
+    queryFn: () => getAssignableUsersByProject(selectedProject!.key),
+    enabled: !!projects,
   });
 
   const mutation = useMutation({

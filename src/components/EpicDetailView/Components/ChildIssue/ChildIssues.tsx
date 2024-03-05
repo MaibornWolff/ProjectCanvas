@@ -53,7 +53,8 @@ export function ChildIssues({ issues }: { issues: Issue[] }) {
         </Box>
         <CreateIssueModal
           opened={createIssueModalOpened}
-          setOpened={setCreateIssueModalOpened}
+          onCancel={() => setCreateIssueModalOpened(false)}
+          onCreate={() => setCreateIssueModalOpened(false)}
         />
       </ScrollArea>
       <Divider

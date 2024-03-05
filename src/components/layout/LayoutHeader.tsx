@@ -56,7 +56,8 @@ export function LayoutHeader() {
           </Button>
           <CreateIssueModal
             opened={createIssueModalOpened}
-            setOpened={setCreateIssueModalOpened}
+            onCancel={() => setCreateIssueModalOpened(false)}
+            onCreate={() => setCreateIssueModalOpened(false)}
           />
           <ColorSchemeToggle size="34px" ml="auto" />
           <LogoutButton />

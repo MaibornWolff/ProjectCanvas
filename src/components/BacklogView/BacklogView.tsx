@@ -259,7 +259,8 @@ export function BacklogView() {
             </Box>
             <CreateIssueModal
               opened={createIssueModalOpened}
-              setOpened={setCreateIssueModalOpened}
+              onCancel={() => setCreateIssueModalOpened(false)}
+              onCreate={() => setCreateIssueModalOpened(false)}
             />
           </ScrollArea.Autosize>
           <Divider
