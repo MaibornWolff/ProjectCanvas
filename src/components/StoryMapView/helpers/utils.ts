@@ -1,4 +1,4 @@
-import produce from "immer";
+import { produce } from "immer";
 import { Case, SubActionLevel } from "../Types";
 
 export const STORY_MAP_PREFIX = "sm";
