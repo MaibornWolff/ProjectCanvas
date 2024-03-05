@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { useState } from "react";
-import { Issue } from "../../../../../types";
+import { Issue } from "@canvas/types";
 import { EditableEpic } from "../EditableEpic";
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
 import { IssueSummary } from "../IssueSummary";

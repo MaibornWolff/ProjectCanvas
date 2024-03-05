@@ -3,9 +3,9 @@ import { Icon, IconChevronDown, IconChevronUp, IconSearch, IconSelector } from "
 import { Project } from "types";
 import { useEffect, useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCanvasStore } from "../../../lib/Store";
+import { useCanvasStore } from "@canvas/lib/Store";
+import { RouteNames } from "@canvas/route-names";
 import { sortData } from "./TableHelper";
-import { RouteNames } from "../../../route-names";
 
 import classes from "./ProjectsTable.module.css";
 

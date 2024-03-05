@@ -10,8 +10,8 @@ import {
   Sprint,
   SprintCreate,
   User,
-} from "../../../types";
-import { JiraEpic, JiraIssue, JiraIssueType, JiraPriority, JiraProject, JiraSprint } from "../../../types/jira";
+} from "@canvas/types";
+import { JiraEpic, JiraIssue, JiraIssueType, JiraPriority, JiraProject, JiraSprint } from "@canvas/types/jira";
 import { IProvider } from "../base-provider";
 import { getAccessToken, refreshTokens } from "./getAccessToken";
 import { JiraCloudUser } from "./cloud-types";

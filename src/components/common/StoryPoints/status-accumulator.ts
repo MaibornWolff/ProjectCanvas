@@ -1,4 +1,4 @@
-import { Issue } from "../../../../types";
+import { Issue } from "@canvas/types";
 
 export const storyPointsAccumulator = (
   issues: Issue[],

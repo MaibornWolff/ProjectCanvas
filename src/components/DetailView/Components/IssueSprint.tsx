@@ -3,7 +3,7 @@ import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Issue, Sprint } from "types";
 import { useState } from "react";
-import { useCanvasStore } from "../../../lib/Store";
+import { useCanvasStore } from "@canvas/lib/Store";
 import { getSprints, moveIssueToBacklog } from "../../CreateIssue/queryFunctions";
 import { editIssue } from "../helpers/queryFunctions";
 

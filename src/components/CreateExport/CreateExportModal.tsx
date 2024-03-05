@@ -5,11 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 
 import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
+import { Issue } from "@canvas/types";
+import { StatusType } from "@canvas/types/status";
 import { useCanvasStore } from "../../lib/Store";
-import { Issue } from "../../../types";
 import { addExportedTimeProperties, ExportableIssue, exportIssues } from "./exportHelper";
 import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers";
-import { StatusType } from "../../../types/status";
 import { CheckboxStack } from "./CheckboxStack";
 import { InfoButton } from "./InfoButton";
 

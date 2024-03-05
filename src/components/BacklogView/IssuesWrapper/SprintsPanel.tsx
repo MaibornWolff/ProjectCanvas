@@ -1,13 +1,13 @@
 import { Accordion, Badge, Flex, Group, Text, Title } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 import { Issue, Sprint } from "types";
+import { StatusType } from "@canvas/types/status";
+import { useColorScheme } from "@canvas/common/color-scheme";
+import { useCanvasStore } from "@canvas/lib/Store";
 import { pluralize, sortSprintsByActive } from "../helpers/backlogHelpers";
 import { DraggableIssuesWrapper } from "./DraggableIssuesWrapper";
-import { StatusType } from "../../../../types/status";
 import { StoryPointsBadge } from "../../common/StoryPoints/StoryPointsBadge";
-import { useColorScheme } from "../../../common/color-scheme";
 import { storyPointsAccumulator } from "../../common/StoryPoints/status-accumulator";
-import { useCanvasStore } from "../../../lib/Store";
 
 export function SprintsPanel({
   sprints,

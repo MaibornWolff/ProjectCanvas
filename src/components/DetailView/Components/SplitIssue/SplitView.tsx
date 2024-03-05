@@ -3,12 +3,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { IconArrowsRightLeft, IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { showNotification } from "@mantine/notifications";
-import { Issue } from "../../../../../types";
+import { Issue } from "@canvas/types";
+import { useCanvasStore } from "@canvas/lib/Store";
 import { SplitIssueDetails } from "./SplitIssueDetails";
 import { SplitIssueCreate } from "./SplitIssueCreate";
 import { isNewIssueIdentifier } from "./split-view-constants";
 import { getIssuesByProject } from "../../../BacklogView/helpers/queryFetchers";
-import { useCanvasStore } from "../../../../lib/Store";
 import { editIssue } from "../../helpers/queryFunctions";
 import { CloseWarningAlert } from "./CloseWarningAlert";
 
