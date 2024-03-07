@@ -23,14 +23,6 @@ import {
   AttachmentFileInput,
 } from "./Fields";
 
-import {
-  createIssue,
-  getAssignableUsersByProject,
-  getCurrentUser,
-  getIssueTypes,
-  getIssueTypesWithFieldsMap,
-} from "./queryFunctions";
-
 export function CreateIssueModalContent({
   onCancel,
   onCreate,
@@ -39,11 +31,11 @@ export function CreateIssueModalContent({
   onCreate: () => void,
 }) {
   const queryClient = useQueryClient();
-  const { projects, selectedProject } = useCanvasStore();
+  const { projects, selectedProject, issueTypesWithFieldsMap } = useCanvasStore();
 
   const { data: currentUser } = useQuery({
     queryKey: ["currentUser"],
-    queryFn: () => getCurrentUser(),
+    queryFn: () => window.provider.getCurrentUser(),
   });
 
   const form = useForm<Issue>({
@@ -63,23 +55,18 @@ export function CreateIssueModalContent({
 
   const { data: issueTypes, isLoading } = useQuery({
     queryKey: ["issueTypes", form.getInputProps("projectId").value],
-    queryFn: () => getIssueTypes(form.getInputProps("projectId").value!),
+    queryFn: () => window.provider.getIssueTypesByProject(form.getInputProps("projectId").value!),
     enabled: !!projects && !!form.getInputProps("projectId").value,
   });
 
   const { data: assignableUsers } = useQuery({
     queryKey: ["assignableUsers", form.getInputProps("projectId").value],
-    queryFn: () => getAssignableUsersByProject(form.getInputProps("projectId").value!),
+    queryFn: () => window.provider.getAssignableUsersByProject(form.getInputProps("projectId").value!),
     enabled: !!projects && !!form.getInputProps("projectId").value,
   });
 
-  const { data: issueTypesWithFieldsMap } = useQuery({
-    queryKey: ["issueTypesWithFieldsMap"],
-    queryFn: () => getIssueTypesWithFieldsMap(),
-  });
-
   const mutation = useMutation({
-    mutationFn: (issue: Issue) => createIssue(issue),
+    mutationFn: (issue: Issue) => window.provider.createIssue(issue),
     onError: () => {
       showNotification({
         message: "The issue couldn't be created! 😢",

@@ -3,7 +3,6 @@ import { Text, Group, NumberInput, Chip, Loader, Box, useMantineTheme } from "@m
 import { showNotification } from "@mantine/notifications";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Issue } from "types";
-import { getEditableIssueFields } from "../../CreateIssue/queryFunctions";
 import { editIssue } from "../helpers/queryFunctions";
 
 export function StoryPointsEstimateMenu({
@@ -28,7 +27,7 @@ export function StoryPointsEstimateMenu({
 
   const { data: editableFields } = useQuery({
     queryKey: ["editableFields", issueKey],
-    queryFn: () => getEditableIssueFields(issueKey),
+    queryFn: () => window.provider.getEditableIssueFields(issueKey),
     enabled: !!issueKey,
   });
 

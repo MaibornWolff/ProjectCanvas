@@ -2,7 +2,6 @@ import { Select, Tooltip, Box } from "@mantine/core";
 import { UseFormReturnType } from "@mantine/form";
 import { useQuery } from "@tanstack/react-query";
 import { Issue, IssueType } from "types";
-import { getEpicsByProject } from "../queryFunctions";
 
 export function EpicSelect({
   form,
@@ -20,7 +19,7 @@ export function EpicSelect({
 }) {
   const { data: epics } = useQuery({
     queryKey: ["epics", form.getInputProps("projectId").value],
-    queryFn: () => getEpicsByProject(form.getInputProps("projectId").value!),
+    queryFn: () => window.provider.getEpicsByProject(form.getInputProps("projectId").value!),
     enabled: enabled && !!form.getInputProps("projectId").value,
   });
 

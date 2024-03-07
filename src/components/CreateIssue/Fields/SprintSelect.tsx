@@ -2,7 +2,6 @@ import { Select, Tooltip, Box } from "@mantine/core";
 import { UseFormReturnType } from "@mantine/form";
 import { useQuery } from "@tanstack/react-query";
 import { Issue, IssueType } from "types";
-import { getBoardIds, getSprints } from "../queryFunctions";
 
 export function SprintSelect({
   form,
@@ -19,13 +18,13 @@ export function SprintSelect({
 }) {
   const { data: boardIds } = useQuery({
     queryKey: ["boards", form.getInputProps("projectId").value],
-    queryFn: () => getBoardIds(form.getInputProps("projectId").value!),
+    queryFn: () => window.provider.getBoardIds(form.getInputProps("projectId").value!),
     enabled: enabled && !!form.getInputProps("projectId").value,
   });
   const { data: sprints } = useQuery({
     queryKey: ["sprints"],
     // TODO: fetch when boards are fetched (iterate over all boards) or select a specific one
-    queryFn: () => getSprints(boardIds![0]),
+    queryFn: () => window.provider.getSprints(boardIds![0]),
     enabled: enabled && !!boardIds && !!boardIds[0],
   });
 
