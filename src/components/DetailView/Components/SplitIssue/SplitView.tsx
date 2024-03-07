@@ -9,7 +9,6 @@ import { SplitIssueCreate } from "./SplitIssueCreate";
 import { isNewIssueIdentifier } from "./split-view-constants";
 import { getIssuesByProject } from "../../../BacklogView/helpers/queryFetchers";
 import { useCanvasStore } from "../../../../lib/Store";
-import { editIssue } from "../../helpers/queryFunctions";
 import { CloseWarningAlert } from "./CloseWarningAlert";
 
 export function SplitView({
@@ -55,7 +54,7 @@ export function SplitView({
       Object.keys(modifiedDescriptions)
         .filter((x) => !!x)
         .map(async (issueKey: string) => {
-          await editIssue(
+          await window.provider.editIssue(
             { description: modifiedDescriptions[issueKey] } as Issue,
             issueKey,
           );
@@ -80,7 +79,7 @@ export function SplitView({
   });
 
   const mutateDescription = useMutation({
-    mutationFn: (issueKey: string) => editIssue(
+    mutationFn: (issueKey: string) => window.provider.editIssue(
       { description: modifiedDescriptions[issueKey] } as Issue,
       issueKey,
     ),

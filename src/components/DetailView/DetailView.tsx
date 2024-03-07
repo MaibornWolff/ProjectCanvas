@@ -21,7 +21,6 @@ import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
 import { IssueStatusMenu } from "./Components/IssueStatusMenu";
 import { SplitIssueButton } from "./Components/SplitIssue/SplitIssueButton";
 import { SplitView } from "./Components/SplitIssue/SplitView";
-import { editIssue } from "./helpers/queryFunctions";
 
 export function DetailView({
   issueKey,
@@ -71,7 +70,7 @@ export function DetailView({
   };
 
   const mutationDescription = useMutation({
-    mutationFn: (issue: Partial<Issue>) => editIssue(issue as Issue, issueKey),
+    mutationFn: (issue: Partial<Issue>) => window.provider.editIssue(issue as Issue, issueKey),
     onError: () => {
       showNotification({
         message: "An error occurred while modifing the Description 😢",

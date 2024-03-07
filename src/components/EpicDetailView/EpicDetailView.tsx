@@ -19,13 +19,13 @@ import { useEffect } from "react";
 import { showNotification } from "@mantine/notifications";
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu";
 import { Description } from "../DetailView/Components/Description";
-import { IssueSummary } from "./Components/IssueSummary";
+import { IssueSummary } from "../DetailView/Components/IssueSummary";
 import { Labels } from "../DetailView/Components/Labels";
 import { ReporterMenu } from "../DetailView/Components/ReporterMenu";
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue";
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
-import { ChildIssues } from "./Components/ChildIssue/ChildIssues";
+import { ChildIssues } from "./Components/ChildIssues";
 import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers";
 import { sortIssuesByRank } from "../BacklogView/helpers/backlogHelpers";
 import { useCanvasStore } from "../../lib/Store";
@@ -37,7 +37,6 @@ import { StatusType } from "../../../types/status";
 import { getStatusTypeColor } from "../../common/status-color";
 import { Attachments } from "../DetailView/Components/Attachments/Attachments";
 import { IssueStatusMenu } from "../DetailView/Components/IssueStatusMenu";
-import { editIssue } from "../DetailView/helpers/queryFunctions";
 
 export function EpicDetailView({
   issueKey,
@@ -104,7 +103,7 @@ export function EpicDetailView({
   });
 
   const mutationDescription = useMutation({
-    mutationFn: (issue: Partial<Issue>) => editIssue(issue as Issue, issueKey),
+    mutationFn: (issue: Partial<Issue>) => window.provider.editIssue(issue as Issue, issueKey),
     onError: () => {
       showNotification({
         message: "An error occurred while modifing the Description 😢",
@@ -121,9 +120,7 @@ export function EpicDetailView({
 
   const getStatusNamesInCategory = (category: StatusType) => issueStatusByCategory[category]?.map((s) => s.name) ?? [];
   const validTodoStatus = getStatusNamesInCategory(StatusType.TODO);
-  const validInProgressStatus = getStatusNamesInCategory(
-    StatusType.IN_PROGRESS,
-  );
+  const validInProgressStatus = getStatusNamesInCategory(StatusType.IN_PROGRESS);
   const validDoneStatus = getStatusNamesInCategory(StatusType.DONE);
 
   const tasksTodo = issueCountAccumulator(childIssues, validTodoStatus);

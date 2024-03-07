@@ -4,7 +4,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Issue } from "types";
 import { useState } from "react";
 import { getLabels } from "../../CreateIssue/queryFunctions";
-import { editIssue } from "../helpers/queryFunctions";
 import { IssueLabelBadge } from "../../common/IssueLabelBadge";
 
 export function Labels({
@@ -24,7 +23,7 @@ export function Labels({
     queryFn: () => getLabels(),
   });
   const mutationLabels = useMutation({
-    mutationFn: (issue: Issue) => editIssue(issue, issueKey),
+    mutationFn: (issue: Issue) => window.provider.editIssue(issue, issueKey),
     onError: () => {
       showNotification({
         message: "An error occurred while modifing the Labels 😢",

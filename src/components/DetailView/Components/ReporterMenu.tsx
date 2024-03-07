@@ -3,7 +3,6 @@ import { showNotification } from "@mantine/notifications";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Issue } from "types";
 import { getIssueReporter } from "../../CreateIssue/queryFunctions";
-import { editIssue } from "../helpers/queryFunctions";
 
 import { UserSelectMenu } from "../../common/UserSelect/UserSelectMenu";
 
@@ -17,7 +16,7 @@ export function ReporterMenu({ issueKey }: { issueKey: string }) {
   });
 
   const mutation = useMutation({
-    mutationFn: (issue: Issue) => editIssue(issue, issueKey),
+    mutationFn: (issue: Issue) => window.provider.editIssue(issue, issueKey),
     onError: () => {
       showNotification({
         message: "The issue couldn't be modified! 😢",

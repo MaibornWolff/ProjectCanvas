@@ -5,7 +5,6 @@ import { Issue, Sprint } from "types";
 import { useState } from "react";
 import { useCanvasStore } from "../../../lib/Store";
 import { getSprints, moveIssueToBacklog } from "../../CreateIssue/queryFunctions";
-import { editIssue } from "../helpers/queryFunctions";
 
 export function IssueSprint(props: {
   sprint: Sprint | undefined,
@@ -24,7 +23,7 @@ export function IssueSprint(props: {
   });
 
   const mutationSprint = useMutation({
-    mutationFn: (issue: Issue) => editIssue(issue, props.issueKey),
+    mutationFn: (issue: Issue) => window.provider.editIssue(issue, props.issueKey),
     onError: () => {
       showNotification({
         message: "An error occurred while modifing the sprint 😢",
