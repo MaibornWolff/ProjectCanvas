@@ -160,21 +160,10 @@ export function EpicDetailView({
       <Group align="flex-start">
         <Stack style={{ flex: 13 }} justify="flex-start">
           <Title size="h1" style={{ marginBottom: "-10px" }}>
-            <IssueSummary
-              summary={summary}
-              issueKey={issueKey}
-              onMutate={reloadEpics}
-            />
+            <IssueSummary summary={summary} issueKey={issueKey} onMutate={reloadEpics} />
           </Title>
-          <Text c="dimmed" mb="sm" size="md" style={{ marginLeft: "7px" }}>
-            Description
-          </Text>
-          <Group
-            style={{
-              marginLeft: "10px",
-              marginTop: "-7px",
-            }}
-          >
+          <Text c="dimmed" mb="sm" size="md" style={{ marginLeft: "7px" }}>Description</Text>
+          <Group style={{ marginLeft: "10px", marginTop: "-7px" }}>
             <Description
               description={description}
               onChange={(newDescription) => {
@@ -250,9 +239,7 @@ export function EpicDetailView({
             <ChildIssues issues={childIssues} />
           </Group>
         </Stack>
-        <ScrollArea.Autosize
-          style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}
-        >
+        <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
           <Box>
             <Group justify="space-between" mb="sm">
               <IssueStatusMenu
@@ -265,15 +252,10 @@ export function EpicDetailView({
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
               <Accordion.Item value="Details">
-                <Accordion.Control style={{ textAlign: "left" }}>
-                  Details
-                </Accordion.Control>
+                <Accordion.Control style={{ textAlign: "left" }}>Details</Accordion.Control>
                 <Accordion.Panel>
                   <Stack>
-                    <AssigneeMenu
-                      assignee={assignee as Issue["assignee"]}
-                      issueKey={issueKey}
-                    />
+                    <AssigneeMenu assignee={assignee as Issue["assignee"]} issueKey={issueKey} />
                     <Group grow>
                       <Text fz="sm" c="dimmed">
                         Labels
@@ -291,9 +273,7 @@ export function EpicDetailView({
             </Accordion>
             <Accordion variant="contained" mb={20}>
               <Accordion.Item value="Comments">
-                <Accordion.Control style={{ textAlign: "left" }}>
-                  Comments
-                </Accordion.Control>
+                <Accordion.Control style={{ textAlign: "left" }}>Comments</Accordion.Control>
                 <Accordion.Panel>
                   <CommentSection issueKey={issueKey} comment={comment} />
                 </Accordion.Panel>
@@ -301,24 +281,14 @@ export function EpicDetailView({
             </Accordion>
             <Accordion variant="contained" mb={20}>
               <Accordion.Item value="Attachments">
-                <Accordion.Control style={{ textAlign: "left" }}>
-                  Attachments
-                </Accordion.Control>
+                <Accordion.Control style={{ textAlign: "left" }}>Attachments</Accordion.Control>
                 <Accordion.Panel>
                   <Attachments issueKey={issueKey} attachments={attachments} />
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>
-            <Text size="xs" c="dimmed">
-              Created
-              {" "}
-              {dateFormat.format(new Date(created))}
-            </Text>
-            <Text size="xs" c="dimmed">
-              Updated
-              {" "}
-              {dateFormat.format(new Date(updated))}
-            </Text>
+            <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(created))}`}</Text>
+            <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(updated))}`}</Text>
           </Box>
         </ScrollArea.Autosize>
       </Group>
