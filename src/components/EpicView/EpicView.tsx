@@ -1,5 +1,4 @@
-import { Stack, Text, Title, ScrollArea, Box, Button, Center, TextInput } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
+import { ScrollArea, Box, Button, TextInput } from "@mantine/core";
 import { ChangeEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { IconSearch } from "@tabler/icons-react";
@@ -8,13 +7,11 @@ import { CreateIssueModal } from "../CreateIssue/CreateIssueModal";
 import { EpicWrapper } from "./EpicWrapper";
 import { getEpics } from "./helpers/queryFetchers";
 import { useColorScheme } from "../../common/color-scheme";
-import { RouteNames } from "../../route-names";
 import { filterSearch } from "./helpers/epicViewHelpers";
 import { ProjectDependingView } from "../common/ProjectDependingView/ProjectDependingView";
 
 export function EpicView() {
   const colorScheme = useColorScheme();
-  const navigate = useNavigate();
 
   const { selectedProject } = useCanvasStore();
   const projectKey = selectedProject?.key;
@@ -28,21 +25,6 @@ export function EpicView() {
     enabled: !!projectKey,
     initialData: [],
   });
-
-  if (!selectedProject) {
-    return (
-      <Center style={{ width: "100%", height: "100%" }}>
-        <Stack align="center">
-          <Title>No Project has been selected!</Title>
-          <Text>Please go back to the project selection and select a project</Text>
-          <Button onClick={() => navigate(RouteNames.PROJECTS_VIEW)}>
-            To the project selection
-          </Button>
-        </Stack>
-      </Center>
-    );
-  }
-
   const searchedEpics = filterSearch(search, epics);
 
   return (

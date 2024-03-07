@@ -1,9 +1,8 @@
-import { Box, Button, Center, Divider, Flex, Group, ScrollArea, Stack, Text, TextInput, Title } from "@mantine/core";
+import { Box, Button, Center, Divider, Flex, Group, ScrollArea, Text, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
-import { useNavigate } from "react-router-dom";
 import { Issue, Sprint } from "types";
 import { UseQueryOptions } from "@tanstack/react-query/src/types";
 import { useCanvasStore } from "../../lib/Store";
@@ -18,12 +17,10 @@ import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper";
 import { SprintsPanel } from "./IssuesWrapper/SprintsPanel";
 import { ReloadButton } from "./ReloadButton";
 import { useColorScheme } from "../../common/color-scheme";
-import { RouteNames } from "../../route-names";
 import { ProjectDependingView } from "../common/ProjectDependingView/ProjectDependingView";
 
 export function BacklogView() {
   const colorScheme = useColorScheme();
-  const navigate = useNavigate();
 
   resizeDivider();
 
@@ -115,20 +112,6 @@ export function BacklogView() {
     ),
     [issuesWrapper, search],
   );
-
-  if (!selectedProject) {
-    return (
-      <Center style={{ width: "100%", height: "100%" }}>
-        <Stack align="center">
-          <Title>No Project has been selected!</Title>
-          <Text>Please go back to the project selection and select a project</Text>
-          <Button onClick={() => navigate(RouteNames.PROJECTS_VIEW)}>
-            To the project selection
-          </Button>
-        </Stack>
-      </Center>
-    );
-  }
 
   if (isErrorSprints || issueQueries.some((query) => query.isError)) {
     return (

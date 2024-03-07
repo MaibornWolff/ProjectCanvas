@@ -1,4 +1,4 @@
-import { Box, Group, Loader, Stack, Text, Title } from "@mantine/core";
+import { Box, Group, Loader, Stack, Text, Title, Button, Center } from "@mantine/core";
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCanvasStore } from "../../../lib/Store";
@@ -19,6 +19,20 @@ export function ProjectDependingView({
 }) {
   const navigate = useNavigate();
   const { selectedProject } = useCanvasStore();
+
+  if (!selectedProject) {
+    return (
+      <Center style={{ width: "100%", height: "100%" }}>
+        <Stack align="center">
+          <Title>No Project has been selected!</Title>
+          <Text>Please go back to the project selection and select a project</Text>
+          <Button onClick={() => navigate(RouteNames.PROJECTS_VIEW)}>
+            To the project selection
+          </Button>
+        </Stack>
+      </Center>
+    );
+  }
 
   return (
     <Stack style={{ height: "100%" }}>
