@@ -940,8 +940,7 @@ export class JiraCloudProvider implements IProvider {
               labels: element.fields.labels,
               status: element.fields.status.name,
               type: element.fields.issuetype.name,
-              description:
-                element.fields.description.content[0]?.content[0]?.text,
+              description: element.fields.description?.content[0]?.content[0]?.text,
               assignee: {
                 displayName: element.fields.assignee?.displayName,
                 avatarUrls: element.fields.assignee?.avatarUrls,
