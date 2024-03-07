@@ -16,12 +16,9 @@ import { resizeDivider } from "./helpers/resizeDivider";
 import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper";
 import { SprintsPanel } from "./IssuesWrapper/SprintsPanel";
 import { ReloadButton } from "./ReloadButton";
-import { useColorScheme } from "../../common/color-scheme";
 import { ProjectDependingView } from "../common/ProjectDependingView/ProjectDependingView";
 
 export function BacklogView() {
-  const colorScheme = useColorScheme();
-
   resizeDivider();
 
   const { selectedProject, selectedProjectBoardIds: boardIds } = useCanvasStore();
@@ -148,10 +145,8 @@ export function BacklogView() {
       )}
       isLoadingContent={isFetchingSprints || issueQueries.some((query) => query.isFetching)}
     >
-      <CreateExportModal
-        opened={createExportModalOpened}
-        setOpened={setCreateExportModalOpened}
-      />
+      <CreateExportModal opened={createExportModalOpened} setOpened={setCreateExportModalOpened} />
+      <CreateIssueModal opened={createIssueModalOpened} setOpened={setCreateIssueModalOpened} />
 
       <Flex style={{ flexGrow: 1 }}>
         <DragDropContext
@@ -181,39 +176,23 @@ export function BacklogView() {
             <Box mr="xs">
               <Button
                 mt="sm"
-                mb="xl"
                 variant="subtle"
                 color="gray"
-                radius="sm"
                 display="flex"
+                justify="left"
                 fullWidth
                 onClick={() => setCreateIssueModalOpened(true)}
-                style={(theme) => ({
-                  justifyContent: "left",
-                  ":hover": {
-                    background:
-                      colorScheme === "dark"
-                        ? theme.colors.dark[4]
-                        : theme.colors.gray[4],
-                  },
-                })}
               >
                 + Create Issue
               </Button>
             </Box>
-            <CreateIssueModal
-              opened={createIssueModalOpened}
-              setOpened={setCreateIssueModalOpened}
-            />
           </ScrollArea.Autosize>
           <Divider
             mr="xs"
             size="xl"
             className="resize-handle"
             orientation="vertical"
-            style={{
-              cursor: "col-resize",
-            }}
+            style={{ cursor: "col-resize" }}
           />
           <ScrollArea.Autosize
             className="right-panel"
