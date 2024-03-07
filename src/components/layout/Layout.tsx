@@ -22,7 +22,7 @@ export function Layout() {
       <AppShell.Header>
         <LayoutHeader />
       </AppShell.Header>
-      <AppShell.Main>
+      <AppShell.Main h="100vh">
         <Outlet />
       </AppShell.Main>
     </AppShell>
