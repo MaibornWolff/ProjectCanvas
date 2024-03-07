@@ -12,22 +12,19 @@ export async function getSprints(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getSprints"]>
 ) {
-  const sprints = await getProvider().getSprints(...params);
-  return sprints;
+  return getProvider().getSprints(...params);
 }
 
 export async function getAssignableUsersByProject(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getAssignableUsersByProject"]>
 ) {
-  const users = await getProvider().getAssignableUsersByProject(...params);
-  return users;
+  return getProvider().getAssignableUsersByProject(...params);
 }
 
 export async function getEpicsByProject(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getEpicsByProject"]>
 ) {
-  const epics = await getProvider().getEpicsByProject(...params);
-  return epics;
+  return getProvider().getEpicsByProject(...params);
 }

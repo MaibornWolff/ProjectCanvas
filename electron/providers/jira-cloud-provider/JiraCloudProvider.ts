@@ -12,8 +12,7 @@ import {
   User,
 } from "@canvas/types";
 import { JiraEpic, JiraIssue, JiraIssueType, JiraPriority, JiraProject, JiraSprint } from "@canvas/types/jira";
-import { IProvider } from "../base-provider";
-import { getAccessToken, refreshTokens } from "./getAccessToken";
+import { IProvider, OAuthLoginOptions, OAuthRefreshOptions } from "../base-provider";
 import { JiraCloudUser } from "./cloud-types";
 
 export class JiraCloudProvider implements IProvider {
@@ -101,6 +100,16 @@ export class JiraCloudProvider implements IProvider {
     return this.constructRestBasedClient("agile", version);
   }
 
+  private getOAuthClient() {
+    return axios.create({
+      baseURL: "https://auth.atlassian.com/",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
   offsetDate(date: Date) {
     if (!date) {
       return date;
@@ -110,20 +119,52 @@ export class JiraCloudProvider implements IProvider {
     return new Date(convertedDate.getTime() - timezoneOffset * 60 * 1000);
   }
 
-  async login({
-    oauthLoginOptions,
+  private async getAccessToken({ clientId, clientSecret, redirectUri, code }: OAuthLoginOptions) {
+    return this.getOAuthClient().post("oauth/token", {
+      grant_type: "authorization_code",
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uri: redirectUri,
+      code,
+    }).then(async (response) => {
+      console.log(response.data);
+      const { access_token: accessToken, refresh_token: refreshToken } = response.data;
+      return { accessToken, refreshToken };
+    });
+  }
+
+  private refreshTokens({
+    clientId,
+    clientSecret,
+    _refreshToken,
   }: {
-    oauthLoginOptions: {
-      clientId: string,
-      clientSecret: string,
-      redirectUri: string,
-      code: string,
-    },
-  }) {
+    clientId: string,
+    clientSecret: string,
+    _refreshToken: string,
+  }): Promise<{ accessToken: string, refreshToken: string }> {
+    return new Promise((resolve, reject) => {
+      this.getOAuthClient().post("oauth/token", {
+        grant_type: "refresh_token",
+        client_id: clientId,
+        client_secret: clientSecret,
+        refresh_token: _refreshToken,
+      }).then(async (response) => {
+        if (response.status === 200) {
+          const { access_token: accessToken, refresh_token: refreshToken } = response.data;
+          resolve({ accessToken, refreshToken });
+        } else {
+          reject(new Error(`Failed to refresh tokens with status code: ${response.status}`));
+        }
+      })
+        .catch((error) => reject(error));
+    });
+  }
+
+  async login({ oAuthLoginOptions }: { oAuthLoginOptions: OAuthLoginOptions }) {
     if (this.accessToken === undefined) {
-      const tokenObject = await getAccessToken(oauthLoginOptions);
-      this.accessToken = tokenObject.accessToken;
-      this.refreshToken = tokenObject.refreshToken;
+      const { accessToken, refreshToken } = await this.getAccessToken(oAuthLoginOptions);
+      this.accessToken = accessToken;
+      this.refreshToken = refreshToken;
     }
     await fetch("https://api.atlassian.com/oauth/token/accessible-resources", {
       headers: {
@@ -152,14 +193,10 @@ export class JiraCloudProvider implements IProvider {
     });
   }
 
-  async refreshAccessToken(oauthRefreshOptions: {
-    clientId: string,
-    clientSecret: string,
-  }): Promise<void> {
+  async refreshAccessToken({ clientId, clientSecret }: OAuthRefreshOptions): Promise<void> {
     if (this.refreshToken) {
-      const { clientId, clientSecret } = oauthRefreshOptions;
       try {
-        const { accessToken, refreshToken } = await refreshTokens({
+        const { accessToken, refreshToken } = await this.refreshTokens({
           clientId,
           clientSecret,
           _refreshToken: this.refreshToken,
@@ -168,9 +205,7 @@ export class JiraCloudProvider implements IProvider {
         this.refreshToken = refreshToken;
         return await Promise.resolve();
       } catch (error) {
-        return Promise.reject(
-          new Error(`Error refreshing the access token: ${error}`),
-        );
+        return Promise.reject(new Error(`Error refreshing the access token: ${error}`));
       }
     }
     return Promise.reject(new Error("Error refreshing the access token"));

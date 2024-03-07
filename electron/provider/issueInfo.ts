@@ -5,46 +5,40 @@ export async function getIssueTypesByProject(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getIssueTypesByProject"]>
 ) {
-  const issueTypes = await getProvider().getIssueTypesByProject(...params);
-  return issueTypes;
+  return getProvider().getIssueTypesByProject(...params);
 }
 
 export async function getLabels(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getLabels"]>
 ) {
-  const labels = await getProvider().getLabels(...params);
-  return labels;
+  return getProvider().getLabels(...params);
 }
 
 export async function getPriorities(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getPriorities"]>
 ) {
-  const priorities = await getProvider().getPriorities(...params);
-  return priorities;
+  return getProvider().getPriorities(...params);
 }
 
 export async function getEditableIssueFields(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getEditableIssueFields"]>
 ) {
-  const issueFileds = await getProvider().getEditableIssueFields(...params);
-  return issueFileds;
+  return getProvider().getEditableIssueFields(...params);
 }
 
 export async function getIssueReporter(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getIssueReporter"]>
 ) {
-  const issueReporter = await getProvider().getIssueReporter(...params);
-  return issueReporter;
+  return getProvider().getIssueReporter(...params);
 }
 
 export async function getIssueTypesWithFieldsMap(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getIssueTypesWithFieldsMap"]>
 ) {
-  const issuesTypesWithFiledsMap = await getProvider().getIssueTypesWithFieldsMap(...params);
-  return issuesTypesWithFiledsMap;
+  return getProvider().getIssueTypesWithFieldsMap(...params);
 }

@@ -3,18 +3,20 @@ import { IconCloud, IconServer } from "@tabler/icons-react";
 import { ipcRenderer } from "electron";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { RouteNames } from "@canvas/route-names";
+import { useColorScheme } from "@canvas/common/color-scheme";
+import { ProviderType } from "@canvas/electron/provider/setup";
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
 import { JiraCloudLogin } from "./jira-cloud/JiraCloudLogin";
 import { JiraServerLogin } from "./jira-server/JiraServerLogin";
-import { useColorScheme } from "../../common/color-scheme";
-import { RouteNames } from "../../route-names";
 
 export function Login() {
-  const [providerLogin, setProviderLogin] = useState("");
   const navigateTo = useNavigate();
-  const onSuccess = () => navigateTo(RouteNames.PROJECTS_VIEW);
-  const goBack = () => setProviderLogin("");
   const colorScheme = useColorScheme();
+
+  const [provider, setProvider] = useState("");
+  const onSuccess = () => navigateTo(RouteNames.PROJECTS_VIEW);
+  const goBack = () => setProvider("");
 
   return (
     <Container
@@ -43,14 +45,12 @@ export function Login() {
           src="./project_canvas_logo.svg"
           style={() => ({
             maxWidth: "220px",
-            backgroundColor:
-              colorScheme === "dark" ? rgba("#fff", 0.3) : "transparent",
+            backgroundColor: colorScheme === "dark" ? rgba("#fff", 0.3) : "transparent",
             borderRadius: "20px",
             padding: "20px",
           })}
         />
-
-        {providerLogin === "" && (
+        {provider === "" && (
           <>
             <Divider
               my="lg"
@@ -66,9 +66,7 @@ export function Login() {
                 deg: 60,
               }}
               leftSection={<IconServer size={32} strokeWidth={1.8} />}
-              onClick={() => {
-                setProviderLogin("JiraServer");
-              }}
+              onClick={() => setProvider(ProviderType.JiraServer)}
             >
               Jira Server
             </Button>
@@ -82,7 +80,7 @@ export function Login() {
               }}
               leftSection={<IconCloud size={32} strokeWidth={1.8} />}
               onClick={() => {
-                setProviderLogin("JiraCloud");
+                setProvider(ProviderType.JiraCloud);
                 ipcRenderer.send("start-oauth2");
               }}
             >
@@ -90,12 +88,8 @@ export function Login() {
             </Button>
           </>
         )}
-        {providerLogin === "JiraServer" && (
-          <JiraServerLogin onSuccess={onSuccess} goBack={goBack} />
-        )}
-        {providerLogin === "JiraCloud" && (
-          <JiraCloudLogin onSuccess={onSuccess} goBack={goBack} />
-        )}
+        {provider === ProviderType.JiraServer && (<JiraServerLogin onSuccess={onSuccess} goBack={goBack} />)}
+        {provider === ProviderType.JiraCloud && (<JiraCloudLogin onSuccess={onSuccess} goBack={goBack} />)}
       </Paper>
     </Container>
   );

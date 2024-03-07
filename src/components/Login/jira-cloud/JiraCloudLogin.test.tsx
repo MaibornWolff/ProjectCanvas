@@ -4,9 +4,7 @@ import { MantineProvider } from "@mantine/core";
 import { JiraCloudLogin } from "./JiraCloudLogin";
 
 export {};
-jest.mock("./loginToJiraCloud.ts", () => ({
-  loginToJiraCloud: jest.fn(),
-}));
+jest.mock("./loginToJiraCloud.ts", () => ({ loginToJiraCloud: jest.fn() }));
 jest.mock("electron", () => ({
   ipcRenderer: {
     on: jest.fn(),
@@ -26,7 +24,7 @@ describe("<JiraCloudLogin />", () => {
 
     await userEvent.click(screen.getByRole("button"));
 
-    expect(goBack).toBeCalled();
-    expect(onSuccess).not.toBeCalled();
+    expect(goBack).toHaveBeenCalled();
+    expect(onSuccess).not.toHaveBeenCalled();
   });
 });

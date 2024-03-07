@@ -2,21 +2,18 @@ import { IProvider } from "../providers/base-provider/BaseProvider";
 import { getProvider } from "./setup";
 
 export async function getProjects() {
-  const projects = await getProvider().getProjects();
-  return projects;
+  return getProvider().getProjects();
 }
 
 export async function getCurrentUser() {
-  const currentUser = await getProvider().getCurrentUser();
-  return currentUser;
+  return getProvider().getCurrentUser();
 }
 
 export async function getBoardIds(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getBoardIds"]>
 ) {
-  const boardIds = await getProvider().getBoardIds(...params);
-  return boardIds;
+  return getProvider().getBoardIds(...params);
 }
 
 export async function setTransition(
@@ -30,6 +27,5 @@ export async function createSubtask(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["createSubtask"]>
 ) {
-  const subtask = await getProvider().createSubtask(...params);
-  return subtask;
+  return getProvider().createSubtask(...params);
 }

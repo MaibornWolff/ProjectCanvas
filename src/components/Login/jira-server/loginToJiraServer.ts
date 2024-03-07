@@ -1,18 +1,20 @@
 import { showNotification } from "@mantine/notifications";
+import { BasicAuthLoginOptions } from "@canvas/electron/providers/base-provider";
+import { ProviderType } from "@canvas/electron/provider/setup";
 
 export async function loginToJiraServer({
   onSuccess,
   loginOptions,
 }: {
   onSuccess: () => void,
-  loginOptions: { url: string, username: string, password: string },
+  loginOptions: BasicAuthLoginOptions,
 }) {
   window.provider
     .login({
-      provider: "JiraServer",
-      basicLoginOptions: {
+      provider: ProviderType.JiraServer,
+      basicAuthLoginOptions: {
         ...loginOptions,
-        url: addProtocol(loginOptions.url),
+        url: ensureProtocol(loginOptions.url),
       },
     })
     .then(() => onSuccess())
@@ -25,7 +27,7 @@ export async function loginToJiraServer({
     });
 }
 
-function addProtocol(url: string) {
+function ensureProtocol(url: string) {
   if (!/^(?:f|ht)tps?:\/\//.test(url)) {
     return `https://${url}`;
   }

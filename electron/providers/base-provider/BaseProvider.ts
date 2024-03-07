@@ -1,29 +1,32 @@
-/* eslint-disable max-classes-per-file */
-import { Issue, IssueType, Priority, Project, Resource, Sprint, SprintCreate, User } from "../../../types";
+import { Issue, IssueType, Priority, Project, Resource, Sprint, SprintCreate, User } from "@canvas/types";
 
-export interface BasicLoginOptions {
+export interface BasicAuthLoginOptions {
   url: string,
   username: string,
   password: string,
 }
-export interface OauthLoginOptions {
+
+export interface OAuthLoginOptions {
   clientId: string,
   clientSecret: string,
   redirectUri: string,
   code: string,
 }
+
+export interface OAuthRefreshOptions {
+  clientId: string,
+  clientSecret: string,
+}
+
 interface LoginOptions {
-  basicLoginOptions?: BasicLoginOptions,
-  oauthLoginOptions?: OauthLoginOptions,
+  basicAuthLoginOptions?: BasicAuthLoginOptions,
+  oAuthLoginOptions?: OAuthLoginOptions,
 }
 
 export interface IProvider {
   login(loginOptions: LoginOptions): Promise<void>,
   isLoggedIn(): Promise<void>,
-  refreshAccessToken(oauthRefreshOptions: {
-    clientId: string,
-    clientSecret: string,
-  }): Promise<void>,
+  refreshAccessToken(oauthRefreshOptions: OAuthRefreshOptions): Promise<void>,
   logout(): Promise<void>,
   getProjects(): Promise<Project[]>,
   getBoardIds(project: string): Promise<number[]>,

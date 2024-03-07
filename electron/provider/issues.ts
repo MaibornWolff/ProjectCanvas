@@ -12,34 +12,28 @@ export async function createIssue(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["createIssue"]>
 ) {
-  const issueId = await getProvider().createIssue(...params);
-  return issueId;
+  return getProvider().createIssue(...params);
 }
 
 export async function getIssuesByProject(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getIssuesByProject"]>
 ) {
-  const issues = await getProvider().getIssuesByProject(...params);
-  return issues;
+  return getProvider().getIssuesByProject(...params);
 }
 
 export async function getIssuesBySprint(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getIssuesBySprint"]>
 ) {
-  const issues = await getProvider().getIssuesBySprint(...params);
-  return issues;
+  return getProvider().getIssuesBySprint(...params);
 }
 
 export async function getBacklogIssuesByProjectAndBoard(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getBacklogIssuesByProjectAndBoard"]>
 ) {
-  const issues = await getProvider().getBacklogIssuesByProjectAndBoard(
-    ...params,
-  );
-  return issues;
+  return getProvider().getBacklogIssuesByProjectAndBoard(...params);
 }
 
 export async function deleteIssue(

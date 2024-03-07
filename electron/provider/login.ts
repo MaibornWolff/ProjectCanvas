@@ -1,32 +1,33 @@
-import { BasicLoginOptions } from "../providers/base-provider";
+import { BasicAuthLoginOptions } from "../providers/base-provider";
 import { JiraCloudProvider } from "../providers/jira-cloud-provider";
 import { JiraServerProvider } from "../providers/jira-server-provider";
 import { getProvider, ProviderType, setProvider } from "./setup";
 
 export type LoginOptions =
-  | { provider: ProviderType.JiraServer, basicLoginOptions: BasicLoginOptions }
+  | { provider: ProviderType.JiraServer, basicAuthLoginOptions: BasicAuthLoginOptions }
   | { provider: ProviderType.JiraCloud, code: string };
 
 export async function login(
   _: Electron.IpcMainInvokeEvent,
   loginOptions: LoginOptions,
 ) {
-  if (loginOptions.provider === ProviderType.JiraServer) {
-    setProvider(new JiraServerProvider());
-    await getProvider().login({
-      basicLoginOptions: loginOptions.basicLoginOptions,
-    });
-  }
-  if (loginOptions.provider === ProviderType.JiraCloud) {
-    setProvider(new JiraCloudProvider());
-    await getProvider().login({
-      oauthLoginOptions: {
-        code: loginOptions.code,
-        clientId: import.meta.env.VITE_CLIENT_ID!,
-        clientSecret: import.meta.env.VITE_CLIENT_SECRET!,
-        redirectUri: import.meta.env.VITE_REDIRECT_URI!,
-      },
-    });
+  switch (loginOptions.provider) {
+    case ProviderType.JiraServer:
+      setProvider(new JiraServerProvider());
+      await getProvider().login({ basicAuthLoginOptions: loginOptions.basicAuthLoginOptions });
+      break;
+    case ProviderType.JiraCloud:
+      setProvider(new JiraCloudProvider());
+      await getProvider().login({
+        oAuthLoginOptions: {
+          code: loginOptions.code,
+          clientId: import.meta.env.VITE_CLIENT_ID!,
+          clientSecret: import.meta.env.VITE_CLIENT_SECRET!,
+          redirectUri: import.meta.env.VITE_REDIRECT_URI!,
+        },
+      });
+      break;
+    default: throw new Error(`Unknown provider type encountered: ${loginOptions}`);
   }
 }
 

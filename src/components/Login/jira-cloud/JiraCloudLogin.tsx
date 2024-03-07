@@ -14,20 +14,14 @@ export function JiraCloudLogin({
 
   // Add event listener for "cancelOAuth" message
   useEffect(() => {
-    ipcRenderer.on("cancelOAuth", () => {
-      goBack();
-    });
-    return () => {
-      // Remove event listener when component unmounts
-      ipcRenderer.removeAllListeners("cancelOAuth");
-    };
-  }, []);
+    ipcRenderer.on("cancelOAuth", () => goBack());
+    // Remove event listener when component unmounts
+    return () => { ipcRenderer.removeAllListeners("cancelOAuth"); };
+  });
 
   return (
     <>
-      <Center style={{ height: "200px" }} data-testid="JiraCloudLogin">
-        <Loader size="xl" />
-      </Center>
+      <Center style={{ height: "200px" }} data-testid="JiraCloudLogin"><Loader size="xl" /></Center>
       <Button variant="outline" fullWidth color="dark" onClick={goBack}>
         Go Back
       </Button>

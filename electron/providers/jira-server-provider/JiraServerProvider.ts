@@ -12,7 +12,7 @@ import {
   User,
 } from "@canvas/types";
 import { JiraEpic, JiraIssue, JiraIssueType, JiraProject, JiraSprint } from "@canvas/types/jira";
-import { IProvider } from "../base-provider";
+import { BasicAuthLoginOptions, IProvider } from "../base-provider";
 import { JiraServerInfo, JiraServerUser } from "./server-types";
 
 export class JiraServerProvider implements IProvider {
@@ -168,18 +168,10 @@ export class JiraServerProvider implements IProvider {
     return this.constructRestBasedClient("agile", version);
   }
 
-  async login({
-    basicLoginOptions,
-  }: {
-    basicLoginOptions: {
-      url: string,
-      username: string,
-      password: string,
-    },
-  }) {
-    this.loginOptions.url = basicLoginOptions.url;
-    this.loginOptions.username = basicLoginOptions.username;
-    this.loginOptions.password = basicLoginOptions.password;
+  async login({ basicAuthLoginOptions }: { basicAuthLoginOptions: BasicAuthLoginOptions }) {
+    this.loginOptions.url = basicAuthLoginOptions.url;
+    this.loginOptions.username = basicAuthLoginOptions.username;
+    this.loginOptions.password = basicAuthLoginOptions.password;
 
     await this.getServerInfo();
     await this.mapCustomFields();

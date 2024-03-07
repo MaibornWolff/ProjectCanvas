@@ -1,7 +1,8 @@
 import { ipcRenderer } from "electron";
+import { ProviderType } from "@canvas/electron/provider/setup";
 
 let listenerSetUp = false;
-let refreshInterval: string | number | NodeJS.Timeout | undefined;
+let refreshInterval: NodeJS.Timeout | undefined;
 
 export function loginToJiraCloud({ onSuccess }: { onSuccess: () => void }) {
   if (!listenerSetUp) {
@@ -9,7 +10,7 @@ export function loginToJiraCloud({ onSuccess }: { onSuccess: () => void }) {
     ipcRenderer.on("code", async (_, code: string) => {
       if (code !== lastCode) {
         lastCode = code;
-        window.provider.login({ provider: "JiraCloud", code }).then(() => {
+        window.provider.login({ provider: ProviderType.JiraCloud, code }).then(() => {
           refreshInterval = setInterval(refreshAccessToken, 55 * 60 * 1000);
           onSuccess();
         });

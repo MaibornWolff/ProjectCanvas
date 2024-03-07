@@ -26,6 +26,5 @@ export async function getResource(
   _: Electron.IpcMainInvokeEvent,
   ...params: Parameters<IProvider["getResource"]>
 ) {
-  const resource = await getProvider().getResource(...params);
-  return resource;
+  return getProvider().getResource(...params);
 }
