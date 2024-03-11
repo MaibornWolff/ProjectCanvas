@@ -4,7 +4,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Issue, Sprint } from "types";
 import { useState } from "react";
 import { useCanvasStore } from "@canvas/lib/Store";
-import { editIssue } from "../helpers/queryFunctions";
 
 export function IssueSprint(props: {
   sprint: Sprint | undefined,
@@ -23,7 +22,7 @@ export function IssueSprint(props: {
   });
 
   const mutationSprint = useMutation({
-    mutationFn: (issue: Issue) => editIssue(issue, props.issueKey),
+    mutationFn: (issue: Issue) => window.provider.editIssue(issue, props.issueKey),
     onError: () => {
       showNotification({
         message: "An error occurred while modifing the sprint 😢",

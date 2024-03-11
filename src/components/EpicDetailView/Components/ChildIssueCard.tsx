@@ -2,16 +2,16 @@ import { Avatar, Center, Box, Group, Modal, Paper, Stack, Text, Tooltip, useMant
 import { useHover } from "@mantine/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Issue } from "@canvas/types";
-import { StatusType } from "@canvas/types/status";
-import { useColorScheme } from "@canvas/common/color-scheme";
-import { useCanvasStore } from "@canvas/lib/Store";
-import { DetailView } from "../../../DetailView/DetailView";
-import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
-import { DeleteButton } from "../../../BacklogView/Issue/DeleteButton";
-import { StoryPointsBadge } from "../../../common/StoryPoints/StoryPointsBadge";
-import { IssueEpicBadge } from "../../../common/IssueEpicBadge";
-import { IssueLabelBadge } from "../../../common/IssueLabelBadge";
+import { Issue } from "../../../../types";
+import { DetailView } from "../../DetailView/DetailView";
+import { IssueIcon } from "../../BacklogView/Issue/IssueIcon";
+import { DeleteButton } from "../../BacklogView/Issue/DeleteButton";
+import { StatusType } from "../../../../types/status";
+import { StoryPointsBadge } from "../../common/StoryPoints/StoryPointsBadge";
+import { useColorScheme } from "../../../common/color-scheme";
+import { IssueEpicBadge } from "../../common/IssueEpicBadge";
+import { IssueLabelBadge } from "../../common/IssueLabelBadge";
+import { useCanvasStore } from "../../../lib/Store";
 
 export function ChildIssueCard({
   issueKey,

@@ -3,7 +3,6 @@ import { Text, Group, NumberInput, Chip, Loader, Box, useMantineTheme } from "@m
 import { showNotification } from "@mantine/notifications";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Issue } from "types";
-import { editIssue } from "../helpers/queryFunctions";
 
 export function StoryPointsEstimateMenu({
   issueKey,
@@ -32,7 +31,7 @@ export function StoryPointsEstimateMenu({
   });
 
   const mutation = useMutation({
-    mutationFn: (issue: Issue) => editIssue(issue, issueKey),
+    mutationFn: (issue: Issue) => window.provider.editIssue(issue, issueKey),
     onError: () => {
       showNotification({
         message: `The story point estimate for issue ${issueKey} couldn't be modified! 😢`,

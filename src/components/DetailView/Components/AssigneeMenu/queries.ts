@@ -1,10 +1,9 @@
 import { showNotification } from "@mantine/notifications";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { Issue } from "types";
-import { editIssue } from "../../helpers/queryFunctions";
 
 export const editIssueMutation = (queryClient: QueryClient, issueKey: string) => useMutation({
-  mutationFn: (issue: Issue) => editIssue(issue, issueKey),
+  mutationFn: (issue: Issue) => window.provider.editIssue(issue, issueKey),
   onError: () => {
     showNotification({
       message: "The issue couldn't be modified! 😢",

@@ -3,7 +3,6 @@ import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Issue } from "types";
 import { useState } from "react";
-import { editIssue } from "../../helpers/queryFunctions";
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
 import { getEpicsByProject } from "./queryFunctions";
 import { SelectItem } from "./SelectItem";
@@ -28,7 +27,7 @@ export function EditableEpic({
   });
   const [selectedEpic, setSelectedEpic] = useState(epic.issueKey);
   const mutationEpic = useMutation({
-    mutationFn: (epicKey: string | null) => editIssue({ epic: { issueKey: epicKey } } as Issue, issueKey),
+    mutationFn: (epicKey: string | null) => window.provider.editIssue({ epic: { issueKey: epicKey } } as Issue, issueKey),
     onError: () => {
       showNotification({
         message: "An error occurred while modifing the Epic 😢",
