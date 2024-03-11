@@ -1,5 +1,4 @@
-import { Group, Stack, Text, Title, ScrollArea, Box, Button, Center, Loader, TextInput } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
+import { ScrollArea, Box, Button, TextInput } from "@mantine/core";
 import { ChangeEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { IconSearch } from "@tabler/icons-react";
@@ -8,66 +7,30 @@ import { CreateIssueModal } from "../CreateIssue/CreateIssueModal";
 import { EpicWrapper } from "./EpicWrapper";
 import { getEpics } from "./helpers/queryFetchers";
 import { useColorScheme } from "../../common/color-scheme";
-import { RouteNames } from "../../route-names";
 import { filterSearch } from "./helpers/epicViewHelpers";
+import { ProjectDependingView } from "../common/ProjectDependingView/ProjectDependingView";
 
 export function EpicView() {
   const colorScheme = useColorScheme();
-  const navigate = useNavigate();
-  const projectName = useCanvasStore((state) => state.selectedProject?.name);
+
+  const { selectedProject } = useCanvasStore();
+  const projectKey = selectedProject?.key;
+
   const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false);
-  const projectKey = useCanvasStore((state) => state.selectedProject?.key);
   const [search, setSearch] = useState("");
 
-  const { isLoading: isLoadingEpics, data: epics } = useQuery({
+  const { isFetching, data: epics } = useQuery({
     queryKey: ["epics", projectKey],
     queryFn: () => getEpics(projectKey),
     enabled: !!projectKey,
     initialData: [],
   });
-
   const searchedEpics = filterSearch(search, epics);
 
-  if (isLoadingEpics) {
-    return (
-      <Center style={{ width: "100%", height: "100%" }}>
-        {projectKey ? (
-          <Loader />
-        ) : (
-          <Stack align="center">
-            <Title>No Project has been selected!</Title>
-            <Text>
-              Please go back to the Projects View section and select a project
-            </Text>
-            <Button onClick={() => navigate(RouteNames.PROJECTS_VIEW)}>
-              Go back
-            </Button>
-          </Stack>
-        )}
-      </Center>
-    );
-  }
   return (
-    <Stack style={{ minHeight: "100%" }}>
-      <Stack align="left" gap={0}>
-        <Group>
-          <Group gap="xs" c="dimmed">
-            <Text
-              onClick={() => navigate(RouteNames.PROJECTS_VIEW)}
-              style={{
-                ":hover": {
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                },
-              }}
-            >
-              Projects
-            </Text>
-            <Text>/</Text>
-            <Text>{projectName}</Text>
-          </Group>
-        </Group>
-        <Title mb="sm">Epics</Title>
+    <ProjectDependingView
+      title="Epics"
+      searchBar={(
         <TextInput
           placeholder="Search by summary, id, creator, labels, status or assignee..."
           leftSection={<IconSearch size={14} stroke={1.5} />}
@@ -76,7 +39,9 @@ export function EpicView() {
             setSearch(event.currentTarget.value);
           }}
         />
-      </Stack>
+      )}
+      isLoadingContent={isFetching}
+    >
       <ScrollArea.Autosize
         className="main-panel"
         w="100%"
@@ -117,6 +82,6 @@ export function EpicView() {
           setOpened={setCreateIssueModalOpened}
         />
       </ScrollArea.Autosize>
-    </Stack>
+    </ProjectDependingView>
   );
 }

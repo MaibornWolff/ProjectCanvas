@@ -1,22 +1,8 @@
-import {
-  Box,
-  Button,
-  Center,
-  Divider,
-  Flex,
-  Group,
-  Loader,
-  ScrollArea,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from "@mantine/core";
+import { Box, Button, Center, Divider, Flex, Group, ScrollArea, Text, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
-import { QueriesResults, useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
-import { useNavigate } from "react-router-dom";
 import { Issue, Sprint } from "types";
 import { UseQueryOptions } from "@tanstack/react-query/src/types";
 import { useCanvasStore } from "../../lib/Store";
@@ -30,21 +16,21 @@ import { resizeDivider } from "./helpers/resizeDivider";
 import { DraggableIssuesWrapper } from "./IssuesWrapper/DraggableIssuesWrapper";
 import { SprintsPanel } from "./IssuesWrapper/SprintsPanel";
 import { ReloadButton } from "./ReloadButton";
-import { useColorScheme } from "../../common/color-scheme";
-import { RouteNames } from "../../route-names";
+import { ProjectDependingView } from "../common/ProjectDependingView/ProjectDependingView";
 
 export function BacklogView() {
-  const colorScheme = useColorScheme();
-  const navigate = useNavigate();
-  const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false);
-  const projectName = useCanvasStore((state) => state.selectedProject?.name);
-  const projectKey = useCanvasStore((state) => state.selectedProject?.key);
-  const boardIds = useCanvasStore((state) => state.selectedProjectBoardIds);
+  resizeDivider();
+
+  const { selectedProject, selectedProjectBoardIds: boardIds } = useCanvasStore();
+  const projectKey = selectedProject?.key;
   const currentBoardId = boardIds[0];
-  const [search, setSearch] = useState("");
+
+  const [createIssueModalOpened, setCreateIssueModalOpened] = useState(false);
   const [createExportModalOpened, setCreateExportModalOpened] = useState(false);
 
-  const { data: sprints, isError: isErrorSprints } = useQuery({
+  const [search, setSearch] = useState("");
+
+  const { data: sprints, isError: isErrorSprints, isFetching: isFetchingSprints } = useQuery({
     queryKey: ["sprints", currentBoardId],
     queryFn: () => getSprints(currentBoardId),
     enabled: !!currentBoardId,
@@ -52,9 +38,7 @@ export function BacklogView() {
     initialData: [],
   });
 
-  const issueQueries = useQueries<
-  Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>
-  >({
+  const issueQueries = useQueries<Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>>({
     queries: [
       {
         queryKey: ["issues", projectKey, currentBoardId], // IMPROVE: Change this issue key to contain "backlog"
@@ -64,14 +48,11 @@ export function BacklogView() {
           BacklogKey,
           {
             issues: backlogIssues
-              .filter(
-                (issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask",
-              )
+              .filter((issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask")
               .sort(sortIssuesByRank),
             sprintId: undefined,
           },
         ],
-        initialData: [],
       },
       ...Object.values(sprints).map(
         (sprint): UseQueryOptions<Issue[], unknown, [string, IssuesState]> => ({
@@ -88,22 +69,15 @@ export function BacklogView() {
             sprint.name,
             {
               issues: issues
-                .filter(
-                  (issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask",
-                )
+                .filter((issue: Issue) => issue.type !== "Epic" && issue.type !== "Subtask")
                 .sort(sortIssuesByRank),
               sprintId: sprint.id,
             },
           ],
-          initialData: [],
         }),
       ),
     ],
-    combine: (
-      results: QueriesResults<
-      Array<UseQueryOptions<Issue[], unknown, [string, IssuesState]>>
-      >,
-    ) => results.map((result) => result),
+    combine: (results) => results.map((result) => result),
   });
 
   const [issuesWrapper, setIssuesWrapper] = useState(
@@ -112,9 +86,16 @@ export function BacklogView() {
   useEffect(() => {
     // Generally, using useEffect to sync state should be avoided. But since we need our state to be assignable AND
     // reactive AND derivable, we found no other solution than to use useEffect.
-    setIssuesWrapper(
-      new Map<string, IssuesState>(issueQueries.map((query) => query.data!)),
-    );
+    if (issueQueries.some((query) => query.isPending)) {
+      setIssuesWrapper(new Map<string, IssuesState>([
+        [BacklogKey, { issues: [], sprintId: undefined }] as [string, IssuesState],
+        ...(Object.values(sprints).map((sprint) => [sprint.name, { issues: [], sprintId: sprint.id }]) as [string, IssuesState][]),
+      ]));
+    } else {
+      setIssuesWrapper(
+        new Map<string, IssuesState>(issueQueries.map((query) => query.data!)),
+      );
+    }
   }, [issueQueries]);
   const updateIssuesWrapper = (key: string, newState: IssuesState) => setIssuesWrapper(new Map(issuesWrapper.set(key, newState)));
   const searchedIssuesWrapper = useMemo(
@@ -129,62 +110,19 @@ export function BacklogView() {
     [issuesWrapper, search],
   );
 
-  useEffect(resizeDivider, [issueQueries]);
-
   if (isErrorSprints || issueQueries.some((query) => query.isError)) {
     return (
       <Center style={{ width: "100%", height: "100%" }}>
-        <Text w="300">
-          An error has occurred while loading. This is due to an internal error.
-          Please report this behavior to the developers.
-          {" "}
-          <br />
-          (This is a placeholder and will be replaced with better error
-          messages)
-        </Text>
+        <Text w="500">An internal error has occurred while loading. Please submit a report to the developers.</Text>
       </Center>
     );
   }
 
-  // This check might be broken. It does not trigger everytime we think it does. Might need to force a rerender.
-  if (issueQueries.some((query) => query.isPending)) {
-    return (
-      <Center style={{ width: "100%", height: "100%" }}>
-        {projectKey ? (
-          <Loader />
-        ) : (
-          <Stack align="center">
-            <Title>No Project has been selected!</Title>
-            <Text>
-              Please go back to the Projects View section and select a project
-            </Text>
-            <Button onClick={() => navigate(RouteNames.PROJECTS_VIEW)}>
-              Go back
-            </Button>
-          </Stack>
-        )}
-      </Center>
-    );
-  }
   return (
-    <Stack style={{ minHeight: "100%" }}>
-      <Stack align="left" gap={0}>
+    <ProjectDependingView
+      title="Backlog"
+      rightHeader={(
         <Group>
-          <Group gap="xs" c="dimmed">
-            <Text
-              onClick={() => navigate(RouteNames.PROJECTS_VIEW)}
-              style={{
-                ":hover": {
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                },
-              }}
-            >
-              Projects
-            </Text>
-            <Text>/</Text>
-            <Text>{projectName}</Text>
-          </Group>
           <Button
             ml="auto"
             size="xs"
@@ -192,13 +130,10 @@ export function BacklogView() {
           >
             Export
           </Button>
-          <CreateExportModal
-            opened={createExportModalOpened}
-            setOpened={setCreateExportModalOpened}
-          />
           <ReloadButton mr="xs" />
         </Group>
-        <Title mb="sm">Backlog</Title>
+      )}
+      searchBar={(
         <TextInput
           placeholder="Search by issue summary, key, epic, labels, creator or assignee.."
           leftSection={<IconSearch size={14} stroke={1.5} />}
@@ -207,7 +142,11 @@ export function BacklogView() {
             setSearch(event.currentTarget.value);
           }}
         />
-      </Stack>
+      )}
+      isLoadingContent={isFetchingSprints || issueQueries.some((query) => query.isFetching)}
+    >
+      <CreateExportModal opened={createExportModalOpened} setOpened={setCreateExportModalOpened} />
+      <CreateIssueModal opened={createIssueModalOpened} setOpened={setCreateIssueModalOpened} />
 
       <Flex style={{ flexGrow: 1 }}>
         <DragDropContext
@@ -222,7 +161,7 @@ export function BacklogView() {
             w="50%"
             p="sm"
             style={{
-              maxHeight: "calc(100vh - 230px)",
+              maxHeight: "100vh",
               minWidth: "260px",
             }}
           >
@@ -237,39 +176,23 @@ export function BacklogView() {
             <Box mr="xs">
               <Button
                 mt="sm"
-                mb="xl"
                 variant="subtle"
                 color="gray"
-                radius="sm"
                 display="flex"
+                justify="left"
                 fullWidth
                 onClick={() => setCreateIssueModalOpened(true)}
-                style={(theme) => ({
-                  justifyContent: "left",
-                  ":hover": {
-                    background:
-                      colorScheme === "dark"
-                        ? theme.colors.dark[4]
-                        : theme.colors.gray[4],
-                  },
-                })}
               >
                 + Create Issue
               </Button>
             </Box>
-            <CreateIssueModal
-              opened={createIssueModalOpened}
-              setOpened={setCreateIssueModalOpened}
-            />
           </ScrollArea.Autosize>
           <Divider
             mr="xs"
             size="xl"
             className="resize-handle"
             orientation="vertical"
-            style={{
-              cursor: "col-resize",
-            }}
+            style={{ cursor: "col-resize" }}
           />
           <ScrollArea.Autosize
             className="right-panel"
@@ -295,6 +218,6 @@ export function BacklogView() {
           </ScrollArea.Autosize>
         </DragDropContext>
       </Flex>
-    </Stack>
+    </ProjectDependingView>
   );
 }
