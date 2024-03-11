@@ -1,8 +1,8 @@
 import { Button, Popover } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
+import { useColorScheme } from "@canvas/common/color-scheme";
 import { DeleteIssueAlert } from "./DeleteIssueAlert";
-import { useColorScheme } from "../../../../common/color-scheme";
 
 export function DeleteIssue({
   issueKey,

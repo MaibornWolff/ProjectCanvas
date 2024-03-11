@@ -1,17 +1,17 @@
 import { Avatar, Center, Box, Group, Modal, Paper, Stack, Text, Tooltip, useMantineTheme, Grid } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
-import { Issue } from "types";
+import { Issue } from "@canvas/types";
 import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import { mergeRefs, useHover } from "@mantine/hooks";
+import { StatusType } from "@canvas/types/status";
+import { useColorScheme } from "@canvas/common/color-scheme";
+import { useCanvasStore } from "@canvas/lib/Store";
 import { DetailView } from "../../DetailView/DetailView";
 import { IssueIcon } from "./IssueIcon";
-import { StatusType } from "../../../../types/status";
 import { StoryPointsBadge } from "../../common/StoryPoints/StoryPointsBadge";
-import { useColorScheme } from "../../../common/color-scheme";
 import { IssueLabelBadge } from "../../common/IssueLabelBadge";
 import { IssueEpicBadge } from "../../common/IssueEpicBadge";
-import { useCanvasStore } from "../../../lib/Store";
 import { DeleteButton } from "./DeleteButton";
 
 export function IssueCard({

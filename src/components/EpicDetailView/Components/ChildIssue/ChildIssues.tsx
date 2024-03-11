@@ -1,9 +1,9 @@
 import { Box, Button, Divider, ScrollArea, Stack } from "@mantine/core";
 import { useState } from "react";
-import { Issue } from "../../../../../types";
+import { Issue } from "@canvas/types";
+import { useColorScheme } from "@canvas/common/color-scheme";
 import { CreateIssueModal } from "../../../CreateIssue/CreateIssueModal";
 import { ChildIssueWrapper } from "./ChildIssueWrapper";
-import { useColorScheme } from "../../../../common/color-scheme";
 
 export function ChildIssues({ issues }: { issues: Issue[] }) {
   const colorScheme = useColorScheme();

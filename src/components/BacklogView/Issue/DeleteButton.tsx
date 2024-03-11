@@ -2,8 +2,8 @@ import { ActionIcon, Transition, Popover, Box } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useHover } from "@mantine/hooks";
+import { useColorScheme } from "@canvas/common/color-scheme";
 import { DeleteIssueAlert } from "../../DetailView/Components/DeleteIssue/DeleteIssueAlert";
-import { useColorScheme } from "../../../common/color-scheme";
 
 export function DeleteButton({
   mounted,

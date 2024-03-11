@@ -1,8 +1,8 @@
 import { Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { getImportMetaEnv } from "@canvas/get-meta-env";
 import { LoginFormValues } from "./LoginFormValues";
 import { loginToJiraServer } from "./loginToJiraServer";
-import { getImportMetaEnv } from "../../../get-meta-env";
 
 export function LoginForm({
   goBack,

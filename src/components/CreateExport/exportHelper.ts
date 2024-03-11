@@ -2,8 +2,8 @@ import { ipcRenderer } from "electron";
 import { showNotification } from "@mantine/notifications";
 import dayjs, { Dayjs } from "dayjs";
 import dayjsBusinessDays from "dayjs-business-days2";
-import { ChangelogHistoryItem, Issue } from "../../../types";
-import { ExportReply, ExportStatus } from "../../../electron/export-issues";
+import { ChangelogHistoryItem, Issue } from "@canvas/types";
+import { ExportReply, ExportStatus } from "@canvas/electron/export-issues";
 
 dayjs.extend(dayjsBusinessDays);
 

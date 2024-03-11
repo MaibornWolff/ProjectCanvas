@@ -1,5 +1,5 @@
 import { Stack } from "@mantine/core";
-import { Issue } from "../../../../../types";
+import { Issue } from "@canvas/types";
 import { ChildIssueCard } from "./ChildIssueCard";
 
 export function ChildIssueWrapper({ issues }: { issues: Issue[] }) {
