@@ -122,9 +122,7 @@ export function DetailView({
                 mutationDescription.mutate({ description: newDescription });
               }}
             />
-            <Text c="dimmed" mb="sm">
-              Child Issues
-            </Text>
+            <Text c="dimmed" mb="sm">Subtasks</Text>
             <Paper mb="lg" mr="sm">
               <Stack gap="xs">
                 {subtasks.map((subtask) => (

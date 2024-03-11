@@ -1,7 +1,7 @@
 import { Box, Button } from "@mantine/core";
 import { useState } from "react";
+import { useColorScheme } from "@canvas/common/color-scheme";
 import { CreateSprintModal } from "./CreateSprintModal";
-import { useColorScheme } from "../../../common/color-scheme";
 
 export function CreateSprint() {
   const colorScheme = useColorScheme();

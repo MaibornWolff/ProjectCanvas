@@ -1,5 +1,5 @@
 import { Text, HoverCard, Box } from "@mantine/core";
-import { StatusType } from "../../../../types/status";
+import { StatusType } from "@canvas/types/status";
 import { StoryPointsBadge } from "./StoryPointsBadge";
 
 export function StoryPointsHoverCard({

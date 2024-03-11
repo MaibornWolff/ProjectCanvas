@@ -10,8 +10,8 @@ import {
   Sprint,
   SprintCreate,
   User,
-} from "../../../types";
-import { JiraEpic, JiraIssue, JiraIssueType, JiraProject, JiraSprint } from "../../../types/jira";
+} from "@canvas/types";
+import { JiraEpic, JiraIssue, JiraIssueType, JiraProject, JiraSprint } from "@canvas/types/jira";
 import { IProvider } from "../base-provider";
 import { JiraServerInfo, JiraServerUser } from "./server-types";
 

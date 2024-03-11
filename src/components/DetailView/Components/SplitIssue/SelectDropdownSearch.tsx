@@ -2,9 +2,9 @@ import { useState } from "react";
 import { ActionIcon, Combobox, Group, InputBase, ScrollArea, useCombobox } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import { Issue } from "../../../../../types";
+import { Issue } from "@canvas/types";
+import { useCanvasStore } from "@canvas/lib/Store";
 import { getIssuesByProject } from "../../../BacklogView/helpers/queryFetchers";
-import { useCanvasStore } from "../../../../lib/Store";
 
 export function SelectDropdownSearch({
   onIssueSelected,

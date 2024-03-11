@@ -4,14 +4,14 @@ import { showNotification } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dispatch, SetStateAction } from "react";
 import { SprintCreate } from "types";
-import { useCanvasStore } from "../../../lib/Store";
+import { useCanvasStore } from "@canvas/lib/Store";
+import { useColorScheme } from "@canvas/common/color-scheme";
 import { createSprint } from "../helpers/queryFetchers";
 import { NameInput } from "./NameInput";
 import { GoalInput } from "./GoalInput";
 import { SprintEndDatePicker } from "./SprintEndDatePicker";
 import { SprintStartDatePicker } from "./SprintStartDatePicker";
 import { ColorSchemeToggle } from "../../common/ColorSchemeToggle";
-import { useColorScheme } from "../../../common/color-scheme";
 
 export function CreateSprintModal({
   opened,

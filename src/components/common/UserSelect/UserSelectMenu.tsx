@@ -2,9 +2,9 @@ import { Text, Group, Menu, Avatar, UnstyledButton, ScrollArea } from "@mantine/
 import { IconChevronDown } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { User } from "../../../../types";
-import { useCanvasStore } from "../../../lib/Store";
-import { getAssignableUsersByProject } from "../../../common/query-functions";
+import { User } from "@canvas/types";
+import { useCanvasStore } from "@canvas/lib/Store";
+import { getAssignableUsersByProject } from "@canvas/common/query-functions";
 
 import classes from "./UserSelectMenu.module.css";
 
