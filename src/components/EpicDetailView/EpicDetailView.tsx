@@ -20,13 +20,13 @@ import { showNotification } from "@mantine/notifications";
 import { StatusType } from "@canvas/types/status";
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu";
 import { Description } from "../DetailView/Components/Description";
-import { IssueSummary } from "./Components/IssueSummary";
+import { IssueSummary } from "../DetailView/Components/IssueSummary";
 import { Labels } from "../DetailView/Components/Labels";
 import { ReporterMenu } from "../DetailView/Components/ReporterMenu";
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue";
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
-import { ChildIssues } from "./Components/ChildIssue/ChildIssues";
+import { ChildIssues } from "./Components/ChildIssues";
 import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers";
 import { sortIssuesByRank } from "../BacklogView/helpers/backlogHelpers";
 import { useCanvasStore } from "../../lib/Store";
@@ -37,7 +37,6 @@ import { CommentSection } from "../DetailView/Components/CommentSection";
 import { getStatusTypeColor } from "../../common/status-color";
 import { Attachments } from "../DetailView/Components/Attachments/Attachments";
 import { IssueStatusMenu } from "../DetailView/Components/IssueStatusMenu";
-import { editIssue } from "../DetailView/helpers/queryFunctions";
 
 export function EpicDetailView({
   issueKey,
@@ -104,7 +103,7 @@ export function EpicDetailView({
   });
 
   const mutationDescription = useMutation({
-    mutationFn: (issue: Partial<Issue>) => editIssue(issue as Issue, issueKey),
+    mutationFn: (issue: Partial<Issue>) => window.provider.editIssue(issue as Issue, issueKey),
     onError: () => {
       showNotification({
         message: "An error occurred while modifing the Description 😢",
@@ -121,16 +120,11 @@ export function EpicDetailView({
 
   const getStatusNamesInCategory = (category: StatusType) => issueStatusByCategory[category]?.map((s) => s.name) ?? [];
   const validTodoStatus = getStatusNamesInCategory(StatusType.TODO);
-  const validInProgressStatus = getStatusNamesInCategory(
-    StatusType.IN_PROGRESS,
-  );
+  const validInProgressStatus = getStatusNamesInCategory(StatusType.IN_PROGRESS);
   const validDoneStatus = getStatusNamesInCategory(StatusType.DONE);
 
   const tasksTodo = issueCountAccumulator(childIssues, validTodoStatus);
-  const tasksInProgress = issueCountAccumulator(
-    childIssues,
-    validInProgressStatus,
-  );
+  const tasksInProgress = issueCountAccumulator(childIssues, validInProgressStatus);
   const tasksDone = issueCountAccumulator(childIssues, validDoneStatus);
   const totalTaskCount = tasksTodo + tasksInProgress + tasksDone;
 
@@ -166,21 +160,10 @@ export function EpicDetailView({
       <Group align="flex-start">
         <Stack style={{ flex: 13 }} justify="flex-start">
           <Title size="h1" style={{ marginBottom: "-10px" }}>
-            <IssueSummary
-              summary={summary}
-              issueKey={issueKey}
-              onMutate={reloadEpics}
-            />
+            <IssueSummary summary={summary} issueKey={issueKey} onMutate={reloadEpics} />
           </Title>
-          <Text c="dimmed" mb="sm" size="md" style={{ marginLeft: "7px" }}>
-            Description
-          </Text>
-          <Group
-            style={{
-              marginLeft: "10px",
-              marginTop: "-7px",
-            }}
-          >
+          <Text c="dimmed" mb="sm" size="md" style={{ marginLeft: "7px" }}>Description</Text>
+          <Group style={{ marginLeft: "10px", marginTop: "-7px" }}>
             <Description
               description={description}
               onChange={(newDescription) => {
@@ -199,37 +182,41 @@ export function EpicDetailView({
                 flexGrow: 1,
               }}
             >
-              <Tooltip label={`${tasksDone} Done`}>
-                <Progress.Section
-                  value={(tasksDone / totalTaskCount) * 100}
-                  color={getStatusTypeColor(StatusType.DONE)}
-                >
-                  <Progress.Label>{tasksDone}</Progress.Label>
-                </Progress.Section>
-              </Tooltip>
-              <Tooltip label={`${tasksInProgress} In progress`}>
-                <Progress.Section
-                  value={(tasksInProgress / totalTaskCount) * 100}
-                  color={getStatusTypeColor(StatusType.IN_PROGRESS)}
-                >
-                  <Progress.Label>{tasksInProgress}</Progress.Label>
-                </Progress.Section>
-              </Tooltip>
-              <Tooltip label={`${tasksTodo} To do`}>
-                <Progress.Section
-                  value={(tasksTodo / totalTaskCount) * 100}
-                  color={getStatusTypeColor(StatusType.TODO)}
-                >
-                  <Progress.Label>{tasksTodo}</Progress.Label>
-                </Progress.Section>
-              </Tooltip>
+              {totalTaskCount !== 0 && (
+                <>
+                  <Tooltip label={`${tasksDone} Done`}>
+                    <Progress.Section
+                      value={(tasksDone / totalTaskCount) * 100}
+                      color={getStatusTypeColor(StatusType.DONE)}
+                    >
+                      <Progress.Label>{tasksDone}</Progress.Label>
+                    </Progress.Section>
+                  </Tooltip>
+                  <Tooltip label={`${tasksInProgress} In progress`}>
+                    <Progress.Section
+                      value={(tasksInProgress / totalTaskCount) * 100}
+                      color={getStatusTypeColor(StatusType.IN_PROGRESS)}
+                    >
+                      <Progress.Label>{tasksInProgress}</Progress.Label>
+                    </Progress.Section>
+                  </Tooltip>
+                  <Tooltip label={`${tasksTodo} To do`}>
+                    <Progress.Section
+                      value={(tasksTodo / totalTaskCount) * 100}
+                      color={getStatusTypeColor(StatusType.TODO)}
+                    >
+                      <Progress.Label>{tasksTodo}</Progress.Label>
+                    </Progress.Section>
+                  </Tooltip>
+                </>
+              )}
               {totalTaskCount === 0 && (
                 <Tooltip label="Currently no child issues">
                   <Progress.Section
                     value={100}
                     color={getStatusTypeColor(StatusType.TODO)}
                   >
-                    <Progress.Label>0</Progress.Label>
+                    <Progress.Label>-</Progress.Label>
                   </Progress.Section>
                 </Tooltip>
               )}
@@ -252,9 +239,7 @@ export function EpicDetailView({
             <ChildIssues issues={childIssues} />
           </Group>
         </Stack>
-        <ScrollArea.Autosize
-          style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}
-        >
+        <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
           <Box>
             <Group justify="space-between" mb="sm">
               <IssueStatusMenu
@@ -267,15 +252,10 @@ export function EpicDetailView({
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
               <Accordion.Item value="Details">
-                <Accordion.Control style={{ textAlign: "left" }}>
-                  Details
-                </Accordion.Control>
+                <Accordion.Control style={{ textAlign: "left" }}>Details</Accordion.Control>
                 <Accordion.Panel>
                   <Stack>
-                    <AssigneeMenu
-                      assignee={assignee as Issue["assignee"]}
-                      issueKey={issueKey}
-                    />
+                    <AssigneeMenu assignee={assignee as Issue["assignee"]} issueKey={issueKey} />
                     <Group grow>
                       <Text fz="sm" c="dimmed">
                         Labels
@@ -293,9 +273,7 @@ export function EpicDetailView({
             </Accordion>
             <Accordion variant="contained" mb={20}>
               <Accordion.Item value="Comments">
-                <Accordion.Control style={{ textAlign: "left" }}>
-                  Comments
-                </Accordion.Control>
+                <Accordion.Control style={{ textAlign: "left" }}>Comments</Accordion.Control>
                 <Accordion.Panel>
                   <CommentSection issueKey={issueKey} comment={comment} />
                 </Accordion.Panel>
@@ -303,24 +281,14 @@ export function EpicDetailView({
             </Accordion>
             <Accordion variant="contained" mb={20}>
               <Accordion.Item value="Attachments">
-                <Accordion.Control style={{ textAlign: "left" }}>
-                  Attachments
-                </Accordion.Control>
+                <Accordion.Control style={{ textAlign: "left" }}>Attachments</Accordion.Control>
                 <Accordion.Panel>
                   <Attachments issueKey={issueKey} attachments={attachments} />
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>
-            <Text size="xs" c="dimmed">
-              Created
-              {" "}
-              {dateFormat.format(new Date(created))}
-            </Text>
-            <Text size="xs" c="dimmed">
-              Updated
-              {" "}
-              {dateFormat.format(new Date(updated))}
-            </Text>
+            <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(created))}`}</Text>
+            <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(updated))}`}</Text>
           </Box>
         </ScrollArea.Autosize>
       </Group>

@@ -1,18 +1,18 @@
 import {
-  Text,
-  Group,
-  Paper,
-  FileButton,
-  Button,
   ActionIcon,
+  Box,
+  Button,
   Card,
+  Center,
+  FileButton,
+  Flex,
+  Group,
   HoverCard,
   Image,
-  Flex,
-  Box,
-  Tooltip,
-  Center,
   LoadingOverlay,
+  Paper,
+  Text,
+  Tooltip,
 } from "@mantine/core";
 import { IconCloudDownload, IconPlus, IconTrash } from "@tabler/icons-react";
 import { showNotification } from "@mantine/notifications";
@@ -44,8 +44,7 @@ export function Attachments(props: {
         id: attachment.id,
         url: await fetchThumb(attachment.id),
       }));
-      const thumbnailResults = await Promise.all(thumbnailPromises);
-      return thumbnailResults;
+      return Promise.all(thumbnailPromises);
     },
     enabled: !!resource && !!props.attachments,
   });
