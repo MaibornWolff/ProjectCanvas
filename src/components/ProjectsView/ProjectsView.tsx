@@ -2,32 +2,24 @@ import { Center, Loader, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useCanvasStore } from "../../lib/Store";
-import { getProjects } from "./queryFetchers";
 import { ProjectsTable } from "./Table/ProjectsTable";
 
 export function ProjectsView() {
   const { setProjects } = useCanvasStore();
-  const { data: projects, isLoading } = useQuery({
+  const { data: projects } = useQuery({
     queryKey: ["projects"],
-    queryFn: getProjects,
-    initialData: [],
+    queryFn: async () => window.provider.getProjects(),
   });
 
-  useEffect(() => setProjects(projects), [projects]);
+  useEffect(() => setProjects(projects ?? []), [projects]);
 
-  if (isLoading) {
-    return (
-      <Center style={{ width: "100%", height: "100%" }}>
-        <Loader />
-      </Center>
-    );
+  if (!projects) {
+    return (<Center style={{ width: "100%", height: "100%" }}><Loader /></Center>);
   }
 
-  if (projects.length > 0) return <ProjectsTable data={projects} />;
+  if (projects.length === 0) {
+    return (<Center style={{ width: "100%", height: "100%" }}><Text>No Projects Found</Text></Center>);
+  }
 
-  return (
-    <Center style={{ width: "100%", height: "100%" }}>
-      <Text>No Projects Found</Text>
-    </Center>
-  );
+  return <ProjectsTable data={projects} />;
 }

@@ -3,6 +3,11 @@
   "transform": {
     "^.+\\.tsx?$": "ts-jest"
   },
+  "moduleNameMapper": {
+    "^@canvas/electron(.*)$": "<rootDir>/electron$1",
+    "^@canvas/types(.*)$": "<rootDir>/types$1",
+    "^@canvas(.*)$": "<rootDir>/src$1"
+  },
   "setupFilesAfterEnv": [
     "./src/test/setup-jest.ts",
     "./src/test/setup-undefined-jsdom-properties.ts"

@@ -3,9 +3,9 @@ import { Icon, IconChevronDown, IconChevronUp, IconSearch, IconSelector } from "
 import { Project } from "types";
 import { useEffect, useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCanvasStore } from "../../../lib/Store";
+import { useCanvasStore } from "@canvas/lib/Store";
+import { RouteNames } from "@canvas/route-names";
 import { sortData } from "./TableHelper";
-import { RouteNames } from "../../../route-names";
 
 import classes from "./ProjectsTable.module.css";
 
@@ -42,16 +42,19 @@ export function ProjectsTable({ data }: { data: Project[] }) {
 
   const onClickRow = async (row: Project) => {
     setSelectedProject(row);
-    setSelectedProjectBoardIds(await window.provider.getBoardIds(row.key));
-    setIssueTypes(await window.provider.getIssueTypesByProject(row.key));
-    setIssueTypesWithFieldsMap(
-      await window.provider.getIssueTypesWithFieldsMap()
+    const [boardIds, issueTypes, issueTypesWithFieldsMap] = await Promise.all([
+      window.provider.getBoardIds(row.key),
+      window.provider.getIssueTypesByProject(row.key),
+      window.provider.getIssueTypesWithFieldsMap()
         .then(async (mapResponse) => {
           const map = new Map<string, string[]>();
           Object.entries(mapResponse).forEach(([key, value]) => map.set(key, value));
           return map;
         }),
-    );
+    ]);
+    setSelectedProjectBoardIds(boardIds);
+    setIssueTypes(issueTypes);
+    setIssueTypesWithFieldsMap(issueTypesWithFieldsMap);
     navigate(RouteNames.BACKLOG_VIEW);
   };
 

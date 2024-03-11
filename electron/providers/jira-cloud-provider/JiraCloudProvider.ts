@@ -10,8 +10,8 @@ import {
   Sprint,
   SprintCreate,
   User,
-} from "../../../types";
-import { JiraEpic, JiraIssue, JiraIssueType, JiraPriority, JiraProject, JiraSprint } from "../../../types/jira";
+} from "@canvas/types";
+import { JiraEpic, JiraIssue, JiraIssueType, JiraPriority, JiraProject, JiraSprint } from "@canvas/types/jira";
 import { IProvider } from "../base-provider";
 import { getAccessToken, refreshTokens } from "./getAccessToken";
 import { JiraCloudUser } from "./cloud-types";
@@ -1145,38 +1145,19 @@ export class JiraCloudProvider implements IProvider {
   deleteIssue(issueIdOrKey: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
-        .delete(`/issue/${issueIdOrKey}`)
+        .delete(`/issue/${issueIdOrKey}?deleteSubtasks=true`)
         .then(async () => {
           resolve();
         })
         .catch((error) => {
-          let specificError = error;
-          if (error.response) {
-            if (error.response.status === 400) {
-              specificError = new Error(
-                "The issue has subtasks and deleteSubtasks is not set to true",
-              );
-            } else if (error.response.status === 403) {
-              specificError = new Error(
-                "The user does not have permission to delete the issue",
-              );
-            } else if (error.response.status === 404) {
-              specificError = new Error(
-                "The issue was not found or the user does not have the necessary permissions",
-              );
-            } else if (error.response.status === 405) {
-              specificError = new Error(
-                "An anonymous call has been made to the operation",
-              );
-            }
+          switch (error.response?.status) {
+            case 403: throw new Error("The user does not have permission to delete the issue");
+            case 404: throw new Error("The issue was not found or the user does not have the necessary permissions");
+            case 405: throw new Error("An anonymous call has been made to the operation");
+            default:
           }
-
-          reject(
-            new Error(
-              `Error deleting the subtask ${issueIdOrKey}: ${specificError}`,
-            ),
-          );
-        });
+        })
+        .catch((error) => reject(new Error(`Error deleting the subtask ${issueIdOrKey}: ${error}`)));
     });
   }
 

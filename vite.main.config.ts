@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import path from "path";
 
 // https://github.com/electron/forge/issues/3208#issuecomment-1498476106
 export function restart() {
@@ -24,5 +25,8 @@ export default defineConfig({
     // Some libs that can run in both Web and Node.js, such as `axios`, we need to tell Vite to build them in Node.js.
     browserField: false,
     mainFields: ["module", "jsnext:main", "jsnext"],
+    alias: {
+      '@canvas/types': path.resolve(__dirname, './types'),
+    }
   },
 });

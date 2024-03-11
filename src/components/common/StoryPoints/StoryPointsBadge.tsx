@@ -1,6 +1,6 @@
 import { Badge, Box } from "@mantine/core";
-import { getStatusTypeColor } from "../../../common/status-color";
-import { StatusType } from "../../../../types/status";
+import { getStatusTypeColor } from "@canvas/common/status-color";
+import { StatusType } from "@canvas/types/status";
 
 export function StoryPointsBadge({
   statusType,

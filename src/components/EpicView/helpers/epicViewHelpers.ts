@@ -1,4 +1,4 @@
-import { Issue } from "../../../../types";
+import { Issue } from "@canvas/types";
 
 export function filterSearch(query : string, epics : Issue[]) {
   const search = query.toLowerCase().trim();

@@ -3,7 +3,7 @@ import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Issue } from "types";
-import { useCanvasStore } from "../../../../lib/Store";
+import { useCanvasStore } from "@canvas/lib/Store";
 import { getResource, uploadAttachment } from "../Attachments/queryFunctions";
 import {
   IssueTypeSelect,
