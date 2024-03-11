@@ -2,7 +2,6 @@ import { Box, Button, Menu } from "@mantine/core";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IconCaretDown } from "@tabler/icons-react";
-import { getIssueTypes, setStatus } from "../../CreateIssue/queryFunctions";
 import classes from "./IssueStatusMenu.module.css";
 
 export function IssueStatusMenu({
@@ -20,14 +19,14 @@ export function IssueStatusMenu({
 
   const { data: issueTypes } = useQuery({
     queryKey: ["issueTypes", projectId],
-    queryFn: () => getIssueTypes(projectId),
+    queryFn: () => window.provider.getIssueTypesByProject(projectId),
     enabled: !!projectId,
   });
 
   const queryClient = useQueryClient();
   const [defaultStatus, setDefaultStatus] = useState(status);
   const statusMutation = useMutation({
-    mutationFn: (targetStatus: string) => setStatus(issueKey, targetStatus),
+    mutationFn: (targetStatus: string) => window.provider.setTransition(issueKey, targetStatus),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["issues"] });
     },

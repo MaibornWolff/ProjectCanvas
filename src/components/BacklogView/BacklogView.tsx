@@ -146,7 +146,11 @@ export function BacklogView() {
       isLoadingContent={isFetchingSprints || issueQueries.some((query) => query.isFetching)}
     >
       <CreateExportModal opened={createExportModalOpened} setOpened={setCreateExportModalOpened} />
-      <CreateIssueModal opened={createIssueModalOpened} setOpened={setCreateIssueModalOpened} />
+      <CreateIssueModal
+        opened={createIssueModalOpened}
+        onCancel={() => setCreateIssueModalOpened(false)}
+        onCreate={() => setCreateIssueModalOpened(false)}
+      />
 
       <Flex style={{ flexGrow: 1 }}>
         <DragDropContext

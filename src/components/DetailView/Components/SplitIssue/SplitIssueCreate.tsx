@@ -22,8 +22,6 @@ import {
   AttachmentFileInput,
 } from "../../../CreateIssue/Fields";
 
-import { createIssue, getAssignableUsersByProject, getCurrentUser } from "../../../CreateIssue/queryFunctions";
-
 export function SplitIssueCreate({
   onCreate,
   onCancel,
@@ -42,7 +40,7 @@ export function SplitIssueCreate({
 
   const { data: currentUser } = useQuery({
     queryKey: ["currentUser"],
-    queryFn: () => getCurrentUser(),
+    queryFn: () => window.provider.getCurrentUser(),
   });
 
   const form = useForm<Issue>({
@@ -61,19 +59,13 @@ export function SplitIssueCreate({
   });
 
   const { data: assignableUsers, isLoading } = useQuery({
-    queryKey: ["assignableUsers", form.getInputProps("projectId").value],
-    queryFn: () => {
-      const relevantProject = projects.find(
-        (project) => project.id === form.getInputProps("projectId").value!,
-      )!;
-
-      return getAssignableUsersByProject(relevantProject.key);
-    },
-    enabled: !!projects && !!form.getInputProps("projectId").value,
+    queryKey: ["assignableUsers", selectedProject!.key],
+    queryFn: () => window.provider.getAssignableUsersByProject(selectedProject!.key),
+    enabled: !!projects,
   });
 
   const mutation = useMutation({
-    mutationFn: (issue: Issue) => createIssue(issue),
+    mutationFn: (issue: Issue) => window.provider.createIssue(issue),
     onError: () => {
       showNotification({
         message: "The issue couldn't be created! 😢",

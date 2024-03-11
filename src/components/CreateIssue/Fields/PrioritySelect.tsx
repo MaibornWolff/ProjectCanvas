@@ -2,7 +2,6 @@ import { Box, Tooltip } from "@mantine/core";
 import { UseFormReturnType } from "@mantine/form";
 import { useQuery } from "@tanstack/react-query";
 import { Issue } from "types";
-import { getPriorities } from "../queryFunctions";
 import { SelectItem } from "../SelectItem";
 import { CustomItemSelect } from "../../common/CustomItemSelect";
 
@@ -17,7 +16,7 @@ export function PrioritySelect({
 }) {
   const { data: priorities } = useQuery({
     queryKey: ["priorities"],
-    queryFn: () => getPriorities(),
+    queryFn: () => window.provider.getPriorities(),
   });
 
   const isDisabled = issueTypesWithFieldsMap

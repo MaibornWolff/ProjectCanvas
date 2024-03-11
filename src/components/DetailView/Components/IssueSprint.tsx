@@ -4,7 +4,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Issue, Sprint } from "types";
 import { useState } from "react";
 import { useCanvasStore } from "@canvas/lib/Store";
-import { getSprints, moveIssueToBacklog } from "../../CreateIssue/queryFunctions";
 
 export function IssueSprint(props: {
   sprint: Sprint | undefined,
@@ -18,7 +17,7 @@ export function IssueSprint(props: {
   const currentBoardId = boardIds[0];
   const { data: sprints } = useQuery({
     queryKey: ["sprints"],
-    queryFn: () => getSprints(currentBoardId),
+    queryFn: () => window.provider.getSprints(currentBoardId),
     enabled: !!currentBoardId,
   });
 
@@ -38,7 +37,7 @@ export function IssueSprint(props: {
     },
   });
   const mutationBacklog = useMutation({
-    mutationFn: () => moveIssueToBacklog(props.issueKey),
+    mutationFn: () => window.provider.moveIssueToBacklog(props.issueKey),
     onError: () => {
       showNotification({
         message: "An error occurred while modifing the sprint 😢",

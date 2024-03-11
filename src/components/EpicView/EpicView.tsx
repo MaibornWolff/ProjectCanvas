@@ -79,7 +79,8 @@ export function EpicView() {
         </Box>
         <CreateIssueModal
           opened={createIssueModalOpened}
-          setOpened={setCreateIssueModalOpened}
+          onCancel={() => setCreateIssueModalOpened(false)}
+          onCreate={() => setCreateIssueModalOpened(false)}
         />
       </ScrollArea.Autosize>
     </ProjectDependingView>

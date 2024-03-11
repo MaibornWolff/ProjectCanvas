@@ -3,7 +3,6 @@ import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Issue } from "types";
 import { useState } from "react";
-import { getLabels } from "../../CreateIssue/queryFunctions";
 import { IssueLabelBadge } from "../../common/IssueLabelBadge";
 
 export function Labels({
@@ -20,7 +19,7 @@ export function Labels({
   const [showLabelsInput, setShowLabelsInput] = useState(false);
   const { data: allLabels } = useQuery({
     queryKey: ["labels"],
-    queryFn: () => getLabels(),
+    queryFn: () => window.provider.getLabels(),
   });
   const mutationLabels = useMutation({
     mutationFn: (issue: Issue) => window.provider.editIssue(issue, issueKey),
