@@ -13,11 +13,10 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
-import { Attachment, Issue, User } from "types";
+import { Attachment, Issue, User, StatusType } from "@canvas/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { showNotification } from "@mantine/notifications";
-import { StatusType } from "@canvas/types/status";
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu";
 import { Description } from "../DetailView/Components/Description";
 import { IssueSummary } from "../DetailView/Components/IssueSummary";

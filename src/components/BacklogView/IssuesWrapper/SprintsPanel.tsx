@@ -1,7 +1,6 @@
 import { Accordion, Badge, Flex, Group, Text, Title } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
-import { Issue, Sprint } from "types";
-import { StatusType } from "@canvas/types/status";
+import { Issue, Sprint, StatusType } from "@canvas/types";
 import { useColorScheme } from "@canvas/common/color-scheme";
 import { useCanvasStore } from "@canvas/lib/Store";
 import { pluralize, sortSprintsByActive } from "../helpers/backlogHelpers";

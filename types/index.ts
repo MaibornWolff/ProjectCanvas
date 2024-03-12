@@ -1,3 +1,6 @@
+export * from "./jira";
+export * from "./status";
+
 export interface Sprint {
   id: number,
   name: string,

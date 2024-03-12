@@ -5,8 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { DateInput } from "@mantine/dates";
 import dayjs from "dayjs";
-import { Issue } from "@canvas/types";
-import { StatusType } from "@canvas/types/status";
+import { Issue, StatusType } from "@canvas/types";
 import { useCanvasStore } from "../../lib/Store";
 import { addExportedTimeProperties, ExportableIssue, exportIssues } from "./exportHelper";
 import { getIssuesByProject } from "../BacklogView/helpers/queryFetchers";

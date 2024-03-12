@@ -17,7 +17,7 @@ import { useHover } from "@mantine/hooks";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { IconBolt } from "@tabler/icons-react";
-import { StatusType } from "@canvas/types/status";
+import { StatusType } from "@canvas/types";
 import { DeleteButton } from "../BacklogView/Issue/DeleteButton";
 import { EpicDetailView } from "../EpicDetailView/EpicDetailView";
 import { StoryPointsBadge } from "../common/StoryPoints/StoryPointsBadge";

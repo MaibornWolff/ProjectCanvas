@@ -1,4 +1,23 @@
-import { Attachment, Priority, User } from ".";
+export interface JiraUser {
+  id: string,
+  name: string,
+  displayName: string,
+  emailAddress: string,
+  avatarUrls: {
+    "16x16": string,
+    "24x24": string,
+    "32x32": string,
+    "48x48": string,
+  },
+}
+
+export interface JiraAttachment {
+  id: string,
+  filename: string,
+  created: string,
+  mimeType: string,
+  content: string,
+}
 
 export interface JiraProject {
   projectTypeKey: string,
@@ -29,7 +48,7 @@ export interface JiraChangelogHistoryItem {
 }
 
 export interface JiraChangelogHistory {
-  author: User,
+  author: JiraUser,
   id: string,
   created: string,
   items: JiraChangelogHistoryItem[],
@@ -98,7 +117,7 @@ export interface JiraEpic {
       ],
     },
     sprint?: JiraSprint,
-    attachment?: Attachment[],
+    attachment?: JiraAttachment[],
   },
 }
 
@@ -156,7 +175,7 @@ export interface JiraIssue {
       ],
     },
     sprint?: JiraSprint,
-    attachment?: Attachment[],
+    attachment?: JiraAttachment[],
   },
 }
 
@@ -174,5 +193,12 @@ export interface JiraIssueType {
 }
 
 export interface JiraPriority {
-  values: Priority[],
+  values: {
+    statusColor: string,
+    description: string,
+    iconUrl: string,
+    name: string,
+    id: string,
+    isDefault: boolean,
+  }[],
 }

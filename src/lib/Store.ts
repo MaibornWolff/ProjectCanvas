@@ -1,7 +1,6 @@
-import { IssueStatus, IssueType, Project } from "types";
+import { IssueStatus, IssueType, Project, StatusType } from "@canvas/types";
 import { create } from "zustand";
 import { uniqWith } from "lodash";
-import { StatusType } from "../../types/status";
 
 export interface CanvasStore {
   projects: Project[],
