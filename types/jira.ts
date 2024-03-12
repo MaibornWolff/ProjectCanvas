@@ -43,17 +43,7 @@ export interface JiraChangelog {
 export interface JiraEpic {
   key: string,
   fields: {
-    description: {
-      type: string,
-      version: string,
-      content: string &
-      {
-        content: {
-          type: string,
-          text: string,
-        }[],
-      }[],
-    },
+    description: string,
     summary: string,
     creator: { name: string, displayName: string },
     status: { name: string },
@@ -100,17 +90,7 @@ export interface JiraEpic {
           body: {
             type: string,
             version: number,
-            content: [
-              {
-                type: string,
-                content: [
-                  {
-                    type: string,
-                    text: string,
-                  },
-                ],
-              },
-            ],
+            content: string,
           },
           created: string,
           updated: string,
@@ -126,17 +106,7 @@ export interface JiraIssue {
   key: string,
   changelog: JiraChangelog,
   fields: {
-    description: {
-      type: string,
-      version: string,
-      content: string &
-      {
-        content: {
-          type: string,
-          text: string,
-        }[],
-      }[],
-    },
+    description: string,
     summary: string,
     creator: { name: string, displayName: string },
     status: { name: string },
@@ -179,13 +149,7 @@ export interface JiraIssue {
             },
             displayName: string,
           },
-          body: string &
-          {
-            content: {
-              type: string,
-              text: string,
-            }[],
-          }[],
+          body: string,
           created: string,
           updated: string,
         },
