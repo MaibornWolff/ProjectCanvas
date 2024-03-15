@@ -16,10 +16,14 @@ export function Description({
     extensions: [
       StarterKit,
       AcceptanceCriteriaList,
-      AcceptanceCriteriaItem,
+      AcceptanceCriteriaItem.configure({
+        HTMLAttributes: {
+          style: "color: green",
+        },
+      }),
       Link,
     ],
-    content: "<ul data-acceptance-criteria-list='true'><li data-acceptance-criteria-item='true'>Some default content</li></ul>",
+    content: "<ul data-type='acceptanceCriteriaList'><li data-type='acceptanceCriteriaItem'>Some default content</li></ul>",
     onBlur: ({ editor }) => {
       const currentDescription = editor.getText();
       if (lastDescription !== currentDescription) {

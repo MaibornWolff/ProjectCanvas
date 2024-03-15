@@ -20,9 +20,7 @@ export const AcceptanceCriteriaList = Node.create<AcceptanceCriteriaListOptions>
 
   addOptions() {
     return {
-      HTMLAttributes: {
-        "data-acceptance-criteria-list": true,
-      },
+      HTMLAttributes: {},
       itemTypeName: "acceptanceCriteriaItem",
     };
   },
@@ -33,30 +31,22 @@ export const AcceptanceCriteriaList = Node.create<AcceptanceCriteriaListOptions>
 
   group: "block list",
 
-  defining: true,
-
   parseHTML() {
     return [
       {
-        tag: "ul",
-        getAttrs: (node) => (node as HTMLElement).getAttribute("data-acceptance-criteria-list") === "true" && null,
+        tag: `ul[data-type="${this.name}"]`,
+        priority: 52,
       },
     ];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ["ul", mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+    return ["ul", mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, { "data-type": this.name }), 0];
   },
 
   addCommands() {
     return {
-      toggleAcceptanceCriteriaList: () => ({ commands }) => commands.toggleList(
-        this.name,
-        this.options.itemTypeName,
-        true,
-      ),
+      toggleAcceptanceCriteriaList: () => ({ commands }) => commands.toggleList(this.name, this.options.itemTypeName),
     };
   },
-
-  // TODO use addInputRules to add auto format on some regex
 });

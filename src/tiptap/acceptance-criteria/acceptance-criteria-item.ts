@@ -1,8 +1,10 @@
-import { mergeAttributes, Node } from "@tiptap/core";
+import { mergeAttributes, Node, wrappingInputRule } from "@tiptap/core";
 
 export interface AcceptanceCriteriaItemOptions {
   HTMLAttributes: Record<string, unknown>,
 }
+
+export const inputRegex = /^\s*(\[(AC)\])\s$/;
 
 export const AcceptanceCriteriaItem = Node.create<AcceptanceCriteriaItemOptions>({
   priority: 1000,
@@ -11,20 +13,16 @@ export const AcceptanceCriteriaItem = Node.create<AcceptanceCriteriaItemOptions>
 
   addOptions() {
     return {
-      HTMLAttributes: {
-        "data-acceptance-criteria-item": true,
-        style: "color: red",
-      },
+      HTMLAttributes: {},
     };
   },
 
-  content: "inline*",
+  content: "paragraph+",
 
   parseHTML() {
     return [
       {
-        tag: "li",
-        getAttrs: (node) => (node as HTMLElement).getAttribute("data-acceptance-criteria-item") === "true" && null,
+        tag: `li[data-type="${this.name}"]`,
       },
     ];
   },
@@ -37,5 +35,14 @@ export const AcceptanceCriteriaItem = Node.create<AcceptanceCriteriaItemOptions>
     return {
       Enter: () => this.editor.commands.splitListItem(this.name),
     };
+  },
+
+  addInputRules() {
+    return [
+      wrappingInputRule({
+        find: inputRegex,
+        type: this.type,
+      }),
+    ];
   },
 });
