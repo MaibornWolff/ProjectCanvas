@@ -13,7 +13,7 @@ export const AcceptanceCriteriaItem = Node.create<AcceptanceCriteriaItemOptions>
     return {
       HTMLAttributes: {
         "data-acceptance-criteria-item": true,
-        style: "color: blue",
+        style: "color: red",
       },
     };
   },

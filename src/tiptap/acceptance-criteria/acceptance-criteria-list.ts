@@ -53,7 +53,7 @@ export const AcceptanceCriteriaList = Node.create<AcceptanceCriteriaListOptions>
       toggleAcceptanceCriteriaList: () => ({ commands }) => commands.toggleList(
         this.name,
         this.options.itemTypeName,
-        false,
+        true,
       ),
     };
   },

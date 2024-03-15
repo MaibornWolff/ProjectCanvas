@@ -41,6 +41,10 @@ export function Description({
         </RichTextEditor.ControlsGroup>
 
         <RichTextEditor.ControlsGroup>
+          <RichTextEditor.OrderedList />
+        </RichTextEditor.ControlsGroup>
+
+        <RichTextEditor.ControlsGroup>
           <AcceptanceCriteriaControl />
         </RichTextEditor.ControlsGroup>
 
