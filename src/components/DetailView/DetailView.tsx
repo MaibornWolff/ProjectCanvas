@@ -116,12 +116,14 @@ export function DetailView({
             <Text c="dimmed" mb="sm">
               Description
             </Text>
-            <Description
-              description={description}
-              onChange={(newDescription) => {
-                mutationDescription.mutate({ description: newDescription });
-              }}
-            />
+            <Box mb="sm">
+              <Description
+                description={description}
+                onChange={(newDescription) => {
+                  mutationDescription.mutate({ description: newDescription });
+                }}
+              />
+            </Box>
             <Text c="dimmed" mb="sm">Subtasks</Text>
             <Paper mb="lg" mr="sm">
               <Stack gap="xs">

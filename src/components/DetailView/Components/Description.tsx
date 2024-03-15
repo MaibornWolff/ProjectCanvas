@@ -1,4 +1,6 @@
-import { Textarea, Text } from "@mantine/core";
+import { useEditor } from "@tiptap/react";
+import { StarterKit } from "@tiptap/starter-kit";
+import { RichTextEditor } from "@mantine/tiptap";
 import { useState } from "react";
 
 export function Description({
@@ -8,28 +10,24 @@ export function Description({
   description: string,
   onChange: (newDescription: string) => void,
 }) {
-  const [currentDescription, setCurrentDescription] = useState(description);
-  const [showDescriptionInput, setShowDescriptionInput] = useState(false);
+  const [lastDescription, setLastDescription] = useState(description);
+  const tipTapEditor = useEditor({
+    extensions: [
+      StarterKit,
+    ],
+    content: description,
+    onBlur: ({ editor }) => {
+      const currentDescription = editor.getText();
+      if (lastDescription !== currentDescription) {
+        setLastDescription(currentDescription);
+        onChange(currentDescription);
+      }
+    },
+  });
 
   return (
-    <span>
-      {showDescriptionInput ? (
-        <Textarea
-          value={currentDescription}
-          onChange={(e) => setCurrentDescription(e.target.value)}
-          onBlur={() => {
-            setShowDescriptionInput(false);
-            onChange(currentDescription);
-          }}
-          autosize
-          minRows={4}
-          mb="xl"
-        />
-      ) : (
-        <Text onClick={() => setShowDescriptionInput(true)} mb="xl">
-          {currentDescription || "Add Description"}
-        </Text>
-      )}
-    </span>
+    <RichTextEditor editor={tipTapEditor}>
+      <RichTextEditor.Content />
+    </RichTextEditor>
   );
 }
