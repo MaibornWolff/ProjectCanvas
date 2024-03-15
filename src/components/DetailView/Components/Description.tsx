@@ -1,7 +1,8 @@
 import { useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
-import { RichTextEditor } from "@mantine/tiptap";
+import { RichTextEditor, Link } from "@mantine/tiptap";
 import { useState } from "react";
+import { AcceptanceCriteriaList, AcceptanceCriteriaItem, AcceptanceCriteriaControl } from "@canvas/tiptap";
 
 export function Description({
   description,
@@ -14,8 +15,11 @@ export function Description({
   const tipTapEditor = useEditor({
     extensions: [
       StarterKit,
+      AcceptanceCriteriaList,
+      AcceptanceCriteriaItem,
+      Link,
     ],
-    content: description,
+    content: "<ul data-acceptance-criteria-list='true'><li data-acceptance-criteria-item='true'>Some default content</li></ul>",
     onBlur: ({ editor }) => {
       const currentDescription = editor.getText();
       if (lastDescription !== currentDescription) {
@@ -27,6 +31,25 @@ export function Description({
 
   return (
     <RichTextEditor editor={tipTapEditor}>
+      <RichTextEditor.Toolbar>
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.Bold />
+          <RichTextEditor.Italic />
+          <RichTextEditor.Underline />
+          <RichTextEditor.Strikethrough />
+          <RichTextEditor.ClearFormatting />
+        </RichTextEditor.ControlsGroup>
+
+        <RichTextEditor.ControlsGroup>
+          <AcceptanceCriteriaControl />
+        </RichTextEditor.ControlsGroup>
+
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.Undo />
+          <RichTextEditor.Redo />
+        </RichTextEditor.ControlsGroup>
+      </RichTextEditor.Toolbar>
+
       <RichTextEditor.Content />
     </RichTextEditor>
   );
