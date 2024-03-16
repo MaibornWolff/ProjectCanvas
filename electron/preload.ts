@@ -1,6 +1,7 @@
 import { ipcRenderer } from "electron";
 
 window.provider = {
+  supportsProseMirrorPayloads: () => ipcRenderer.invoke("supportsProseMirrorPayloads"),
   login: (params) => ipcRenderer.invoke("login", params),
   logout: () => ipcRenderer.invoke("logout"),
   isLoggedIn: () => ipcRenderer.invoke("isLoggedIn"),

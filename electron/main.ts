@@ -1,41 +1,8 @@
 import { ipcMain, shell, app, BrowserWindow } from "electron";
 import * as electron from "electron";
 import path from "path";
+import { getProviderExecutor, login, refreshAccessToken } from "./provider";
 import { handleOAuth2 } from "./OAuthHelper";
-import {
-  addCommentToIssue,
-  createIssue,
-  createSprint,
-  createSubtask,
-  deleteIssue,
-  deleteIssueComment,
-  editIssue,
-  editIssueComment,
-  getAssignableUsersByProject,
-  getBacklogIssuesByProjectAndBoard,
-  getBoardIds,
-  getCurrentUser,
-  getEditableIssueFields,
-  getEpicsByProject,
-  getIssueReporter,
-  getIssuesByProject,
-  getIssuesBySprint,
-  getIssueTypesByProject,
-  getIssueTypesWithFieldsMap,
-  getLabels,
-  getPriorities,
-  getProjects,
-  getResource,
-  getSprints,
-  isLoggedIn,
-  login,
-  logout,
-  moveIssueToBacklog,
-  moveIssueToSprintAndRank,
-  rankIssueInBacklog,
-  refreshAccessToken,
-  setTransition,
-} from "./provider";
 import { getExportIssuesHandler } from "./export-issues";
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
@@ -94,46 +61,44 @@ app.on("activate", () => {
 app.whenReady().then(() => {
   ipcMain.on("start-oauth2", () => handleOAuth2(BrowserWindow.getAllWindows()[0]!));
 
+  ipcMain.handle("supportsProseMirrorPayloads", getProviderExecutor("supportsProseMirrorPayloads"));
   ipcMain.handle("login", login);
-  ipcMain.handle("logout", logout);
-  ipcMain.handle("isLoggedIn", isLoggedIn);
+  ipcMain.handle("logout", getProviderExecutor("logout"));
+  ipcMain.handle("isLoggedIn", getProviderExecutor("isLoggedIn"));
   ipcMain.handle("refreshAccessToken", refreshAccessToken);
 
-  ipcMain.handle("getProjects", getProjects);
-  ipcMain.handle("getCurrentUser", getCurrentUser);
-  ipcMain.handle("getBoardIds", getBoardIds);
-  ipcMain.handle("setTransition", setTransition);
-  ipcMain.handle("createSubtask", createSubtask);
+  ipcMain.handle("getProjects", getProviderExecutor("getProjects"));
+  ipcMain.handle("getCurrentUser", getProviderExecutor("getCurrentUser"));
+  ipcMain.handle("getBoardIds", getProviderExecutor("getBoardIds"));
+  ipcMain.handle("setTransition", getProviderExecutor("setTransition"));
+  ipcMain.handle("createSubtask", getProviderExecutor("createSubtask"));
 
-  ipcMain.handle("editIssue", editIssue);
-  ipcMain.handle("createIssue", createIssue);
-  ipcMain.handle("getIssuesByProject", getIssuesByProject);
-  ipcMain.handle("getIssuesBySprint", getIssuesBySprint);
-  ipcMain.handle(
-    "getBacklogIssuesByProjectAndBoard",
-    getBacklogIssuesByProjectAndBoard,
-  );
-  ipcMain.handle("deleteIssue", deleteIssue);
-  ipcMain.handle("moveIssueToSprintAndRank", moveIssueToSprintAndRank);
-  ipcMain.handle("moveIssueToBacklog", moveIssueToBacklog);
-  ipcMain.handle("rankIssueInBacklog", rankIssueInBacklog);
+  ipcMain.handle("editIssue", getProviderExecutor("editIssue"));
+  ipcMain.handle("createIssue", getProviderExecutor("createIssue"));
+  ipcMain.handle("getIssuesByProject", getProviderExecutor("getIssuesByProject"));
+  ipcMain.handle("getIssuesBySprint", getProviderExecutor("getIssuesBySprint"));
+  ipcMain.handle("getBacklogIssuesByProjectAndBoard", getProviderExecutor("getBacklogIssuesByProjectAndBoard"));
+  ipcMain.handle("deleteIssue", getProviderExecutor("deleteIssue"));
+  ipcMain.handle("moveIssueToSprintAndRank", getProviderExecutor("moveIssueToSprintAndRank"));
+  ipcMain.handle("moveIssueToBacklog", getProviderExecutor("moveIssueToBacklog"));
+  ipcMain.handle("rankIssueInBacklog", getProviderExecutor("rankIssueInBacklog"));
 
-  ipcMain.handle("getIssueTypesByProject", getIssueTypesByProject);
-  ipcMain.handle("getLabels", getLabels);
-  ipcMain.handle("getPriorities", getPriorities);
-  ipcMain.handle("getEditableIssueFields", getEditableIssueFields);
-  ipcMain.handle("getIssueReporter", getIssueReporter);
-  ipcMain.handle("getIssueTypesWithFieldsMap", getIssueTypesWithFieldsMap);
+  ipcMain.handle("getIssueTypesByProject", getProviderExecutor("getIssueTypesByProject"));
+  ipcMain.handle("getLabels", getProviderExecutor("getLabels"));
+  ipcMain.handle("getPriorities", getProviderExecutor("getPriorities"));
+  ipcMain.handle("getEditableIssueFields", getProviderExecutor("getEditableIssueFields"));
+  ipcMain.handle("getIssueReporter", getProviderExecutor("getIssueReporter"));
+  ipcMain.handle("getIssueTypesWithFieldsMap", getProviderExecutor("getIssueTypesWithFieldsMap"));
 
-  ipcMain.handle("createSprint", createSprint);
-  ipcMain.handle("getSprints", getSprints);
-  ipcMain.handle("getAssignableUsersByProject", getAssignableUsersByProject);
-  ipcMain.handle("getEpicsByProject", getEpicsByProject);
+  ipcMain.handle("createSprint", getProviderExecutor("createSprint"));
+  ipcMain.handle("getSprints", getProviderExecutor("getSprints"));
+  ipcMain.handle("getAssignableUsersByProject", getProviderExecutor("getAssignableUsersByProject"));
+  ipcMain.handle("getEpicsByProject", getProviderExecutor("getEpicsByProject"));
 
-  ipcMain.handle("addCommentToIssue", addCommentToIssue);
-  ipcMain.handle("editIssueComment", editIssueComment);
-  ipcMain.handle("deleteIssueComment", deleteIssueComment);
-  ipcMain.handle("getResource", getResource);
+  ipcMain.handle("addCommentToIssue", getProviderExecutor("addCommentToIssue"));
+  ipcMain.handle("editIssueComment", getProviderExecutor("editIssueComment"));
+  ipcMain.handle("deleteIssueComment", getProviderExecutor("deleteIssueComment"));
+  ipcMain.handle("getResource", getProviderExecutor("getResource"));
 
   ipcMain.on("exportIssues", getExportIssuesHandler(electron, mainWindow!));
 });

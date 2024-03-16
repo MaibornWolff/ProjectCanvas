@@ -110,6 +110,10 @@ export class JiraCloudProvider implements IProvider {
     return new Date(convertedDate.getTime() - timezoneOffset * 60 * 1000);
   }
 
+  supportsProseMirrorPayloads(): Promise<boolean> {
+    return Promise.resolve(true);
+  }
+
   async login({
     oauthLoginOptions,
   }: {

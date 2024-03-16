@@ -58,15 +58,9 @@ export async function refreshTokens({
           const { access_token: accessToken, refresh_token: refreshToken } = resp;
           resolve({ accessToken, refreshToken });
         } else {
-          reject(
-            new Error(
-              `Failed to refresh tokens with status code: ${response.status}`,
-            ),
-          );
+          reject(new Error(`Failed to refresh tokens with status code: ${response.status}`));
         }
       })
-      .catch((error) => {
-        reject(error);
-      });
+      .catch((error) => reject(error));
   });
 }

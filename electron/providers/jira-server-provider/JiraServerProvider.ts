@@ -168,6 +168,10 @@ export class JiraServerProvider implements IProvider {
     return this.constructRestBasedClient("agile", version);
   }
 
+  supportsProseMirrorPayloads(): Promise<boolean> {
+    return Promise.resolve(false);
+  }
+
   async login({
     basicLoginOptions,
   }: {

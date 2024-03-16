@@ -1,5 +1,4 @@
-/* eslint-disable max-classes-per-file */
-import { Issue, IssueType, Priority, Project, Resource, Sprint, SprintCreate, User } from "../../../types";
+import { Issue, IssueType, Priority, Project, Resource, Sprint, SprintCreate, User } from "@canvas/types";
 
 export interface BasicLoginOptions {
   url: string,
@@ -18,6 +17,7 @@ interface LoginOptions {
 }
 
 export interface IProvider {
+  supportsProseMirrorPayloads(): Promise<boolean>,
   login(loginOptions: LoginOptions): Promise<void>,
   isLoggedIn(): Promise<void>,
   refreshAccessToken(oauthRefreshOptions: {
