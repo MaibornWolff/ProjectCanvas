@@ -89,7 +89,6 @@ export interface Issue {
   sprint?: Sprint,
   projectKey: string,
   subtasks: {
-    id: string,
     key: string,
     fields: {
       summary: string,

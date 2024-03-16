@@ -70,6 +70,15 @@ export interface JiraChangelog {
   histories: JiraChangelogHistory[],
 }
 
+export interface JiraPriority {
+  statusColor: string,
+  description: string,
+  iconUrl: string,
+  name: string,
+  id: string,
+  isDefault: boolean,
+}
+
 // EpicIssue structure differs from normal Issue structure
 export interface JiraEpic {
   key: string,
@@ -139,7 +148,7 @@ export interface JiraIssue {
   fields: {
     description: string,
     summary: string,
-    creator: { name: string, displayName: string },
+    creator: JiraServerUser,
     status: { name: string },
     issuetype: { name: string },
     // TODO: improve this, let's try not to:
@@ -152,42 +161,25 @@ export interface JiraIssue {
     parent?: JiraIssue,
     epic: { name: string },
     labels: string[],
-    assignee: {
-      displayName: string,
-      avatarUrls: {
-        "16x16": string,
-        "24x24": string,
-        "36x36": string,
-        "48x48": string,
-      },
-    },
+    assignee?: JiraServerUser,
+    reporter: JiraServerUser,
     [rankCustomField: string]: string | unknown,
     subtasks: JiraIssue[],
-    project: { id: string },
+    project: JiraProject,
     created: string,
     updated: string,
     comment: {
-      comments: [
-        {
-          id: string,
-          author: {
-            accountId: string,
-            avatarUrls: {
-              "48x48": string,
-              "24x24": string,
-              "16x16": string,
-              "32x32": string,
-            },
-            displayName: string,
-          },
-          body: string,
-          created: string,
-          updated: string,
-        },
-      ],
+      comments: {
+        id: string,
+        author: JiraServerUser,
+        body: string,
+        created: string,
+        updated: string,
+      }[],
     },
     sprint?: JiraSprint,
     attachment?: JiraAttachment[],
+    priority: JiraPriority,
   },
 }
 
@@ -202,15 +194,4 @@ export interface JiraIssueType {
   name?: string,
   statuses?: JiraIssueStatus[],
   subtask: boolean,
-}
-
-export interface JiraPriority {
-  values: {
-    statusColor: string,
-    description: string,
-    iconUrl: string,
-    name: string,
-    id: string,
-    isDefault: boolean,
-  }[],
 }

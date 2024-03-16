@@ -63,7 +63,7 @@ export class JiraCloudProvider implements IProvider {
               recreateAxiosError(error, `User not authenticated: ${JSON.stringify(error.response.data)}`),
             );
             case 403: return Promise.reject(
-              recreateAxiosError(error, `User does not have a valid licence: ${JSON.stringify(error.response.data)}`),
+              recreateAxiosError(error, `User does not have a valid license: ${JSON.stringify(error.response.data)}`),
             );
             case 429: return Promise.reject(
               recreateAxiosError(error, `Rate limit exceeded: ${JSON.stringify(error.response.data)}`),
