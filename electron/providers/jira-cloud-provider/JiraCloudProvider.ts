@@ -426,7 +426,7 @@ export class JiraCloudProvider implements IProvider {
 
   async getIssuesByProject(project: string): Promise<Issue[]> {
     return new Promise((resolve, reject) => {
-      this.getRestApiClient(2)
+      this.getRestApiClient(3)
         .get(`/search?jql=project=${project}&maxResults=10000&fields=*all&expand=changelog`)
         .then(async (response) => {
           resolve(this.fetchIssues(response));
@@ -481,7 +481,6 @@ export class JiraCloudProvider implements IProvider {
           labels: element.fields.labels,
           assignee: element.fields.assignee,
           rank: element.fields[rankCustomField],
-          // IMPROVE: Remove boolean flag
           description: element.fields.description,
           subtasks: element.fields.subtasks,
           created: element.fields.created,
@@ -761,7 +760,7 @@ export class JiraCloudProvider implements IProvider {
     const offsetDueDate = this.offsetDate(dueDate);
 
     return new Promise((resolve, reject) => {
-      this.getRestApiClient(2)
+      this.getRestApiClient(3)
         .put(`/issue/${issueIdOrKey}`, {
           fields: {
             ...(summary && {

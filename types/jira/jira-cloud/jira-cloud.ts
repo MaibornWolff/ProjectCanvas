@@ -1,3 +1,5 @@
+import { DocNode } from "@atlaskit/adf-schema";
+
 interface JiraCloudAvatarUrls {
   "16x16": string,
   "24x24": string,
@@ -70,7 +72,7 @@ interface JiraCloudAttachment {
 export interface JiraCloudEpic {
   key: string,
   fields: {
-    description: string,
+    description: string | DocNode,
     summary: string,
     creator: { name: string, displayName: string },
     status: { name: string },
@@ -97,11 +99,7 @@ export interface JiraCloudEpic {
         {
           id: string,
           author: JiraCloudUser,
-          body: {
-            type: string,
-            version: number,
-            content: string,
-          },
+          body: string | DocNode,
           created: string,
           updated: string,
         },
@@ -116,7 +114,7 @@ export interface JiraCloudIssue {
   key: string,
   changelog: JiraCloudChangelog,
   fields: {
-    description: string,
+    description: string | DocNode,
     summary: string,
     creator: { name: string, displayName: string },
     status: { name: string },
@@ -142,7 +140,7 @@ export interface JiraCloudIssue {
         {
           id: string,
           author: JiraCloudUser,
-          body: string,
+          body: string | DocNode,
           created: string,
           updated: string,
         },

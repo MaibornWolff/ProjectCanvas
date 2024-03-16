@@ -1,3 +1,5 @@
+import { DocNode } from "@atlaskit/adf-schema";
+
 export * from "./jira";
 export * from "./status";
 
@@ -74,7 +76,7 @@ export interface Issue {
   creator: string,
   status: string,
   type: string,
-  description: string,
+  description: string | DocNode,
   storyPointsEstimate: number,
   epic: {
     issueKey?: string,
@@ -100,7 +102,7 @@ export interface Issue {
       {
         id: string,
         author: User,
-        body: string,
+        body: string | DocNode,
         created: string,
         updated: string,
       },

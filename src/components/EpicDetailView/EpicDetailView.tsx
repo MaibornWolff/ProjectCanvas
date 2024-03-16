@@ -13,7 +13,7 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
-import { Attachment, Issue, User, StatusType } from "@canvas/types";
+import { Issue, StatusType } from "@canvas/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { showNotification } from "@mantine/notifications";
@@ -51,29 +51,7 @@ export function EpicDetailView({
   closeModal,
   projectId,
   type,
-}: {
-  issueKey: string,
-  summary: string,
-  labels: string[],
-  assignee?: User,
-  description: string,
-  created: string,
-  updated: string,
-  attachments: Attachment[],
-  comment: {
-    comments: [
-      {
-        id: string,
-        author: User,
-        body: string,
-        created: string,
-        updated: string,
-      },
-    ],
-  },
-  status: string,
-  projectId: string,
-  type: string,
+}: Omit<Issue, "epic" | "storyPointsEstimate"> & {
   closeModal: () => void,
 }) {
   const queryClient = useQueryClient();
