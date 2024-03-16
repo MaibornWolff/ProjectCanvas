@@ -28,6 +28,7 @@ export interface IProvider {
   getProjects(): Promise<Project[]>,
   getBoardIds(project: string): Promise<number[]>,
   getSprints(BoardId: number): Promise<Sprint[]>,
+  getIssue(issueKey: string): Promise<Issue>,
   getIssuesByProject(project: string, boardId: number): Promise<Issue[]>,
   getIssueTypesByProject(projectKeyOrId: string): Promise<IssueType[]>,
   getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]>,

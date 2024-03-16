@@ -27,11 +27,11 @@ export interface JiraCloudProject {
 }
 
 export interface JiraCloudSprint {
+  id: number,
+  name: string,
+  state: "active" | "future" | "closed",
   endDate: string,
   startDate: string,
-  id: number,
-  state: string,
-  name: string,
 }
 
 export interface JiraCloudChangelogHistoryItem {
@@ -58,7 +58,7 @@ export interface JiraCloudChangelog {
 interface JiraCloudAttachment {
   id: string,
   filename: string,
-  created: number,
+  created: string,
   mimeType: string,
   size: number,
   /** The URL pointing to the attachment content */
@@ -66,6 +66,15 @@ interface JiraCloudAttachment {
   /** The URL pointing to the attachment thumbnail */
   thumbnail: string,
   author: JiraCloudUser,
+}
+
+export interface JiraCloudPriority {
+  id: string,
+  name: string,
+  statusColor: string,
+  description: string,
+  iconUrl: string,
+  isDefault: boolean,
 }
 
 // EpicIssue structure differs from normal Issue structure
@@ -111,6 +120,7 @@ export interface JiraCloudEpic {
 }
 
 export interface JiraCloudIssue {
+  id: string,
   key: string,
   changelog: JiraCloudChangelog,
   fields: {
@@ -130,6 +140,7 @@ export interface JiraCloudIssue {
     epic: { name: string },
     labels: string[],
     assignee: JiraCloudUser,
+    reporter: JiraCloudUser,
     [rankCustomField: string]: string | unknown,
     project: JiraCloudProject,
     subtasks: JiraCloudIssue[],
@@ -148,6 +159,7 @@ export interface JiraCloudIssue {
     },
     sprint?: JiraCloudSprint,
     attachment?: JiraCloudAttachment[],
+    priority: JiraCloudPriority,
   },
 }
 
@@ -170,13 +182,4 @@ export interface JiraCloudIssueTypeWithStatus {
   name: string,
   statuses: JiraCloudIssueStatus[],
   subtask: boolean,
-}
-
-export interface JiraCloudPriority {
-  id: string,
-  name: string,
-  statusColor: string,
-  description: string,
-  iconUrl: string,
-  isDefault: boolean,
 }

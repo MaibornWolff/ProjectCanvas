@@ -73,6 +73,7 @@ app.whenReady().then(() => {
   ipcMain.handle("setTransition", getProviderExecutor("setTransition"));
   ipcMain.handle("createSubtask", getProviderExecutor("createSubtask"));
 
+  ipcMain.handle("getIssue", getProviderExecutor("getIssue"));
   ipcMain.handle("editIssue", getProviderExecutor("editIssue"));
   ipcMain.handle("createIssue", getProviderExecutor("createIssue"));
   ipcMain.handle("getIssuesByProject", getProviderExecutor("getIssuesByProject"));

@@ -1,5 +1,17 @@
-export interface JiraUser {
-  id: string,
+export interface JiraServerInfo {
+  baseUrl: string,
+  version: string,
+  versionNumbers: [number, number, number],
+  buildNumber: number,
+  buildDate: string,
+  serverTime: string,
+  scmInfo: string,
+  buildPartnerName: string,
+  serverTitle: string,
+}
+
+export interface JiraServerUser {
+  key: string,
   name: string,
   displayName: string,
   emailAddress: string,
@@ -48,7 +60,7 @@ export interface JiraChangelogHistoryItem {
 }
 
 export interface JiraChangelogHistory {
-  author: JiraUser,
+  author: JiraServerUser,
   id: string,
   created: string,
   items: JiraChangelogHistoryItem[],

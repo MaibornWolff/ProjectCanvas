@@ -47,7 +47,7 @@ export function SplitIssueDetails(
     updated,
     comment,
     type,
-    projectId,
+    projectKey,
     sprint,
     attachments,
     onIssueSelected,
@@ -56,11 +56,11 @@ export function SplitIssueDetails(
     onIssueDescriptionChanged,
     selectedSplitIssues,
   } : Issue & {
-    originalIssueDescription: string,
+    originalIssueDescription: Issue["description"],
     onIssueSelected: (issueKey: string) => void,
     onIssueClosed: () => void,
     onIssueSaved: () => void,
-    onIssueDescriptionChanged: (newDescription: string) => void,
+    onIssueDescriptionChanged: (newDescription: Issue["description"]) => void,
     selectedSplitIssues: string[],
   },
 ) {
@@ -70,7 +70,7 @@ export function SplitIssueDetails(
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
-        <EditableEpic projectId={projectId} issueKey={issueKey} epic={epic} />
+        <EditableEpic projectKey={projectKey} issueKey={issueKey} epic={epic} />
         <Group>
           <IssueIcon type={type} />
           {" "}
@@ -90,16 +90,11 @@ export function SplitIssueDetails(
           style={{ maxHeight: "65vh" }}
           offsetScrollbars
         >
-          <Text c="dimmed" mb="sm">
-            Description
-          </Text>
-          <Description
-            description={description}
-            onChange={onIssueDescriptionChanged}
-          />
-          <Group justify="left" mb="sm">
+          <Text c="dimmed" mb="sm">Description</Text>
+          <Description description={description} onChange={onIssueDescriptionChanged} />
+          <Group justify="left" mt="sm" mb="sm">
             <IssueStatusMenu
-              projectId={projectId}
+              projectKey={projectKey}
               issueKey={issueKey}
               type={type}
               status={status}
@@ -107,9 +102,7 @@ export function SplitIssueDetails(
           </Group>
           <Accordion variant="contained" defaultValue="Details" mb={20}>
             <Accordion.Item value="Details">
-              <Accordion.Control style={{ textAlign: "left" }}>
-                Details
-              </Accordion.Control>
+              <Accordion.Control style={{ textAlign: "left" }}>Details</Accordion.Control>
               <Accordion.Panel>
                 <Stack>
                   <AssigneeMenu
@@ -117,21 +110,14 @@ export function SplitIssueDetails(
                     issueKey={issueKey}
                   />
                   <Group grow>
-                    <Text fz="sm" c="dimmed">
-                      Labels
-                    </Text>
+                    <Text fz="sm" c="dimmed">Labels</Text>
                     <Labels labels={labels} issueKey={issueKey} />
                   </Group>
                   <Group grow>
-                    <Text fz="sm" c="dimmed">
-                      Sprint
-                    </Text>
+                    <Text fz="sm" c="dimmed">Sprint</Text>
                     <IssueSprint sprint={sprint} issueKey={issueKey} />
                   </Group>
-                  <StoryPointsEstimateMenu
-                    issueKey={issueKey}
-                    storyPointsEstimate={storyPointsEstimate}
-                  />
+                  <StoryPointsEstimateMenu issueKey={issueKey} storyPointsEstimate={storyPointsEstimate} />
                   <ReporterMenu issueKey={issueKey} />
                 </Stack>
               </Accordion.Panel>
@@ -155,20 +141,13 @@ export function SplitIssueDetails(
               }).format(new Date(updated))}
             </Text>
           </Box>
-          <Text c="dimmed" mb="sm">
-            Child Issues
-          </Text>
+          <Text c="dimmed" mb="sm">Child Issues</Text>
           <Paper mb="lg" mr="sm">
             <Stack gap="xs">
               {subtasks.map((subtask) => (
-                <Subtask
-                  key={subtask.key}
-                  subtaskKey={subtask.key}
-                  id={subtask.id}
-                  fields={subtask.fields}
-                />
+                <Subtask key={subtask.key} subtaskKey={subtask.key} id={subtask.id} fields={subtask.fields} />
               ))}
-              <AddSubtask issueKey={issueKey} projectId={projectId} />
+              <AddSubtask issueKey={issueKey} projectId={projectKey} />
             </Stack>
           </Paper>
           <Attachments issueKey={issueKey} attachments={attachments} />

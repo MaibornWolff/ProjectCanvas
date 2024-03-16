@@ -3,12 +3,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { IconArrowsRightLeft, IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { showNotification } from "@mantine/notifications";
-import { Issue } from "../../../../../types";
+import { Issue } from "@canvas/types";
+import { useCanvasStore } from "@canvas/lib/Store";
 import { SplitIssueDetails } from "./SplitIssueDetails";
 import { SplitIssueCreate } from "./SplitIssueCreate";
 import { isNewIssueIdentifier } from "./split-view-constants";
 import { getIssuesByProject } from "../../../BacklogView/helpers/queryFetchers";
-import { useCanvasStore } from "../../../../lib/Store";
 import { CloseWarningAlert } from "./CloseWarningAlert";
 
 export function SplitView({
@@ -37,10 +37,10 @@ export function SplitView({
     initialData: [],
   });
 
-  const [modifiedDescriptions, setModifiedDescriptions] = useState<{ [key: string]: string | undefined }>(
-    {},
-  );
-  const setModifiedDescription = (issueKey: string, newDescription: string | undefined) => {
+  const [modifiedDescriptions, setModifiedDescriptions] = useState<{
+    [key: string]: Issue["description"] | undefined,
+  }>({});
+  const setModifiedDescription = (issueKey: string, newDescription: Issue["description"] | undefined) => {
     setModifiedDescriptions({
       ...modifiedDescriptions,
       [issueKey]: newDescription,

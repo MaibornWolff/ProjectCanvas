@@ -18,9 +18,9 @@ export function EpicSelect({
   isLoading: boolean,
 }) {
   const { data: epics } = useQuery({
-    queryKey: ["epics", form.getInputProps("projectId").value],
-    queryFn: () => window.provider.getEpicsByProject(form.getInputProps("projectId").value!),
-    enabled: enabled && !!form.getInputProps("projectId").value,
+    queryKey: ["epics", form.getInputProps("projectKey").value],
+    queryFn: () => window.provider.getEpicsByProject(form.getInputProps("projectKey").value!),
+    enabled: enabled && !!form.getInputProps("projectKey").value,
   });
 
   const isDisabled = issueTypesWithFieldsMap

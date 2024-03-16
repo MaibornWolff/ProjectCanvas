@@ -23,8 +23,6 @@ export function IssueCard({
   labels,
   assignee,
   index,
-  projectId,
-  ...props
 }: Issue & { index: number }) {
   const [opened, setOpened] = useState(false);
   const queryClient = useQueryClient();
@@ -181,19 +179,10 @@ export function IssueCard({
       >
         <DetailView
           issueKey={issueKey}
-          summary={summary}
-          status={status}
-          type={type}
-          storyPointsEstimate={storyPointsEstimate}
-          epic={epic}
-          labels={labels}
-          assignee={assignee}
-          projectId={projectId}
           closeModal={() => {
             setOpened(false);
             queryClient.invalidateQueries({ queryKey: ["issues"] });
           }}
-          {...props}
         />
       </Modal>
     </>

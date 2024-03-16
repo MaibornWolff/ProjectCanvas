@@ -29,12 +29,8 @@ export function EpicCard({
   summary,
   status,
   storyPointsEstimate,
-  epic,
   labels,
   assignee,
-  type,
-  projectId,
-  ...props
 }: Issue) {
   const [opened, setOpened] = useState(false);
   const queryClient = useQueryClient();
@@ -166,17 +162,7 @@ export function EpicCard({
         }}
         withCloseButton={false}
       >
-        <EpicDetailView
-          issueKey={issueKey}
-          summary={summary}
-          labels={labels}
-          status={status}
-          type={type}
-          projectId={projectId}
-          assignee={assignee}
-          closeModal={() => setOpened(false)}
-          {...props}
-        />
+        <EpicDetailView issueKey={issueKey} closeModal={() => setOpened(false)} />
       </Modal>
     </>
   );

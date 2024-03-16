@@ -5,12 +5,12 @@ import { IconCaretDown } from "@tabler/icons-react";
 import classes from "./IssueStatusMenu.module.css";
 
 export function IssueStatusMenu({
-  projectId,
+  projectKey,
   type,
   status,
   issueKey,
 }: {
-  projectId: string,
+  projectKey: string,
   type: string,
   status: string,
   issueKey: string,
@@ -18,9 +18,9 @@ export function IssueStatusMenu({
   const [opened, setOpened] = useState(false);
 
   const { data: issueTypes } = useQuery({
-    queryKey: ["issueTypes", projectId],
-    queryFn: () => window.provider.getIssueTypesByProject(projectId),
-    enabled: !!projectId,
+    queryKey: ["issueTypes", projectKey],
+    queryFn: () => window.provider.getIssueTypesByProject(projectKey),
+    enabled: !!projectKey,
   });
 
   const queryClient = useQueryClient();

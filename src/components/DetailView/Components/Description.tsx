@@ -1,20 +1,23 @@
 import { useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
-import { RichTextEditor, Link } from "@mantine/tiptap";
+import { RichTextEditor } from "@mantine/tiptap";
 import { useEffect, useState } from "react";
 import { AcceptanceCriteriaList, AcceptanceCriteriaItem, AcceptanceCriteriaControl } from "@canvas/tiptap";
 import { useQuery } from "@tanstack/react-query";
+import { DocNode } from "@atlaskit/adf-schema";
+import { transformFromAdf, transformToAdf } from "@canvas/tiptap/adf-transformer";
+import { Issue } from "@canvas/types";
 
 export function Description({
   description,
   onChange,
 }: {
-  description: string,
-  onChange: (newDescription: string) => void,
+  description: Issue["description"] | null,
+  onChange: (newDescription: Issue["description"]) => void,
 }) {
-  const { data } = useQuery({
-    queryFn: () => window.provider.supportsProseMirrorPayloads(),
+  const { data: supportsProseMirrorPayloads } = useQuery({
     queryKey: ["supportsProseMirrorPayloads"],
+    queryFn: () => window.provider.supportsProseMirrorPayloads(),
   });
 
   const [lastDescription, setLastDescription] = useState(description);
@@ -27,24 +30,24 @@ export function Description({
           style: "color: green",
         },
       }),
-      Link,
     ],
-    content: `<ul data-type='acceptanceCriteriaList'><li data-type='acceptanceCriteriaItem'>Some default content: ${data ?? false}</li></ul>`,
-    // content: description,
+    content: supportsProseMirrorPayloads && description ? transformFromAdf(description as DocNode) : description as string | null,
     onBlur: ({ editor }) => {
       const currentDescription = editor.getHTML();
       if (lastDescription !== currentDescription) {
         setLastDescription(currentDescription);
-        onChange(currentDescription);
+        onChange(supportsProseMirrorPayloads ? transformToAdf(editor.getJSON()) : currentDescription);
       }
     },
   });
 
   useEffect(() => {
-    if (data) {
-      tipTapEditor?.commands.setContent(`${data ?? false}`);
+    if (supportsProseMirrorPayloads && description) {
+      const adfDescription = transformFromAdf(description as DocNode);
+      tipTapEditor?.commands.setContent(adfDescription);
+      setLastDescription(tipTapEditor?.getHTML() ?? "");
     }
-  }, [data]);
+  }, [supportsProseMirrorPayloads]);
 
   return (
     <RichTextEditor editor={tipTapEditor}>
@@ -52,13 +55,8 @@ export function Description({
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />
           <RichTextEditor.Italic />
-          <RichTextEditor.Underline />
           <RichTextEditor.Strikethrough />
           <RichTextEditor.ClearFormatting />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.OrderedList />
         </RichTextEditor.ControlsGroup>
 
         <RichTextEditor.ControlsGroup>

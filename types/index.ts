@@ -7,8 +7,8 @@ export interface Sprint {
   id: number,
   name: string,
   state: string,
-  startDate: Intl.DateTimeFormat,
-  endDate: Intl.DateTimeFormat,
+  startDate: string,
+  endDate: string,
 }
 
 export interface Project {
@@ -21,7 +21,7 @@ export interface Project {
 
 export interface User {
   id: string,
-  name: string,
+  name?: string,
   displayName: string,
   emailAddress: string,
   avatarUrls: {
@@ -87,7 +87,7 @@ export interface Issue {
   rank: string,
   reporter: User,
   sprint?: Sprint,
-  projectId: string,
+  projectKey: string,
   subtasks: {
     id: string,
     key: string,
@@ -98,21 +98,19 @@ export interface Issue {
   created: string,
   updated: string,
   comment: {
-    comments: [
-      {
-        id: string,
-        author: User,
-        body: string | DocNode,
-        created: string,
-        updated: string,
-      },
-    ],
+    comments: {
+      id: string,
+      author: User,
+      body: string | DocNode,
+      created: string,
+      updated: string,
+    }[],
   },
-  startDate: Date,
-  dueDate: Date,
+  startDate?: Date,
+  dueDate?: Date,
   priority: Priority,
   attachments: Attachment[],
-  changelog: Changelog,
+  changelog?: Changelog,
 }
 
 export interface IssueStatus {

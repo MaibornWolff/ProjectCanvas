@@ -45,7 +45,7 @@ export function SplitIssueCreate({
 
   const form = useForm<Issue>({
     initialValues: {
-      projectId: selectedProject!.id,
+      projectKey: selectedProject!.key,
       type: "",
       sprint: { id: undefined as unknown as number },
       summary: "",

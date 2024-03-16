@@ -21,10 +21,7 @@ export function ChildIssueCard({
   epic,
   labels,
   assignee,
-  index,
-  projectId,
-  ...props
-}: Issue & { index: number }) {
+}: Issue) {
   const [opened, setOpened] = useState(false);
   const queryClient = useQueryClient();
   const { hovered } = useHover();
@@ -169,19 +166,7 @@ export function ChildIssueCard({
         }}
         withCloseButton={false}
       >
-        <DetailView
-          issueKey={issueKey}
-          summary={summary}
-          status={status}
-          type={type}
-          storyPointsEstimate={storyPointsEstimate}
-          epic={epic}
-          labels={labels}
-          assignee={assignee}
-          projectId={projectId}
-          closeModal={() => setOpened(false)}
-          {...props}
-        />
+        <DetailView issueKey={issueKey} closeModal={() => setOpened(false)} />
       </Modal>
     </>
   );

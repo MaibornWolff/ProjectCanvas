@@ -22,9 +22,9 @@ export function ProjectSelect({
       }))}
       searchable
       required
-      {...form.getInputProps("projectId")}
+      {...form.getInputProps("projectKey")}
       onChange={(value) => {
-        form.getInputProps("projectId").onChange(value);
+        form.getInputProps("projectKey").onChange(value);
         form.setFieldValue("type", "");
         form.setFieldValue("status", "");
         form.setFieldValue("assignee", undefined);
