@@ -10,8 +10,13 @@ import {
   Sprint,
   SprintCreate,
   User,
+  JiraCloudEpic,
+  JiraCloudIssue,
+  JiraCloudIssueTypeWithStatus,
+  JiraCloudPriority,
+  JiraCloudProject,
+  JiraCloudSprint,
 } from "@canvas/types";
-import { JiraEpic, JiraIssue, JiraIssueType, JiraPriority, JiraProject, JiraSprint } from "@canvas/types/jira";
 import { IProvider } from "../base-provider";
 import { getAccessToken, refreshTokens } from "./getAccessToken";
 import { JiraCloudUser } from "./cloud-types";
@@ -207,32 +212,24 @@ export class JiraCloudProvider implements IProvider {
 
   async getProjects(): Promise<Project[]> {
     return new Promise((resolve, reject) => {
-      this.getRestApiClient(3)
-        .get(
-          "/project/search?expand=description,lead,issueTypes,url,projectKeys,permissions,insight",
-        )
+      this.getRestApiClient(2)
+        .get("/project/search?expand=description,lead,issueTypes,url,projectKeys,permissions,insight")
         .then(async (response) => {
-          const projects = response.data.values.map((project: JiraProject) => ({
+          resolve(response.data.values.map((project: JiraCloudProject) => ({
             key: project.key,
             name: project.name,
             id: project.id,
             lead: project.lead.displayName,
             type: project.projectTypeKey,
-          }));
-          resolve(projects);
+          })));
         })
         .catch((error) => {
-          let specificError = error;
-          if (error.response) {
-            if (error.response.status === 404) {
-              specificError = new Error(
-                `No projects matching the search criteria were found: ${error.response.data}`,
-              );
-            }
+          if (error.response || error.response.status === 404) {
+            throw new Error(`No projects matching the search criteria were found: ${error.response.data}`);
           }
-
-          reject(new Error(`Error getting projects: ${specificError}`));
-        });
+          throw error;
+        })
+        .catch((error) => reject(new Error(`Could not fetch projects: ${error}`)));
     });
   }
 
@@ -240,24 +237,14 @@ export class JiraCloudProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
         .get(`/project/${projectIdOrKey}/statuses`)
-        .then(async (response) => {
-          const issueTypes: JiraIssueType[] = response.data;
-          resolve(issueTypes as IssueType[]);
-        })
+        .then(async (response: AxiosResponse<JiraCloudIssueTypeWithStatus[]>) => resolve(response.data))
         .catch((error) => {
-          let specificError = error;
-          if (error.response) {
-            if (error.response.status === 404) {
-              specificError = new Error(
-                `The project was not found or the user does not have permission to view it: ${error.response.data}`,
-              );
-            }
+          if (error.response?.status === 404) {
+            throw new Error(`The project was not found or the user does not have permission to view it: ${error.response.data}`);
           }
-
-          reject(
-            new Error(`Error in fetching the issue types:  ${specificError}`),
-          );
-        });
+          throw error;
+        })
+        .catch((error) => reject(new Error(`Could not fetch issue types: ${error}`)));
     });
   }
 
@@ -403,7 +390,7 @@ export class JiraCloudProvider implements IProvider {
         .then(async (response) => {
           const sprints: Sprint[] = response.data.values
             .filter((element: { state: string }) => element.state !== "closed")
-            .map((element: JiraSprint) => {
+            .map((element: JiraCloudSprint) => {
               const sDate = new Date(element.startDate);
               const startDate = Number.isNaN(sDate.getTime())
                 ? "Invalid Date"
@@ -480,24 +467,19 @@ export class JiraCloudProvider implements IProvider {
     const rankCustomField = this.customFields.get("Rank") || "";
     return new Promise((resolve) => {
       const issues = Promise.all<Issue>(
-        response.data.issues.map(async (element: JiraIssue) => ({
+        response.data.issues.map(async (element: JiraCloudIssue) => ({
           issueKey: element.key,
           summary: element.fields.summary,
           creator: element.fields.creator.displayName,
           status: element.fields.status.name,
           type: element.fields.issuetype.name,
-          storyPointsEstimate: await this.getIssueStoryPointsEstimate(
-            element.key,
-          ),
+          storyPointsEstimate: await this.getIssueStoryPointsEstimate(element.key),
           epic: {
             issueKey: element.fields.parent?.key,
             summary: element.fields.parent?.fields.summary,
           },
           labels: element.fields.labels,
-          assignee: {
-            displayName: element.fields.assignee?.displayName,
-            avatarUrls: element.fields.assignee?.avatarUrls,
-          },
+          assignee: element.fields.assignee,
           rank: element.fields[rankCustomField],
           // IMPROVE: Remove boolean flag
           description: element.fields.description,
@@ -861,7 +843,7 @@ export class JiraCloudProvider implements IProvider {
         )
         .then(async (response) => {
           const epics: Promise<Issue[]> = Promise.all(
-            response.data.issues.map(async (element: JiraEpic) => ({
+            response.data.issues.map(async (element: JiraCloudEpic) => ({
               issueKey: element.key,
               summary: element.fields.summary,
               epic: element.fields.epic,
@@ -869,10 +851,7 @@ export class JiraCloudProvider implements IProvider {
               status: element.fields.status.name,
               type: element.fields.issuetype.name,
               description: element.fields.description,
-              assignee: {
-                displayName: element.fields.assignee?.displayName,
-                avatarUrls: element.fields.assignee?.avatarUrls,
-              },
+              assignee: element.fields.assignee,
               subtasks: element.fields.subtasks,
               created: element.fields.created,
               updated: element.fields.updated,
@@ -918,16 +897,12 @@ export class JiraCloudProvider implements IProvider {
   }
 
   async getPriorities(): Promise<Priority[]> {
-    // WARNING: currently (15.03.2023) GET /rest/api/3/priority is deprecated
-    // and GET /rest/api/3/priority/search is experimental
+    // WARNING: currently (12.03.2023) GET /rest/api/2/priority is deprecated and GET /rest/api/2/priority/search is experimental
     return new Promise((resolve, reject) => {
-      this.getRestApiClient(3)
+      this.getRestApiClient(2)
         .get("/priority/search")
-        .then(async (response) => {
-          const priorityData: JiraPriority = response.data;
-          resolve(priorityData.values);
-        })
-        .catch((error) => reject(new Error(`Error in fetching the labels: ${error}`)));
+        .then(async (response: AxiosResponse<JiraCloudPriority[]>) => resolve(response.data))
+        .catch((error) => reject(new Error(`Could not fetch priorities: ${error}`)));
     });
   }
 

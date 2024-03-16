@@ -1,10 +1,9 @@
 import { Avatar, Center, Box, Group, Modal, Paper, Stack, Text, Tooltip, useMantineTheme, Grid } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
-import { Issue } from "@canvas/types";
+import { Issue, StatusType } from "@canvas/types";
 import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import { mergeRefs, useHover } from "@mantine/hooks";
-import { StatusType } from "@canvas/types/status";
 import { useColorScheme } from "@canvas/common/color-scheme";
 import { useCanvasStore } from "@canvas/lib/Store";
 import { DetailView } from "../../DetailView/DetailView";

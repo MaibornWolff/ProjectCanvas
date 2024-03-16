@@ -10,8 +10,12 @@ import {
   Sprint,
   SprintCreate,
   User,
+  JiraEpic,
+  JiraIssue,
+  JiraIssueType,
+  JiraProject,
+  JiraSprint,
 } from "@canvas/types";
-import { JiraEpic, JiraIssue, JiraIssueType, JiraProject, JiraSprint } from "@canvas/types/jira";
 import { IProvider } from "../base-provider";
 import { JiraServerInfo, JiraServerUser } from "./server-types";
 
@@ -659,7 +663,7 @@ export class JiraServerProvider implements IProvider {
               type: element.fields.issuetype.name,
               created: element.fields.created,
               updated: element.fields.updated,
-              description: element.fields.description.content,
+              description: element.fields.description,
               assignee: {
                 displayName: element.fields.assignee?.displayName,
                 avatarUrls: element.fields.assignee?.avatarUrls,
