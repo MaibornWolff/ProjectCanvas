@@ -33,7 +33,7 @@
     linkify-it "^2.0.3"
     memoize-one "^6.0.0"
 
-"@atlaskit/adf-utils@^19.0.23":
+"@atlaskit/adf-utils@^19.0.0", "@atlaskit/adf-utils@^19.0.23":
   version "19.0.23"
   resolved "https://registry.yarnpkg.com/@atlaskit/adf-utils/-/adf-utils-19.0.23.tgz#c0cc2823d07d410c7182c6c6789395690f0e0896"
   integrity sha512-MFO8rgvGNP/qwHIYtmUsd+pP1JCTyf3dq6BJt7OeKz0+QvFN7aKl1s04rB/wxMzjKv9ezzwmfkBo6aAx7NHnyA==
@@ -50,7 +50,26 @@
   dependencies:
     "@babel/runtime" "^7.0.0"
 
-"@atlaskit/editor-prosemirror@*":
+"@atlaskit/ds-lib@^2.2.0":
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@atlaskit/ds-lib/-/ds-lib-2.2.4.tgz#63b156ef9bd9d432183068956da5a6b0d4838f78"
+  integrity sha512-G3fljVHRu4rhEN3ux0UGCHh66uKPSqRG5x7Kczo3Vnns/ypqGIZHIBC+j9HDAwsQfK3QAeijBdDZ3WWGUt5MWQ==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    bind-event-listener "^2.1.1"
+
+"@atlaskit/editor-json-transformer@^8.10.0", "@atlaskit/editor-json-transformer@^8.10.27":
+  version "8.10.27"
+  resolved "https://registry.yarnpkg.com/@atlaskit/editor-json-transformer/-/editor-json-transformer-8.10.27.tgz#70cd6ff4010918a04c5f6f960d2fdd0da55bb905"
+  integrity sha512-OLz++QNOvcaZRvX5qogsxu/P5qSGPa/5AR5szc8+bW6g23oW69lOXnwCt0/gLAPKLphytBbOOI57YTO13TIYsg==
+  dependencies:
+    "@atlaskit/adf-schema" "^35.6.0"
+    "@atlaskit/adf-utils" "^19.0.0"
+    "@atlaskit/editor-prosemirror" "3.0.0"
+    "@babel/runtime" "^7.0.0"
+    lodash "^4.17.21"
+
+"@atlaskit/editor-prosemirror@*", "@atlaskit/editor-prosemirror@3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/editor-prosemirror/-/editor-prosemirror-3.0.0.tgz#ee3572b5b111fa8d2af95f49eb2513f5a6870297"
   integrity sha512-2rIyz0UjGOmjM49MH7IaW3QFa7BDhgpO2ONXGAxSnnVQcfnqFmivQfkppTaH2ElarslDB3O/u83P6VGB65C6qA==
@@ -66,6 +85,17 @@
     prosemirror-transform "1.8.0"
     prosemirror-utils "1.2.1-0"
     prosemirror-view "1.32.7"
+
+"@atlaskit/editor-wikimarkup-transformer@^11.2.44":
+  version "11.2.44"
+  resolved "https://registry.yarnpkg.com/@atlaskit/editor-wikimarkup-transformer/-/editor-wikimarkup-transformer-11.2.44.tgz#c3d28bf2dca8c61ba706d3a5a01e1ef79930bbee"
+  integrity sha512-HLl+nW/TiP+WF5oDoLbrzUn1Yz6WRLwp9zenUP6ejvvlRs5fEDq1HR7FUl9zqlKQVPKImJMJBaXLsUGSStVuHg==
+  dependencies:
+    "@atlaskit/adf-schema" "^35.6.0"
+    "@atlaskit/editor-json-transformer" "^8.10.0"
+    "@atlaskit/editor-prosemirror" "3.0.0"
+    "@atlaskit/theme" "^12.6.0"
+    "@babel/runtime" "^7.0.0"
 
 "@atlaskit/json-schema-generator@^3.3.6":
   version "3.3.7"
@@ -89,6 +119,28 @@
   integrity sha512-0fD2aDxn2mE59D4acUhVib+YF2HDYuuPH50aYwpQdcV/CsVkAaJsMKy8WhWSulcRFeMYp72kfIfdy0qGdRB7Uw==
   dependencies:
     "@babel/runtime" "^7.0.0"
+
+"@atlaskit/theme@^12.6.0":
+  version "12.6.5"
+  resolved "https://registry.yarnpkg.com/@atlaskit/theme/-/theme-12.6.5.tgz#b1911523b4a36a8079e0cccbf30b50d5c3bdf8a1"
+  integrity sha512-aZK6xNE4WgcguWe2VGg+DjTg8K4O26+Z+liD8yvSlkslwIzdP4+HLiKW4YCxELIiAwW2eHx37tefW2C4dTmQ+Q==
+  dependencies:
+    "@atlaskit/codemod-utils" "^4.2.0"
+    "@atlaskit/ds-lib" "^2.2.0"
+    "@atlaskit/tokens" "^1.41.0"
+    "@babel/runtime" "^7.0.0"
+
+"@atlaskit/tokens@^1.41.0":
+  version "1.41.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/tokens/-/tokens-1.41.1.tgz#5b1343da4d38aa2dabae0054d2f25d922e46cf01"
+  integrity sha512-E8tgnxBuiSPOJKRdPK5sebfuNJVD8Aj+pfA3j7G2u3izHYDspQol4+lIkgVbEjmWzhH5mtv0FbeWSGZtlolJhw==
+  dependencies:
+    "@atlaskit/ds-lib" "^2.2.0"
+    "@atlaskit/platform-feature-flags" "^0.2.0"
+    "@babel/runtime" "^7.0.0"
+    "@babel/traverse" "^7.23.2"
+    "@babel/types" "^7.20.0"
+    bind-event-listener "^2.1.1"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.22.13", "@babel/code-frame@^7.23.5":
   version "7.23.5"
@@ -441,7 +493,7 @@
     debug "^4.3.1"
     globals "^11.1.0"
 
-"@babel/types@^7.0.0", "@babel/types@^7.20.7", "@babel/types@^7.22.15", "@babel/types@^7.22.5", "@babel/types@^7.23.0", "@babel/types@^7.23.6", "@babel/types@^7.24.0":
+"@babel/types@^7.0.0", "@babel/types@^7.20.0", "@babel/types@^7.20.7", "@babel/types@^7.22.15", "@babel/types@^7.22.5", "@babel/types@^7.23.0", "@babel/types@^7.23.6", "@babel/types@^7.24.0":
   version "7.24.0"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.24.0.tgz#3b951f435a92e7333eba05b7566fd297960ea1bf"
   integrity sha512-+j7a5c253RfKh8iABBhywc8NSfP5LURe7Uh4qpsh6jc+aLJguvmIUBdjSdEMQv2bENrCR5MfRdjGo7vzS/ob7w==
@@ -3063,6 +3115,11 @@ binary-extensions@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.2.0.tgz#75f502eeaf9ffde42fc98829645be4ea76bd9e2d"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
+
+bind-event-listener@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/bind-event-listener/-/bind-event-listener-2.1.1.tgz#5e57290181af3027ff53ba6109e417a1e3cbb6f3"
+  integrity sha512-O+a5c0D2se/u2VlBJmPRn45IB6R4mYMh1ok3dWxrIZ2pmLqzggBhb875mbq73508ylzofc0+hT9W41x4Y2s8lg==
 
 bl@^4.1.0:
   version "4.1.0"

@@ -1,11 +1,19 @@
 import { useEditor } from "@tiptap/react";
+import { Editor } from "@tiptap/core";
 import { StarterKit } from "@tiptap/starter-kit";
 import { RichTextEditor } from "@mantine/tiptap";
-import { useEffect, useState } from "react";
-import { AcceptanceCriteriaList, AcceptanceCriteriaItem, AcceptanceCriteriaControl } from "@canvas/tiptap";
+import { useState } from "react";
+import {
+  AcceptanceCriteriaList,
+  AcceptanceCriteriaItem,
+  AcceptanceCriteriaControl,
+  transformFromAdf,
+  transformToAdf,
+  transformToWiki,
+  transformFromWiki,
+} from "@canvas/tiptap";
 import { useQuery } from "@tanstack/react-query";
 import { DocNode } from "@atlaskit/adf-schema";
-import { transformFromAdf, transformToAdf } from "@canvas/tiptap/adf-transformer";
 import { Issue } from "@canvas/types";
 
 export function Description({
@@ -21,6 +29,18 @@ export function Description({
   });
 
   const [lastDescription, setLastDescription] = useState(description);
+  const setContentFromDescription = (editor: Editor) => {
+    if (description) {
+      if (supportsProseMirrorPayloads) {
+        editor.commands.setContent(transformFromAdf(description as DocNode));
+        setLastDescription(editor.getHTML() ?? "");
+      } else {
+        editor.commands.setContent(transformFromWiki(description as string));
+        setLastDescription(editor.getHTML() ?? "");
+      }
+    }
+  };
+
   const tipTapEditor = useEditor({
     extensions: [
       StarterKit,
@@ -31,22 +51,17 @@ export function Description({
         },
       }),
     ],
-    content: supportsProseMirrorPayloads && description ? transformFromAdf(description as DocNode) : description as string | null,
+    content: null,
     onBlur: ({ editor }) => {
       const currentDescription = editor.getHTML();
       if (lastDescription !== currentDescription) {
         setLastDescription(currentDescription);
-        onChange(supportsProseMirrorPayloads ? transformToAdf(editor.getJSON()) : currentDescription);
+        onChange(supportsProseMirrorPayloads ? transformToAdf(editor.getJSON()) : transformToWiki(editor.getJSON()));
       }
     },
-  });
-
-  useEffect(() => {
-    if (supportsProseMirrorPayloads && description) {
-      const adfDescription = transformFromAdf(description as DocNode);
-      tipTapEditor?.commands.setContent(adfDescription);
-      setLastDescription(tipTapEditor?.getHTML() ?? "");
-    }
+    onCreate: ({ editor }) => {
+      setContentFromDescription(editor);
+    },
   }, [supportsProseMirrorPayloads]);
 
   return (

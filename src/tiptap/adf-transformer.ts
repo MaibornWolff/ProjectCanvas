@@ -118,6 +118,9 @@ export const transformFromAdf = (content: DocNode): JSONContent => ({
       }
 
       paragraphContent![0]!.text = paragraphContent![0]!.text.slice(AcceptanceCriteriaMarker.length + 1);
+      if (paragraphContent[0].text === "") {
+        paragraphContent.splice(0, 1);
+      }
 
       return {
         ...node,
