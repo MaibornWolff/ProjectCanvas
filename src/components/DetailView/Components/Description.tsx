@@ -47,7 +47,7 @@ export function Description({
       AcceptanceCriteriaList,
       AcceptanceCriteriaItem.configure({
         HTMLAttributes: {
-          style: "color: green",
+          style: "color: var(--mantine-color-primaryRed-filled)",
         },
       }),
     ],
@@ -59,9 +59,7 @@ export function Description({
         onChange(supportsProseMirrorPayloads ? transformToAdf(editor.getJSON()) : transformToWiki(editor.getJSON()));
       }
     },
-    onCreate: ({ editor }) => {
-      setContentFromDescription(editor);
-    },
+    onCreate: ({ editor }) => setContentFromDescription(editor),
   }, [supportsProseMirrorPayloads]);
 
   return (
