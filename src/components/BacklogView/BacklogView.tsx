@@ -165,7 +165,7 @@ export function BacklogView() {
             w="50%"
             p="sm"
             style={{
-              maxHeight: "100vh",
+              maxHeight: "calc(100vh - 230px)",
               minWidth: "260px",
             }}
           >
