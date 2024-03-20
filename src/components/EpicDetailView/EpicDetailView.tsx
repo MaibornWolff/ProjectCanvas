@@ -16,6 +16,7 @@ import {
 import { Issue, StatusType } from "@canvas/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { showNotification } from "@mantine/notifications";
+import { CommentSectionAccordion } from "@canvas/components/issue-details/Comment";
 import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu";
 import { Description } from "../DetailView/Components/Description";
 import { IssueSummary } from "../DetailView/Components/IssueSummary";
@@ -29,7 +30,6 @@ import { sortIssuesByRank } from "../BacklogView/helpers/backlogHelpers";
 import { useCanvasStore } from "../../lib/Store";
 import { issueCountAccumulator, storyPointsAccumulator } from "../common/StoryPoints/status-accumulator";
 import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard";
-import { CommentSection } from "../DetailView/Components/CommentSection";
 import { getStatusTypeColor } from "../../common/status-color";
 import { Attachments } from "../DetailView/Components/Attachments/Attachments";
 import { IssueStatusMenu } from "../DetailView/Components/IssueStatusMenu";
@@ -216,14 +216,7 @@ export function EpicDetailView({
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>
-            <Accordion variant="contained" mb={20}>
-              <Accordion.Item value="Comments">
-                <Accordion.Control style={{ textAlign: "left" }}>Comments</Accordion.Control>
-                <Accordion.Panel>
-                  <CommentSection issueKey={issueKey} comment={issue.comment} />
-                </Accordion.Panel>
-              </Accordion.Item>
-            </Accordion>
+            <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={issue.comment} initialOpen /></Box>
             <Accordion variant="contained" mb={20}>
               <Accordion.Item value="Attachments">
                 <Accordion.Control style={{ textAlign: "left" }}>Attachments</Accordion.Control>

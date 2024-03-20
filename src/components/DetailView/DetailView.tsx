@@ -15,10 +15,10 @@ import { Issue } from "types";
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { showNotification } from "@mantine/notifications";
+import { CommentSectionAccordion } from "@canvas/components/issue-details/Comment";
 import { AddSubtaskButton } from "./Components/AddSubtaskButton";
 import { AssigneeMenu } from "./Components/AssigneeMenu";
 import { EditableEpic } from "./Components/EditableEpic";
-import { CommentSection } from "./Components/CommentSection";
 import { Description } from "./Components/Description";
 import { IssueSprint } from "./Components/IssueSprint";
 import { IssueSummary } from "./Components/IssueSummary";
@@ -87,6 +87,11 @@ export function DetailView({
     queryFn: () => window.provider.getIssue(issueKey),
   });
 
+  const dateFormat = new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "full",
+    timeStyle: "short",
+  });
+
   if (!issue) {
     return <Center style={{ width: "100%", height: "100%" }}><Loader /></Center>;
   }
@@ -139,12 +144,9 @@ export function DetailView({
               </Stack>
             </Paper>
             <Attachments issueKey={issueKey} attachments={issue.attachments} />
-            <CommentSection issueKey={issueKey} comment={issue.comment} />
           </ScrollArea.Autosize>
         </Stack>
-        <ScrollArea.Autosize
-          style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}
-        >
+        <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
           <Box>
             <Group justify="space-between" mb="sm">
               <IssueStatusMenu
@@ -201,22 +203,9 @@ export function DetailView({
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>
-            <Text size="xs" c="dimmed">
-              Created
-              {" "}
-              {new Intl.DateTimeFormat("en-GB", {
-                dateStyle: "full",
-                timeStyle: "short",
-              }).format(new Date(issue.created))}
-            </Text>
-            <Text size="xs" c="dimmed">
-              Updated
-              {" "}
-              {new Intl.DateTimeFormat("en-GB", {
-                dateStyle: "full",
-                timeStyle: "short",
-              }).format(new Date(issue.updated))}
-            </Text>
+            <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={issue.comment} initialOpen /></Box>
+            <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(issue.created))}`}</Text>
+            <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(issue.updated))}`}</Text>
           </Box>
         </ScrollArea.Autosize>
       </Group>

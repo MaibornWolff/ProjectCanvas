@@ -15,6 +15,7 @@ import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { Issue } from "@canvas/types";
 import { isEqual } from "lodash";
+import { CommentSectionAccordion } from "@canvas/components/issue-details/Comment";
 import { EditableEpic } from "../EditableEpic";
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
 import { IssueSummary } from "../IssueSummary";
@@ -22,7 +23,6 @@ import { Description } from "../Description";
 import { Subtask } from "../SubTask";
 import { AddSubtaskButton } from "../AddSubtaskButton";
 import { Attachments } from "../Attachments/Attachments";
-import { CommentSection } from "../CommentSection";
 import { IssueStatusMenu } from "../IssueStatusMenu";
 import { SplitIssueButton } from "./SplitIssueButton";
 import { AssigneeMenu } from "../AssigneeMenu";
@@ -68,6 +68,11 @@ export function SplitIssueDetails(
   const saveButtonDisabled = isEqual(originalIssueDescription, description);
   const [closeWarningPopoverOpened, setCloseWarningPopoverOpened] = useState(false);
 
+  const dateFormat = new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "full",
+    timeStyle: "short",
+  });
+
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
@@ -101,7 +106,7 @@ export function SplitIssueDetails(
               status={status}
             />
           </Group>
-          <Accordion variant="contained" defaultValue="Details" mb={20}>
+          <Accordion variant="contained" mb={20}>
             <Accordion.Item value="Details">
               <Accordion.Control style={{ textAlign: "left" }}>Details</Accordion.Control>
               <Accordion.Panel>
@@ -121,23 +126,10 @@ export function SplitIssueDetails(
               </Accordion.Panel>
             </Accordion.Item>
           </Accordion>
+          <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={comment} /></Box>
           <Box pb="md">
-            <Text size="xs" c="dimmed">
-              Created
-              {" "}
-              {new Intl.DateTimeFormat("en-GB", {
-                dateStyle: "full",
-                timeStyle: "short",
-              }).format(new Date(created))}
-            </Text>
-            <Text size="xs" c="dimmed">
-              Updated
-              {" "}
-              {new Intl.DateTimeFormat("en-GB", {
-                dateStyle: "full",
-                timeStyle: "short",
-              }).format(new Date(updated))}
-            </Text>
+            <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(created))}`}</Text>
+            <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(updated))}`}</Text>
           </Box>
           <Text c="dimmed" mb="sm">Child Issues</Text>
           <Paper mb="lg" mr="sm">
@@ -149,7 +141,6 @@ export function SplitIssueDetails(
             </Stack>
           </Paper>
           <Attachments issueKey={issueKey} attachments={attachments} />
-          <CommentSection issueKey={issueKey} comment={comment} />
         </ScrollArea.Autosize>
         <Group style={{ position: "absolute", right: "50px", bottom: "15px" }}>
           <Button

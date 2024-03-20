@@ -1,6 +1,5 @@
 import { showNotification } from "@mantine/notifications";
 import { QueryClient, useMutation } from "@tanstack/react-query";
-import { addCommentToIssue, editIssueComment, deleteIssueComment } from "./queryFunctions";
 
 export const addCommentMutation = (queryClient: QueryClient) => useMutation({
   mutationFn: ({
@@ -9,7 +8,7 @@ export const addCommentMutation = (queryClient: QueryClient) => useMutation({
   }: {
     issueKey: string,
     commentText: string,
-  }) => addCommentToIssue(issueKey, commentText),
+  }) => window.provider.addCommentToIssue(issueKey, commentText),
   onError: () => {
     showNotification({
       message: "The issue couldn't be modified! 😢",
@@ -35,7 +34,7 @@ export const editCommentMutation = (queryClient: QueryClient) => useMutation({
     issueKey: string,
     commentId: string,
     commentText: string,
-  }) => editIssueComment(issueKey, commentId, commentText),
+  }) => window.provider.editIssueComment(issueKey, commentId, commentText),
   onError: () => {
     showNotification({
       message: "The comment couldn't be edited! 😢",
@@ -59,7 +58,7 @@ export const deleteCommentMutation = (queryClient: QueryClient) => useMutation({
   }: {
     issueKey: string,
     commentId: string,
-  }) => deleteIssueComment(issueKey, commentId),
+  }) => window.provider.deleteIssueComment(issueKey, commentId),
   onError: () => {
     showNotification({
       message: "The comment couldn't be deleted! 😢",
