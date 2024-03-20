@@ -1,30 +1,14 @@
-import {
-  Accordion,
-  Box,
-  Breadcrumbs,
-  Center,
-  Group,
-  Loader,
-  Paper,
-  ScrollArea,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Box, Breadcrumbs, Center, Group, Loader, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import { Issue } from "types";
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { showNotification } from "@mantine/notifications";
 import { CommentSectionAccordion } from "@canvas/components/issue-details/Comment";
+import { DetailsAccordion } from "@canvas/components/issue-details/Details";
 import { AddSubtaskButton } from "./Components/AddSubtaskButton";
-import { AssigneeMenu } from "./Components/AssigneeMenu";
 import { EditableEpic } from "./Components/EditableEpic";
 import { Description } from "./Components/Description";
-import { IssueSprint } from "./Components/IssueSprint";
 import { IssueSummary } from "./Components/IssueSummary";
-import { Labels } from "./Components/Labels";
-import { ReporterMenu } from "./Components/ReporterMenu";
-import { StoryPointsEstimateMenu } from "./Components/StoryPointsEstimateMenu";
 import { Subtask } from "./Components/SubTask";
 import { DeleteIssue } from "./Components/DeleteIssue";
 import { Attachments } from "./Components/Attachments/Attachments";
@@ -183,26 +167,16 @@ export function DetailView({
                 <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
               </Group>
             </Group>
-            <Accordion variant="contained" defaultValue="Details" mb={20}>
-              <Accordion.Item value="Details">
-                <Accordion.Control style={{ textAlign: "left" }}>Details</Accordion.Control>
-                <Accordion.Panel>
-                  <Stack>
-                    <AssigneeMenu assignee={issue.assignee} issueKey={issueKey} />
-                    <Group grow>
-                      <Text fz="sm" c="dimmed">Labels</Text>
-                      <Labels labels={issue.labels} issueKey={issueKey} />
-                    </Group>
-                    <Group grow>
-                      <Text fz="sm" c="dimmed">Sprint</Text>
-                      <IssueSprint sprint={issue.sprint} issueKey={issueKey} />
-                    </Group>
-                    <StoryPointsEstimateMenu issueKey={issueKey} storyPointsEstimate={issue.storyPointsEstimate} />
-                    <ReporterMenu issueKey={issueKey} />
-                  </Stack>
-                </Accordion.Panel>
-              </Accordion.Item>
-            </Accordion>
+            <Box mb={20}>
+              <DetailsAccordion
+                issueKey={issueKey}
+                labels={issue.labels}
+                assignee={issue.assignee}
+                sprint={issue.sprint}
+                storyPointsEstimate={issue.storyPointsEstimate}
+                initialOpen
+              />
+            </Box>
             <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={issue.comment} initialOpen /></Box>
             <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(issue.created))}`}</Text>
             <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(issue.updated))}`}</Text>

@@ -1,21 +1,10 @@
-import {
-  Accordion,
-  Box,
-  Breadcrumbs,
-  Button,
-  Group,
-  Paper,
-  ScrollArea,
-  Stack,
-  Text,
-  Title,
-  Popover,
-} from "@mantine/core";
+import { Box, Breadcrumbs, Button, Group, Paper, ScrollArea, Stack, Text, Title, Popover } from "@mantine/core";
 import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { Issue } from "@canvas/types";
 import { isEqual } from "lodash";
 import { CommentSectionAccordion } from "@canvas/components/issue-details/Comment";
+import { DetailsAccordion } from "@canvas/components/issue-details/Details";
 import { EditableEpic } from "../EditableEpic";
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
 import { IssueSummary } from "../IssueSummary";
@@ -25,11 +14,6 @@ import { AddSubtaskButton } from "../AddSubtaskButton";
 import { Attachments } from "../Attachments/Attachments";
 import { IssueStatusMenu } from "../IssueStatusMenu";
 import { SplitIssueButton } from "./SplitIssueButton";
-import { AssigneeMenu } from "../AssigneeMenu";
-import { Labels } from "../Labels";
-import { IssueSprint } from "../IssueSprint";
-import { StoryPointsEstimateMenu } from "../StoryPointsEstimateMenu";
-import { ReporterMenu } from "../ReporterMenu";
 import { CloseWarningAlert } from "./CloseWarningAlert";
 
 export function SplitIssueDetails(
@@ -106,31 +90,16 @@ export function SplitIssueDetails(
               status={status}
             />
           </Group>
-          <Accordion variant="contained" mb={20}>
-            <Accordion.Item value="Details">
-              <Accordion.Control style={{ textAlign: "left" }}>Details</Accordion.Control>
-              <Accordion.Panel>
-                <Stack>
-                  <AssigneeMenu assignee={assignee} issueKey={issueKey} />
-                  <Group grow>
-                    <Text fz="sm" c="dimmed">Labels</Text>
-                    <Labels labels={labels} issueKey={issueKey} />
-                  </Group>
-                  <Group grow>
-                    <Text fz="sm" c="dimmed">Sprint</Text>
-                    <IssueSprint sprint={sprint} issueKey={issueKey} />
-                  </Group>
-                  <StoryPointsEstimateMenu issueKey={issueKey} storyPointsEstimate={storyPointsEstimate} />
-                  <ReporterMenu issueKey={issueKey} />
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
-          <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={comment} /></Box>
-          <Box pb="md">
-            <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(created))}`}</Text>
-            <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(updated))}`}</Text>
+          <Box mb={20}>
+            <DetailsAccordion
+              issueKey={issueKey}
+              labels={labels}
+              assignee={assignee}
+              sprint={sprint}
+              storyPointsEstimate={storyPointsEstimate}
+            />
           </Box>
+          <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={comment} /></Box>
           <Text c="dimmed" mb="sm">Child Issues</Text>
           <Paper mb="lg" mr="sm">
             <Stack gap="xs">
@@ -141,6 +110,10 @@ export function SplitIssueDetails(
             </Stack>
           </Paper>
           <Attachments issueKey={issueKey} attachments={attachments} />
+          <Box pb="md">
+            <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(created))}`}</Text>
+            <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(updated))}`}</Text>
+          </Box>
         </ScrollArea.Autosize>
         <Group style={{ position: "absolute", right: "50px", bottom: "15px" }}>
           <Button

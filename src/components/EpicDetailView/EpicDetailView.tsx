@@ -17,11 +17,9 @@ import { Issue, StatusType } from "@canvas/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { showNotification } from "@mantine/notifications";
 import { CommentSectionAccordion } from "@canvas/components/issue-details/Comment";
-import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu";
+import { DetailsAccordion } from "@canvas/components/issue-details/Details";
 import { Description } from "../DetailView/Components/Description";
 import { IssueSummary } from "../DetailView/Components/IssueSummary";
-import { Labels } from "../DetailView/Components/Labels";
-import { ReporterMenu } from "../DetailView/Components/ReporterMenu";
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue";
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
@@ -201,21 +199,16 @@ export function EpicDetailView({
               />
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
-            <Accordion variant="contained" defaultValue="Details" mb={20}>
-              <Accordion.Item value="Details">
-                <Accordion.Control style={{ textAlign: "left" }}>Details</Accordion.Control>
-                <Accordion.Panel>
-                  <Stack>
-                    <AssigneeMenu assignee={issue.assignee} issueKey={issueKey} />
-                    <Group grow>
-                      <Text fz="sm" c="dimmed">Labels</Text>
-                      <Labels labels={issue.labels} issueKey={issueKey} onMutate={reloadEpics} />
-                    </Group>
-                    <ReporterMenu issueKey={issueKey} />
-                  </Stack>
-                </Accordion.Panel>
-              </Accordion.Item>
-            </Accordion>
+            <Box mb={20}>
+              <DetailsAccordion
+                issueKey={issueKey}
+                labels={issue.labels}
+                assignee={issue.assignee}
+                sprint={issue.sprint}
+                storyPointsEstimate={issue.storyPointsEstimate}
+                initialOpen
+              />
+            </Box>
             <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={issue.comment} initialOpen /></Box>
             <Accordion variant="contained" mb={20}>
               <Accordion.Item value="Attachments">
