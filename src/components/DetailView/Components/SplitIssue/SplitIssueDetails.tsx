@@ -5,13 +5,13 @@ import { Issue } from "@canvas/types";
 import { isEqual } from "lodash";
 import { CommentSectionAccordion } from "@canvas/components/issue-details/Comment";
 import { DetailsAccordion } from "@canvas/components/issue-details/Details";
+import { AttachmentsAccordion } from "@canvas/components/issue-details/Attachments";
 import { EditableEpic } from "../EditableEpic";
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
 import { IssueSummary } from "../IssueSummary";
 import { Description } from "../Description";
 import { Subtask } from "../SubTask";
 import { AddSubtaskButton } from "../AddSubtaskButton";
-import { Attachments } from "../Attachments/Attachments";
 import { IssueStatusMenu } from "../IssueStatusMenu";
 import { SplitIssueButton } from "./SplitIssueButton";
 import { CloseWarningAlert } from "./CloseWarningAlert";
@@ -99,7 +99,6 @@ export function SplitIssueDetails(
               storyPointsEstimate={storyPointsEstimate}
             />
           </Box>
-          <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={comment} /></Box>
           <Text c="dimmed" mb="sm">Child Issues</Text>
           <Paper mb="lg" mr="sm">
             <Stack gap="xs">
@@ -109,7 +108,8 @@ export function SplitIssueDetails(
               <AddSubtaskButton issueKey={issueKey} projectKey={projectKey} />
             </Stack>
           </Paper>
-          <Attachments issueKey={issueKey} attachments={attachments} />
+          <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={comment} /></Box>
+          <Box mb={20}><AttachmentsAccordion issueKey={issueKey} attachments={attachments} /></Box>
           <Box pb="md">
             <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(created))}`}</Text>
             <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(updated))}`}</Text>

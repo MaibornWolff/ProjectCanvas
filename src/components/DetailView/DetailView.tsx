@@ -5,13 +5,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { showNotification } from "@mantine/notifications";
 import { CommentSectionAccordion } from "@canvas/components/issue-details/Comment";
 import { DetailsAccordion } from "@canvas/components/issue-details/Details";
+import { AttachmentsAccordion } from "@canvas/components/issue-details/Attachments";
 import { AddSubtaskButton } from "./Components/AddSubtaskButton";
 import { EditableEpic } from "./Components/EditableEpic";
 import { Description } from "./Components/Description";
 import { IssueSummary } from "./Components/IssueSummary";
 import { Subtask } from "./Components/SubTask";
 import { DeleteIssue } from "./Components/DeleteIssue";
-import { Attachments } from "./Components/Attachments/Attachments";
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
 import { IssueStatusMenu } from "./Components/IssueStatusMenu";
@@ -100,7 +100,7 @@ export function DetailView({
         }}
       />
       <Group>
-        <Stack style={{ flex: 13 }}>
+        <Stack style={{ flex: 13, alignSelf: "start" }}>
           <Title order={1}>
             <IssueSummary summary={issue.summary} issueKey={issueKey} />
           </Title>
@@ -127,7 +127,6 @@ export function DetailView({
                 <AddSubtaskButton issueKey={issueKey} projectKey={issue.projectKey} />
               </Stack>
             </Paper>
-            <Attachments issueKey={issueKey} attachments={issue.attachments} />
           </ScrollArea.Autosize>
         </Stack>
         <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
@@ -178,6 +177,7 @@ export function DetailView({
               />
             </Box>
             <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={issue.comment} initialOpen /></Box>
+            <Box mb={20}><AttachmentsAccordion issueKey={issueKey} attachments={issue.attachments} initialOpen /></Box>
             <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(issue.created))}`}</Text>
             <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(issue.updated))}`}</Text>
           </Box>

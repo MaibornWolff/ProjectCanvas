@@ -1,5 +1,4 @@
 import {
-  Accordion,
   Box,
   Breadcrumbs,
   Center,
@@ -18,6 +17,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { showNotification } from "@mantine/notifications";
 import { CommentSectionAccordion } from "@canvas/components/issue-details/Comment";
 import { DetailsAccordion } from "@canvas/components/issue-details/Details";
+import { AttachmentsAccordion } from "@canvas/components/issue-details/Attachments";
 import { Description } from "../DetailView/Components/Description";
 import { IssueSummary } from "../DetailView/Components/IssueSummary";
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue";
@@ -29,7 +29,6 @@ import { useCanvasStore } from "../../lib/Store";
 import { issueCountAccumulator, storyPointsAccumulator } from "../common/StoryPoints/status-accumulator";
 import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard";
 import { getStatusTypeColor } from "../../common/status-color";
-import { Attachments } from "../DetailView/Components/Attachments/Attachments";
 import { IssueStatusMenu } from "../DetailView/Components/IssueStatusMenu";
 
 export function EpicDetailView({
@@ -210,14 +209,7 @@ export function EpicDetailView({
               />
             </Box>
             <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={issue.comment} initialOpen /></Box>
-            <Accordion variant="contained" mb={20}>
-              <Accordion.Item value="Attachments">
-                <Accordion.Control style={{ textAlign: "left" }}>Attachments</Accordion.Control>
-                <Accordion.Panel>
-                  <Attachments issueKey={issueKey} attachments={issue.attachments} />
-                </Accordion.Panel>
-              </Accordion.Item>
-            </Accordion>
+            <Box mb={20}><AttachmentsAccordion issueKey={issueKey} attachments={issue.attachments} initialOpen /></Box>
             <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(issue.created))}`}</Text>
             <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(issue.updated))}`}</Text>
           </Box>

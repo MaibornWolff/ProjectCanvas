@@ -4,7 +4,7 @@ import { showNotification } from "@mantine/notifications";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Issue } from "types";
 import { useCanvasStore } from "../../lib/Store";
-import { getResource, uploadAttachment } from "../DetailView/Components/Attachments/queryFunctions";
+import { uploadAttachment } from "../issue-details/Attachments/queryFunctions";
 import {
   ProjectSelect,
   IssueTypeSelect,
@@ -78,7 +78,7 @@ export function CreateIssueModalContent({
       const filesForm = new FormData();
       if (files) {
         files.forEach((f) => filesForm.append("file", f, f.name));
-        getResource().then((r) => uploadAttachment(issueKey, r, filesForm));
+        window.provider.getResource().then((r) => uploadAttachment(issueKey, r, filesForm));
       }
       showNotification({
         message: `The issue ${issueKey} has been created!`,
