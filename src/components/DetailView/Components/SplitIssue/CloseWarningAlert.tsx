@@ -24,8 +24,7 @@ export function CloseWarningAlert({ cancelAlert, confirmAlert }: { cancelAlert: 
           Cancel
         </Button>
         <Button
-          variant="gradient"
-          gradient={{ from: "primaryBlue", to: "primaryRed", deg: 45 }}
+          color="red"
           style={{ flex: 1 }}
           onClick={(e) => {
             e.stopPropagation();
