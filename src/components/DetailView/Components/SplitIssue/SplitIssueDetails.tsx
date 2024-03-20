@@ -14,6 +14,7 @@ import {
 import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { Issue } from "@canvas/types";
+import { isEqual } from "lodash";
 import { EditableEpic } from "../EditableEpic";
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
 import { IssueSummary } from "../IssueSummary";
@@ -64,7 +65,7 @@ export function SplitIssueDetails(
     selectedSplitIssues: string[],
   },
 ) {
-  const saveButtonDisabled = originalIssueDescription === description;
+  const saveButtonDisabled = isEqual(originalIssueDescription, description);
   const [closeWarningPopoverOpened, setCloseWarningPopoverOpened] = useState(false);
 
   return (
