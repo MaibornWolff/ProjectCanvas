@@ -206,8 +206,8 @@ export function EpicDetailView({
                 initialOpen
               />
             </Box>
-            <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={issue.comment} initialOpen /></Box>
-            <Box mb={20}><AttachmentsAccordion issueKey={issueKey} attachments={issue.attachments} initialOpen /></Box>
+            <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={issue.comment} /></Box>
+            <Box mb={20}><AttachmentsAccordion issueKey={issueKey} attachments={issue.attachments} /></Box>
             <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(issue.created))}`}</Text>
             <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(issue.updated))}`}</Text>
           </Box>
