@@ -615,10 +615,9 @@ export class JiraCloudProvider implements IProvider {
             // }),
           },
         })
-        .then(async (response) => {
-          const createdIssue = response.data;
-          resolve(createdIssue.key);
-          this.setTransition(createdIssue.id, status);
+        .then(async (response: AxiosResponse<{ id: string, key: string }>) => {
+          await this.setTransition(response.data.id, status);
+          resolve(response.data.key);
         })
         .catch((error) => {
           if (error.response && error.response.status === 404) {
@@ -845,7 +844,7 @@ export class JiraCloudProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
         .delete(`/issue/${issueIdOrKey}?deleteSubtasks=true`)
-        .then(() => resolve)
+        .then(() => resolve())
         .catch((error) => {
           switch (error.response?.status) {
             case 403: throw new Error("The user does not have permission to delete the issue");
@@ -858,12 +857,7 @@ export class JiraCloudProvider implements IProvider {
     });
   }
 
-  createSubtask(
-    parentIssueKey: string,
-    subtaskSummary: string,
-    projectId: string,
-    subtaskIssueTypeId: string,
-  ): Promise<{ id: string, key: string }> {
+  createSubtask(parentIssueKey: string, subtaskSummary: string, projectKey: string, subtaskIssueTypeId: string): Promise<string> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(3)
         .post("/issue", {
@@ -871,10 +865,10 @@ export class JiraCloudProvider implements IProvider {
             summary: subtaskSummary,
             issuetype: { id: subtaskIssueTypeId },
             parent: { key: parentIssueKey },
-            project: { id: projectId },
+            project: { key: projectKey },
           },
         })
-        .then(async (response: AxiosResponse<{ id: string, key: string }>) => resolve(response.data))
+        .then(async (response: AxiosResponse<{ key: string }>) => resolve(response.data.key))
         .catch((error) => reject(new Error(`Error creating subtask: ${error}`)));
     });
   }

@@ -1,4 +1,4 @@
-import { Resource } from "types";
+import { Resource } from "@canvas/types";
 
 export function getThumbnailUrl(
   attachmentId: string,

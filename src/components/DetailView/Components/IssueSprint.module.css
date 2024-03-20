@@ -1,0 +1,8 @@
+.root {
+  &[data-enabled="true"]:hover {
+    cursor: pointer;
+    box-shadow: var(--mantine-shadow-xs);
+    border-radius: var(--mantine-radius-xs);
+    transition: background-color .8s ease-out;
+  }
+}

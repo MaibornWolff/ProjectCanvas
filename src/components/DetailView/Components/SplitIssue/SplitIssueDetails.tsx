@@ -1,35 +1,17 @@
-import {
-  Accordion,
-  Box,
-  Breadcrumbs,
-  Button,
-  Group,
-  Paper,
-  ScrollArea,
-  Stack,
-  Text,
-  Title,
-  Popover,
-} from "@mantine/core";
+import { Box, Breadcrumbs, Button, Group, Paper, ScrollArea, Stack, Text, Title, Popover } from "@mantine/core";
 import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { Issue } from "@canvas/types";
 import { isEqual } from "lodash";
+import { CommentSectionAccordion, DetailsAccordion, AttachmentsAccordion } from "@canvas/components/issue-details";
 import { EditableEpic } from "../EditableEpic";
 import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
 import { IssueSummary } from "../IssueSummary";
 import { Description } from "../Description";
 import { Subtask } from "../SubTask";
-import { AddSubtask } from "../AddSubtask";
-import { Attachments } from "../Attachments/Attachments";
-import { CommentSection } from "../CommentSection";
+import { AddSubtaskButton } from "../SubTask/AddSubtaskButton";
 import { IssueStatusMenu } from "../IssueStatusMenu";
 import { SplitIssueButton } from "./SplitIssueButton";
-import { AssigneeMenu } from "../AssigneeMenu";
-import { Labels } from "../Labels";
-import { IssueSprint } from "../IssueSprint";
-import { StoryPointsEstimateMenu } from "../StoryPointsEstimateMenu";
-import { ReporterMenu } from "../ReporterMenu";
 import { CloseWarningAlert } from "./CloseWarningAlert";
 
 export function SplitIssueDetails(
@@ -68,6 +50,11 @@ export function SplitIssueDetails(
   const saveButtonDisabled = isEqual(originalIssueDescription, description);
   const [closeWarningPopoverOpened, setCloseWarningPopoverOpened] = useState(false);
 
+  const dateFormat = new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "full",
+    timeStyle: "short",
+  });
+
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
@@ -101,43 +88,15 @@ export function SplitIssueDetails(
               status={status}
             />
           </Group>
-          <Accordion variant="contained" defaultValue="Details" mb={20}>
-            <Accordion.Item value="Details">
-              <Accordion.Control style={{ textAlign: "left" }}>Details</Accordion.Control>
-              <Accordion.Panel>
-                <Stack>
-                  <AssigneeMenu assignee={assignee} issueKey={issueKey} />
-                  <Group grow>
-                    <Text fz="sm" c="dimmed">Labels</Text>
-                    <Labels labels={labels} issueKey={issueKey} />
-                  </Group>
-                  <Group grow>
-                    <Text fz="sm" c="dimmed">Sprint</Text>
-                    <IssueSprint sprint={sprint} issueKey={issueKey} />
-                  </Group>
-                  <StoryPointsEstimateMenu issueKey={issueKey} storyPointsEstimate={storyPointsEstimate} />
-                  <ReporterMenu issueKey={issueKey} />
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
-          <Box pb="md">
-            <Text size="xs" c="dimmed">
-              Created
-              {" "}
-              {new Intl.DateTimeFormat("en-GB", {
-                dateStyle: "full",
-                timeStyle: "short",
-              }).format(new Date(created))}
-            </Text>
-            <Text size="xs" c="dimmed">
-              Updated
-              {" "}
-              {new Intl.DateTimeFormat("en-GB", {
-                dateStyle: "full",
-                timeStyle: "short",
-              }).format(new Date(updated))}
-            </Text>
+          <Box mb={20}>
+            <DetailsAccordion
+              issueKey={issueKey}
+              labels={labels}
+              assignee={assignee}
+              type={type}
+              sprint={sprint}
+              storyPointsEstimate={storyPointsEstimate}
+            />
           </Box>
           <Text c="dimmed" mb="sm">Child Issues</Text>
           <Paper mb="lg" mr="sm">
@@ -145,11 +104,15 @@ export function SplitIssueDetails(
               {subtasks.map((subtask) => (
                 <Subtask key={subtask.key} subtaskKey={subtask.key} fields={subtask.fields} />
               ))}
-              <AddSubtask issueKey={issueKey} projectId={projectKey} />
+              <AddSubtaskButton issueKey={issueKey} type={type} projectKey={projectKey} />
             </Stack>
           </Paper>
-          <Attachments issueKey={issueKey} attachments={attachments} />
-          <CommentSection issueKey={issueKey} comment={comment} />
+          <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={comment} /></Box>
+          <Box mb={20}><AttachmentsAccordion issueKey={issueKey} attachments={attachments} /></Box>
+          <Box pb="md">
+            <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(created))}`}</Text>
+            <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(updated))}`}</Text>
+          </Box>
         </ScrollArea.Autosize>
         <Group style={{ position: "absolute", right: "50px", bottom: "15px" }}>
           <Button

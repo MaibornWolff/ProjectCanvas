@@ -21,6 +21,7 @@ export function ChildIssueCard({
   epic,
   labels,
   assignee,
+  sprint,
 }: Issue) {
   const [opened, setOpened] = useState(false);
   const queryClient = useQueryClient();
@@ -166,7 +167,7 @@ export function ChildIssueCard({
         }}
         withCloseButton={false}
       >
-        <DetailView issueKey={issueKey} closeModal={() => setOpened(false)} />
+        <DetailView issueKey={issueKey} sprint={sprint} closeModal={() => setOpened(false)} />
       </Modal>
     </>
   );

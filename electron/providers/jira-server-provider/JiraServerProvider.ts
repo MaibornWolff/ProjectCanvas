@@ -337,8 +337,8 @@ export class JiraServerProvider implements IProvider {
       type: jiraIssue.fields.issuetype.name,
       storyPointsEstimate: await this.getIssueStoryPointsEstimate(jiraIssue.key),
       epic: {
-        issueKey: jiraIssue.fields.parent?.key,
-        summary: jiraIssue.fields.parent?.fields.summary,
+        issueKey: jiraIssue.fields[this.customFields.get("Epic Link")!] as string | undefined,
+        summary: jiraIssue.fields[this.customFields.get("Epic Link")!] as string | undefined,
       },
       labels: jiraIssue.fields.labels,
       assignee: jiraIssue.fields.assignee ? await this.mapUser(jiraIssue.fields.assignee) : undefined,
@@ -498,16 +498,14 @@ export class JiraServerProvider implements IProvider {
           .post("/issue", {
             fields: {
               summary,
-              parent: { key: epic.issueKey },
+              ...(epic.issueKey && {
+                [this.customFields.get("Epic Link")!]: epic.issueKey,
+              }),
               issuetype: { id: type },
-              project: { id: projectKey },
+              project: { key: projectKey },
               reporter: { name: reporter.name },
               ...(priority.id && { priority }),
-              ...(assignee && {
-                assignee: {
-                  name: assignee.name,
-                },
-              }),
+              assignee: { name: assignee?.name ?? "" },
               description,
               labels,
               ...(offsetStartDate && {
@@ -533,10 +531,9 @@ export class JiraServerProvider implements IProvider {
               // }),
             },
           })
-          .then(async (response) => {
-            const createdIssue = response.data;
-            resolve(JSON.stringify(createdIssue.key));
-            await this.setTransition(createdIssue.id, status);
+          .then(async (response: AxiosResponse<{ id: string, key: string }>) => {
+            await this.setTransition(response.data.id, status);
+            resolve(response.data.key);
           })
           .catch((error) => {
             switch (error.response?.status) {
@@ -748,12 +745,7 @@ export class JiraServerProvider implements IProvider {
     });
   }
 
-  createSubtask(
-    parentIssueKey: string,
-    subtaskSummary: string,
-    projectId: string,
-    subtaskIssueTypeId: string,
-  ): Promise<{ id: string, key: string }> {
+  createSubtask(parentIssueKey: string, subtaskSummary: string, projectKey: string, subtaskIssueTypeId: string): Promise<string> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
         .post("/issue", {
@@ -761,10 +753,10 @@ export class JiraServerProvider implements IProvider {
             summary: subtaskSummary,
             issuetype: { id: subtaskIssueTypeId },
             parent: { key: parentIssueKey },
-            project: { id: projectId },
+            project: { key: projectKey },
           },
         })
-        .then((response: AxiosResponse<{ id: string, key: string }>) => resolve(response.data))
+        .then((response: AxiosResponse<{ key: string }>) => resolve(response.data.key))
         .catch((error) => reject(new Error(`Error creating subtask: ${error}`)));
     });
   }

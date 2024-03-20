@@ -18,9 +18,9 @@ import { IconCloudDownload, IconPlus, IconTrash } from "@tabler/icons-react";
 import { showNotification } from "@mantine/notifications";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import FileSaver from "file-saver";
-import { Attachment } from "types";
+import { Attachment } from "@canvas/types";
 import { addAttachmentMutation, deleteAttachmentMutation } from "./queries";
-import { downloadAttachment, getAttachmentThumbnail, getResource } from "./queryFunctions";
+import { downloadAttachment, getAttachmentThumbnail } from "./queryFunctions";
 
 export function Attachments(props: {
   issueKey: string,
@@ -28,7 +28,7 @@ export function Attachments(props: {
 }) {
   const resourceQuery = useQuery({
     queryKey: ["resource"],
-    queryFn: getResource,
+    queryFn: () => window.provider.getResource(),
   });
 
   const resource = resourceQuery?.data;

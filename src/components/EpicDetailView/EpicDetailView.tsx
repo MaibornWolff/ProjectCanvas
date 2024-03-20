@@ -1,5 +1,4 @@
 import {
-  Accordion,
   Box,
   Breadcrumbs,
   Center,
@@ -16,11 +15,9 @@ import {
 import { Issue, StatusType } from "@canvas/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { showNotification } from "@mantine/notifications";
-import { AssigneeMenu } from "../DetailView/Components/AssigneeMenu";
+import { CommentSectionAccordion, DetailsAccordion, AttachmentsAccordion } from "@canvas/components/issue-details";
 import { Description } from "../DetailView/Components/Description";
 import { IssueSummary } from "../DetailView/Components/IssueSummary";
-import { Labels } from "../DetailView/Components/Labels";
-import { ReporterMenu } from "../DetailView/Components/ReporterMenu";
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue";
 import { ColorSchemeToggle } from "../common/ColorSchemeToggle";
 import { IssueIcon } from "../BacklogView/Issue/IssueIcon";
@@ -29,9 +26,7 @@ import { sortIssuesByRank } from "../BacklogView/helpers/backlogHelpers";
 import { useCanvasStore } from "../../lib/Store";
 import { issueCountAccumulator, storyPointsAccumulator } from "../common/StoryPoints/status-accumulator";
 import { StoryPointsHoverCard } from "../common/StoryPoints/StoryPointsHoverCard";
-import { CommentSection } from "../DetailView/Components/CommentSection";
 import { getStatusTypeColor } from "../../common/status-color";
-import { Attachments } from "../DetailView/Components/Attachments/Attachments";
 import { IssueStatusMenu } from "../DetailView/Components/IssueStatusMenu";
 
 export function EpicDetailView({
@@ -201,37 +196,19 @@ export function EpicDetailView({
               />
               <DeleteIssue issueKey={issueKey} closeModal={closeModal} />
             </Group>
-            <Accordion variant="contained" defaultValue="Details" mb={20}>
-              <Accordion.Item value="Details">
-                <Accordion.Control style={{ textAlign: "left" }}>Details</Accordion.Control>
-                <Accordion.Panel>
-                  <Stack>
-                    <AssigneeMenu assignee={issue.assignee} issueKey={issueKey} />
-                    <Group grow>
-                      <Text fz="sm" c="dimmed">Labels</Text>
-                      <Labels labels={issue.labels} issueKey={issueKey} onMutate={reloadEpics} />
-                    </Group>
-                    <ReporterMenu issueKey={issueKey} />
-                  </Stack>
-                </Accordion.Panel>
-              </Accordion.Item>
-            </Accordion>
-            <Accordion variant="contained" mb={20}>
-              <Accordion.Item value="Comments">
-                <Accordion.Control style={{ textAlign: "left" }}>Comments</Accordion.Control>
-                <Accordion.Panel>
-                  <CommentSection issueKey={issueKey} comment={issue.comment} />
-                </Accordion.Panel>
-              </Accordion.Item>
-            </Accordion>
-            <Accordion variant="contained" mb={20}>
-              <Accordion.Item value="Attachments">
-                <Accordion.Control style={{ textAlign: "left" }}>Attachments</Accordion.Control>
-                <Accordion.Panel>
-                  <Attachments issueKey={issueKey} attachments={issue.attachments} />
-                </Accordion.Panel>
-              </Accordion.Item>
-            </Accordion>
+            <Box mb={20}>
+              <DetailsAccordion
+                issueKey={issueKey}
+                labels={issue.labels}
+                assignee={issue.assignee}
+                sprint={issue.sprint}
+                type={issue.type}
+                storyPointsEstimate={issue.storyPointsEstimate}
+                initialOpen
+              />
+            </Box>
+            <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={issue.comment} /></Box>
+            <Box mb={20}><AttachmentsAccordion issueKey={issueKey} attachments={issue.attachments} /></Box>
             <Text size="xs" c="dimmed">{`Created ${dateFormat.format(new Date(issue.created))}`}</Text>
             <Text size="xs" c="dimmed">{`Updated ${dateFormat.format(new Date(issue.updated))}`}</Text>
           </Box>

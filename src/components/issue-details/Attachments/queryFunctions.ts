@@ -1,7 +1,5 @@
-import { Resource, Attachment } from "types";
+import { Resource, Attachment } from "@canvas/types";
 import { getDeleteUrl, getDownloadUrl, getThumbnailUrl, getUploadUrl } from "./helpFunctions";
-
-export const getResource = (): Promise<Resource> => window.provider.getResource();
 
 export const getAttachmentThumbnail = (
   attachmentId: string,
