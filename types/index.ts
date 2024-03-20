@@ -100,7 +100,7 @@ export interface Issue {
     comments: {
       id: string,
       author: User,
-      body: string | DocNode,
+      body: string,
       created: string,
       updated: string,
     }[],

@@ -33,23 +33,11 @@ export interface IProvider {
   getIssueTypesByProject(projectKeyOrId: string): Promise<IssueType[]>,
   getAssignableUsersByProject(projectIdOrKey: string): Promise<User[]>,
   getCurrentUser(): Promise<User>,
-  getBacklogIssuesByProjectAndBoard(
-    project: string,
-    boardId: number
-  ): Promise<Issue[]>,
+  getBacklogIssuesByProjectAndBoard(project: string, boardId: number): Promise<Issue[]>,
   getIssuesBySprint(sprintId: number): Promise<Issue[]>,
-  moveIssueToSprintAndRank(
-    sprint: number,
-    issue: string,
-    rankBefore: string,
-    rankAfter: string
-  ): Promise<void>,
+  moveIssueToSprintAndRank(sprint: number, issue: string, rankBefore: string, rankAfter: string): Promise<void>,
   moveIssueToBacklog(issue: string): Promise<void>,
-  rankIssueInBacklog(
-    issue: string,
-    rankBefore: string,
-    rankAfter: string
-  ): Promise<void>,
+  rankIssueInBacklog(issue: string, rankBefore: string, rankAfter: string): Promise<void>,
   editIssue(issue: Issue, issueIdOrKey: string): Promise<void>,
   deleteIssue(issueIdOrKey: string): Promise<void>,
   createIssue(issue: Issue): Promise<string>,
@@ -67,11 +55,7 @@ export interface IProvider {
   getEditableIssueFields(issueIdOrKey: string): Promise<string[]>,
   getIssueReporter(issueIdOrKey: string): Promise<User>,
   addCommentToIssue(issueIdOrKey: string, commentText: string): Promise<void>,
-  editIssueComment(
-    issueIdOrKey: string,
-    commentId: string,
-    commentText: string
-  ): Promise<void>,
+  editIssueComment(issueIdOrKey: string, commentId: string, commentText: string): Promise<void>,
   deleteIssueComment(issueIdOrKey: string, commentId: string): Promise<void>,
   getResource(): Promise<Resource>,
   createSprint(sprint: SprintCreate): Promise<void>,

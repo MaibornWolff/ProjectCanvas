@@ -18,7 +18,7 @@ import {
   JiraCloudProject,
   JiraCloudSprint,
 } from "@canvas/types";
-import { DocNode } from "@atlaskit/adf-schema";
+import { ParagraphDefinition, TextDefinition } from "@atlaskit/adf-schema";
 import { IProvider } from "../base-provider";
 import { getAccessToken, refreshTokens } from "./getAccessToken";
 
@@ -428,7 +428,9 @@ export class JiraCloudProvider implements IProvider {
       comment: {
         comments: await Promise.all(cloudIssue.fields.comment.comments.map(async (commentElement) => ({
           id: commentElement.id,
-          body: commentElement.body,
+          body: typeof commentElement.body === "string"
+            ? commentElement.body
+            : ((commentElement.body.content[0] as ParagraphDefinition).content?.[0] as TextDefinition).text,
           author: await this.mapUser(commentElement.author),
           created: commentElement.created,
           updated: commentElement.updated,
@@ -744,7 +746,9 @@ export class JiraCloudProvider implements IProvider {
                 comments: element.fields.comment.comments.map(
                   (commentElement) => ({
                     id: commentElement.id,
-                    body: commentElement.body,
+                    body: typeof commentElement.body === "string"
+                      ? commentElement.body
+                      : ((commentElement.body.content[0] as ParagraphDefinition).content?.[0] as TextDefinition).text,
                     author: commentElement.author,
                     created: commentElement.created,
                     updated: commentElement.updated,
@@ -804,9 +808,9 @@ export class JiraCloudProvider implements IProvider {
     });
   }
 
-  async editIssueComment(issueIdOrKey: string, commentId: string, commentText: string | DocNode): Promise<void> {
+  async editIssueComment(issueIdOrKey: string, commentId: string, commentText: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.getRestApiClient(3)
+      this.getRestApiClient(2)
         .put(`/issue/${issueIdOrKey}/comment/${commentId}`, { body: commentText })
         .then(() => resolve())
         .catch((error) => {
