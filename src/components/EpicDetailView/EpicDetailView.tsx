@@ -202,6 +202,7 @@ export function EpicDetailView({
                 labels={issue.labels}
                 assignee={issue.assignee}
                 sprint={issue.sprint}
+                type={issue.type}
                 storyPointsEstimate={issue.storyPointsEstimate}
                 initialOpen
               />

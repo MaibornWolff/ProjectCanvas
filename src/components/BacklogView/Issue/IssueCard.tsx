@@ -22,6 +22,7 @@ export function IssueCard({
   epic,
   labels,
   assignee,
+  sprint,
   index,
 }: Issue & { index: number }) {
   const [opened, setOpened] = useState(false);
@@ -179,6 +180,7 @@ export function IssueCard({
       >
         <DetailView
           issueKey={issueKey}
+          sprint={sprint}
           closeModal={() => {
             setOpened(false);
             queryClient.invalidateQueries({ queryKey: ["issues"] });

@@ -11,6 +11,7 @@ export function DetailsAccordion({
   assignee,
   labels,
   sprint,
+  type,
   storyPointsEstimate,
   initialOpen,
 }: {
@@ -18,6 +19,7 @@ export function DetailsAccordion({
   assignee: Issue["assignee"],
   labels: Issue["labels"],
   sprint: Issue["sprint"],
+  type: Issue["type"],
   storyPointsEstimate: Issue["storyPointsEstimate"],
   initialOpen?: boolean,
 }) {
@@ -34,7 +36,7 @@ export function DetailsAccordion({
             </Group>
             <Group grow>
               <Text fz="sm" c="dimmed">Sprint</Text>
-              <IssueSprint sprint={sprint} issueKey={issueKey} />
+              <IssueSprint sprint={sprint} type={type} issueKey={issueKey} />
             </Group>
             <StoryPointsEstimateMenu issueKey={issueKey} storyPointsEstimate={storyPointsEstimate} />
             <ReporterMenu issueKey={issueKey} />

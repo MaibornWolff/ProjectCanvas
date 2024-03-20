@@ -17,8 +17,7 @@ export function AddSubtaskButton({
 }) {
   const queryClient = useQueryClient();
   const [summary, setSummary] = useState("");
-  const { issueTypes } = useCanvasStore();
-  const currentIssueType = issueTypes?.find((issueType) => issueType?.name === type);
+  const { issueTypes, getIssueTypeFromName } = useCanvasStore();
   const issueTypeWithSubTask = issueTypes?.find((issueType) => issueType?.subtask === true);
 
   const subtaskMutation = useMutation({
@@ -34,7 +33,7 @@ export function AddSubtaskButton({
   });
 
   let disabledTooltip;
-  if (currentIssueType?.subtask) {
+  if (getIssueTypeFromName(type)?.subtask) {
     disabledTooltip = "You cannot create a subtask of a subtask!";
   } else if (!issueTypeWithSubTask) {
     disabledTooltip = "No subtask issue type found! Check your platform configuration.";

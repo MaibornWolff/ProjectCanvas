@@ -18,8 +18,9 @@ import { SplitView } from "./Components/SplitIssue/SplitView";
 
 export function DetailView({
   issueKey,
+  sprint,
   closeModal,
-}: { issueKey: string, closeModal: () => void }) {
+}: { issueKey: string, sprint: Issue["sprint"], closeModal: () => void }) {
   const [createSplitViewOpened, setCreateSplitViewOpened] = useState(false);
   const [selectedSplitIssues, setSelectedSplitIssues] = useState<string[]>([issueKey]);
 
@@ -64,7 +65,7 @@ export function DetailView({
     },
   });
 
-  const { data: issue } = useQuery({
+  const { data: issue } = useQuery<Omit<Issue, "sprint">>({
     queryKey: ["issues", issueKey],
     queryFn: () => window.provider.getIssue(issueKey),
   });
@@ -169,7 +170,8 @@ export function DetailView({
                 issueKey={issueKey}
                 labels={issue.labels}
                 assignee={issue.assignee}
-                sprint={issue.sprint}
+                sprint={sprint}
+                type={issue.type}
                 storyPointsEstimate={issue.storyPointsEstimate}
                 initialOpen
               />

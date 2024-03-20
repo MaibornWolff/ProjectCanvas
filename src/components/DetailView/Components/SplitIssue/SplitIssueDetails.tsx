@@ -93,6 +93,7 @@ export function SplitIssueDetails(
               issueKey={issueKey}
               labels={labels}
               assignee={assignee}
+              type={type}
               sprint={sprint}
               storyPointsEstimate={storyPointsEstimate}
             />

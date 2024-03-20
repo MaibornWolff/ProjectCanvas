@@ -15,10 +15,11 @@ export interface CanvasStore {
   setSelectedProject: (project: Project) => void,
   setSelectedProjectBoardIds: (boards: number[]) => void,
   setIssueTypes: (types: IssueType[]) => void,
+  getIssueTypeFromName: (typeName: string) => IssueType | undefined,
   setIssueTypesWithFieldsMap: (issueTypesWithFieldsMap: Map<string, string[]>) => void,
 }
 
-export const useCanvasStore = create<CanvasStore>()((set) => ({
+export const useCanvasStore = create<CanvasStore>()((set, get) => ({
   projects: [],
   selectedProject: undefined,
   selectedProjectBoardIds: [],
@@ -58,6 +59,7 @@ export const useCanvasStore = create<CanvasStore>()((set) => ({
       issueStatusCategoryByStatusName,
     };
   }),
+  getIssueTypeFromName: (typeName: string) => get().issueTypes.find((issueType: IssueType) => issueType?.name === typeName),
   setIssueTypesWithFieldsMap: (issueTypesWithFieldsMap: Map<string, string[]>) => set(() => ({
     issueTypesWithFieldsMap,
   })),
