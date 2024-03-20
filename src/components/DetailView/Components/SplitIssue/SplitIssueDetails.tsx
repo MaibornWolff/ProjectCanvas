@@ -105,10 +105,7 @@ export function SplitIssueDetails(
               <Accordion.Control style={{ textAlign: "left" }}>Details</Accordion.Control>
               <Accordion.Panel>
                 <Stack>
-                  <AssigneeMenu
-                    assignee={assignee as Issue["assignee"]}
-                    issueKey={issueKey}
-                  />
+                  <AssigneeMenu assignee={assignee} issueKey={issueKey} />
                   <Group grow>
                     <Text fz="sm" c="dimmed">Labels</Text>
                     <Labels labels={labels} issueKey={issueKey} />

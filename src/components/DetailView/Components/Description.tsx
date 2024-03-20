@@ -47,7 +47,7 @@ export function Description({
       AcceptanceCriteriaList,
       AcceptanceCriteriaItem.configure({
         HTMLAttributes: {
-          style: "color: var(--mantine-color-primaryRed-filled)",
+          style: "color: var(--mantine-color-red-filled)",
         },
       }),
     ],
@@ -59,19 +59,16 @@ export function Description({
         onChange(supportsProseMirrorPayloads ? transformToAdf(editor.getJSON()) : transformToWiki(editor.getJSON()));
       }
     },
-    onCreate: ({ editor }) => setContentFromDescription(editor),
+    onCreate: ({ editor }) => {
+      if (supportsProseMirrorPayloads !== undefined) {
+        setContentFromDescription(editor);
+      }
+    },
   }, [supportsProseMirrorPayloads]);
 
   return (
     <RichTextEditor editor={tipTapEditor}>
       <RichTextEditor.Toolbar>
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Bold />
-          <RichTextEditor.Italic />
-          <RichTextEditor.Strikethrough />
-          <RichTextEditor.ClearFormatting />
-        </RichTextEditor.ControlsGroup>
-
         <RichTextEditor.ControlsGroup>
           <AcceptanceCriteriaControl />
         </RichTextEditor.ControlsGroup>
