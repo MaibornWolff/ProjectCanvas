@@ -4,17 +4,21 @@ import { IconPlus } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useCanvasStore } from "@canvas/lib/Store";
+import { Issue } from "@canvas/types";
 
 export function AddSubtaskButton({
   issueKey,
+  type,
   projectKey,
 }: {
   issueKey: string,
+  type: Issue["type"],
   projectKey: string,
 }) {
   const queryClient = useQueryClient();
   const [summary, setSummary] = useState("");
   const { issueTypes } = useCanvasStore();
+  const currentIssueType = issueTypes?.find((issueType) => issueType?.name === type);
   const issueTypeWithSubTask = issueTypes?.find((issueType) => issueType?.subtask === true);
 
   const subtaskMutation = useMutation({
@@ -29,6 +33,15 @@ export function AddSubtaskButton({
     },
   });
 
+  let disabledTooltip;
+  if (currentIssueType?.subtask) {
+    disabledTooltip = "You cannot create a subtask of a subtask!";
+  } else if (!issueTypeWithSubTask) {
+    disabledTooltip = "No subtask issue type found! Check your platform configuration.";
+  } else if (summary === "") {
+    disabledTooltip = "The summary of an issue cannot be empty!";
+  }
+
   return (
     <Group>
       <TextInput
@@ -39,11 +52,8 @@ export function AddSubtaskButton({
         onChange={(e) => setSummary(e.target.value)}
         value={summary}
       />
-      <Tooltip
-        label={summary === "" ? "The summary of an issue cannot be empty!" : "No subtask issue type found!"}
-        disabled={issueTypeWithSubTask && summary !== ""}
-      >
-        <Button p="5px" disabled={!issueTypeWithSubTask || summary === ""}>
+      <Tooltip label={disabledTooltip} disabled={!disabledTooltip}>
+        <Button p="5px" disabled={!!disabledTooltip}>
           <IconPlus onClick={() => subtaskMutation.mutate()} />
         </Button>
       </Tooltip>

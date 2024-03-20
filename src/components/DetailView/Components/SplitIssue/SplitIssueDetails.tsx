@@ -9,7 +9,7 @@ import { IssueIcon } from "../../../BacklogView/Issue/IssueIcon";
 import { IssueSummary } from "../IssueSummary";
 import { Description } from "../Description";
 import { Subtask } from "../SubTask";
-import { AddSubtaskButton } from "../AddSubtaskButton";
+import { AddSubtaskButton } from "../SubTask/AddSubtaskButton";
 import { IssueStatusMenu } from "../IssueStatusMenu";
 import { SplitIssueButton } from "./SplitIssueButton";
 import { CloseWarningAlert } from "./CloseWarningAlert";
@@ -103,7 +103,7 @@ export function SplitIssueDetails(
               {subtasks.map((subtask) => (
                 <Subtask key={subtask.key} subtaskKey={subtask.key} fields={subtask.fields} />
               ))}
-              <AddSubtaskButton issueKey={issueKey} projectKey={projectKey} />
+              <AddSubtaskButton issueKey={issueKey} type={type} projectKey={projectKey} />
             </Stack>
           </Paper>
           <Box mb={20}><CommentSectionAccordion issueKey={issueKey} comment={comment} /></Box>

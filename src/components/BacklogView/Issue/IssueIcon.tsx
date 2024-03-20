@@ -1,5 +1,5 @@
 import { ThemeIcon } from "@mantine/core";
-import { IconBookmark, IconCheck, IconBug, IconBolt, IconEdit } from "@tabler/icons-react";
+import { IconBookmark, IconCheck, IconBug, IconBolt, IconEdit, IconBinaryTree2 } from "@tabler/icons-react";
 import { ReactElement } from "react";
 
 export function IssueIcon({ type }: { type: string }) {
@@ -35,6 +35,11 @@ export function IssueIcon({ type }: { type: string }) {
       icon = <IconBolt />;
       iconGradient1 = "violet";
       iconGradient2 = "white";
+      break;
+    case "Sub-task":
+      icon = <IconBinaryTree2 />;
+      iconGradient1 = "primaryBlue";
+      iconGradient2 = "primaryBlue";
       break;
     default:
       icon = <IconEdit />;
