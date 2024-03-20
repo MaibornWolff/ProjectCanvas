@@ -1,5 +1,5 @@
 import { MantineColor } from "@mantine/core";
-import { StatusType } from "../../types/status";
+import { StatusType } from "@canvas/types";
 
 export const getStatusTypeColor = (statusType: StatusType): MantineColor => {
   switch (statusType) {

@@ -1,6 +1,9 @@
+import { IProvider } from "@canvas/electron/providers/base-provider";
+import { getProvider } from "./setup";
+
 export * from "./login";
-export * from "./issues";
-export * from "./general";
-export * from "./issueInfo";
-export * from "./sprints";
-export * from "./comments";
+
+export function getProviderExecutor<T extends keyof IProvider>(functionName: T) {
+  // @ts-ignore
+  return (_: Electron.IpcMainInvokeEvent, ...params: Parameters<IProvider[T]>) => getProvider()[functionName](...params);
+}

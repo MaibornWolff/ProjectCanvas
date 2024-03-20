@@ -40,7 +40,7 @@ export function CreateIssueModalContent({
 
   const form = useForm<Issue>({
     initialValues: {
-      projectId: selectedProject?.key,
+      projectKey: selectedProject?.key,
       type: "",
       sprint: { id: undefined as unknown as number },
       summary: "",
@@ -54,15 +54,15 @@ export function CreateIssueModalContent({
   });
 
   const { data: issueTypes, isLoading } = useQuery({
-    queryKey: ["issueTypes", form.getInputProps("projectId").value],
-    queryFn: () => window.provider.getIssueTypesByProject(form.getInputProps("projectId").value!),
-    enabled: !!projects && !!form.getInputProps("projectId").value,
+    queryKey: ["issueTypes", form.getInputProps("projectKey").value],
+    queryFn: () => window.provider.getIssueTypesByProject(form.getInputProps("projectKey").value!),
+    enabled: !!projects && !!form.getInputProps("projectKey").value,
   });
 
   const { data: assignableUsers } = useQuery({
-    queryKey: ["assignableUsers", form.getInputProps("projectId").value],
-    queryFn: () => window.provider.getAssignableUsersByProject(form.getInputProps("projectId").value!),
-    enabled: !!projects && !!form.getInputProps("projectId").value,
+    queryKey: ["assignableUsers", form.getInputProps("projectKey").value],
+    queryFn: () => window.provider.getAssignableUsersByProject(form.getInputProps("projectKey").value!),
+    enabled: !!projects && !!form.getInputProps("projectKey").value,
   });
 
   const mutation = useMutation({

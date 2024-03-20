@@ -1,7 +1,19 @@
-import { Accordion, Box, Breadcrumbs, Group, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
+import {
+  Accordion,
+  Box,
+  Breadcrumbs,
+  Center,
+  Group,
+  Loader,
+  Paper,
+  ScrollArea,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import { Issue } from "types";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { showNotification } from "@mantine/notifications";
 import { AddSubtask } from "./Components/AddSubtask";
 import { AssigneeMenu } from "./Components/AssigneeMenu";
@@ -24,23 +36,8 @@ import { SplitView } from "./Components/SplitIssue/SplitView";
 
 export function DetailView({
   issueKey,
-  summary,
-  status,
-  storyPointsEstimate,
-  epic,
-  labels,
-  assignee,
-  description,
-  subtasks,
-  created,
-  updated,
-  comment,
-  type,
-  projectId,
-  sprint,
-  attachments,
   closeModal,
-}: Issue & { closeModal: () => void }) {
+}: { issueKey: string, closeModal: () => void }) {
   const [createSplitViewOpened, setCreateSplitViewOpened] = useState(false);
   const [selectedSplitIssues, setSelectedSplitIssues] = useState<string[]>([issueKey]);
 
@@ -85,13 +82,22 @@ export function DetailView({
     },
   });
 
+  const { data: issue } = useQuery({
+    queryKey: ["issues", issueKey],
+    queryFn: () => window.provider.getIssue(issueKey),
+  });
+
+  if (!issue) {
+    return <Center style={{ width: "100%", height: "100%" }}><Loader /></Center>;
+  }
+
   return (
     <Paper p="xs">
       <Breadcrumbs mb="md">
-        <EditableEpic projectId={projectId} issueKey={issueKey} epic={epic} />
+        <EditableEpic projectKey={issue.projectKey} issueKey={issueKey} epic={issue.epic} />
 
         <Group>
-          <IssueIcon type={type} />
+          <IssueIcon type={issue.type} />
           {" "}
           {issueKey}
         </Group>
@@ -107,37 +113,33 @@ export function DetailView({
       <Group>
         <Stack style={{ flex: 13 }}>
           <Title order={1}>
-            <IssueSummary summary={summary} issueKey={issueKey} />
+            <IssueSummary summary={issue.summary} issueKey={issueKey} />
           </Title>
-          <ScrollArea.Autosize
-            mr="xs"
-            style={{ minWidth: "260px", maxHeight: "70vh" }}
-          >
-            <Text c="dimmed" mb="sm">
-              Description
-            </Text>
-            <Description
-              description={description}
-              onChange={(newDescription) => {
-                mutationDescription.mutate({ description: newDescription });
-              }}
-            />
+          <ScrollArea.Autosize mr="xs" style={{ minWidth: "260px", maxHeight: "70vh" }}>
+            <Text c="dimmed" mb="sm">Description</Text>
+            <Box mb="sm">
+              <Description
+                description={issue.description}
+                onChange={(newDescription) => {
+                  mutationDescription.mutate({ description: newDescription });
+                }}
+              />
+            </Box>
             <Text c="dimmed" mb="sm">Subtasks</Text>
             <Paper mb="lg" mr="sm">
               <Stack gap="xs">
-                {subtasks.map((subtask) => (
+                {issue.subtasks.map((subtask) => (
                   <Subtask
                     key={subtask.key}
                     subtaskKey={subtask.key}
-                    id={subtask.id}
                     fields={subtask.fields}
                   />
                 ))}
-                <AddSubtask issueKey={issueKey} projectId={projectId} />
+                <AddSubtask issueKey={issueKey} projectId={issue.projectKey} />
               </Stack>
             </Paper>
-            <Attachments issueKey={issueKey} attachments={attachments} />
-            <CommentSection issueKey={issueKey} comment={comment} />
+            <Attachments issueKey={issueKey} attachments={issue.attachments} />
+            <CommentSection issueKey={issueKey} comment={issue.comment} />
           </ScrollArea.Autosize>
         </Stack>
         <ScrollArea.Autosize
@@ -146,10 +148,10 @@ export function DetailView({
           <Box>
             <Group justify="space-between" mb="sm">
               <IssueStatusMenu
-                projectId={projectId}
+                projectKey={issue.projectKey}
                 issueKey={issueKey}
-                type={type}
-                status={status}
+                type={issue.type}
+                status={issue.status}
               />
 
               <SplitView
@@ -181,31 +183,19 @@ export function DetailView({
             </Group>
             <Accordion variant="contained" defaultValue="Details" mb={20}>
               <Accordion.Item value="Details">
-                <Accordion.Control style={{ textAlign: "left" }}>
-                  Details
-                </Accordion.Control>
+                <Accordion.Control style={{ textAlign: "left" }}>Details</Accordion.Control>
                 <Accordion.Panel>
                   <Stack>
-                    <AssigneeMenu
-                      assignee={assignee as Issue["assignee"]}
-                      issueKey={issueKey}
-                    />
+                    <AssigneeMenu assignee={issue.assignee} issueKey={issueKey} />
                     <Group grow>
-                      <Text fz="sm" c="dimmed">
-                        Labels
-                      </Text>
-                      <Labels labels={labels} issueKey={issueKey} />
+                      <Text fz="sm" c="dimmed">Labels</Text>
+                      <Labels labels={issue.labels} issueKey={issueKey} />
                     </Group>
                     <Group grow>
-                      <Text fz="sm" c="dimmed">
-                        Sprint
-                      </Text>
-                      <IssueSprint sprint={sprint} issueKey={issueKey} />
+                      <Text fz="sm" c="dimmed">Sprint</Text>
+                      <IssueSprint sprint={issue.sprint} issueKey={issueKey} />
                     </Group>
-                    <StoryPointsEstimateMenu
-                      issueKey={issueKey}
-                      storyPointsEstimate={storyPointsEstimate}
-                    />
+                    <StoryPointsEstimateMenu issueKey={issueKey} storyPointsEstimate={issue.storyPointsEstimate} />
                     <ReporterMenu issueKey={issueKey} />
                   </Stack>
                 </Accordion.Panel>
@@ -217,7 +207,7 @@ export function DetailView({
               {new Intl.DateTimeFormat("en-GB", {
                 dateStyle: "full",
                 timeStyle: "short",
-              }).format(new Date(created))}
+              }).format(new Date(issue.created))}
             </Text>
             <Text size="xs" c="dimmed">
               Updated
@@ -225,7 +215,7 @@ export function DetailView({
               {new Intl.DateTimeFormat("en-GB", {
                 dateStyle: "full",
                 timeStyle: "short",
-              }).format(new Date(updated))}
+              }).format(new Date(issue.updated))}
             </Text>
           </Box>
         </ScrollArea.Autosize>

@@ -18,7 +18,7 @@ export const addExportedTimeProperties = (
   inProgressStatusNames: string[],
   doneStatusNames: string[],
 ): ExportableIssue | undefined => {
-  const statusItems = issue.changelog.histories
+  const statusItems = issue.changelog!.histories
     .toReversed()
     .map((history) => {
       const statusItem = history.items.find((item) => item.field === "status");

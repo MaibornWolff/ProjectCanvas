@@ -17,9 +17,9 @@ export function SprintSelect({
   isLoading: boolean,
 }) {
   const { data: boardIds } = useQuery({
-    queryKey: ["boards", form.getInputProps("projectId").value],
-    queryFn: () => window.provider.getBoardIds(form.getInputProps("projectId").value!),
-    enabled: enabled && !!form.getInputProps("projectId").value,
+    queryKey: ["boards", form.getInputProps("projectKey").value],
+    queryFn: () => window.provider.getBoardIds(form.getInputProps("projectKey").value!),
+    enabled: enabled && !!form.getInputProps("projectKey").value,
   });
   const { data: sprints } = useQuery({
     queryKey: ["sprints"],

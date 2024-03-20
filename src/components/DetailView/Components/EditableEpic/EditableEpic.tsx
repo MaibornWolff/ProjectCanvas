@@ -9,11 +9,11 @@ import { SelectItem } from "./SelectItem";
 import { CustomItemSelect } from "../../../common/CustomItemSelect";
 
 export function EditableEpic({
-  projectId,
+  projectKey,
   issueKey,
   epic,
 }: {
-  projectId: string,
+  projectKey: string,
   issueKey: string,
   epic: {
     issueKey?: string,
@@ -22,8 +22,8 @@ export function EditableEpic({
 }) {
   const [showEpicInput, setShowEpicInput] = useState(false);
   const { data: epics } = useQuery({
-    queryKey: ["epics", projectId],
-    queryFn: () => getEpicsByProject(projectId),
+    queryKey: ["epics", projectKey],
+    queryFn: () => getEpicsByProject(projectKey),
   });
   const [selectedEpic, setSelectedEpic] = useState(epic.issueKey);
   const mutationEpic = useMutation({

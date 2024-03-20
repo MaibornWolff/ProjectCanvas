@@ -30,12 +30,6 @@ export async function login(
   }
 }
 
-export async function isLoggedIn() {
-  await getProvider().isLoggedIn();
-}
-export async function logout() {
-  await getProvider().logout();
-}
 export async function refreshAccessToken() {
   await getProvider().refreshAccessToken({
     clientId: import.meta.env.VITE_CLIENT_ID,

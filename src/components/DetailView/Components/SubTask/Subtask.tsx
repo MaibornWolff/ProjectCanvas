@@ -5,11 +5,9 @@ import { IssueSummary } from "../IssueSummary";
 import { deleteSubtaskMutation } from "./queries";
 
 export function Subtask({
-  id,
   subtaskKey,
   fields,
 }: {
-  id: string,
   subtaskKey: string,
   fields: {
     summary: string,
@@ -20,7 +18,7 @@ export function Subtask({
   return (
     <Group
       align="center"
-      key={id}
+      key={subtaskKey}
       style={(theme) => ({
         borderRadius: theme.radius.sm,
         transition: "background-color .8s ease-out",

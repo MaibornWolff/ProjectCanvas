@@ -1,9 +1,14 @@
+import { DocNode } from "@atlaskit/adf-schema";
+
+export * from "./jira";
+export * from "./status";
+
 export interface Sprint {
   id: number,
   name: string,
   state: string,
-  startDate: Intl.DateTimeFormat,
-  endDate: Intl.DateTimeFormat,
+  startDate: string,
+  endDate: string,
 }
 
 export interface Project {
@@ -16,7 +21,7 @@ export interface Project {
 
 export interface User {
   id: string,
-  name: string,
+  name?: string,
   displayName: string,
   emailAddress: string,
   avatarUrls: {
@@ -71,7 +76,7 @@ export interface Issue {
   creator: string,
   status: string,
   type: string,
-  description: string,
+  description: string | DocNode,
   storyPointsEstimate: number,
   epic: {
     issueKey?: string,
@@ -82,9 +87,8 @@ export interface Issue {
   rank: string,
   reporter: User,
   sprint?: Sprint,
-  projectId: string,
+  projectKey: string,
   subtasks: {
-    id: string,
     key: string,
     fields: {
       summary: string,
@@ -93,21 +97,19 @@ export interface Issue {
   created: string,
   updated: string,
   comment: {
-    comments: [
-      {
-        id: string,
-        author: User,
-        body: string,
-        created: string,
-        updated: string,
-      },
-    ],
+    comments: {
+      id: string,
+      author: User,
+      body: string,
+      created: string,
+      updated: string,
+    }[],
   },
-  startDate: Date,
-  dueDate: Date,
+  startDate?: Date,
+  dueDate?: Date,
   priority: Priority,
   attachments: Attachment[],
-  changelog: Changelog,
+  changelog?: Changelog,
 }
 
 export interface IssueStatus {

@@ -1,6 +1,7 @@
 import { ipcRenderer } from "electron";
 
 window.provider = {
+  supportsProseMirrorPayloads: () => ipcRenderer.invoke("supportsProseMirrorPayloads"),
   login: (params) => ipcRenderer.invoke("login", params),
   logout: () => ipcRenderer.invoke("logout"),
   isLoggedIn: () => ipcRenderer.invoke("isLoggedIn"),
@@ -12,6 +13,7 @@ window.provider = {
   setTransition: (...params) => ipcRenderer.invoke("setTransition", ...params),
   createSubtask: (...params) => ipcRenderer.invoke("createSubtask", ...params),
 
+  getIssue: (...params) => ipcRenderer.invoke("getIssue", ...params),
   editIssue: (...params) => ipcRenderer.invoke("editIssue", ...params),
   createIssue: (...params) => ipcRenderer.invoke("createIssue", ...params),
   getIssuesByProject: (...params) => ipcRenderer.invoke("getIssuesByProject", ...params),

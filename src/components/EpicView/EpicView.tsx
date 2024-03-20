@@ -1,10 +1,11 @@
-import { ScrollArea, Box, Button, TextInput } from "@mantine/core";
+import { ScrollArea, Box, Button, TextInput, Stack } from "@mantine/core";
 import { ChangeEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { IconSearch } from "@tabler/icons-react";
+import { Issue } from "@canvas/types";
+import { EpicCard } from "@canvas/components/EpicView/EpicCard";
 import { useCanvasStore } from "../../lib/Store";
 import { CreateIssueModal } from "../CreateIssue/CreateIssueModal";
-import { EpicWrapper } from "./EpicWrapper";
 import { getEpics } from "./helpers/queryFetchers";
 import { useColorScheme } from "../../common/color-scheme";
 import { filterSearch } from "./helpers/epicViewHelpers";
@@ -52,7 +53,9 @@ export function EpicView() {
         }}
       >
         <Box mr="xs">
-          <EpicWrapper epics={searchedEpics} />
+          <Stack gap="sm">
+            {searchedEpics.map((epic: Issue) => (<EpicCard {...epic} key={epic.issueKey} />))}
+          </Stack>
         </Box>
         <Box mr="xs">
           <Button

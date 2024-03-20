@@ -1,35 +1,85 @@
-import { Textarea, Text } from "@mantine/core";
+import { useEditor } from "@tiptap/react";
+import { Editor } from "@tiptap/core";
+import { StarterKit } from "@tiptap/starter-kit";
+import { RichTextEditor } from "@mantine/tiptap";
 import { useState } from "react";
+import {
+  AcceptanceCriteriaList,
+  AcceptanceCriteriaItem,
+  AcceptanceCriteriaControl,
+  transformFromAdf,
+  transformToAdf,
+  transformToWiki,
+  transformFromWiki,
+} from "@canvas/tiptap";
+import { useQuery } from "@tanstack/react-query";
+import { DocNode } from "@atlaskit/adf-schema";
+import { Issue } from "@canvas/types";
 
 export function Description({
   description,
   onChange,
 }: {
-  description: string,
-  onChange: (newDescription: string) => void,
+  description: Issue["description"] | null,
+  onChange: (newDescription: Issue["description"]) => void,
 }) {
-  const [currentDescription, setCurrentDescription] = useState(description);
-  const [showDescriptionInput, setShowDescriptionInput] = useState(false);
+  const { data: supportsProseMirrorPayloads } = useQuery({
+    queryKey: ["supportsProseMirrorPayloads"],
+    queryFn: () => window.provider.supportsProseMirrorPayloads(),
+  });
+
+  const [lastDescription, setLastDescription] = useState(description);
+  const setContentFromDescription = (editor: Editor) => {
+    if (description) {
+      if (supportsProseMirrorPayloads) {
+        editor.commands.setContent(transformFromAdf(description as DocNode));
+        setLastDescription(editor.getHTML() ?? "");
+      } else {
+        editor.commands.setContent(transformFromWiki(description as string));
+        setLastDescription(editor.getHTML() ?? "");
+      }
+    }
+  };
+
+  const tipTapEditor = useEditor({
+    extensions: [
+      StarterKit,
+      AcceptanceCriteriaList,
+      AcceptanceCriteriaItem.configure({
+        HTMLAttributes: {
+          style: "color: var(--mantine-color-red-filled)",
+        },
+      }),
+    ],
+    content: null,
+    onBlur: ({ editor }) => {
+      const currentDescription = editor.getHTML();
+      if (lastDescription !== currentDescription) {
+        setLastDescription(currentDescription);
+        onChange(supportsProseMirrorPayloads ? transformToAdf(editor.getJSON()) : transformToWiki(editor.getJSON()));
+      }
+    },
+    onCreate: ({ editor }) => {
+      if (supportsProseMirrorPayloads !== undefined) {
+        setContentFromDescription(editor);
+      }
+    },
+  }, [supportsProseMirrorPayloads]);
 
   return (
-    <span>
-      {showDescriptionInput ? (
-        <Textarea
-          value={currentDescription}
-          onChange={(e) => setCurrentDescription(e.target.value)}
-          onBlur={() => {
-            setShowDescriptionInput(false);
-            onChange(currentDescription);
-          }}
-          autosize
-          minRows={4}
-          mb="xl"
-        />
-      ) : (
-        <Text onClick={() => setShowDescriptionInput(true)} mb="xl">
-          {currentDescription || "Add Description"}
-        </Text>
-      )}
-    </span>
+    <RichTextEditor editor={tipTapEditor}>
+      <RichTextEditor.Toolbar>
+        <RichTextEditor.ControlsGroup>
+          <AcceptanceCriteriaControl />
+        </RichTextEditor.ControlsGroup>
+
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.Undo />
+          <RichTextEditor.Redo />
+        </RichTextEditor.ControlsGroup>
+      </RichTextEditor.Toolbar>
+
+      <RichTextEditor.Content />
+    </RichTextEditor>
   );
 }

@@ -1,4 +1,35 @@
-import { Attachment, Priority, User } from ".";
+export interface JiraServerInfo {
+  baseUrl: string,
+  version: string,
+  versionNumbers: [number, number, number],
+  buildNumber: number,
+  buildDate: string,
+  serverTime: string,
+  scmInfo: string,
+  buildPartnerName: string,
+  serverTitle: string,
+}
+
+export interface JiraServerUser {
+  key: string,
+  name: string,
+  displayName: string,
+  emailAddress: string,
+  avatarUrls: {
+    "16x16": string,
+    "24x24": string,
+    "32x32": string,
+    "48x48": string,
+  },
+}
+
+export interface JiraAttachment {
+  id: string,
+  filename: string,
+  created: string,
+  mimeType: string,
+  content: string,
+}
 
 export interface JiraProject {
   projectTypeKey: string,
@@ -29,7 +60,7 @@ export interface JiraChangelogHistoryItem {
 }
 
 export interface JiraChangelogHistory {
-  author: User,
+  author: JiraServerUser,
   id: string,
   created: string,
   items: JiraChangelogHistoryItem[],
@@ -39,21 +70,20 @@ export interface JiraChangelog {
   histories: JiraChangelogHistory[],
 }
 
+export interface JiraPriority {
+  statusColor: string,
+  description: string,
+  iconUrl: string,
+  name: string,
+  id: string,
+  isDefault: boolean,
+}
+
 // EpicIssue structure differs from normal Issue structure
 export interface JiraEpic {
   key: string,
   fields: {
-    description: {
-      type: string,
-      version: string,
-      content: string &
-      {
-        content: {
-          type: string,
-          text: string,
-        }[],
-      }[],
-    },
+    description: string,
     summary: string,
     creator: { name: string, displayName: string },
     status: { name: string },
@@ -100,17 +130,7 @@ export interface JiraEpic {
           body: {
             type: string,
             version: number,
-            content: [
-              {
-                type: string,
-                content: [
-                  {
-                    type: string,
-                    text: string,
-                  },
-                ],
-              },
-            ],
+            content: string,
           },
           created: string,
           updated: string,
@@ -118,7 +138,7 @@ export interface JiraEpic {
       ],
     },
     sprint?: JiraSprint,
-    attachment?: Attachment[],
+    attachment?: JiraAttachment[],
   },
 }
 
@@ -126,19 +146,9 @@ export interface JiraIssue {
   key: string,
   changelog: JiraChangelog,
   fields: {
-    description: {
-      type: string,
-      version: string,
-      content: string &
-      {
-        content: {
-          type: string,
-          text: string,
-        }[],
-      }[],
-    },
+    description: string,
     summary: string,
-    creator: { name: string, displayName: string },
+    creator: JiraServerUser,
     status: { name: string },
     issuetype: { name: string },
     // TODO: improve this, let's try not to:
@@ -151,48 +161,25 @@ export interface JiraIssue {
     parent?: JiraIssue,
     epic: { name: string },
     labels: string[],
-    assignee: {
-      displayName: string,
-      avatarUrls: {
-        "16x16": string,
-        "24x24": string,
-        "36x36": string,
-        "48x48": string,
-      },
-    },
+    assignee?: JiraServerUser,
+    reporter: JiraServerUser,
     [rankCustomField: string]: string | unknown,
     subtasks: JiraIssue[],
-    project: { id: string },
+    project: JiraProject,
     created: string,
     updated: string,
     comment: {
-      comments: [
-        {
-          id: string,
-          author: {
-            accountId: string,
-            avatarUrls: {
-              "48x48": string,
-              "24x24": string,
-              "16x16": string,
-              "32x32": string,
-            },
-            displayName: string,
-          },
-          body: string &
-          {
-            content: {
-              type: string,
-              text: string,
-            }[],
-          }[],
-          created: string,
-          updated: string,
-        },
-      ],
+      comments: {
+        id: string,
+        author: JiraServerUser,
+        body: string,
+        created: string,
+        updated: string,
+      }[],
     },
     sprint?: JiraSprint,
-    attachment?: Attachment[],
+    attachment?: JiraAttachment[],
+    priority: JiraPriority,
   },
 }
 
@@ -207,8 +194,4 @@ export interface JiraIssueType {
   name?: string,
   statuses?: JiraIssueStatus[],
   subtask: boolean,
-}
-
-export interface JiraPriority {
-  values: Priority[],
 }
