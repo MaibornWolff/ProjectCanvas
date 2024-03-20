@@ -533,10 +533,9 @@ export class JiraServerProvider implements IProvider {
               // }),
             },
           })
-          .then(async (response) => {
-            const createdIssue = response.data;
-            resolve(JSON.stringify(createdIssue.key));
-            await this.setTransition(createdIssue.id, status);
+          .then(async (response: AxiosResponse<{ id: string, key: string }>) => {
+            await this.setTransition(response.data.id, status);
+            resolve(response.data.key);
           })
           .catch((error) => {
             switch (error.response?.status) {
