@@ -123,73 +123,72 @@ export function EpicDetailView({
           <Title size="h1" style={{ marginBottom: "-10px" }}>
             <IssueSummary summary={issue.summary} issueKey={issueKey} onMutate={reloadEpics} />
           </Title>
-          <Text c="dimmed" mb="sm" size="md" style={{ marginLeft: "7px" }}>Description</Text>
-          <Group style={{ marginLeft: "10px", marginTop: "-7px" }}>
-            <Description
-              description={issue.description}
-              onChange={(newDescription) => {
-                mutationDescription.mutate({ description: newDescription });
-              }}
-            />
-          </Group>
-          <Group align="center" p="sm">
-            <Progress.Root
-              radius="md"
-              size={20}
-              style={{
-                width: "400px",
-                marginRight: "5px",
-                marginBottom: "20px",
-                flexGrow: 1,
-              }}
-            >
-              {totalTaskCount !== 0 && (
-                <>
-                  <Tooltip label={`${tasksDone} Done`}>
+          <ScrollArea.Autosize mr="xs" style={{ minWidth: "260px", maxHeight: "70vh" }}>
+            <Text c="dimmed" mb="sm" size="md" style={{ marginLeft: "7px" }}>Description</Text>
+            <Box style={{ marginLeft: "10px", marginTop: "-7px" }}>
+              <Description
+                description={issue.description}
+                onChange={(newDescription) => {
+                  mutationDescription.mutate({ description: newDescription });
+                }}
+              />
+            </Box>
+            <Group align="center" p="sm">
+              <Progress.Root
+                radius="md"
+                size={20}
+                style={{
+                  width: "400px",
+                  marginRight: "5px",
+                  marginBottom: "20px",
+                  flexGrow: 1,
+                }}
+              >
+                {totalTaskCount !== 0 && (
+                  <>
+                    <Tooltip label={`${tasksDone} Done`}>
+                      <Progress.Section
+                        value={(tasksDone / totalTaskCount) * 100}
+                        color={getStatusTypeColor(StatusType.DONE)}
+                      >
+                        <Progress.Label>{tasksDone}</Progress.Label>
+                      </Progress.Section>
+                    </Tooltip>
+                    <Tooltip label={`${tasksInProgress} In progress`}>
+                      <Progress.Section
+                        value={(tasksInProgress / totalTaskCount) * 100}
+                        color={getStatusTypeColor(StatusType.IN_PROGRESS)}
+                      >
+                        <Progress.Label>{tasksInProgress}</Progress.Label>
+                      </Progress.Section>
+                    </Tooltip>
+                    <Tooltip label={`${tasksTodo} To do`}>
+                      <Progress.Section
+                        value={(tasksTodo / totalTaskCount) * 100}
+                        color={getStatusTypeColor(StatusType.TODO)}
+                      >
+                        <Progress.Label>{tasksTodo}</Progress.Label>
+                      </Progress.Section>
+                    </Tooltip>
+                  </>
+                )}
+                {totalTaskCount === 0 && (
+                  <Tooltip label="Currently no child issues">
                     <Progress.Section
-                      value={(tasksDone / totalTaskCount) * 100}
-                      color={getStatusTypeColor(StatusType.DONE)}
-                    >
-                      <Progress.Label>{tasksDone}</Progress.Label>
-                    </Progress.Section>
-                  </Tooltip>
-                  <Tooltip label={`${tasksInProgress} In progress`}>
-                    <Progress.Section
-                      value={(tasksInProgress / totalTaskCount) * 100}
-                      color={getStatusTypeColor(StatusType.IN_PROGRESS)}
-                    >
-                      <Progress.Label>{tasksInProgress}</Progress.Label>
-                    </Progress.Section>
-                  </Tooltip>
-                  <Tooltip label={`${tasksTodo} To do`}>
-                    <Progress.Section
-                      value={(tasksTodo / totalTaskCount) * 100}
+                      value={100}
                       color={getStatusTypeColor(StatusType.TODO)}
                     >
-                      <Progress.Label>{tasksTodo}</Progress.Label>
+                      <Progress.Label>-</Progress.Label>
                     </Progress.Section>
                   </Tooltip>
-                </>
-              )}
-              {totalTaskCount === 0 && (
-                <Tooltip label="Currently no child issues">
-                  <Progress.Section
-                    value={100}
-                    color={getStatusTypeColor(StatusType.TODO)}
-                  >
-                    <Progress.Label>-</Progress.Label>
-                  </Progress.Section>
-                </Tooltip>
-              )}
-            </Progress.Root>
-            <StoryPointsHoverCard statusType={StatusType.TODO} count={storyPointsAccumulator(childIssues, validTodoStatus)} />
-            <StoryPointsHoverCard statusType={StatusType.IN_PROGRESS} count={storyPointsAccumulator(childIssues, validInProgressStatus)} />
-            <StoryPointsHoverCard statusType={StatusType.DONE} count={storyPointsAccumulator(childIssues, validDoneStatus)} />
-          </Group>
-
-          <Group style={{ marginLeft: "-10px" }} grow>
+                )}
+              </Progress.Root>
+              <StoryPointsHoverCard statusType={StatusType.TODO} count={storyPointsAccumulator(childIssues, validTodoStatus)} />
+              <StoryPointsHoverCard statusType={StatusType.IN_PROGRESS} count={storyPointsAccumulator(childIssues, validInProgressStatus)} />
+              <StoryPointsHoverCard statusType={StatusType.DONE} count={storyPointsAccumulator(childIssues, validDoneStatus)} />
+            </Group>
             <ChildIssues issues={childIssues} />
-          </Group>
+          </ScrollArea.Autosize>
         </Stack>
         <ScrollArea.Autosize style={{ minWidth: "260px", maxHeight: "70vh", flex: 10 }}>
           <Box>

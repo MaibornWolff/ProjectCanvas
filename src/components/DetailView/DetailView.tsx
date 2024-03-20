@@ -115,13 +115,8 @@ export function DetailView({
           <Title order={1}>
             <IssueSummary summary={issue.summary} issueKey={issueKey} />
           </Title>
-          <ScrollArea.Autosize
-            mr="xs"
-            style={{ minWidth: "260px", maxHeight: "70vh" }}
-          >
-            <Text c="dimmed" mb="sm">
-              Description
-            </Text>
+          <ScrollArea.Autosize mr="xs" style={{ minWidth: "260px", maxHeight: "70vh" }}>
+            <Text c="dimmed" mb="sm">Description</Text>
             <Box mb="sm">
               <Description
                 description={issue.description}
@@ -137,7 +132,6 @@ export function DetailView({
                   <Subtask
                     key={subtask.key}
                     subtaskKey={subtask.key}
-                    id={subtask.id}
                     fields={subtask.fields}
                   />
                 ))}
