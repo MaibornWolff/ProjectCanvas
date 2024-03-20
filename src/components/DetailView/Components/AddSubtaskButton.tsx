@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useCanvasStore } from "@canvas/lib/Store";
 
-export function AddSubtask({
+export function AddSubtaskButton({
   issueKey,
   projectKey,
 }: {

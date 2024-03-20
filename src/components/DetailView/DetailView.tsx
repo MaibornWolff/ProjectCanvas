@@ -15,7 +15,7 @@ import { Issue } from "types";
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { showNotification } from "@mantine/notifications";
-import { AddSubtask } from "./Components/AddSubtask";
+import { AddSubtaskButton } from "./Components/AddSubtaskButton";
 import { AssigneeMenu } from "./Components/AssigneeMenu";
 import { EditableEpic } from "./Components/EditableEpic";
 import { CommentSection } from "./Components/CommentSection";
@@ -135,7 +135,7 @@ export function DetailView({
                     fields={subtask.fields}
                   />
                 ))}
-                <AddSubtask issueKey={issueKey} projectKey={issue.projectKey} />
+                <AddSubtaskButton issueKey={issueKey} projectKey={issue.projectKey} />
               </Stack>
             </Paper>
             <Attachments issueKey={issueKey} attachments={issue.attachments} />
