@@ -1,38 +1,33 @@
-import { Box, Button, Group, Loader, TextInput } from "@mantine/core";
+import { Button, Group, Loader, TextInput, Tooltip } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { IconPlus } from "@tabler/icons-react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { createSubtaskMutation } from "./queries";
-import { getIssueTypes } from "./queryFunctions";
+import { useCanvasStore } from "@canvas/lib/Store";
 
 export function AddSubtask({
   issueKey,
-  projectId,
+  projectKey,
 }: {
   issueKey: string,
-  projectId: string,
+  projectKey: string,
 }) {
   const queryClient = useQueryClient();
   const [summary, setSummary] = useState("");
-  const { data: issueTypes } = useQuery({
-    queryKey: ["issueTypes", projectId],
-    queryFn: () => getIssueTypes(projectId),
-    enabled: !!projectId,
+  const { issueTypes } = useCanvasStore();
+  const issueTypeWithSubTask = issueTypes?.find((issueType) => issueType?.subtask === true);
+
+  const subtaskMutation = useMutation({
+    mutationFn: () => window.provider.createSubtask(issueKey, summary, projectKey, issueTypeWithSubTask!.id.toString()),
+    onSuccess: (createdSubtaskKey) => {
+      setSummary("");
+      showNotification({
+        message: `The issue ${createdSubtaskKey} has been created!`,
+        color: "green",
+      });
+      queryClient.invalidateQueries({ queryKey: ["issues"] });
+    },
   });
-
-  const issueTypeWithSubTask = issueTypes?.find(
-    (issueType) => issueType?.subtask === true,
-  );
-
-  const createSubtask = createSubtaskMutation(
-    issueKey,
-    summary,
-    projectId,
-    queryClient,
-    `${issueTypeWithSubTask?.id.toString()}`,
-    () => setSummary(""),
-  );
 
   return (
     <Group>
@@ -44,21 +39,15 @@ export function AddSubtask({
         onChange={(e) => setSummary(e.target.value)}
         value={summary}
       />
-      <Box>
-        <Button p="5px">
-          <IconPlus
-            onClick={() => {
-              if (summary === "") {
-                showNotification({
-                  message: "The summary of an issue cannot be empty!",
-                  color: "red",
-                });
-              } else createSubtask.mutate();
-            }}
-          />
+      <Tooltip
+        label={summary === "" ? "The summary of an issue cannot be empty!" : "No subtask issue type found!"}
+        disabled={issueTypeWithSubTask && summary !== ""}
+      >
+        <Button p="5px" disabled={!issueTypeWithSubTask || summary === ""}>
+          <IconPlus onClick={() => subtaskMutation.mutate()} />
         </Button>
-      </Box>
-      {createSubtask.isPending && <Loader size="sm" />}
+      </Tooltip>
+      {subtaskMutation.isPending && <Loader size="sm" />}
     </Group>
   );
 }

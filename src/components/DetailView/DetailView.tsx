@@ -135,7 +135,7 @@ export function DetailView({
                     fields={subtask.fields}
                   />
                 ))}
-                <AddSubtask issueKey={issueKey} projectId={issue.projectKey} />
+                <AddSubtask issueKey={issueKey} projectKey={issue.projectKey} />
               </Stack>
             </Paper>
             <Attachments issueKey={issueKey} attachments={issue.attachments} />

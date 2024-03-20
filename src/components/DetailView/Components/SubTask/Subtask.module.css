@@ -1,0 +1,19 @@
+.root {
+  border-radius: var(--mantine-radius-sm);
+  transition: background-color .8s ease-out;
+  box-shadow: var(--mantine-shadow-sm);
+  &:hover {
+    background-color: #EBECF0;
+    transition: background-color .1s ease-in;
+  }
+}
+
+.deleteIcon {
+  flex: 2;
+
+  &:hover {
+    color: red;
+    border-color: red;
+    cursor: pointer;
+  }
+}

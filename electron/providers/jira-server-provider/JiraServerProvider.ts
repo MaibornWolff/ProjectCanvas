@@ -748,12 +748,7 @@ export class JiraServerProvider implements IProvider {
     });
   }
 
-  createSubtask(
-    parentIssueKey: string,
-    subtaskSummary: string,
-    projectId: string,
-    subtaskIssueTypeId: string,
-  ): Promise<{ id: string, key: string }> {
+  createSubtask(parentIssueKey: string, subtaskSummary: string, projectKey: string, subtaskIssueTypeId: string): Promise<string> {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
         .post("/issue", {
@@ -761,10 +756,10 @@ export class JiraServerProvider implements IProvider {
             summary: subtaskSummary,
             issuetype: { id: subtaskIssueTypeId },
             parent: { key: parentIssueKey },
-            project: { id: projectId },
+            project: { key: projectKey },
           },
         })
-        .then((response: AxiosResponse<{ id: string, key: string }>) => resolve(response.data))
+        .then((response: AxiosResponse<{ key: string }>) => resolve(response.data.key))
         .catch((error) => reject(new Error(`Error creating subtask: ${error}`)));
     });
   }

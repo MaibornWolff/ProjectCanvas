@@ -145,7 +145,7 @@ export function SplitIssueDetails(
               {subtasks.map((subtask) => (
                 <Subtask key={subtask.key} subtaskKey={subtask.key} fields={subtask.fields} />
               ))}
-              <AddSubtask issueKey={issueKey} projectId={projectKey} />
+              <AddSubtask issueKey={issueKey} projectKey={projectKey} />
             </Stack>
           </Paper>
           <Attachments issueKey={issueKey} attachments={attachments} />
