@@ -337,8 +337,8 @@ export class JiraServerProvider implements IProvider {
       type: jiraIssue.fields.issuetype.name,
       storyPointsEstimate: await this.getIssueStoryPointsEstimate(jiraIssue.key),
       epic: {
-        issueKey: jiraIssue.fields.parent?.key,
-        summary: jiraIssue.fields.parent?.fields.summary,
+        issueKey: jiraIssue.fields[this.customFields.get("Epic Link")!] as string | undefined,
+        summary: jiraIssue.fields[this.customFields.get("Epic Link")!] as string | undefined,
       },
       labels: jiraIssue.fields.labels,
       assignee: jiraIssue.fields.assignee ? await this.mapUser(jiraIssue.fields.assignee) : undefined,
@@ -498,16 +498,14 @@ export class JiraServerProvider implements IProvider {
           .post("/issue", {
             fields: {
               summary,
-              parent: { key: epic.issueKey },
+              ...(epic.issueKey && {
+                [this.customFields.get("Epic Link")!]: epic.issueKey,
+              }),
               issuetype: { id: type },
-              project: { id: projectKey },
+              project: { key: projectKey },
               reporter: { name: reporter.name },
               ...(priority.id && { priority }),
-              ...(assignee && {
-                assignee: {
-                  name: assignee.name,
-                },
-              }),
+              assignee: { name: assignee?.name ?? "" },
               description,
               labels,
               ...(offsetStartDate && {
