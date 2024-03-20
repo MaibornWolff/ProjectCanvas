@@ -788,7 +788,7 @@ export class JiraCloudProvider implements IProvider {
     return new Promise((resolve, reject) => {
       this.getRestApiClient(2)
         .get("/priority/search")
-        .then(async (response: AxiosResponse<JiraCloudPriority[]>) => resolve(response.data))
+        .then(async (response: AxiosResponse<{ values: JiraCloudPriority[] }>) => resolve(response.data.values))
         .catch((error) => reject(new Error(`Could not fetch priorities: ${error}`)));
     });
   }
