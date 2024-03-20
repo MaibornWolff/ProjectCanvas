@@ -15,9 +15,7 @@ import {
 import { Issue, StatusType } from "@canvas/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { showNotification } from "@mantine/notifications";
-import { CommentSectionAccordion } from "@canvas/components/issue-details/Comment";
-import { DetailsAccordion } from "@canvas/components/issue-details/Details";
-import { AttachmentsAccordion } from "@canvas/components/issue-details/Attachments";
+import { CommentSectionAccordion, DetailsAccordion, AttachmentsAccordion } from "@canvas/components/issue-details";
 import { Description } from "../DetailView/Components/Description";
 import { IssueSummary } from "../DetailView/Components/IssueSummary";
 import { DeleteIssue } from "../DetailView/Components/DeleteIssue";
