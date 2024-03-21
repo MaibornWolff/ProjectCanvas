@@ -171,9 +171,8 @@ export function SplitView({
           </Button>
           <Button
             c="div"
-            variant="transparent"
+            variant="filled"
             color="red"
-            pl="0"
             onClick={() => tryClose()}
           >
             <IconX />

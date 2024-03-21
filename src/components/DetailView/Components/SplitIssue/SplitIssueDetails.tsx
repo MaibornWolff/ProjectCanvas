@@ -128,7 +128,7 @@ export function SplitIssueDetails(
             <Popover.Target>
               <Button
                 c="div"
-                variant="subtle"
+                variant="filled"
                 color="red"
                 onClick={() => {
                   if (saveButtonDisabled) {
