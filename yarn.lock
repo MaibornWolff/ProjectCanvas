@@ -20,10 +20,23 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@atlaskit/adf-schema@^35.6.0", "@atlaskit/adf-schema@^35.7.0":
+"@atlaskit/adf-schema@^35.6.0":
   version "35.7.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/adf-schema/-/adf-schema-35.7.0.tgz#5907ee79f258a8030d7037d5641b053dd3c640f0"
   integrity sha512-Mc8SFahTMkLrI+8rsFSa3+RRKm2YPzW7PZJOJgxwS3cyGXGipBWcuJocHDH7usY9GbJ5TXQz/jZEgunHrQp0NQ==
+  dependencies:
+    "@atlaskit/codemod-utils" "^4.2.0"
+    "@atlaskit/editor-prosemirror" "*"
+    "@atlaskit/json-schema-generator" "^3.3.6"
+    "@babel/runtime" "^7.0.0"
+    css-color-names "0.0.4"
+    linkify-it "^2.0.3"
+    memoize-one "^6.0.0"
+
+"@atlaskit/adf-schema@^36.0.0":
+  version "36.0.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/adf-schema/-/adf-schema-36.0.0.tgz#e820d06f6e845b1e59e2775918ebe09f7a710d29"
+  integrity sha512-gx8Kzp+w7JuqdMIWITCDPQ669/ddYOKGXQ7AhFw//Q0KzCnIN3kjtF+lHOdfzAY2EKo0Yltk5b8TPBppPnbylQ==
   dependencies:
     "@atlaskit/codemod-utils" "^4.2.0"
     "@atlaskit/editor-prosemirror" "*"
