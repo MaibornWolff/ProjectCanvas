@@ -24,7 +24,7 @@
     "pre-commit": "lint-staged"
   },
   "dependencies": {
-    "@atlaskit/adf-schema": "^35.7.0",
+    "@atlaskit/adf-schema": "^37.0.0",
     "@atlaskit/adf-utils": "^19.0.23",
     "@atlaskit/editor-json-transformer": "^8.10.27",
     "@atlaskit/editor-wikimarkup-transformer": "^11.2.44",
