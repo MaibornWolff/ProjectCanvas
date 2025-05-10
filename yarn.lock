@@ -20,7 +20,7 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@atlaskit/adf-schema@^35.6.0", "@atlaskit/adf-schema@^35.7.0":
+"@atlaskit/adf-schema@^35.6.0":
   version "35.7.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/adf-schema/-/adf-schema-35.7.0.tgz#5907ee79f258a8030d7037d5641b053dd3c640f0"
   integrity sha512-Mc8SFahTMkLrI+8rsFSa3+RRKm2YPzW7PZJOJgxwS3cyGXGipBWcuJocHDH7usY9GbJ5TXQz/jZEgunHrQp0NQ==
@@ -28,6 +28,18 @@
     "@atlaskit/codemod-utils" "^4.2.0"
     "@atlaskit/editor-prosemirror" "*"
     "@atlaskit/json-schema-generator" "^3.3.6"
+    "@babel/runtime" "^7.0.0"
+    css-color-names "0.0.4"
+    linkify-it "^2.0.3"
+    memoize-one "^6.0.0"
+
+"@atlaskit/adf-schema@^49.0.0":
+  version "49.0.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/adf-schema/-/adf-schema-49.0.0.tgz#55d8797da0b64fe0eb7aa4b503ab77aed15c5ba2"
+  integrity sha512-KiR/Qgsahmd3ARVcQT4uSuX5KASsbNP3jz3zdGGUwN0T0rqYS5Hio5OHcRy63AWHfrnIWQ4AwIkRzt3VzOvydw==
+  dependencies:
+    "@atlaskit/editor-prosemirror" "*"
+    "@atlaskit/feature-gate-js-client" "^4.26.4"
     "@babel/runtime" "^7.0.0"
     css-color-names "0.0.4"
     linkify-it "^2.0.3"
@@ -41,6 +53,13 @@
     "@atlaskit/adf-schema" "^35.6.0"
     "@atlaskit/codemod-utils" "^4.2.0"
     "@atlaskit/platform-feature-flags" "^0.2.0"
+    "@babel/runtime" "^7.0.0"
+
+"@atlaskit/atlassian-context@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/atlassian-context/-/atlassian-context-0.2.0.tgz#40ebc008a6f0271791ac100898eb0c67d4c32c84"
+  integrity sha512-msLRSp0qck6eflkShplgyIoOogNKxKRc6QIWGQlSvKGxHQNEbLEkRGcDzdh8PuBxSs1gda7OqYrdtQYQiPbpTQ==
+  dependencies:
     "@babel/runtime" "^7.0.0"
 
 "@atlaskit/codemod-utils@^4.2.0":
@@ -96,6 +115,17 @@
     "@atlaskit/editor-prosemirror" "3.0.0"
     "@atlaskit/theme" "^12.6.0"
     "@babel/runtime" "^7.0.0"
+
+"@atlaskit/feature-gate-js-client@^4.26.4":
+  version "4.26.5"
+  resolved "https://registry.yarnpkg.com/@atlaskit/feature-gate-js-client/-/feature-gate-js-client-4.26.5.tgz#224dbbe4461786af10841fa33361081a9c0ebd91"
+  integrity sha512-ZCcw7GP6WapqfP18Hr4q5+AZuI1k6pJECL9tyIw64JwG0GntMa3tTj/T8c5aqBIOagRQTw24lkM+Nt+agrRcnA==
+  dependencies:
+    "@atlaskit/atlassian-context" "^0.2.0"
+    "@babel/runtime" "^7.0.0"
+    "@statsig/client-core" "^3.10.0"
+    "@statsig/js-client" "^3.10.0"
+    eventemitter2 "^4.1.0"
 
 "@atlaskit/json-schema-generator@^3.3.6":
   version "3.3.7"
@@ -1872,6 +1902,18 @@
   integrity sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==
   dependencies:
     "@sinonjs/commons" "^3.0.0"
+
+"@statsig/client-core@3.16.1", "@statsig/client-core@^3.10.0":
+  version "3.16.1"
+  resolved "https://registry.yarnpkg.com/@statsig/client-core/-/client-core-3.16.1.tgz#f7b899f25600300c901cbe4ae30b671460df0fb7"
+  integrity sha512-NXGN1Uajd8cIJx4DzBUV0ox76sScgMlbj3PSVozqP2Dxku1gMWQzteStMeKkiOf2Rozuu2+LhVAcRoZ9sWy1Bw==
+
+"@statsig/js-client@^3.10.0":
+  version "3.16.1"
+  resolved "https://registry.yarnpkg.com/@statsig/js-client/-/js-client-3.16.1.tgz#bd5f6ce25137dd3ae0557772411843110d84fbbb"
+  integrity sha512-pl0x/1dX06fSkI1fcTJZZ65ShB+gwo0OYwkjADXHGHezjPHbv6pA0loSjiqEclfwqhfcmh0lrMhZFBu9E0qz4w==
+  dependencies:
+    "@statsig/client-core" "3.16.1"
 
 "@szmarczak/http-timer@^4.0.5":
   version "4.0.6"
@@ -4656,6 +4698,11 @@ event-target-shim@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/event-target-shim/-/event-target-shim-5.0.1.tgz#5d4d3ebdf9583d63a5333ce2deb7480ab2b05789"
   integrity sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==
+
+eventemitter2@^4.1.0:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/eventemitter2/-/eventemitter2-4.1.2.tgz#0e1a8477af821a6ef3995b311bf74c23a5247f15"
+  integrity sha512-erx0niBaTi8B7ywjGAcg8ilGNRl/xs/o4MO2ZMpRlpZ62mYzjGTBlOpxxRIrPQqBs9mbXkEux6aR+Sc5vQ/wUw==
 
 eventemitter3@^5.0.1:
   version "5.0.1"
