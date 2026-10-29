@@ -27,7 +27,7 @@
     "@atlaskit/adf-schema": "^35.7.0",
     "@atlaskit/adf-utils": "^19.0.23",
     "@atlaskit/editor-json-transformer": "^8.10.27",
-    "@atlaskit/editor-wikimarkup-transformer": "^11.2.44",
+    "@atlaskit/editor-wikimarkup-transformer": "^12.0.0",
     "@emotion/react": "^11.10.6",
     "@fastify/env": "^4.2.0",
     "@hello-pangea/dnd": "^16.5.0",
