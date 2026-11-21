@@ -30,7 +30,7 @@
     "@atlaskit/editor-wikimarkup-transformer": "^11.2.44",
     "@emotion/react": "^11.10.6",
     "@fastify/env": "^4.2.0",
-    "@hello-pangea/dnd": "^16.5.0",
+    "@hello-pangea/dnd": "^18.0.0",
     "@mantine/core": "^7.6.2",
     "@mantine/dates": "^7.0.0",
     "@mantine/form": "^7.0.0",
